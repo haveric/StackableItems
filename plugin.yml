@@ -1,0 +1,8 @@
+name: StackableItems
+author: haveric
+main: haveric.stackableItems.StackableItems
+version: 0.5
+commands:
+  stackableitems:
+    description: Rebuild all item stack in your inventory
+    usage:
