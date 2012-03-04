@@ -1,7 +1,8 @@
 name: StackableItems
 author: haveric
 main: haveric.stackableItems.StackableItems
-version: 0.5
+version: 0.6
+dev-url: http://dev.bukkit.org/server-mods/stackableitems/
 commands:
   stackableitems:
     description: Rebuild all item stack in your inventory

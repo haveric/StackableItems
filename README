@@ -1,0 +1,17 @@
+Stackable Items
+
+Allows you to change the default stack size of items. 
+
+Todo/Ideas:
++ Add data/damage values to config
+* Fix Tool stacking when used
+- I'm sure I'll think of more
+
+
+Changelog:
+
+Version 0.6 (3/4/2012)
+* Fixed "shadow" items. Thanks to Celtic_Minstrel!
+
+Version 0.5 (3/4/2012)
+- Initial Release

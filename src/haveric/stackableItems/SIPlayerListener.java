@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,9 +32,6 @@ public class SIPlayerListener implements Listener{
 		}
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
-		//plugin.log.info("Cursor: " + cursor);
-		//plugin.log.info("Clicked: " + clicked);
-		
 		
 		if (cursor != null && clicked != null) {
 			Material cursorType = cursor.getType();
@@ -40,11 +39,10 @@ public class SIPlayerListener implements Listener{
 			Material clickedType = clicked.getType();
 			short clickedDur = clicked.getDurability();
 			
-			//plugin.log.info("Cursor Type: " + cursorType + ", Dur: " + cursorDur);
-			//plugin.log.info("Clicked Type: " + clickedType + ", Dur: " + clickedDur);
-			
 			if (clickedType == Material.AIR && cursorType != Material.AIR){
-
+				event.setCurrentItem(cursor.clone());
+				event.setCursor(new ItemStack(Material.AIR));
+				event.setResult(Result.ALLOW);
 			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
 				int maxItems = Config.getItemMax(clicked.getType());
 				if (maxItems > Config.ITEM_DEFAULT){
@@ -55,9 +53,9 @@ public class SIPlayerListener implements Listener{
 						if (clickedAmount + cursorAmount > clicked.getMaxStackSize()){
 							event.setCurrentItem(new ItemStack(cursorType, clickedAmount + cursorAmount, cursorDur));
 							
-							// TODO: figure out an alternative or fix for this
-							event.setCursor(new ItemStack(Material.DIRT, 0));
-							event.setCancelled(true);
+							event.setCursor(new ItemStack(Material.AIR));
+							event.setResult(Result.ALLOW);
+							
 						}
 					} else {
 						event.setCurrentItem(new ItemStack(cursorType, maxItems, cursorDur));
