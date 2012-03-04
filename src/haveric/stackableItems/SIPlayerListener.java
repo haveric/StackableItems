@@ -1,9 +1,12 @@
 package haveric.stackableItems;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,12 +22,12 @@ public class SIPlayerListener implements Listener{
 		plugin = si;
 	}
 
+	
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent event){
 		if (event.isCancelled()){
 			return;
 		}
-		
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		plugin.log.info("Cursor: " + cursor);
@@ -36,10 +39,13 @@ public class SIPlayerListener implements Listener{
 			short cursorDur = cursor.getDurability();
 			Material clickedType = clicked.getType();
 			short clickedDur = clicked.getDurability();
+			
 			plugin.log.info("Cursor Type: " + cursorType + ", Dur: " + cursorDur);
 			plugin.log.info("Clicked Type: " + clickedType + ", Dur: " + clickedDur);
 			
-			if (cursorType == clickedType && cursorDur == clickedDur && clickedType != Material.AIR){
+			if (clickedType == Material.AIR && cursorType != Material.AIR){
+
+			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
 				plugin.log.info("Getting here");
 				int maxItems = Config.getItemMax(clicked.getType());
 				if (maxItems > Config.ITEM_DEFAULT){
@@ -47,19 +53,18 @@ public class SIPlayerListener implements Listener{
 					int clickedAmount = clicked.getAmount();
 					
 					if (clickedAmount + cursorAmount <= maxItems){
-						event.setCurrentItem(new ItemStack(cursorType, clickedAmount + cursorAmount, cursorDur));
-						/* TODO: Fix this
-						//event.setCursor(new ItemStack(Material.DIRT, 0));
-						event.setCursor(null);
-						//event.setCursor(new ItemStack(cursorType, 0));
-						*/
+						if (clickedAmount + cursorAmount > clicked.getMaxStackSize()){
+							event.setCurrentItem(new ItemStack(cursorType, clickedAmount + cursorAmount, cursorDur));
+							
+							// TODO: figure out an alternative or fix for this
+							event.setCursor(new ItemStack(Material.DIRT, 0));
+							event.setCancelled(true);
+						}
 					} else {
 						event.setCurrentItem(new ItemStack(cursorType, maxItems, cursorDur));
-						event.setCursor(new ItemStack(cursorType, clickedAmount + cursorAmount, cursorDur));
+						event.setCursor(new ItemStack(cursorType, clickedAmount + cursorAmount - maxItems, cursorDur));
+						event.setCancelled(true);
 					}
-					event.setResult(Result.ALLOW);
-					event.setCancelled(true);
-					
 				}
 			}
 		}
@@ -76,7 +81,6 @@ public class SIPlayerListener implements Listener{
 		event.getPlayer().sendMessage("Item: " + item.getItemStack().getType() + ", Max: " + maxItems);
 		if (maxItems > Config.ITEM_DEFAULT){
 			addItemsToInventory(event.getPlayer(), item);
-			event.getPlayer().sendMessage("Adding3");
 			event.setCancelled(true);
 		}
 	}

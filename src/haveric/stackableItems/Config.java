@@ -16,7 +16,7 @@ public class Config {
     public static File configFile;
     
     // Defaults
-    private static final boolean ALL_ITEMS_MAX_DEFAULT = false;
+    private static final int ALL_ITEMS_MAX_DEFAULT = -1;
     public static final int ITEM_DEFAULT = -1;
     
 
@@ -35,8 +35,8 @@ public class Config {
      * 
      */
     public static void setup(){
-    	boolean freeze = config.getBoolean(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT); 
-    	config.set(cfgAllItemsMax, freeze);
+    	int allItems = config.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT); 
+    	config.set(cfgAllItemsMax, allItems);
     	
     	saveConfig();
     }
@@ -52,12 +52,12 @@ public class Config {
 		}
 	}
 	
-	public static boolean getAllItemsMax(){
-		return config.getBoolean(cfgAllItemsMax);
+	public static int getAllItemsMax(){
+		return config.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT);
 	}
 	
-	public static void setFreezeWater(boolean freeze){
-		config.set(cfgAllItemsMax, freeze);
+	public static void setAllItemsMax(int numMax){
+		config.set(cfgAllItemsMax, numMax);
 		saveConfig();
 	}
 	
@@ -67,6 +67,6 @@ public class Config {
 	}
 	
 	public static int getItemMax(Material mat){
-		return config.getInt(mat.name(), ITEM_DEFAULT);
+		return config.getInt(mat.name(), getAllItemsMax());
 	}
 }
