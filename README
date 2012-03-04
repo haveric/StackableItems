@@ -5,6 +5,7 @@ Allows you to change the default stack size of items.
 Todo/Ideas:
 + Add data/damage values to config
 * Fix Tool stacking when used
+* Fix chest stacking
 - I'm sure I'll think of more
 
 
