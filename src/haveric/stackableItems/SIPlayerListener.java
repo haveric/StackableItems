@@ -30,8 +30,8 @@ public class SIPlayerListener implements Listener{
 		}
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
-		plugin.log.info("Cursor: " + cursor);
-		plugin.log.info("Clicked: " + clicked);
+		//plugin.log.info("Cursor: " + cursor);
+		//plugin.log.info("Clicked: " + clicked);
 		
 		
 		if (cursor != null && clicked != null) {
@@ -40,13 +40,12 @@ public class SIPlayerListener implements Listener{
 			Material clickedType = clicked.getType();
 			short clickedDur = clicked.getDurability();
 			
-			plugin.log.info("Cursor Type: " + cursorType + ", Dur: " + cursorDur);
-			plugin.log.info("Clicked Type: " + clickedType + ", Dur: " + clickedDur);
+			//plugin.log.info("Cursor Type: " + cursorType + ", Dur: " + cursorDur);
+			//plugin.log.info("Clicked Type: " + clickedType + ", Dur: " + clickedDur);
 			
 			if (clickedType == Material.AIR && cursorType != Material.AIR){
 
 			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
-				plugin.log.info("Getting here");
 				int maxItems = Config.getItemMax(clicked.getType());
 				if (maxItems > Config.ITEM_DEFAULT){
 					int cursorAmount = cursor.getAmount();
