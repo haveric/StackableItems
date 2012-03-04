@@ -22,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class StackableItems extends JavaPlugin {
 	
 	final Logger log = Logger.getLogger("Minecraft");
+	private Commands commands = new Commands(this);
 	
 	String pluginTitle;
 	
@@ -41,6 +42,7 @@ public class StackableItems extends JavaPlugin {
 		Config.init(this);
 		Config.setup();
 		
+		getCommand(Commands.getMain()).setExecutor(commands);
 		log.info(String.format("[%s] v%s Started",getDescription().getName(), getDescription().getVersion()));
 	}
 	
