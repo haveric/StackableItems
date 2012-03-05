@@ -31,7 +31,8 @@ public class SIPlayerListener implements Listener{
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
-		//if (cursor != null && clicked != null) {
+		// prevent clicks outside the inventory area
+		if (cursor != null && clicked != null) {
 			Material cursorType = cursor.getType();
 			short cursorDur = cursor.getDurability();
 			Material clickedType = clicked.getType();
@@ -67,7 +68,7 @@ public class SIPlayerListener implements Listener{
 				}
 			}
 		}
-	//}
+	}
 	
 	private void scheduleUpdate(final HumanEntity player) {
 		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
