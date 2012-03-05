@@ -10,6 +10,9 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Added option to use item id's in config (just replace a name with an id)
+
 Version 0.6.1 (3/4/2012)
 * Fixed default Command /stackableitems
 * Added durability checking

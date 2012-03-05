@@ -1,6 +1,8 @@
 package haveric.stackableItems;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -35,13 +37,14 @@ public class SIPlayerListener implements Listener{
 			Material clickedType = clicked.getType();
 			short clickedDur = clicked.getDurability();
 			
-			//plugin.log.info("Type: " + cursorType + ", Dur: " + cursorDur);
-			//plugin.log.info("Type: " + clickedType + ", Dur: " + clickedDur);
+			plugin.log.info("Type: " + cursorType + ", Dur: " + cursorDur);
+			plugin.log.info("Type: " + clickedType + ", Dur: " + clickedDur);
 			
 			if (clickedType == Material.AIR && cursorType != Material.AIR){
-				event.setCurrentItem(cursor.clone());
+				event.setCurrentItem(new ItemStack(cursorType, cursor.getAmount(), cursorDur));
 				event.setCursor(new ItemStack(Material.AIR));
 				event.setResult(Result.ALLOW);
+				scheduleUpdate(event.getView().getPlayer());
 			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
 				int maxItems = Config.getItemMax(clickedType, clickedDur);
 				if (maxItems > Config.ITEM_DEFAULT){
@@ -54,7 +57,7 @@ public class SIPlayerListener implements Listener{
 							
 							event.setCursor(new ItemStack(Material.AIR));
 							event.setResult(Result.ALLOW);
-							
+							scheduleUpdate(event.getView().getPlayer());
 						}
 					} else {
 						event.setCurrentItem(new ItemStack(cursorType, maxItems, cursorDur));
@@ -66,6 +69,14 @@ public class SIPlayerListener implements Listener{
 		}
 	}
 	
+	private void scheduleUpdate(final HumanEntity player) {
+		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+		    @SuppressWarnings("deprecation")
+			@Override public void run() {
+		      ((Player) player).updateInventory();
+		    }
+		  });
+		}
 	@EventHandler
 	public void playerPicksUpItem(PlayerPickupItemEvent event){
 		if (event.isCancelled()){

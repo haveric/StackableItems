@@ -62,8 +62,15 @@ public class Config {
 	}
 	
 	public static int getItemMax(Material mat, short dur){
+		int id = mat.getId();
 		int max;
 		max = config.getInt(mat.name() + " " + dur, ITEM_DEFAULT);
+		if (max == ITEM_DEFAULT){
+			max = config.getInt(id + " " + dur, ITEM_DEFAULT);
+		}
+		if (max == ITEM_DEFAULT){
+			max = config.getInt("" + id, ITEM_DEFAULT);
+		}
 		if (max == ITEM_DEFAULT){
 			max = config.getInt(mat.name(), getAllItemsMax());
 		}
