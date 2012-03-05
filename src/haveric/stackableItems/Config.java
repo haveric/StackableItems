@@ -12,8 +12,8 @@ public class Config {
 	static StackableItems plugin;
 	
 	private static String cfgAllItemsMax = "All items Max";
-    public static FileConfiguration config;
-    public static File configFile;
+    private static FileConfiguration config;
+    private static File configFile;
     
     // Defaults
     private static final int ALL_ITEMS_MAX_DEFAULT = -1;
@@ -52,27 +52,32 @@ public class Config {
 		}
 	}
 	
-	public static int getAllItemsMax(){
+	private static int getAllItemsMax(){
 		return config.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT);
-	}
-	
-	public static void setAllItemsMax(int numMax){
-		config.set(cfgAllItemsMax, numMax);
-		saveConfig();
 	}
 	
 	public static int getItemMax(Material mat, short dur){
 		int id = mat.getId();
 		int max;
+		// Check for material name and durability
 		max = config.getInt(mat.name() + " " + dur, ITEM_DEFAULT);
+		
+		// Check for item id and durability
 		if (max == ITEM_DEFAULT){
 			max = config.getInt(id + " " + dur, ITEM_DEFAULT);
+		}
+		
+		// no durability
+		if (max == ITEM_DEFAULT){
+			max = config.getInt(mat.name(), ITEM_DEFAULT);
 		}
 		if (max == ITEM_DEFAULT){
 			max = config.getInt("" + id, ITEM_DEFAULT);
 		}
+		
+		// no individual item set, use the all items value
 		if (max == ITEM_DEFAULT){
-			max = config.getInt(mat.name(), getAllItemsMax());
+			max = getAllItemsMax();
 		}
 		
 		return max;

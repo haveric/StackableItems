@@ -31,7 +31,7 @@ public class SIPlayerListener implements Listener{
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
-		if (cursor != null && clicked != null) {
+		//if (cursor != null && clicked != null) {
 			Material cursorType = cursor.getType();
 			short cursorDur = cursor.getDurability();
 			Material clickedType = clicked.getType();
@@ -67,7 +67,7 @@ public class SIPlayerListener implements Listener{
 				}
 			}
 		}
-	}
+	//}
 	
 	private void scheduleUpdate(final HumanEntity player) {
 		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
@@ -96,6 +96,7 @@ public class SIPlayerListener implements Listener{
 		
 		Inventory inventory = player.getInventory();
 		ItemStack[] contents = inventory.getContents();
+		
 		ItemStack add = entity.getItemStack();
 		
 		Material addType = add.getType();
@@ -105,13 +106,14 @@ public class SIPlayerListener implements Listener{
 		int addAmount = add.getAmount();
 		
 		int canAdd;
+		
 		// add to existing stacks
 		for(int i = 0; i < contents.length && addAmount > 0; i++){
 			ItemStack item = contents[i];
 			
 			if (item != null){
 				int free = item.getAmount();
-				if (item != null && item.getType() == add.getType() && item.getDurability() == durability && free < maxAmount){
+				if (item.getType() == add.getType() && item.getDurability() == durability && free < maxAmount){
 					canAdd = maxAmount - free;
 					if (addAmount <= canAdd){
 						item.setAmount(free + addAmount);
@@ -123,7 +125,7 @@ public class SIPlayerListener implements Listener{
 				}
 			}
 		}
-		
+
 		boolean fullInventory = false;
 		
 		while (addAmount > 0 && !fullInventory){
