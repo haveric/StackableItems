@@ -1,10 +1,5 @@
 package haveric.stackableItems;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -30,6 +25,7 @@ public class SIPlayerListener implements Listener{
 		if (event.isCancelled()){
 			return;
 		}
+
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
@@ -39,12 +35,15 @@ public class SIPlayerListener implements Listener{
 			Material clickedType = clicked.getType();
 			short clickedDur = clicked.getDurability();
 			
+			//plugin.log.info("Type: " + cursorType + ", Dur: " + cursorDur);
+			//plugin.log.info("Type: " + clickedType + ", Dur: " + clickedDur);
+			
 			if (clickedType == Material.AIR && cursorType != Material.AIR){
 				event.setCurrentItem(cursor.clone());
 				event.setCursor(new ItemStack(Material.AIR));
 				event.setResult(Result.ALLOW);
 			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
-				int maxItems = Config.getItemMax(clicked.getType());
+				int maxItems = Config.getItemMax(clickedType, clickedDur);
 				if (maxItems > Config.ITEM_DEFAULT){
 					int cursorAmount = cursor.getAmount();
 					int clickedAmount = clicked.getAmount();
@@ -74,8 +73,8 @@ public class SIPlayerListener implements Listener{
 		}
 		Item item = event.getItem();
 		
-		int maxItems = Config.getItemMax(item.getItemStack().getType());
-		event.getPlayer().sendMessage("Item: " + item.getItemStack().getType() + ", Max: " + maxItems);
+		int maxItems = Config.getItemMax(item.getItemStack().getType(), item.getItemStack().getDurability());
+		//event.getPlayer().sendMessage("Item: " + item.getItemStack().getType() + ", Max: " + maxItems);
 		if (maxItems > Config.ITEM_DEFAULT){
 			addItemsToInventory(event.getPlayer(), item);
 			event.setCancelled(true);
@@ -91,7 +90,7 @@ public class SIPlayerListener implements Listener{
 		Material addType = add.getType();
 		short durability = add.getDurability();
 		
-		int maxAmount = Config.getItemMax(addType);
+		int maxAmount = Config.getItemMax(addType, durability);
 		int addAmount = add.getAmount();
 		
 		int canAdd;
@@ -139,6 +138,6 @@ public class SIPlayerListener implements Listener{
 		}
 		
 		
-		player.sendMessage("Items left: " + addAmount);
+		//player.sendMessage("Items left: " + addAmount);
 	}
 }

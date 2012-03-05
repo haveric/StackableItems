@@ -61,12 +61,13 @@ public class Config {
 		saveConfig();
 	}
 	
-	public static void setItemMax(Material mat, int max){
-		config.set(mat.name(), max);
-		saveConfig();
-	}
-	
-	public static int getItemMax(Material mat){
-		return config.getInt(mat.name(), getAllItemsMax());
+	public static int getItemMax(Material mat, short dur){
+		int max;
+		max = config.getInt(mat.name() + " " + dur, ITEM_DEFAULT);
+		if (max == ITEM_DEFAULT){
+			max = config.getInt(mat.name(), getAllItemsMax());
+		}
+		
+		return max;
 	}
 }
