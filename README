@@ -5,6 +5,7 @@ Allows you to change the default stack size of items.
 Todo/Ideas:
 * Fix Tool stacking when used
 * Fix chest stacking maxing out at 64
+* Separate chest/player amounts
 - I'm sure I'll think of more
 
 

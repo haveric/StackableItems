@@ -72,7 +72,7 @@ public class Config {
 			max = config.getInt(mat.name(), ITEM_DEFAULT);
 		}
 		if (max == ITEM_DEFAULT){
-			max = config.getInt("" + id, ITEM_DEFAULT);
+			max = config.getInt(id + "", ITEM_DEFAULT);
 		}
 		
 		// no individual item set, use the all items value
