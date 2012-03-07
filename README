@@ -3,6 +3,7 @@ Stackable Items
 Allows you to change the default stack size of items. 
 
 Todo/Ideas:
+* Fix enchanted items losing enchantments
 * Fix Tool stacking when used
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts

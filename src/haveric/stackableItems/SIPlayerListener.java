@@ -2,6 +2,7 @@ package haveric.stackableItems;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
@@ -31,20 +32,23 @@ public class SIPlayerListener implements Listener{
 		}
 		
 		ItemStack holding = event.getItem();
-		int amount = holding.getAmount();
-		
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && amount > 1){
-			Material holdingType = holding.getType();
-			Player player = event.getPlayer();
+		if (holding != null){
+			int amount = holding.getAmount();
 			
-			if (holdingType == Material.BUCKET){
-				player.sendMessage("Mat: " + event.getClickedBlock().getRelative(BlockFace.UP).getType());
+			if (event.getAction() == Action.RIGHT_CLICK_BLOCK && amount > 1){
+				Material holdingType = holding.getType();
+				Player player = event.getPlayer();
 				
-
-			} else if (holdingType == Material.WATER_BUCKET){
-				scheduleAddItems(player, Material.WATER_BUCKET, amount-1);
-			} else if (holdingType == Material.LAVA_BUCKET){
-				scheduleAddItems(player, Material.LAVA_BUCKET, amount-1);
+				if (holdingType == Material.BUCKET){
+					Block up = event.getClickedBlock().getRelative(BlockFace.UP);
+					if (up.getData() == 0){
+						scheduleAddItems(player, Material.BUCKET, amount-1);
+					}
+				} else if (holdingType == Material.WATER_BUCKET){
+					scheduleAddItems(player, Material.WATER_BUCKET, amount-1);
+				} else if (holdingType == Material.LAVA_BUCKET){
+					scheduleAddItems(player, Material.LAVA_BUCKET, amount-1);
+				}
 			}
 		}
 	}
@@ -59,6 +63,9 @@ public class SIPlayerListener implements Listener{
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
+		
+		//plugin.log.info("slot: " + event.getRawSlot());
+		
 		// prevent clicks outside the inventory area
 		if (cursor != null && clicked != null) {
 			Material cursorType = cursor.getType();
@@ -70,9 +77,11 @@ public class SIPlayerListener implements Listener{
 			//plugin.log.info("Type: " + clickedType + ", Dur: " + clickedDur);
 			
 			if (clickedType == Material.AIR && cursorType != Material.AIR){
-				event.setCurrentItem(new ItemStack(cursorType, cursor.getAmount(), cursorDur));
+				ItemStack s = new ItemStack(cursorType, cursor.getAmount(), cursorDur);
+				event.setCurrentItem(s);
 				event.setCursor(new ItemStack(Material.AIR));
 				event.setResult(Result.ALLOW);
+				
 				scheduleUpdate(event.getView().getPlayer());
 			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
 				int maxItems = Config.getItemMax(clickedType, clickedDur);
@@ -80,9 +89,12 @@ public class SIPlayerListener implements Listener{
 					int cursorAmount = cursor.getAmount();
 					int clickedAmount = clicked.getAmount();
 					
-					if (clickedAmount + cursorAmount <= maxItems){
-						if (clickedAmount + cursorAmount > clicked.getMaxStackSize()){
-							event.setCurrentItem(new ItemStack(cursorType, clickedAmount + cursorAmount, cursorDur));
+					int total = clickedAmount + cursorAmount;
+					if (total <= maxItems){
+						if (total > clicked.getMaxStackSize()){
+							ItemStack s = new ItemStack(cursorType, total, cursorDur);
+							
+							event.setCurrentItem(s);
 							
 							event.setCursor(new ItemStack(Material.AIR));
 							event.setResult(Result.ALLOW);
@@ -90,7 +102,7 @@ public class SIPlayerListener implements Listener{
 						}
 					} else {
 						event.setCurrentItem(new ItemStack(cursorType, maxItems, cursorDur));
-						event.setCursor(new ItemStack(cursorType, clickedAmount + cursorAmount - maxItems, cursorDur));
+						event.setCursor(new ItemStack(cursorType, total - maxItems, cursorDur));
 						event.setCancelled(true);
 					}
 				}
@@ -103,15 +115,6 @@ public class SIPlayerListener implements Listener{
 		    @SuppressWarnings("deprecation")
 			@Override public void run() {
 		      ((Player) player).updateInventory();
-		    }
-		});
-	}
-	
-	private void scheduleUpdate(final Player player){
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-		    @SuppressWarnings("deprecation")
-			@Override public void run() {
-		      player.updateInventory();
 		    }
 		});
 	}
