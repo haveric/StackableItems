@@ -3,17 +3,20 @@ Stackable Items
 Allows you to change the default stack size of items. 
 
 Todo/Ideas:
-* Fix enchanted items losing enchantments
 * Fix Tool stacking when used
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
-- I'm sure I'll think of more
+* Virtual Stacks (stack of tools that each are unique)
+* Fix right clicking functionality on a stack larger than its normal max size
+- I'm sure I'll think of/find more
 
 
 Changelog:
 
-Coming soon:
+Version 0.6.2 (3/6/2012)
 * Added option to use item id's in config (just replace a name with an id)
+* Fixed individual enchanted items losing enchantments
+* Fixed bucket stacks when placing/picking up water/lava
 
 Version 0.6.1 (3/4/2012)
 * Fixed default Command /stackableitems

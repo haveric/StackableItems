@@ -70,14 +70,17 @@ public class SIPlayerListener implements Listener{
 		if (cursor != null && clicked != null) {
 			Material cursorType = cursor.getType();
 			short cursorDur = cursor.getDurability();
+			int cursorAmount = cursor.getAmount();
+			
 			Material clickedType = clicked.getType();
 			short clickedDur = clicked.getDurability();
+			int clickedAmount = clicked.getAmount();
 			
 			//plugin.log.info("Type: " + cursorType + ", Dur: " + cursorDur);
 			//plugin.log.info("Type: " + clickedType + ", Dur: " + clickedDur);
 			
-			if (clickedType == Material.AIR && cursorType != Material.AIR){
-				ItemStack s = new ItemStack(cursorType, cursor.getAmount(), cursorDur);
+			if (clickedType == Material.AIR && cursorType != Material.AIR && cursorAmount > 1){
+				ItemStack s = new ItemStack(cursorType, cursorAmount, cursorDur);
 				event.setCurrentItem(s);
 				event.setCursor(new ItemStack(Material.AIR));
 				event.setResult(Result.ALLOW);
@@ -86,9 +89,7 @@ public class SIPlayerListener implements Listener{
 			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
 				int maxItems = Config.getItemMax(clickedType, clickedDur);
 				if (maxItems > Config.ITEM_DEFAULT){
-					int cursorAmount = cursor.getAmount();
-					int clickedAmount = clicked.getAmount();
-					
+
 					int total = clickedAmount + cursorAmount;
 					if (total <= maxItems){
 						if (total > clicked.getMaxStackSize()){
