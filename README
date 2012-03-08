@@ -13,6 +13,9 @@ Todo/Ideas:
 
 Changelog:
 
+Version 0.6.4 (3/8/2012)
+* Removed test messages
+
 Version 0.6.3 (3/7/2012)
 * Fixed picking up multiple stacks causing amounts to be wrong
 * Fixed right click functionality on a stack larger than its normal max size

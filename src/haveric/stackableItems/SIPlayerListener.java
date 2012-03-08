@@ -30,7 +30,7 @@ public class SIPlayerListener implements Listener{
 		if (event.isCancelled()){
 			return;
 		}
-		event.getPlayer().sendMessage("Action: " + event.getAction() + ", Name: " + event.getEventName());
+		//event.getPlayer().sendMessage("Action: " + event.getAction() + ", Name: " + event.getEventName());
 		ItemStack holding = event.getItem();
 		if (holding != null){
 			int amount = holding.getAmount();
