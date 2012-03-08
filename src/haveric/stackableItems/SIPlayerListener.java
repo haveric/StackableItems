@@ -138,6 +138,7 @@ public class SIPlayerListener implements Listener{
 		int maxItems = Config.getItemMax(item.getItemStack().getType(), item.getItemStack().getDurability());
 		//event.getPlayer().sendMessage("Item: " + item.getItemStack().getType() + ", Max: " + maxItems);
 		if (maxItems > Config.ITEM_DEFAULT){
+			
 			addItemsToInventory(event.getPlayer(), item);
 			event.setCancelled(true);
 		}
@@ -156,7 +157,6 @@ public class SIPlayerListener implements Listener{
 		
 		// add to existing stacks
 		addAmount = addToExistingStacks(player, add);
-		
 		boolean fullInventory = false;
 		
 		while (addAmount > 0 && !fullInventory){
@@ -174,7 +174,6 @@ public class SIPlayerListener implements Listener{
 				}
 			}
 		}
-		
 		if (addAmount == 0){
 			entity.remove();
 		} else {
@@ -235,6 +234,11 @@ public class SIPlayerListener implements Listener{
 					if (addAmount <= canAdd){
 						item.setAmount(free + addAmount);
 						addAmount = 0;
+						
+					} else if (addAmount <= maxAmount){
+						item.setAmount(maxAmount);
+						addAmount -= canAdd;
+						
 					} else {
 						item.setAmount(maxAmount);
 						addAmount -= maxAmount;

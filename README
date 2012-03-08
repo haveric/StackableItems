@@ -8,10 +8,15 @@ Todo/Ideas:
 * Separate chest/player amounts
 * Virtual Stacks (stack of tools that each are unique)
 * Fix right clicking functionality on a stack larger than its normal max size
+* Permissions
+* Configurations per group (w/ Permissions?)
 - I'm sure I'll think of/find more
 
 
 Changelog:
+
+Upcoming:
+* Picking up multiple stacks causes amounts to be wrong
 
 Version 0.6.2 (3/6/2012)
 * Added option to use item id's in config (just replace a name with an id)
