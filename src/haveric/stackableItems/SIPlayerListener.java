@@ -30,7 +30,7 @@ public class SIPlayerListener implements Listener{
 		if (event.isCancelled()){
 			return;
 		}
-		
+		event.getPlayer().sendMessage("Action: " + event.getAction() + ", Name: " + event.getEventName());
 		ItemStack holding = event.getItem();
 		if (holding != null){
 			int amount = holding.getAmount();
@@ -63,9 +63,6 @@ public class SIPlayerListener implements Listener{
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
-		
-		//plugin.log.info("slot: " + event.getRawSlot());
-		
 		// prevent clicks outside the inventory area
 		if (cursor != null && clicked != null) {
 			Material cursorType = cursor.getType();
@@ -76,37 +73,72 @@ public class SIPlayerListener implements Listener{
 			short clickedDur = clicked.getDurability();
 			int clickedAmount = clicked.getAmount();
 			
-			//plugin.log.info("Type: " + cursorType + ", Dur: " + cursorDur);
-			//plugin.log.info("Type: " + clickedType + ", Dur: " + clickedDur);
+			int maxItems = Config.getItemMax(clickedType, clickedDur);
 			
-			if (clickedType == Material.AIR && cursorType != Material.AIR && cursorAmount > 1){
-				ItemStack s = new ItemStack(cursorType, cursorAmount, cursorDur);
-				event.setCurrentItem(s);
-				event.setCursor(new ItemStack(Material.AIR));
-				event.setResult(Result.ALLOW);
-				
-				scheduleUpdate(event.getView().getPlayer());
-			} else if (cursorType == clickedType && cursorDur == clickedDur && cursorType != Material.AIR){
-				int maxItems = Config.getItemMax(clickedType, clickedDur);
-				if (maxItems > Config.ITEM_DEFAULT){
-
-					int total = clickedAmount + cursorAmount;
-					if (total <= maxItems){
-						if (total > clicked.getMaxStackSize()){
-							ItemStack s = new ItemStack(cursorType, total, cursorDur);
-							
-							event.setCurrentItem(s);
-							
-							event.setCursor(new ItemStack(Material.AIR));
-							event.setResult(Result.ALLOW);
-							scheduleUpdate(event.getView().getPlayer());
+			if (event.isLeftClick() && cursorType != Material.AIR){
+				if (clicked.getEnchantments().equals(cursor.getEnchantments())){
+					if (clickedType == Material.AIR && cursorAmount > 1){
+						ItemStack s = new ItemStack(cursorType, cursorAmount, cursorDur);
+						s.addUnsafeEnchantments(cursor.getEnchantments());
+						event.setCurrentItem(s);
+						event.setCursor(new ItemStack(Material.AIR));
+						event.setResult(Result.ALLOW);
+						
+						scheduleUpdate(event.getView().getPlayer());
+					} else if (cursorType == clickedType && cursorDur == clickedDur){
+						
+						if (maxItems > Config.ITEM_DEFAULT){
+		
+							int total = clickedAmount + cursorAmount;
+							if (total <= maxItems){
+								if (total > clicked.getMaxStackSize()){
+									ItemStack s = new ItemStack(cursorType, total, cursorDur);
+									s.addUnsafeEnchantments(cursor.getEnchantments());
+									event.setCurrentItem(s);
+									
+									event.setCursor(new ItemStack(Material.AIR));
+									event.setResult(Result.ALLOW);
+									scheduleUpdate(event.getView().getPlayer());
+								}
+							} else {
+								ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
+								s.addUnsafeEnchantments(cursor.getEnchantments());
+								event.setCurrentItem(s);
+								
+								s = new ItemStack(cursorType, total - maxItems, cursorDur);
+								s.addUnsafeEnchantments(cursor.getEnchantments());
+								event.setCursor(s);
+								
+								event.setCancelled(true);
+							}
 						}
 					} else {
-						event.setCurrentItem(new ItemStack(cursorType, maxItems, cursorDur));
-						event.setCursor(new ItemStack(cursorType, total - maxItems, cursorDur));
+						// Virtual Items
+					}
+				}
+			} else if (event.isRightClick()){
+				if (clickedType != Material.AIR && cursorType != Material.AIR && clickedAmount >= clicked.getMaxStackSize()){
+					if (clickedAmount < maxItems){
+						if (cursorAmount > 1){
+							clicked.setAmount(clickedAmount + 1);
+							event.setCurrentItem(clicked);
+							
+							cursor.setAmount(cursorAmount - 1);
+							event.setCursor(cursor);
+
+						} else {
+							clicked.setAmount(clickedAmount + 1);
+							event.setCurrentItem(clicked);
+							
+							event.setCursor(new ItemStack(Material.AIR, 0));
+						}
+						event.setResult(Result.ALLOW);
+						scheduleUpdate(event.getView().getPlayer());
+					} else {
 						event.setCancelled(true);
 					}
 				}
+				
 			}
 		}
 	}

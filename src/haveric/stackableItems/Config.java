@@ -11,13 +11,17 @@ public class Config {
 
 	static StackableItems plugin;
 	
+	//private static String cfgVirtualItems = "Virtual Items";
 	private static String cfgAllItemsMax = "All items Max";
+	
     private static FileConfiguration config;
     private static File configFile;
     
     // Defaults
     private static final int ALL_ITEMS_MAX_DEFAULT = -1;
     public static final int ITEM_DEFAULT = -1;
+    
+    //private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
     
 
     /**
@@ -35,6 +39,9 @@ public class Config {
      * 
      */
     public static void setup(){
+    	//boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
+    	//config.set(cfgVirtualItems, virtualItems);
+    			
     	int allItems = config.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT); 
     	config.set(cfgAllItemsMax, allItems);
     	
@@ -82,4 +89,9 @@ public class Config {
 		
 		return max;
 	}
+	/*
+	public boolean getVirtualItemsEnabled(){
+		return config.getBoolean(cfgVirtualItems);
+	}
+	*/
 }
