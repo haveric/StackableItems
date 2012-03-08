@@ -13,7 +13,7 @@ Todo/Ideas:
 
 Changelog:
 
-Upcoming:
+Version 0.6.3 (3/7/2012)
 * Picking up multiple stacks causes amounts to be wrong
 * Fixed right click functionality on a stack larger than its normal max size
 * Enchanted items can now only be stacked with other equally enchanted items to prevent losing enchantments
