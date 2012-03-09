@@ -6,12 +6,16 @@ Todo/Ideas:
 * Fix Tool stacking when used/Virtual Stacks (stack of tools that each are unique)
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
-* Permissions
-* Configurations per group (w/ Permissions?)
+* Prevent crafting of disabled items (set to 0)
 - I'm sure I'll think of/find more
 
 
 Changelog:
+
+Version 0.7 (3/8/2012)
+* Disabling an item (setting to 0) caused shadow items to fill inventory
+* Added Vault soft dependency
+* Added Permissions per group/player (Add a group.yml or player.yml, ie: admin.yml or haveric.yml)
 
 Version 0.6.4 (3/8/2012)
 * Removed test messages

@@ -73,7 +73,7 @@ public class SIPlayerListener implements Listener{
 			short clickedDur = clicked.getDurability();
 			int clickedAmount = clicked.getAmount();
 			
-			int maxItems = Config.getItemMax(clickedType, clickedDur);
+			int maxItems = Config.getItemMax((Player)event.getView().getPlayer(), clickedType, clickedDur);
 			
 			if (event.isLeftClick() && cursorType != Material.AIR){
 				if (clicked.getEnchantments().equals(cursor.getEnchantments())){
@@ -167,9 +167,11 @@ public class SIPlayerListener implements Listener{
 		}
 		Item item = event.getItem();
 		
-		int maxItems = Config.getItemMax(item.getItemStack().getType(), item.getItemStack().getDurability());
+		int maxItems = Config.getItemMax(event.getPlayer(), item.getItemStack().getType(), item.getItemStack().getDurability());
 		//event.getPlayer().sendMessage("Item: " + item.getItemStack().getType() + ", Max: " + maxItems);
-		if (maxItems > Config.ITEM_DEFAULT){
+		if (maxItems == 0){
+			event.setCancelled(true);
+		} else if (maxItems > Config.ITEM_DEFAULT){
 			
 			addItemsToInventory(event.getPlayer(), item);
 			event.setCancelled(true);
@@ -184,7 +186,7 @@ public class SIPlayerListener implements Listener{
 		Material addType = add.getType();
 		short durability = add.getDurability();
 		
-		int maxAmount = Config.getItemMax(addType, durability);
+		int maxAmount = Config.getItemMax(player, addType, durability);
 		int addAmount = add.getAmount();
 		
 		// add to existing stacks
@@ -219,7 +221,7 @@ public class SIPlayerListener implements Listener{
 		Material addType = add.getType();
 		short durability = add.getDurability();
 		
-		int maxAmount = Config.getItemMax(addType, durability);
+		int maxAmount = Config.getItemMax(player, addType, durability);
 		int addAmount = add.getAmount();
 		
 		// add to existing stacks
@@ -252,7 +254,7 @@ public class SIPlayerListener implements Listener{
 	
 	private int addToExistingStacks(Player player, ItemStack add) {
 		int canAdd;
-		int maxAmount = Config.getItemMax(add.getType(), add.getDurability());
+		int maxAmount = Config.getItemMax(player, add.getType(), add.getDurability());
 		int addAmount = add.getAmount();
 		
 		ItemStack[] contents = player.getInventory().getContents();

@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 public class Config {
 
@@ -16,6 +17,20 @@ public class Config {
 	
     private static FileConfiguration config;
     private static File configFile;
+    
+    // TODO: switch to defaultItems to allow other config options in config.yml
+    //private static FileConfiguration defaultItems;
+    //private static File defaultItemsFile;
+    
+    private static FileConfiguration configGroup;
+    private static File configGroupFile;
+    
+    private static FileConfiguration configPlayer;
+    private static File configPlayerFile;
+    
+    //private static FileConfiguration configChest;
+    //private static File configFileChest;
+    
     
     // Defaults
     private static final int ALL_ITEMS_MAX_DEFAULT = -1;
@@ -59,32 +74,71 @@ public class Config {
 		}
 	}
 	
-	private static int getAllItemsMax(){
-		return config.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT);
+	/*
+	private static void saveCustomConfig(FileConfiguration fileConfig, File file){
+		try {
+			fileConfig.save(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	*/
+	
+	private static int getAllItemsMax(FileConfiguration fileConfig){
+		return fileConfig.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT);
 	}
 	
-	public static int getItemMax(Material mat, short dur){
-		int id = mat.getId();
+	public static int getItemMax(Player player, Material mat, short dur){
+		int max;
+
+		if (plugin.permEnabled() && plugin.getPerm().has(player, Perms.getStack())){
+			
+			String group = plugin.getPerm().getPrimaryGroup(player);
+			
+	    	configGroupFile = new File(plugin.getDataFolder() + "/" + group + ".yml");
+	    	configPlayerFile = new File(plugin.getDataFolder() + "/" + player.getName() + ".yml");
+	    	
+	    	// load from a group.yml
+	    	if (configGroupFile.exists()){
+	    		configGroup = YamlConfiguration.loadConfiguration(configGroupFile);
+
+	    		max = getMaxFromConfig(configGroup, mat, dur);
+    		// load from a player.yml
+	    	} else if (configPlayerFile.exists()){
+	    		configPlayer = YamlConfiguration.loadConfiguration(configPlayerFile);
+	    		
+	    		max = getMaxFromConfig(configPlayer, mat, dur);
+	    	} else {
+	    		max = getMaxFromConfig(config, mat, dur);
+	    	}
+		} else {
+			max = getMaxFromConfig(config, mat, dur);
+		}
+
+		return max;
+	}
+	
+	private static int getMaxFromConfig(FileConfiguration fileConfig, Material mat, short dur){
 		int max;
 		// Check for material name and durability
-		max = config.getInt(mat.name() + " " + dur, ITEM_DEFAULT);
+		max = fileConfig.getInt(mat.name() + " " + dur, ITEM_DEFAULT);
 		
 		// Check for item id and durability
 		if (max == ITEM_DEFAULT){
-			max = config.getInt(id + " " + dur, ITEM_DEFAULT);
+			max = fileConfig.getInt(mat.getId() + " " + dur, ITEM_DEFAULT);
 		}
 		
 		// no durability
 		if (max == ITEM_DEFAULT){
-			max = config.getInt(mat.name(), ITEM_DEFAULT);
+			max = fileConfig.getInt(mat.name(), ITEM_DEFAULT);
 		}
 		if (max == ITEM_DEFAULT){
-			max = config.getInt(id + "", ITEM_DEFAULT);
+			max = fileConfig.getInt(mat.getId() + "", ITEM_DEFAULT);
 		}
 		
 		// no individual item set, use the all items value
 		if (max == ITEM_DEFAULT){
-			max = getAllItemsMax();
+			max = getAllItemsMax(fileConfig);
 		}
 		
 		return max;

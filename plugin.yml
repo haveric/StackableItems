@@ -1,8 +1,9 @@
 name: StackableItems
 author: haveric
 main: haveric.stackableItems.StackableItems
-version: 0.6.4
+version: 0.7
 dev-url: http://dev.bukkit.org/server-mods/stackableitems/
+softdepend: [Vault]
 commands:
   stackableitems:
     description: Allows you to change the amount that items will stack.
