@@ -12,15 +12,14 @@ public class Config {
 
 	static StackableItems plugin;
 	
-	//private static String cfgVirtualItems = "Virtual Items";
+	private static String cfgVirtualItems = "Virtual Items";
 	private static String cfgAllItemsMax = "All items Max";
 	
     private static FileConfiguration config;
     private static File configFile;
     
-    // TODO: switch to defaultItems to allow other config options in config.yml
-    //private static FileConfiguration defaultItems;
-    //private static File defaultItemsFile;
+    private static FileConfiguration defaultItems;
+    private static File defaultItemsFile;
     
     private static FileConfiguration configGroup;
     private static File configGroupFile;
@@ -36,7 +35,7 @@ public class Config {
     private static final int ALL_ITEMS_MAX_DEFAULT = -1;
     public static final int ITEM_DEFAULT = -1;
     
-    //private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
+    private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
     
 
     /**
@@ -47,6 +46,9 @@ public class Config {
     	plugin = si;
     	configFile = new File(plugin.getDataFolder() + "/config.yml");
 		config = YamlConfiguration.loadConfiguration(configFile);
+		
+		defaultItemsFile = new File(plugin.getDataFolder() + "/defaultItems.yml");
+		defaultItems = YamlConfiguration.loadConfiguration(defaultItemsFile);
     }
     
     /** 
@@ -54,13 +56,15 @@ public class Config {
      * 
      */
     public static void setup(){
-    	//boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
-    	//config.set(cfgVirtualItems, virtualItems);
+    	boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
+    	config.set(cfgVirtualItems, virtualItems);
     			
-    	int allItems = config.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT); 
-    	config.set(cfgAllItemsMax, allItems);
+    	int allItems = defaultItems.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT); 
+    	defaultItems.set(cfgAllItemsMax, allItems);
     	
     	saveConfig();
+    	
+    	saveCustomConfig(defaultItems, defaultItemsFile);
     }
     
     /**
@@ -74,7 +78,7 @@ public class Config {
 		}
 	}
 	
-	/*
+	
 	private static void saveCustomConfig(FileConfiguration fileConfig, File file){
 		try {
 			fileConfig.save(file);
@@ -82,7 +86,7 @@ public class Config {
 			e.printStackTrace();
 		}
 	}
-	*/
+	
 	
 	private static int getAllItemsMax(FileConfiguration fileConfig){
 		return fileConfig.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT);
@@ -109,10 +113,10 @@ public class Config {
 	    		
 	    		max = getMaxFromConfig(configPlayer, mat, dur);
 	    	} else {
-	    		max = getMaxFromConfig(config, mat, dur);
+	    		max = getMaxFromConfig(defaultItems, mat, dur);
 	    	}
 		} else {
-			max = getMaxFromConfig(config, mat, dur);
+			max = getMaxFromConfig(defaultItems, mat, dur);
 		}
 
 		return max;
@@ -143,9 +147,9 @@ public class Config {
 		
 		return max;
 	}
-	/*
-	public boolean getVirtualItemsEnabled(){
+	
+	public static boolean isVirtualItemsEnabled(){
 		return config.getBoolean(cfgVirtualItems);
 	}
-	*/
+	
 }

@@ -7,6 +7,8 @@ Todo/Ideas:
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
 * Prevent crafting of disabled items (set to 0)
+* Play pickup sound when picking up stacks
+* Look into making work with InventoryTweaks (or possible API?) 
 - I'm sure I'll think of/find more
 
 

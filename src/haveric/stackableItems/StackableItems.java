@@ -26,7 +26,7 @@ public class StackableItems extends JavaPlugin {
 		pm.registerEvents(playerListener, this);
 		
 		Config.init(this);
-		
+		VirtualItemConfig.init(this);
         // Vault
         setupVault();
         

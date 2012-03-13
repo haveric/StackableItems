@@ -2,9 +2,11 @@ package haveric.stackableItems;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class VirtualItemConfig {
 
@@ -26,17 +28,6 @@ public class VirtualItemConfig {
 		config = YamlConfiguration.loadConfiguration(configFile);
     }
     
-    /** 
-     * Sets up the default variables if they don't exist yet.
-     * 
-     */
-    public static void setup(){
-    	//int allItems = config.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT); 
-    	//config.set(cfgAllItemsMax, allItems);
-    	
-    	saveConfig();
-    }
-    
     /**
      * Saves the configuration to the file.
      */
@@ -46,5 +37,35 @@ public class VirtualItemConfig {
 		} catch (IOException e){
 			e.printStackTrace();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static VirtualItemStack getVirtualItemStack(Player player, int slot) {
+		String loc = player.getWorld().getName() + "." + player.getName()+ ".";
+		if (slot == -1){
+			loc += "cursor"; 
+		} else {
+			loc += "slot" + slot;
+		}
+		ArrayList<ItemStack> items = (ArrayList<ItemStack>) config.getList(loc, null);
+		
+		VirtualItemStack vis = new VirtualItemStack(items);
+		return vis;
+	}
+	
+	public static void setVirtualItemStack(Player player, int slot, VirtualItemStack vis){
+		String loc = player.getWorld().getName() + "." + player.getName()+ ".";
+		if (slot == -1){
+			loc += "cursor"; 
+		} else {
+			loc += "slot" + slot;
+		}
+		
+		if (vis == null || vis.isEmpty()){
+			config.set(loc,null);
+		} else {
+			config.set(loc,vis.getList());
+		}
+		saveConfig();
 	}
 }

@@ -73,50 +73,169 @@ public class SIPlayerListener implements Listener{
 			short clickedDur = clicked.getDurability();
 			int clickedAmount = clicked.getAmount();
 			
-			int maxItems = Config.getItemMax((Player)event.getView().getPlayer(), clickedType, clickedDur);
+			Player player = (Player)event.getView().getPlayer();
+			int maxItems = Config.getItemMax(player, clickedType, clickedDur);
 			
-			if (event.isLeftClick() && cursorType != Material.AIR){
-				if (clicked.getEnchantments().equals(cursor.getEnchantments())){
-					if (clickedType == Material.AIR && cursorAmount > 1){
-						ItemStack s = new ItemStack(cursorType, cursorAmount, cursorDur);
-						s.addUnsafeEnchantments(cursor.getEnchantments());
-						event.setCurrentItem(s);
+			int slot = event.getSlot();
+			
+			//boolean normallyStackable = clickedType.getMaxStackSize() != 1;
+			
+			boolean cursorEmpty = cursorType == Material.AIR;
+			boolean slotEmpty = clickedType == Material.AIR; 
+			
+			boolean virtualClicked = false;
+			boolean virtualCursor = false;
+			
+			VirtualItemStack clickedStack = null, cursorStack = null;
+			
+			
+			
+			
+			if (Config.isVirtualItemsEnabled()){
+				clickedStack = VirtualItemConfig.getVirtualItemStack(player, slot);
+				if (!clickedStack.isEmpty()){
+					virtualClicked = true;
+				}
+				
+				cursorStack = VirtualItemConfig.getVirtualItemStack(player, -1);
+				if (!cursorStack.isEmpty()){
+					virtualCursor = true;
+				}
+			}
+			
+			if (event.isLeftClick()){
+				// Pick up a stack with an empty hand
+				if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){
+					
+					if (virtualClicked){
+						player.sendMessage("Pick up stack with empty hand. (Virtual item)");
+						VirtualItemConfig.setVirtualItemStack(player, slot, null);
+						// Set cursor to the clicked stack
+						VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
+					} else {
+						player.sendMessage("Pick up stack with empty hand.");
+						event.setCursor(clicked.clone());
+						event.setCurrentItem(new ItemStack(Material.AIR));
+						event.setResult(Result.ALLOW);
+					}
+				// Drop a stack into an empty slot
+				} else if (!cursorEmpty && slotEmpty && cursorAmount > cursorType.getMaxStackSize()){
+					if (virtualCursor){
+						player.sendMessage("Drop a stack into an empty slot (virtual cursor)");
+						VirtualItemConfig.setVirtualItemStack(player, -1, null);
+						// Set slot to the cursor stack
+						VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
+					} else {
+						player.sendMessage("Drop a stack into an empty slot");
+						event.setCurrentItem(cursor.clone());
 						event.setCursor(new ItemStack(Material.AIR));
 						event.setResult(Result.ALLOW);
-						
-						scheduleUpdate(event.getView().getPlayer());
-					} else if (cursorType == clickedType && cursorDur == clickedDur){
-						
-						if (maxItems > Config.ITEM_DEFAULT){
-		
-							int total = clickedAmount + cursorAmount;
-							if (total <= maxItems){
-								if (total > clicked.getMaxStackSize()){
-									ItemStack s = new ItemStack(cursorType, total, cursorDur);
-									s.addUnsafeEnchantments(cursor.getEnchantments());
-									event.setCurrentItem(s);
-									
-									event.setCursor(new ItemStack(Material.AIR));
-									event.setResult(Result.ALLOW);
-									scheduleUpdate(event.getView().getPlayer());
-								}
-							} else {
-								ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
-								s.addUnsafeEnchantments(cursor.getEnchantments());
-								event.setCurrentItem(s);
-								
-								s = new ItemStack(cursorType, total - maxItems, cursorDur);
-								s.addUnsafeEnchantments(cursor.getEnchantments());
-								event.setCursor(s);
-								
-								event.setCancelled(true);
+					}
+				// Combine two items
+				} else if (!cursorEmpty && !slotEmpty){
+					boolean sameType = clickedType == cursorType;
+					
+					// Combine two virtual stacks
+					if (virtualCursor && virtualClicked){
+						if (sameType){
+							player.sendMessage("Combine two virtual stacks");
+							while (clickedAmount < maxItems && cursorAmount > 0){
+								clickedStack.addToFront(cursorStack.removeLast());
+								clickedAmount ++;
+								cursorAmount --;
 							}
+							VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
+							if (cursorAmount > 0){
+								VirtualItemConfig.setVirtualItemStack(player, -1, cursorStack);
+							} else {
+								VirtualItemConfig.setVirtualItemStack(player, -1, null);
+							}
+						// swap stacks when not the same
+						} else {
+							player.sendMessage("Swap two virtual stacks");
+							VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
+							VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
 						}
+					// Add virtual stack to single item
+					} else if (virtualCursor){
+						if (sameType){
+							if (cursorAmount < maxItems){
+								player.sendMessage("Add virtual cursor to item");
+								cursorStack.addItemStack(clicked.clone());
+								VirtualItemConfig.setVirtualItemStack(player, -1, null);
+								VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
+								event.setCursor(new ItemStack(Material.AIR));
+								
+								event.setResult(Result.ALLOW);
+							}
+						} else {
+							player.sendMessage("Swap virtual cursor and item");
+							VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
+							VirtualItemConfig.setVirtualItemStack(player, -1, null);
+						}
+					// Add cursor to virtual stack
+					} else if (virtualClicked){
+						if (sameType){
+							if (clickedAmount < maxItems){
+								player.sendMessage("Add cursor to virtual slot stack");
+								clickedStack.addToFront(cursor.clone());
+								VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
+								VirtualItemConfig.setVirtualItemStack(player, -1, null);
+								
+								event.setCursor(new ItemStack(Material.AIR));
+								event.setResult(Result.ALLOW);
+							}
+						} else {
+							player.sendMessage("Swap cursor and virtual slot stack");
+							VirtualItemConfig.setVirtualItemStack(player, slot, null);
+							VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
+						}
+					// Add two normal items
 					} else {
-						// Virtual Items
+						boolean sameDur = cursorDur == clickedDur;
+						boolean sameEnchants = cursor.getEnchantments().equals(clicked.getEnchantments());
+						boolean noEnchants = cursor.getEnchantments() == null && clicked.getEnchantments() == null;
+						
+						
+						if (sameType){
+							if (sameDur && (sameEnchants || noEnchants)){
+								if (maxItems > Config.ITEM_DEFAULT){
+									
+									int total = clickedAmount + cursorAmount;
+									if (total <= maxItems){
+										if (total > clicked.getMaxStackSize()){
+											player.sendMessage("Combine two stacks fully");
+											ItemStack s = new ItemStack(cursorType, total, cursorDur);
+											s.addUnsafeEnchantments(cursor.getEnchantments());
+											event.setCurrentItem(s);
+											
+											event.setCursor(new ItemStack(Material.AIR));
+											event.setResult(Result.ALLOW);
+											scheduleUpdate(player);
+										}
+									} else {
+										player.sendMessage("Combine two stacks partially");
+										ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
+										s.addUnsafeEnchantments(cursor.getEnchantments());
+										event.setCurrentItem(s);
+										
+										s = new ItemStack(cursorType, total - maxItems, cursorDur);
+										s.addUnsafeEnchantments(cursor.getEnchantments());
+										event.setCursor(s);
+										
+										event.setCancelled(true);
+									}
+								}
+							}
+						} else {
+							player.sendMessage("Swap two items");
+							//SWAP ITEMS
+						}
 					}
 				}
-			} else if (event.isRightClick()){
+			}
+			/* TODO: redo
+			else if (event.isRightClick()){
 				if (clickedType != Material.AIR && cursorType != Material.AIR && clickedAmount >= clicked.getMaxStackSize()){
 					if (clickedAmount < maxItems){
 						if (cursorAmount > 1){
@@ -133,15 +252,85 @@ public class SIPlayerListener implements Listener{
 							event.setCursor(new ItemStack(Material.AIR, 0));
 						}
 						event.setResult(Result.ALLOW);
-						scheduleUpdate(event.getView().getPlayer());
+						scheduleUpdate(player);
 					} else {
 						event.setCancelled(true);
 					}
+				// remove last from virtual stack
+				} else if (clickedType == Material.AIR && cursorType != Material.AIR){
+					
 				}
 				
 			}
+			*/
 		}
 	}
+			
+			/*
+			// Combine items
+			} else if (event.isLeftClick() && cursorType != Material.AIR){
+				
+				// same type and not normally stackable (Virtual items)
+				if (clickedType == cursorType && clickedType.getMaxStackSize() == 1){
+					VirtualItemStack vis = VirtualItemConfig.getVirtualItemStack(player, slot);
+					vis.addItemStack(clicked.clone());
+					vis.addItemStack(cursor.clone());
+					
+					clicked.setAmount(clickedAmount+1);
+					event.setCursor(new ItemStack(Material.AIR));
+					
+					
+					VirtualItemConfig.setVirtualItemStack(player, slot, vis);
+					
+					
+					event.setResult(Result.ALLOW);
+				} else if (clicked.getEnchantments().equals(cursor.getEnchantments())){
+					// moving a stack to an empty slot
+					if (clickedType == Material.AIR && cursorAmount > 1){
+						ItemStack s = new ItemStack(cursorType, cursorAmount, cursorDur);
+						s.addUnsafeEnchantments(cursor.getEnchantments());
+						event.setCurrentItem(s);
+						event.setCursor(new ItemStack(Material.AIR));
+						event.setResult(Result.ALLOW);
+						
+						scheduleUpdate(player);
+					// combining two alike stack
+					} else if (cursorType == clickedType && cursorDur == clickedDur){
+						
+						
+					}
+				}
+			*/
+			/*
+		} else if (event.isRightClick()){
+			if (clickedType != Material.AIR && cursorType != Material.AIR && clickedAmount >= clicked.getMaxStackSize()){
+				if (clickedAmount < maxItems){
+					if (cursorAmount > 1){
+						clicked.setAmount(clickedAmount + 1);
+						event.setCurrentItem(clicked);
+						
+						cursor.setAmount(cursorAmount - 1);
+						event.setCursor(cursor);
+
+					} else {
+						clicked.setAmount(clickedAmount + 1);
+						event.setCurrentItem(clicked);
+						
+						event.setCursor(new ItemStack(Material.AIR, 0));
+					}
+					event.setResult(Result.ALLOW);
+					scheduleUpdate(player);
+				} else {
+					event.setCancelled(true);
+				}
+			// remove last from virtual stack
+			} else if (clickedType == Material.AIR && cursorType != Material.AIR){
+				
+			}
+			
+		}
+	}
+	*/
 	
 	private void scheduleUpdate(final HumanEntity player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
