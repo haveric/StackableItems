@@ -30,6 +30,7 @@ public class SIPlayerListener implements Listener{
 		if (event.isCancelled()){
 			return;
 		}
+		
 		//event.getPlayer().sendMessage("Action: " + event.getAction() + ", Name: " + event.getEventName());
 		ItemStack holding = event.getItem();
 		if (holding != null){
@@ -59,7 +60,7 @@ public class SIPlayerListener implements Listener{
 		if (event.isCancelled()){
 			return;
 		}
-
+		event.getInventory().setMaxStackSize(1024);
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
@@ -113,7 +114,7 @@ public class SIPlayerListener implements Listener{
 						// Set cursor to the clicked stack
 						VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
 					} else {
-						player.sendMessage("Pick up stack with empty hand.");
+						//player.sendMessage("Pick up stack with empty hand.");
 						event.setCursor(clicked.clone());
 						event.setCurrentItem(new ItemStack(Material.AIR));
 						event.setResult(Result.ALLOW);
@@ -126,7 +127,7 @@ public class SIPlayerListener implements Listener{
 						// Set slot to the cursor stack
 						VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
 					} else {
-						player.sendMessage("Drop a stack into an empty slot");
+						//player.sendMessage("Drop a stack into an empty slot");
 						event.setCurrentItem(cursor.clone());
 						event.setCursor(new ItemStack(Material.AIR));
 						event.setResult(Result.ALLOW);
@@ -164,6 +165,9 @@ public class SIPlayerListener implements Listener{
 								cursorStack.addItemStack(clicked.clone());
 								VirtualItemConfig.setVirtualItemStack(player, -1, null);
 								VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
+								
+								cursor.setAmount(clickedAmount + cursorAmount);
+								event.setCurrentItem(cursor.clone());
 								event.setCursor(new ItemStack(Material.AIR));
 								
 								event.setResult(Result.ALLOW);
@@ -183,6 +187,11 @@ public class SIPlayerListener implements Listener{
 								VirtualItemConfig.setVirtualItemStack(player, -1, null);
 								
 								event.setCursor(new ItemStack(Material.AIR));
+								
+								cursor.setAmount(clickedAmount + cursorAmount);
+								
+								event.setCurrentItem(cursor.clone());
+								
 								event.setResult(Result.ALLOW);
 							}
 						} else {
@@ -223,14 +232,58 @@ public class SIPlayerListener implements Listener{
 										s.addUnsafeEnchantments(cursor.getEnchantments());
 										event.setCursor(s);
 										
-										event.setCancelled(true);
+										event.setResult(Result.ALLOW);
 									}
 								}
+							// Create a virtual stack out of two different items
+							} else if (Config.isVirtualItemsEnabled()){
+								player.sendMessage("Combine two items into a virtual stack.");
+								VirtualItemStack vis = new VirtualItemStack();
+								vis.addItemStack(cursor.clone());
+								vis.addItemStack(clicked.clone());
+								VirtualItemConfig.setVirtualItemStack(player, slot, vis);
+								event.setCursor(new ItemStack(Material.AIR));
+								
+								cursor.setAmount(clickedAmount + cursorAmount);
+								
+								event.setCurrentItem(cursor.clone());
+								
+								event.setResult(Result.ALLOW);
+							// no virtual items so just swap them
+							} else {
+								player.sendMessage("Swap two unstackable items");
+								event.setCurrentItem(cursor.clone());
+								event.setCursor(clicked.clone());
+								
+								event.setResult(Result.ALLOW);
 							}
-						} else {
+						} else if (cursorAmount > 64){
 							player.sendMessage("Swap two items");
-							//SWAP ITEMS
+							
+							event.setCurrentItem(cursor.clone());
+							event.setCursor(clicked.clone());
+							
+							event.setResult(Result.ALLOW);
 						}
+					}
+				}
+			} else if (event.isRightClick()){
+				if (!slotEmpty && !cursorEmpty){
+					
+				} else if (slotEmpty && !cursorEmpty){
+					// Remove the last virtual itemstack
+					if (virtualCursor){
+						ItemStack removed = cursorStack.removeLast();
+						event.setCurrentItem(removed);
+						cursor.setAmount(cursorAmount - removed.getAmount());
+						event.setCursor(cursor);
+						
+						
+						VirtualItemConfig.setVirtualItemStack(player, -1, cursorStack);
+						
+						event.setResult(Result.ALLOW);
+					} else {
+						
 					}
 				}
 			}
@@ -263,6 +316,9 @@ public class SIPlayerListener implements Listener{
 				
 			}
 			*/
+		// Throwing out a stack
+		} else {
+			// TODO: handle throwing out a virtual stack
 		}
 	}
 			

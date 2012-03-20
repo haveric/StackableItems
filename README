@@ -2,8 +2,10 @@ Stackable Items
 
 Allows you to change the default stack size of items. 
 
-Todo/Ideas:
+Currently Working on:
 * Fix Tool stacking when used/Virtual Stacks (stack of tools that each are unique)
+
+Todo/Ideas:
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
 * Prevent crafting of disabled items (set to 0)

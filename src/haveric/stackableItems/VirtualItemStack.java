@@ -79,6 +79,6 @@ public class VirtualItemStack {
 	}
 	
 	public boolean isEmpty(){
-		return virtualStack == null;
+		return virtualStack == null || virtualStack.size() == 0;
 	}
 }

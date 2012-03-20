@@ -50,10 +50,12 @@ public class VirtualItemConfig {
 		ArrayList<ItemStack> items = (ArrayList<ItemStack>) config.getList(loc, null);
 		
 		VirtualItemStack vis = new VirtualItemStack(items);
+
 		return vis;
 	}
 	
 	public static void setVirtualItemStack(Player player, int slot, VirtualItemStack vis){
+		
 		String loc = player.getWorld().getName() + "." + player.getName()+ ".";
 		if (slot == -1){
 			loc += "cursor"; 
@@ -62,7 +64,7 @@ public class VirtualItemConfig {
 		}
 		
 		if (vis == null || vis.isEmpty()){
-			config.set(loc,null);
+			config.set(loc, null);
 		} else {
 			config.set(loc,vis.getList());
 		}
