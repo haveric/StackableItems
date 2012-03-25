@@ -2,8 +2,6 @@ package haveric.stackableItems;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -11,11 +9,15 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class SIPlayerListener implements Listener{
 	
@@ -26,31 +28,80 @@ public class SIPlayerListener implements Listener{
 	}
 
 	@EventHandler
-	public void playerClick(PlayerInteractEvent event){
+	public void fillBucket(PlayerBucketFillEvent event){
+		Player player = event.getPlayer();
+		
+		int amount = player.getInventory().getItemInHand().getAmount();
+		if (amount > 1){
+			scheduleAddItems(player, Material.BUCKET, amount - 1);
+		}
+		
+	}
+	
+	@EventHandler
+	public void eatFood(FoodLevelChangeEvent event){
+		Player player = (Player) event.getEntity();
+		
+		PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
+		if (clickData.getAmount() > 1){
+			if (clickData.getType() == Material.MUSHROOM_SOUP){
+				PlayerInventory inventory = player.getInventory();
+				ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
+				if (itemAtSlot.getType() == Material.MUSHROOM_SOUP){
+					scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount()-1));
+					scheduleAddItems(player, Material.BOWL, clickData.getAmount()-1);
+				}
+			} else { 
+				player.sendMessage("Type: " + clickData.getType());
+			}
+			/*
+			if (clickData.getType() == Material.MILK_BUCKET){
+				scheduleAddItems(player, Material.BUCKET, 1);
+			}
+			*/
+		}
+	}
+	
+
+
+	@EventHandler
+	public void playerClick(PlayerInteractEvent event){	
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR){
+			ItemStack holding = event.getItem();
+			Material holdingType = holding.getType();
+			Player player = event.getPlayer();
+			
+			int amount = holding.getAmount();
+			
+			PlayerClickData clickData = new PlayerClickData(player.getInventory().getHeldItemSlot(), holdingType, amount, holding.getDurability());
+			SIPlayers.setPlayerData(player.getName(), clickData);
+		}
+		
+		// only prevent this after checking for consumption
 		if (event.isCancelled()){
 			return;
 		}
 		
-		//event.getPlayer().sendMessage("Action: " + event.getAction() + ", Name: " + event.getEventName());
-		ItemStack holding = event.getItem();
-		if (holding != null){
+		
+
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
+			ItemStack holding = event.getItem();
+			Material holdingType = holding.getType();
+			Player player = event.getPlayer();
+			
 			int amount = holding.getAmount();
 			
-			if (event.getAction() == Action.RIGHT_CLICK_BLOCK && amount > 1){
-				Material holdingType = holding.getType();
-				Player player = event.getPlayer();
-				
-				if (holdingType == Material.BUCKET){
-					Block up = event.getClickedBlock().getRelative(BlockFace.UP);
-					if (up.getData() == 0){
-						scheduleAddItems(player, Material.BUCKET, amount-1);
-					}
-				} else if (holdingType == Material.WATER_BUCKET){
-					scheduleAddItems(player, Material.WATER_BUCKET, amount-1);
+			
+			if (amount > 1){
+				if (holdingType == Material.WATER_BUCKET){
+					scheduleReplaceItem(player, player.getInventory().getHeldItemSlot(), new ItemStack(Material.WATER_BUCKET, amount-1));
+					scheduleAddItems(player, Material.BUCKET, 1);
 				} else if (holdingType == Material.LAVA_BUCKET){
-					scheduleAddItems(player, Material.LAVA_BUCKET, amount-1);
+					scheduleReplaceItem(player, player.getInventory().getHeldItemSlot(), new ItemStack(Material.LAVA_BUCKET, amount-1));
+					scheduleAddItems(player, Material.BUCKET, 1);
 				}
 			}
+			
 		}
 	}
 	
@@ -104,7 +155,22 @@ public class SIPlayerListener implements Listener{
 				}
 			}
 			
-			if (event.isLeftClick()){
+			if (event.isShiftClick()){
+				Inventory top = event.getView().getTopInventory();
+				Inventory bot = event.getView().getBottomInventory();
+				InventoryType topType = top.getType();
+				InventoryType botType = event.getView().getBottomInventory().getType();
+				
+				if (topType.equals("CHEST")){
+					
+				} else {
+					
+				}
+				// TODO: Handle moving large stacks
+				// TODO: Handle stacking large stacks in other containers
+				
+				player.sendMessage("Top: " + topType + ", Bot: " + botType + ", Slot: " + event.getSlotType());
+			} else if (event.isLeftClick()){
 				// Pick up a stack with an empty hand
 				if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){
 					
@@ -126,6 +192,14 @@ public class SIPlayerListener implements Listener{
 						VirtualItemConfig.setVirtualItemStack(player, -1, null);
 						// Set slot to the cursor stack
 						VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
+						if (cursorAmount > 64){
+							
+							event.setCursor(new ItemStack(Material.AIR));
+							event.setCurrentItem(cursor.clone());
+							
+							event.setResult(Result.ALLOW);
+							
+						}
 					} else {
 						//player.sendMessage("Drop a stack into an empty slot");
 						event.setCurrentItem(cursor.clone());
@@ -270,6 +344,7 @@ public class SIPlayerListener implements Listener{
 			} else if (event.isRightClick()){
 				if (!slotEmpty && !cursorEmpty){
 					
+				// 
 				} else if (slotEmpty && !cursorEmpty){
 					// Remove the last virtual itemstack
 					if (virtualCursor){
@@ -285,108 +360,17 @@ public class SIPlayerListener implements Listener{
 					} else {
 						
 					}
-				}
-			}
-			/* TODO: redo
-			else if (event.isRightClick()){
-				if (clickedType != Material.AIR && cursorType != Material.AIR && clickedAmount >= clicked.getMaxStackSize()){
-					if (clickedAmount < maxItems){
-						if (cursorAmount > 1){
-							clicked.setAmount(clickedAmount + 1);
-							event.setCurrentItem(clicked);
-							
-							cursor.setAmount(cursorAmount - 1);
-							event.setCursor(cursor);
-
-						} else {
-							clicked.setAmount(clickedAmount + 1);
-							event.setCurrentItem(clicked);
-							
-							event.setCursor(new ItemStack(Material.AIR, 0));
-						}
-						event.setResult(Result.ALLOW);
-						scheduleUpdate(player);
-					} else {
-						event.setCancelled(true);
-					}
-				// remove last from virtual stack
-				} else if (clickedType == Material.AIR && cursorType != Material.AIR){
+				// pick up half a stack
+				} else if (!slotEmpty && cursorEmpty){
 					
 				}
-				
+			//
 			}
-			*/
 		// Throwing out a stack
 		} else {
 			// TODO: handle throwing out a virtual stack
 		}
 	}
-			
-			/*
-			// Combine items
-			} else if (event.isLeftClick() && cursorType != Material.AIR){
-				
-				// same type and not normally stackable (Virtual items)
-				if (clickedType == cursorType && clickedType.getMaxStackSize() == 1){
-					VirtualItemStack vis = VirtualItemConfig.getVirtualItemStack(player, slot);
-					vis.addItemStack(clicked.clone());
-					vis.addItemStack(cursor.clone());
-					
-					clicked.setAmount(clickedAmount+1);
-					event.setCursor(new ItemStack(Material.AIR));
-					
-					
-					VirtualItemConfig.setVirtualItemStack(player, slot, vis);
-					
-					
-					event.setResult(Result.ALLOW);
-				} else if (clicked.getEnchantments().equals(cursor.getEnchantments())){
-					// moving a stack to an empty slot
-					if (clickedType == Material.AIR && cursorAmount > 1){
-						ItemStack s = new ItemStack(cursorType, cursorAmount, cursorDur);
-						s.addUnsafeEnchantments(cursor.getEnchantments());
-						event.setCurrentItem(s);
-						event.setCursor(new ItemStack(Material.AIR));
-						event.setResult(Result.ALLOW);
-						
-						scheduleUpdate(player);
-					// combining two alike stack
-					} else if (cursorType == clickedType && cursorDur == clickedDur){
-						
-						
-					}
-				}
-			*/
-			/*
-		} else if (event.isRightClick()){
-			if (clickedType != Material.AIR && cursorType != Material.AIR && clickedAmount >= clicked.getMaxStackSize()){
-				if (clickedAmount < maxItems){
-					if (cursorAmount > 1){
-						clicked.setAmount(clickedAmount + 1);
-						event.setCurrentItem(clicked);
-						
-						cursor.setAmount(cursorAmount - 1);
-						event.setCursor(cursor);
-
-					} else {
-						clicked.setAmount(clickedAmount + 1);
-						event.setCurrentItem(clicked);
-						
-						event.setCursor(new ItemStack(Material.AIR, 0));
-					}
-					event.setResult(Result.ALLOW);
-					scheduleUpdate(player);
-				} else {
-					event.setCancelled(true);
-				}
-			// remove last from virtual stack
-			} else if (clickedType == Material.AIR && cursorType != Material.AIR){
-				
-			}
-			
-		}
-	}
-	*/
 	
 	private void scheduleUpdate(final HumanEntity player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
@@ -401,6 +385,15 @@ public class SIPlayerListener implements Listener{
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
 			@Override public void run() {
 				addItemsToInventory(player, new ItemStack(material, amount));
+		    }
+		});	
+	}
+	
+	private void scheduleReplaceItem(final Player player, final int slot, final ItemStack stack) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+			@Override public void run() {
+				player.getInventory().setItem(slot, stack);
+				//addItemsToInventory(player, new ItemStack(material, amount));
 		    }
 		});	
 	}

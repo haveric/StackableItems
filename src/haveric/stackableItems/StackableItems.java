@@ -30,6 +30,8 @@ public class StackableItems extends JavaPlugin {
         // Vault
         setupVault();
         
+        SIPlayers.setup();
+        
 		Config.setup();
 		
 		getCommand(Commands.getMain()).setExecutor(commands);

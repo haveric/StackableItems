@@ -6,15 +6,22 @@ Currently Working on:
 * Fix Tool stacking when used/Virtual Stacks (stack of tools that each are unique)
 
 Todo/Ideas:
+* Fix Shift clicking
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
 * Prevent crafting of disabled items (set to 0)
 * Play pickup sound when picking up stacks
 * Look into making work with InventoryTweaks (or possible API?) 
+* Look into problems with RealShop
 - I'm sure I'll think of/find more
 
 
 Changelog:
+
+Coming soon (???)
+* Fixed bucket duplication bug
+* Stacked filled buckets (water/lava) now split off an empty bucket when used allowing you to keep using the stack
+* Mushroom soup can now be eaten while stacked (empty bowls will be split off)
 
 Version 0.7 (3/8/2012)
 * Disabling an item (setting to 0) caused shadow items to fill inventory
