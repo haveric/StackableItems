@@ -152,13 +152,15 @@ public class SIPlayerListener implements Listener{
 		
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR){
 			ItemStack holding = event.getItem();
-			Material holdingType = holding.getType();
-			Player player = event.getPlayer();
-			
-			int amount = holding.getAmount();
-			
-			PlayerClickData clickData = new PlayerClickData(player.getInventory().getHeldItemSlot(), holdingType, amount, holding.getDurability());
-			SIPlayers.setPlayerData(player.getName(), clickData);
+			if (holding != null){
+				Material holdingType = holding.getType();
+				Player player = event.getPlayer();
+				
+				int amount = holding.getAmount();
+				
+				PlayerClickData clickData = new PlayerClickData(player.getInventory().getHeldItemSlot(), holdingType, amount, holding.getDurability());
+				SIPlayers.setPlayerData(player.getName(), clickData);
+			}
 		}
 		
 		// only prevent this after checking for consumption

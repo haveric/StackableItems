@@ -20,6 +20,9 @@ Todo/Ideas:
 
 Changelog:
 
+Version 0.7.2 (3/27/2012)
+* Fix for NPE when right clicking with an empty hand
+
 Version 0.7.1 (3/26/2012)
 * Changed how config files work: Moved items into it's own defaultItems.yml; config.yml should only have "Virtual Items:"
 * Fixed bucket duplication bug
