@@ -3,10 +3,12 @@ Stackable Items
 Allows you to change the default stack size of items. 
 
 Currently Working on:
-* Fix Tool stacking when used/Virtual Stacks (stack of tools that each are unique)
+* Fix Tool stacking when used (Fishing rod hitting mob)
+* Virtual Stacks (stack of tools that each are unique) (Partially implemented)
 
 Todo/Ideas:
 * Fix Shift clicking
+* Fix "milking" a mushroom cow - Bowls destroyed if stacked
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
 * Prevent crafting of disabled items (set to 0)
@@ -18,10 +20,16 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon (???)
+Version 0.7.1 (3/26/2012)
+* Changed how config files work: Moved items into it's own defaultItems.yml; config.yml should only have "Virtual Items:"
 * Fixed bucket duplication bug
 * Stacked filled buckets (water/lava) now split off an empty bucket when used allowing you to keep using the stack
 * Mushroom soup can now be eaten while stacked (empty bowls will be split off)
+* Fixed Right Clicking functionality
+* Partially implemented virtual stacks
+* Fixed tool stacking (except fishing rods)
+* Added defaultTools.txt and customTools.txt to the plugin folder.  Use these to define custom tools
+
 
 Version 0.7 (3/8/2012)
 * Disabling an item (setting to 0) caused shadow items to fill inventory
