@@ -172,31 +172,22 @@ public class SIPlayerListener implements Listener{
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			ItemStack holding = event.getItem();
-			Material holdingType = holding.getType();
-			Player player = event.getPlayer();
-			
-			int amount = holding.getAmount();
-			
-			
-			if (amount > 1){
-				/*
-				if (holdingType == Material.WATER_BUCKET){
-					scheduleReplaceItem(player, player.getInventory().getHeldItemSlot(), new ItemStack(Material.WATER_BUCKET, amount-1));
-					scheduleAddItems(player, new ItemStack(Material.BUCKET, 1));
-				} else if (holdingType == Material.LAVA_BUCKET){
-					scheduleReplaceItem(player, player.getInventory().getHeldItemSlot(), new ItemStack(Material.LAVA_BUCKET, amount-1));
-					scheduleAddItems(player, new ItemStack(Material.BUCKET, 1));
-				} else 
-				*/
-				if (holdingType == Material.FLINT_AND_STEEL){
-					ItemStack move = holding.clone();
-					move.setAmount(amount-1);
-					
-					holding.setAmount(1);
-					scheduleAddItems(player, move);
+			if (holding != null){
+				Material holdingType = holding.getType();
+				Player player = event.getPlayer();
+				
+				int amount = holding.getAmount();
+				
+				if (amount > 1){
+					if (holdingType == Material.FLINT_AND_STEEL){
+						ItemStack move = holding.clone();
+						move.setAmount(amount-1);
+						
+						holding.setAmount(1);
+						scheduleAddItems(player, move);
+					}
 				}
 			}
-			
 		}
 	}
 	
