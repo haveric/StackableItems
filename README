@@ -20,6 +20,9 @@ Todo/Ideas:
 
 Changelog:
 
+Version 0.7.3 (3/28/2012)
+* Fixed the other NPE when right clicking
+
 Version 0.7.2 (3/27/2012)
 * Fix for NPE when right clicking with an empty hand
 

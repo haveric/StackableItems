@@ -31,7 +31,7 @@ public class SIPlayerListener implements Listener{
 	}
 
 	@EventHandler
-	public void breakBlock(BlockBreakEvent event){		
+	public void breakBlock(BlockBreakEvent event){
 		Player player = event.getPlayer();
 		ItemStack holding = player.getItemInHand();
 		int amount = holding.getAmount();
@@ -52,7 +52,6 @@ public class SIPlayerListener implements Listener{
 		if (event.getEntity() instanceof Player){
 			Player player = (Player) event.getEntity();
 			ItemStack holding = player.getItemInHand();
-			
 			int amount = holding.getAmount();
 			
 			if (amount > 1){
@@ -93,7 +92,6 @@ public class SIPlayerListener implements Listener{
 	@EventHandler
 	public void fillBucket(PlayerBucketFillEvent event){
 		Player player = event.getPlayer();
-		
 		int amount = player.getInventory().getItemInHand().getAmount();
 		if (amount > 1){
 			scheduleAddItems(player, new ItemStack(Material.BUCKET, amount - 1));
@@ -215,8 +213,6 @@ public class SIPlayerListener implements Listener{
 			int maxItems = Config.getItemMax(player, clickedType, clickedDur);
 			
 			int slot = event.getSlot();
-			
-			//boolean normallyStackable = clickedType.getMaxStackSize() != 1;
 			
 			boolean cursorEmpty = cursorType == Material.AIR;
 			boolean slotEmpty = clickedType == Material.AIR; 
@@ -617,7 +613,6 @@ public class SIPlayerListener implements Listener{
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
 			@Override public void run() {
 				player.getInventory().setItem(slot, stack);
-				//addItemsToInventory(player, new ItemStack(material, amount));
 		    }
 		});	
 	}
@@ -747,5 +742,4 @@ public class SIPlayerListener implements Listener{
 
 		return addAmount;
 	}
-	
 }

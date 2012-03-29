@@ -8,7 +8,6 @@ public class PlayerClickData {
 	private Material type;
 	private int slot;
 	private int amount;
-	private int dur;
 
 	public PlayerClickData(){
 		slot = -1;
@@ -44,9 +43,5 @@ public class PlayerClickData {
 
 	public void setAmount(int amount) {
 		this.amount = amount;
-	}
-	
-	public int getDur(){
-		return dur;
-	}
+	}	
 }
