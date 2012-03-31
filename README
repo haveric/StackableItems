@@ -3,7 +3,6 @@ Stackable Items
 Allows you to change the default stack size of items. 
 
 Currently Working on:
-* Fix Tool stacking when used (Fishing rod hitting mob)
 * Virtual Stacks (stack of tools that each are unique) (Partially implemented)
 
 Todo/Ideas:
@@ -19,6 +18,9 @@ Todo/Ideas:
 
 
 Changelog:
+
+Coming soon:
+* Fix Fishing rod stacking
 
 Version 0.7.3 (3/28/2012)
 * Fixed the other NPE when right clicking

@@ -16,6 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
@@ -30,6 +31,22 @@ public class SIPlayerListener implements Listener{
 		plugin = si;
 	}
 
+	@EventHandler
+	public void playerFish(PlayerFishEvent event){
+		Player player = event.getPlayer();
+		ItemStack holding = player.getItemInHand();
+		int amount = holding.getAmount();
+		if (amount > 1){
+			if (!Config.isVirtualItemsEnabled()){
+				ItemStack move = holding.clone();
+				move.setAmount(amount-1);
+				
+				scheduleAddItems(player, move);
+				holding.setAmount(1);
+			}
+		}
+	}
+	
 	@EventHandler
 	public void breakBlock(BlockBreakEvent event){
 		Player player = event.getPlayer();
@@ -591,7 +608,7 @@ public class SIPlayerListener implements Listener{
 			// TODO: handle throwing out a virtual stack
 		}
 	}
-	/*
+/*
 	private void scheduleUpdate(final HumanEntity player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
 		    @SuppressWarnings("deprecation")
@@ -600,7 +617,7 @@ public class SIPlayerListener implements Listener{
 		    }
 		});
 	}
-	*/
+*/
 	private void scheduleAddItems(final Player player, final ItemStack stack){
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
 			@Override public void run() {
