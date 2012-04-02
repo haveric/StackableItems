@@ -33,75 +33,26 @@ public class SIPlayerListener implements Listener{
 
 	@EventHandler
 	public void playerFish(PlayerFishEvent event){
-		Player player = event.getPlayer();
-		ItemStack holding = player.getItemInHand();
-		int amount = holding.getAmount();
-		if (amount > 1){
-			if (!Config.isVirtualItemsEnabled()){
-				ItemStack move = holding.clone();
-				move.setAmount(amount-1);
-				
-				scheduleAddItems(player, move);
-				holding.setAmount(1);
-			}
-		}
+		splitStack(event.getPlayer(), false);
 	}
 	
 	@EventHandler
 	public void breakBlock(BlockBreakEvent event){
-		Player player = event.getPlayer();
-		ItemStack holding = player.getItemInHand();
-		int amount = holding.getAmount();
-		if (amount > 1 && ToolConfig.isTool(holding.getType())){
-			if (!Config.isVirtualItemsEnabled()){
-				ItemStack move = holding.clone();
-				move.setAmount(amount-1);
-				
-				scheduleAddItems(player, move);
-				holding.setAmount(1);
-			}
-			
-		}
+		splitStack(event.getPlayer(), true);		
 	}
 	
 	@EventHandler
 	public void shootBow(EntityShootBowEvent event){
 		if (event.getEntity() instanceof Player){
 			Player player = (Player) event.getEntity();
-			ItemStack holding = player.getItemInHand();
-			int amount = holding.getAmount();
-			
-			if (amount > 1){
-				if (!Config.isVirtualItemsEnabled()){
-					ItemStack move = holding.clone();
-					move.setAmount(amount - 1);
-					
-					scheduleAddItems(player, move);
-					holding.setAmount(1);
-				}
-			}
+			splitStack(player, false);
 		}
 	}
 	
 	@EventHandler
 	public void entityDamage(EntityDamageByEntityEvent event){
-		if (event.isCancelled()){
-			return;
-		}
-		
 		if (event.getDamager() instanceof Player){
-			Player player = (Player) event.getDamager();
-			ItemStack stack = player.getItemInHand();
-			int amount = stack.getAmount();
-			if (amount > 1 && ToolConfig.isTool(stack.getType())){
-				ItemStack move = stack.clone();
-				move.setAmount(amount-1);
-				if (!Config.isVirtualItemsEnabled()){
-					stack.setAmount(1);
-					scheduleAddItems(player, move);
-				}
-				
-			}
+			splitStack((Player) event.getDamager(), true);			
 		}
 	}
 	
@@ -122,8 +73,6 @@ public class SIPlayerListener implements Listener{
 		
 		ItemStack holding = player.getInventory().getItemInHand();
 		Material type = holding.getType();
-		
-		//player.sendMessage("Empty bucket, type: " + type);
 		
 		int slot = player.getInventory().getHeldItemSlot();
 		
@@ -153,10 +102,7 @@ public class SIPlayerListener implements Listener{
 					scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount()-1));
 					scheduleAddItems(player, new ItemStack(Material.BOWL, clickData.getAmount()-1));
 				}
-			} else { 
-				//player.sendMessage("Type: " + clickData.getType());
 			}
-
 		}
 	}
 	
@@ -765,5 +711,22 @@ public class SIPlayerListener implements Listener{
 		}
 
 		return addAmount;
+	}
+	
+	public void splitStack(Player player, boolean toolCheck){
+		ItemStack holding = player.getItemInHand();
+		int amount = holding.getAmount();
+		
+		if (amount > 1){
+			if (!toolCheck || (toolCheck && ToolConfig.isTool(holding.getType()))){
+				if (!Config.isVirtualItemsEnabled()){
+					ItemStack move = holding.clone();
+					move.setAmount(amount-1);
+					
+					scheduleAddItems(player, move);
+					holding.setAmount(1);
+				}
+			}
+		}
 	}
 }
