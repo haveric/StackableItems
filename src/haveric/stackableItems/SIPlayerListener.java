@@ -668,6 +668,8 @@ public class SIPlayerListener implements Listener{
 		addAmount = addToExistingStacks(player, add);
 		boolean fullInventory = false;
 		
+		
+		ItemStack clone = entity.getItemStack().clone();
 		while (addAmount > 0 && !fullInventory){
 			// check for empty slots
 			int freeSlot = inventory.firstEmpty();
@@ -675,10 +677,12 @@ public class SIPlayerListener implements Listener{
 				fullInventory = true;
 			} else {
 				if (addAmount <= maxAmount){
-					inventory.setItem(freeSlot, new ItemStack(addType, addAmount, durability));
+					clone.setAmount(addAmount);
+					inventory.setItem(freeSlot, clone);
 					addAmount = 0;
 				} else {
-					inventory.setItem(freeSlot, new ItemStack(addType, maxAmount, durability));
+					clone.setAmount(maxAmount);
+					inventory.setItem(freeSlot, clone);
 					addAmount -= maxAmount;
 				}
 			}
@@ -687,7 +691,7 @@ public class SIPlayerListener implements Listener{
 		if (addAmount == 0){
 			entity.remove();
 		} else {
-			entity.setItemStack(new ItemStack(addType, addAmount, durability));
+			entity.getItemStack().setAmount(addAmount);
 		}
 	}
 	
@@ -704,7 +708,7 @@ public class SIPlayerListener implements Listener{
 		addAmount = addToExistingStacks(player, add);
 		
 		boolean fullInventory = false;
-		
+		ItemStack clone = add.clone();
 		while (addAmount > 0 && !fullInventory){
 			// check for empty slots
 			int freeSlot = inventory.firstEmpty();
@@ -712,10 +716,12 @@ public class SIPlayerListener implements Listener{
 				fullInventory = true;
 			} else {
 				if (addAmount <= maxAmount){
-					inventory.setItem(freeSlot, new ItemStack(addType, addAmount, durability));
+					clone.setAmount(addAmount);
+					inventory.setItem(freeSlot, clone);
 					addAmount = 0;
 				} else {
-					inventory.setItem(freeSlot, new ItemStack(addType, maxAmount, durability));
+					clone.setAmount(maxAmount);
+					inventory.setItem(freeSlot, clone);
 					addAmount -= maxAmount;
 				}
 			}
@@ -724,7 +730,8 @@ public class SIPlayerListener implements Listener{
 		if (addAmount == 0){
 			
 		} else {
-			player.getWorld().dropItemNaturally(player.getLocation(), new ItemStack(addType, addAmount, durability));
+			clone.setAmount(addAmount);
+			player.getWorld().dropItemNaturally(player.getLocation(), clone);
 		}
 	}
 	
