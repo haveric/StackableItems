@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -31,6 +32,21 @@ public class SIPlayerListener implements Listener{
 		plugin = si;
 	}
 
+	@EventHandler
+	public void craftItem(CraftItemEvent event){
+		if (event.isCancelled()){
+			return;
+		}
+		
+		Player player = (Player) event.getWhoClicked();
+		ItemStack craftedItem = event.getCurrentItem();
+		
+		if (Config.getItemMax(player, craftedItem.getType(), craftedItem.getDurability()) == 0){
+			player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
+			event.setCancelled(true);
+		}
+	}
+	
 	@EventHandler
 	public void playerFish(PlayerFishEvent event){
 		splitStack(event.getPlayer(), false);
@@ -56,7 +72,6 @@ public class SIPlayerListener implements Listener{
 		}
 	}
 	
-
 	@EventHandler
 	public void fillBucket(PlayerBucketFillEvent event){
 		Player player = event.getPlayer();

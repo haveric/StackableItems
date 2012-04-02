@@ -9,7 +9,7 @@ Todo/Ideas:
 * Fix Shift clicking
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
-* Prevent crafting of disabled items (set to 0)
+
 * Play pickup sound when picking up stacks
 * Look into making work with InventoryTweaks (or possible API?) 
 * Look into problems with RealShop
@@ -17,6 +17,9 @@ Todo/Ideas:
 
 
 Changelog:
+
+Coming soon:
+* Prevent crafting of disabled items (set to 0)
 
 Version 0.7.4 (4/1/2012)
 * Fixed Fishing rod stacking

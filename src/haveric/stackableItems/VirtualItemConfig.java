@@ -14,9 +14,6 @@ public class VirtualItemConfig {
 	
     private static FileConfiguration config;
     private static File configFile;
-    
-    // Defaults
-    
 
     /**
      * Initializes the config file
