@@ -98,7 +98,6 @@ public class Config {
 		if (plugin.permEnabled() && plugin.getPerm().has(player, Perms.getStack())){
 			
 			String group = plugin.getPerm().getPrimaryGroup(player);
-			
 	    	configGroupFile = new File(plugin.getDataFolder() + "/" + group + ".yml");
 	    	configPlayerFile = new File(plugin.getDataFolder() + "/" + player.getName() + ".yml");
 	    	

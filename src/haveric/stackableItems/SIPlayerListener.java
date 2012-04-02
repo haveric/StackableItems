@@ -1,7 +1,16 @@
 package haveric.stackableItems;
 
+import java.util.Random;
+
+import net.minecraft.server.EntityItem;
+import net.minecraft.server.Packet22Collect;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -601,20 +610,34 @@ public class SIPlayerListener implements Listener{
 			return;
 		}
 		
+		Player player = event.getPlayer();
 		Item item = event.getItem();
-
-		int maxItems = Config.getItemMax(event.getPlayer(), item.getItemStack().getType(), item.getItemStack().getDurability());
-
+		ItemStack stack = item.getItemStack();
+		
+		int maxItems = Config.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
 		if (maxItems == 0){
 			event.setCancelled(true);
 		} else if (maxItems > Config.ITEM_DEFAULT){
-			addItemsToInventory(event.getPlayer(), item);
-
+			
+			int addAmount = addItemsToInventory(player, item);
+			collectItem(player, item);
+			if (addAmount == 0){
+				item.remove();
+			} else {
+				stack.setAmount(addAmount);
+			}
 			event.setCancelled(true);
 		}
+		
 	}
 	
-	public void addItemsToInventory(Player player, Item entity){
+	public void collectItem(Player player, Item item) {
+        Packet22Collect packet = new Packet22Collect(item.getEntityId(), player.getEntityId());
+        ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
+    }
+	
+	public int addItemsToInventory(Player player, Item entity){
+		
 		Inventory inventory = player.getInventory();
 		
 		ItemStack add = entity.getItemStack();
@@ -624,7 +647,6 @@ public class SIPlayerListener implements Listener{
 		
 		int maxAmount = Config.getItemMax(player, addType, durability);
 		int addAmount = add.getAmount();
-		
 		// add to existing stacks
 		addAmount = addToExistingStacks(player, add);
 		boolean fullInventory = false;
@@ -649,11 +671,7 @@ public class SIPlayerListener implements Listener{
 			}
 		}
 
-		if (addAmount == 0){
-			entity.remove();
-		} else {
-			entity.getItemStack().setAmount(addAmount);
-		}
+		return addAmount;
 	}
 	
 	public void addItemsToInventory(Player player, ItemStack add){		
@@ -700,7 +718,7 @@ public class SIPlayerListener implements Listener{
 		int canAdd;
 		int maxAmount = Config.getItemMax(player, add.getType(), add.getDurability());
 		int addAmount = add.getAmount();
-
+		
 		ItemStack[] contents = player.getInventory().getContents();
 		for(int i = 0; i < contents.length && addAmount > 0; i++){
 			ItemStack item = contents[i];

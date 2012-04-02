@@ -7,10 +7,9 @@ Currently Working on:
 
 Todo/Ideas:
 * Fix Shift clicking
+* Picking up items with a nearly full inventory will destroy any that don't fit
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
-
-* Play pickup sound when picking up stacks
 * Look into making work with InventoryTweaks (or possible API?) 
 * Look into problems with RealShop
 - I'm sure I'll think of/find more
@@ -20,6 +19,7 @@ Changelog:
 
 Coming soon:
 * Prevent crafting of disabled items (set to 0)
+* Play pickup sound when picking up stacks
 
 Version 0.7.4 (4/1/2012)
 * Fixed Fishing rod stacking
