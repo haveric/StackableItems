@@ -620,8 +620,8 @@ public class SIPlayerListener implements Listener{
 		} else if (maxItems > Config.ITEM_DEFAULT){
 			
 			int addAmount = addItemsToInventory(player, item);
-			collectItem(player, item);
 			if (addAmount == 0){
+				collectItem(player, item);
 				item.remove();
 			} else {
 				stack.setAmount(addAmount);
