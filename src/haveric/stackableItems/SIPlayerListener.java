@@ -5,6 +5,7 @@ import net.minecraft.server.Packet22Collect;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -229,8 +230,31 @@ public class SIPlayerListener implements Listener{
 				
 				if (botType == InventoryType.PLAYER){
 					// In crafting area, move to main inventory
+					int startNum = 0;
+					int endNum = 0;
+					boolean fromTop = false;
+
+					// TODO: Handle stacking large stacks in other containers
 					if (topType == InventoryType.CRAFTING){
-						if (rawSlot >= 1 && rawSlot <= 4){
+						fromTop = true;
+						endNum = 8;
+					} else if (topType == InventoryType.WORKBENCH){
+						fromTop = true;
+						endNum = 9;
+					} else if (topType == InventoryType.FURNACE){
+						fromTop = true;
+						endNum = 2;
+					} else if (topType == InventoryType.BREWING){
+						fromTop = true;
+						endNum = 3;
+					} else if (topType == InventoryType.CHEST){
+						/*
+						fromTop = true;
+						endNum = top.getContents().length;
+						*/
+					}
+					if (fromTop){
+						if (rawSlot >= startNum && rawSlot <= endNum){
 							int addAmount = addToExistingStacks(player, clicked.clone(), false, true);
 							
 							if (addAmount > 0){
@@ -259,6 +283,8 @@ public class SIPlayerListener implements Listener{
 								top.setItem(slot, new ItemStack(Material.AIR, 0));
 							}
 						}
+						
+						scheduleUpdate(player);
 					}
 					// In main inventory, move to hotbar
 					if (rawSlot >= 9 && rawSlot <= 35){
@@ -309,15 +335,6 @@ public class SIPlayerListener implements Listener{
 						}
 					}
 				}
-				if (topType == InventoryType.CHEST){
-					
-				} else {
-					
-				}
-				// TODO: Handle moving large stacks
-				// TODO: Handle stacking large stacks in other containers
-				
-				//player.sendMessage("Top: " + topType + ", Bot: " + botType + ", Slot: " + event.getSlotType());
 			} else if (event.isLeftClick()){
 				// Pick up a stack with an empty hand
 				if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){
@@ -657,7 +674,7 @@ public class SIPlayerListener implements Listener{
 			// TODO: handle throwing out a virtual stack
 		}
 	}
-/*
+
 	private void scheduleUpdate(final HumanEntity player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
 		    @SuppressWarnings("deprecation")
@@ -666,7 +683,7 @@ public class SIPlayerListener implements Listener{
 		    }
 		});
 	}
-*/
+
 	private void scheduleAddItems(final Player player, final ItemStack stack){
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
 			@Override public void run() {
