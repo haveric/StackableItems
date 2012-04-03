@@ -1,15 +1,9 @@
 package haveric.stackableItems;
 
-import java.util.Random;
-
-import net.minecraft.server.EntityItem;
 import net.minecraft.server.Packet22Collect;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -200,6 +194,7 @@ public class SIPlayerListener implements Listener{
 			int maxItems = Config.getItemMax(player, clickedType, clickedDur);
 			
 			int slot = event.getSlot();
+			int rawSlot = event.getRawSlot();
 			
 			boolean cursorEmpty = cursorType == Material.AIR;
 			boolean slotEmpty = clickedType == Material.AIR; 
@@ -226,11 +221,68 @@ public class SIPlayerListener implements Listener{
 			
 			if (event.isShiftClick()){
 				Inventory top = event.getView().getTopInventory();
-				//Inventory bot = event.getView().getBottomInventory();
+				Inventory bot = event.getView().getBottomInventory();
 				InventoryType topType = top.getType();
-				//InventoryType botType = event.getView().getBottomInventory().getType();
+				InventoryType botType = event.getView().getBottomInventory().getType();
 				
-				if (topType.equals("CHEST")){
+				player.sendMessage("Bot: " + botType);
+				
+				if (botType == InventoryType.PLAYER){
+					// In crafting area, move to main inventory
+					if (topType == InventoryType.CRAFTING){
+						if (rawSlot >= 1 && rawSlot <= 4){
+							
+						}
+					}
+					// In main inventory, move to hotbar
+					if (rawSlot >= 9 && rawSlot <= 35){
+						int addAmount = addToExistingStacks(player, clicked.clone(), true, false);
+						if (addAmount > 0){
+							int emptySlot = bot.firstEmpty();
+							if (emptySlot < 9){
+								if (addAmount > maxItems){
+									bot.setItem(emptySlot, clicked.clone());
+								}
+							}
+						}
+						if (addAmount > 0){
+							ItemStack clone = clicked.clone();
+							clone.setAmount(addAmount);
+							bot.setItem(rawSlot, clone);
+						} else {
+							bot.setItem(rawSlot, null);
+						}
+					// In hotbar, move to main inventory
+					} else if (rawSlot >= 36 && rawSlot <= 44){
+						int addAmount = addToExistingStacks(player, clicked.clone(), false, true);
+						if (addAmount > 0){
+							ItemStack[] contents = bot.getContents();
+							
+							int length = contents.length;
+							for(int i = 9; i < length && addAmount > 0; i++){
+								ItemStack item = contents[i];
+											
+								if (item != null){
+									if (item.getAmount() == 0){
+										ItemStack clone = clicked.clone();
+										clone.setAmount(addAmount);
+										bot.setItem(i, clone);
+										addAmount = 0;
+									}
+								}
+							}
+
+						}
+						if (addAmount > 0){
+							ItemStack clone = clicked.clone();
+							clone.setAmount(addAmount);
+							bot.setItem(rawSlot, clone);
+						} else {
+							bot.setItem(rawSlot, null);
+						}
+					}
+				}
+				if (topType == InventoryType.CHEST){
 					
 				} else {
 					
@@ -648,7 +700,7 @@ public class SIPlayerListener implements Listener{
 		int maxAmount = Config.getItemMax(player, addType, durability);
 		int addAmount = add.getAmount();
 		// add to existing stacks
-		addAmount = addToExistingStacks(player, add);
+		addAmount = addToExistingStacks(player, add, false, false);
 		boolean fullInventory = false;
 		
 		
@@ -684,7 +736,7 @@ public class SIPlayerListener implements Listener{
 		int addAmount = add.getAmount();
 		
 		// add to existing stacks
-		addAmount = addToExistingStacks(player, add);
+		addAmount = addToExistingStacks(player, add, false, false);
 		
 		boolean fullInventory = false;
 		ItemStack clone = add.clone();
@@ -714,13 +766,24 @@ public class SIPlayerListener implements Listener{
 		}
 	}
 	
-	private int addToExistingStacks(Player player, ItemStack add) {
+	private int addToExistingStacks(Player player, ItemStack add, boolean hotbarOnly, boolean mainInvOnly) {
 		int canAdd;
 		int maxAmount = Config.getItemMax(player, add.getType(), add.getDurability());
 		int addAmount = add.getAmount();
 		
 		ItemStack[] contents = player.getInventory().getContents();
-		for(int i = 0; i < contents.length && addAmount > 0; i++){
+		int length;
+		int iStart = 0;
+		if (hotbarOnly){
+			length = 9;
+		} else if (mainInvOnly){
+			iStart = 9;
+			length = 36;
+		} else {
+			length = contents.length;
+		}
+		
+		for(int i = iStart; i < length && addAmount > 0; i++){
 			ItemStack item = contents[i];
 						
 			if (item != null){
@@ -751,7 +814,7 @@ public class SIPlayerListener implements Listener{
 		int amount = holding.getAmount();
 		
 		if (amount > 1){
-			if (!toolCheck || (toolCheck && ToolConfig.isTool(holding.getType()))){
+			if (!toolCheck || ToolConfig.isTool(holding.getType())){
 				if (!Config.isVirtualItemsEnabled()){
 					ItemStack move = holding.clone();
 					move.setAmount(amount-1);
