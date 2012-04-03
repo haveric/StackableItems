@@ -225,13 +225,39 @@ public class SIPlayerListener implements Listener{
 				InventoryType topType = top.getType();
 				InventoryType botType = event.getView().getBottomInventory().getType();
 				
-				player.sendMessage("Bot: " + botType);
+				player.sendMessage("Bot: " + botType + ", Raw: " + rawSlot + ", Slot: " + slot);
 				
 				if (botType == InventoryType.PLAYER){
 					// In crafting area, move to main inventory
 					if (topType == InventoryType.CRAFTING){
 						if (rawSlot >= 1 && rawSlot <= 4){
+							int addAmount = addToExistingStacks(player, clicked.clone(), false, true);
 							
+							if (addAmount > 0){
+								ItemStack[] contents = bot.getContents();
+								
+								int length = contents.length;
+								for(int i = 9; i < length && addAmount > 0; i++){
+									ItemStack item = contents[i];
+									
+									if (item != null){
+										if (item.getAmount() == 0){
+											ItemStack clone = clicked.clone();
+											clone.setAmount(addAmount);
+											bot.setItem(i, clone);
+											addAmount = 0;
+										}
+									}
+								}
+								
+							}
+							if (addAmount > 0){
+								ItemStack clone = clicked.clone();
+								clone.setAmount(addAmount);
+								top.setItem(slot, clone);
+							} else {
+								top.setItem(slot, new ItemStack(Material.AIR, 0));
+							}
 						}
 					}
 					// In main inventory, move to hotbar
@@ -241,6 +267,7 @@ public class SIPlayerListener implements Listener{
 							int emptySlot = bot.firstEmpty();
 							if (emptySlot < 9){
 								if (addAmount > maxItems){
+									
 									bot.setItem(emptySlot, clicked.clone());
 								}
 							}
@@ -248,9 +275,9 @@ public class SIPlayerListener implements Listener{
 						if (addAmount > 0){
 							ItemStack clone = clicked.clone();
 							clone.setAmount(addAmount);
-							bot.setItem(rawSlot, clone);
+							bot.setItem(slot, clone);
 						} else {
-							bot.setItem(rawSlot, null);
+							bot.setItem(slot, new ItemStack(Material.AIR, 0));
 						}
 					// In hotbar, move to main inventory
 					} else if (rawSlot >= 36 && rawSlot <= 44){
@@ -261,7 +288,7 @@ public class SIPlayerListener implements Listener{
 							int length = contents.length;
 							for(int i = 9; i < length && addAmount > 0; i++){
 								ItemStack item = contents[i];
-											
+								
 								if (item != null){
 									if (item.getAmount() == 0){
 										ItemStack clone = clicked.clone();
@@ -271,14 +298,14 @@ public class SIPlayerListener implements Listener{
 									}
 								}
 							}
-
+							
 						}
 						if (addAmount > 0){
 							ItemStack clone = clicked.clone();
 							clone.setAmount(addAmount);
-							bot.setItem(rawSlot, clone);
+							bot.setItem(slot, clone);
 						} else {
-							bot.setItem(rawSlot, null);
+							bot.setItem(slot, new ItemStack(Material.AIR, 0));
 						}
 					}
 				}
