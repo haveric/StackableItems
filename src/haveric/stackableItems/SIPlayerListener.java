@@ -235,7 +235,7 @@ public class SIPlayerListener implements Listener{
 					boolean fromTop = false;
 
 					// TODO: Handle stacking large stacks in other containers
-					if (topType == InventoryType.CRAFTING){
+					if (topType == InventoryType.CRAFTING || topType == InventoryType.DISPENSER){
 						fromTop = true;
 						endNum = 8;
 					} else if (topType == InventoryType.WORKBENCH){
@@ -247,10 +247,11 @@ public class SIPlayerListener implements Listener{
 					} else if (topType == InventoryType.BREWING){
 						fromTop = true;
 						endNum = 3;
+					// TODO: Find a way to fix this
 					} else if (topType == InventoryType.CHEST){
 						/*
 						fromTop = true;
-						endNum = top.getContents().length;
+						endNum = top.getContents().length - 1;
 						*/
 					}
 					if (fromTop){
@@ -273,7 +274,6 @@ public class SIPlayerListener implements Listener{
 										}
 									}
 								}
-								
 							}
 							if (addAmount > 0){
 								ItemStack clone = clicked.clone();
@@ -285,6 +285,7 @@ public class SIPlayerListener implements Listener{
 						}
 						
 						scheduleUpdate(player);
+
 					}
 					// In main inventory, move to hotbar
 					if (rawSlot >= 9 && rawSlot <= 35){
