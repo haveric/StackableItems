@@ -1,10 +1,17 @@
 package haveric.stackableItems;
 
+import java.util.List;
+
+import net.minecraft.server.EntityItem;
 import net.minecraft.server.Packet22Collect;
 
 import org.bukkit.Bukkit;
+import org.bukkit.EntityEffect;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -248,12 +255,16 @@ public class SIPlayerListener implements Listener{
 						fromTop = true;
 						endNum = 3;
 					// TODO: Find a way to fix this
+					// TODO: try cancelling and schedule add
 					} else if (topType == InventoryType.CHEST){
-						/*
-						fromTop = true;
+						
 						endNum = top.getContents().length - 1;
-						*/
+						scheduleAddItems(player, clicked.clone());
+						event.setCancelled(true);
 					}
+					
+
+					
 					if (fromTop){
 						if (rawSlot >= startNum && rawSlot <= endNum){
 							int addAmount = addToExistingStacks(player, clicked.clone(), false, true);
@@ -266,7 +277,7 @@ public class SIPlayerListener implements Listener{
 									ItemStack item = contents[i];
 									
 									if (item != null){
-										if (item.getAmount() == 0){
+										if (item.getAmount() == 0 || item.getType() == Material.AIR){
 											ItemStack clone = clicked.clone();
 											clone.setAmount(addAmount);
 											bot.setItem(i, clone);
@@ -283,13 +294,13 @@ public class SIPlayerListener implements Listener{
 								top.setItem(slot, new ItemStack(Material.AIR, 0));
 							}
 						}
-						
 						scheduleUpdate(player);
-
 					}
+					player.sendMessage("SlotType: " + event.getSlotType());
 					// In main inventory, move to hotbar
 					if (rawSlot >= 9 && rawSlot <= 35){
 						int addAmount = addToExistingStacks(player, clicked.clone(), true, false);
+						player.sendMessage("Addamount: " + addAmount);
 						if (addAmount > 0){
 							int emptySlot = bot.firstEmpty();
 							if (emptySlot < 9){
@@ -701,6 +712,27 @@ public class SIPlayerListener implements Listener{
 		});	
 	}
 	
+	private void scheduleSetRemainingAmount(final Player player, final ItemStack stack, final int newAmount){
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+			@Override public void run() {
+				List<Entity> entities = player.getNearbyEntities(2, 2, 2);
+				
+				boolean found = false;
+				
+				int size = entities.size();
+				for (int i = 0; i < size && !found; i++){
+					if (entities.get(i) instanceof Item){
+						ItemStack currentStack = ((Item) entities.get(i)).getItemStack();
+						if (currentStack.getType() == stack.getType() && currentStack.getDurability() == stack.getDurability() && currentStack.getEnchantments().equals(stack.getEnchantments())){
+							currentStack.setAmount(newAmount);
+							found = true;
+						}
+					}
+				}
+			}
+		});
+	}
+	
 	@EventHandler
 	public void playerPicksUpItem(PlayerPickupItemEvent event){
 		if (event.isCancelled()){
@@ -711,6 +743,8 @@ public class SIPlayerListener implements Listener{
 		Item item = event.getItem();
 		ItemStack stack = item.getItemStack();
 		
+		int numLeft = event.getRemaining();
+		
 		int maxItems = Config.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
 		if (maxItems == 0){
 			event.setCancelled(true);
@@ -719,17 +753,24 @@ public class SIPlayerListener implements Listener{
 			int addAmount = addItemsToInventory(player, item);
 			if (addAmount == 0){
 				collectItem(player, item);
+				
+				if (numLeft > 0){
+					ItemStack newStack = stack.clone();
+					newStack.setAmount(numLeft);
+					
+					//scheduleSetRemainingAmount(player, originalStack, numLeft);
+					player.getWorld().dropItem(item.getLocation(), newStack);
+				}
 				item.remove();
-			} else {
-				stack.setAmount(addAmount);
 			}
 			event.setCancelled(true);
 		}
-		
+	
 	}
 	
 	public void collectItem(Player player, Item item) {
-        Packet22Collect packet = new Packet22Collect(item.getEntityId(), player.getEntityId());
+		
+        Packet22Collect packet = new Packet22Collect(((Entity) item).getEntityId(), player.getEntityId());
         ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
     }
 	
@@ -830,7 +871,7 @@ public class SIPlayerListener implements Listener{
 		
 		for(int i = iStart; i < length && addAmount > 0; i++){
 			ItemStack item = contents[i];
-						
+				
 			if (item != null){
 				int free = item.getAmount();
 				if (item.getType() == add.getType() && item.getDurability() == add.getDurability() && free < maxAmount){

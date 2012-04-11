@@ -8,7 +8,7 @@ Currently Working on:
 Todo/Ideas:
 * Fix Shift clicking
 * Larger than normal stacks (17 snowballs) can be placed in inventory slots they aren't supposed to go in.
-* Picking up items with a nearly full inventory will destroy any that don't fit
+
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
 * In-game commands to set/adjust stack amounts
@@ -22,6 +22,7 @@ Changelog:
 Coming soon:
 * Prevent crafting of disabled items (set to 0)
 * Play pickup sound when picking up stacks
+* Fixed: Picking up items with a nearly full inventory will destroy any that don't fit
 
 Version 0.7.4 (4/1/2012)
 * Fixed Fishing rod stacking
