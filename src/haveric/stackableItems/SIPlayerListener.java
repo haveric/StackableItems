@@ -126,7 +126,7 @@ public class SIPlayerListener implements Listener{
 				ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
 				if (itemAtSlot.getType() == Material.MUSHROOM_SOUP){
 					scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount()-1));
-					scheduleAddItems(player, new ItemStack(Material.BOWL, clickData.getAmount()-1));
+					scheduleAddItems(player, new ItemStack(Material.BOWL, 1));
 				}
 			}
 		}
@@ -226,7 +226,7 @@ public class SIPlayerListener implements Listener{
 					virtualCursor = true;
 				}
 			}
-			
+			/*
 			if (event.isShiftClick()){
 				Inventory top = event.getView().getTopInventory();
 				Inventory bot = event.getView().getBottomInventory();
@@ -241,7 +241,7 @@ public class SIPlayerListener implements Listener{
 					int endNum = 0;
 					boolean fromTop = false;
 
-					// TODO: Handle stacking large stacks in other containers
+					// TODO: Handle stacking large stacks in other containers (chests)
 					if (topType == InventoryType.CRAFTING || topType == InventoryType.DISPENSER){
 						fromTop = true;
 						endNum = 8;
@@ -347,7 +347,9 @@ public class SIPlayerListener implements Listener{
 						}
 					}
 				}
-			} else if (event.isLeftClick()){
+			} else 
+			*/
+			if (event.isLeftClick()){
 				// Pick up a stack with an empty hand
 				if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){
 					

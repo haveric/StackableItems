@@ -126,6 +126,11 @@ public class Config {
 		// Check for material name and durability
 		max = fileConfig.getInt(mat.name() + " " + dur, ITEM_DEFAULT);
 		
+		// Check for lowercase items
+		if (max == ITEM_DEFAULT){
+			max = fileConfig.getInt(mat.name().toLowerCase() + " " + dur, ITEM_DEFAULT);
+		}
+		
 		// Check for item id and durability
 		if (max == ITEM_DEFAULT){
 			max = fileConfig.getInt(mat.getId() + " " + dur, ITEM_DEFAULT);
@@ -135,6 +140,11 @@ public class Config {
 		if (max == ITEM_DEFAULT){
 			max = fileConfig.getInt(mat.name(), ITEM_DEFAULT);
 		}
+		// Check for lowercase
+		if (max == ITEM_DEFAULT){
+			max = fileConfig.getInt(mat.name().toLowerCase(), ITEM_DEFAULT);
+		}
+		
 		if (max == ITEM_DEFAULT){
 			max = fileConfig.getInt(mat.getId() + "", ITEM_DEFAULT);
 		}

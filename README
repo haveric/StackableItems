@@ -3,12 +3,12 @@ Stackable Items
 Allows you to change the default stack size of items. 
 
 Currently Working on:
-* Virtual Stacks (stack of tools that each are unique) (Partially implemented)
+
 
 Todo/Ideas:
 * Fix Shift clicking
 * Larger than normal stacks (17 snowballs) can be placed in inventory slots they aren't supposed to go in.
-
+* Virtual Stacks (stack of tools that each are unique) (Partially implemented)
 * Fix chest stacking maxing out at 64
 * Separate chest/player amounts
 * In-game commands to set/adjust stack amounts
@@ -19,10 +19,12 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
+Version 0.7.5 (4/16/2012)
 * Prevent crafting of disabled items (set to 0)
 * Play pickup sound when picking up stacks
 * Fixed: Picking up items with a nearly full inventory will destroy any that don't fit
+* Config now works with lowercase versions of items: 'DIRT: 0' as well 'dirt: 0'
+* Fixed mushroom soup eating creating too many bowls.
 
 Version 0.7.4 (4/1/2012)
 * Fixed Fishing rod stacking
