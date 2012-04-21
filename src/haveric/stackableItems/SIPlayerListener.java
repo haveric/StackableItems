@@ -26,6 +26,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -184,12 +185,12 @@ public class SIPlayerListener implements Listener{
 		if (event.isCancelled()){
 			return;
 		}
-		//event.getInventory().setMaxStackSize(1024);
+		event.getInventory().setMaxStackSize(1024);
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
-		// prevent clicks outside the inventory area
-		if (cursor != null && clicked != null) {
+		// prevent clicks outside the inventory area or within result slots
+		if (cursor != null && clicked != null && event.getSlotType() != SlotType.RESULT) {
 			Material cursorType = cursor.getType();
 			short cursorDur = cursor.getDurability();
 			int cursorAmount = cursor.getAmount();
@@ -211,8 +212,6 @@ public class SIPlayerListener implements Listener{
 			boolean virtualCursor = false;
 			
 			VirtualItemStack clickedStack = null, cursorStack = null;
-			
-			
 			
 			
 			if (Config.isVirtualItemsEnabled()){
