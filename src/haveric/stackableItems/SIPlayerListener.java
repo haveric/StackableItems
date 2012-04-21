@@ -901,7 +901,7 @@ public class SIPlayerListener implements Listener{
 		int amount = holding.getAmount();
 		
 		if (amount > 1){
-			if (!toolCheck || ToolConfig.isTool(holding.getType())){
+			if (!toolCheck || ToolUtil.isTool(holding.getType())){
 				if (!Config.isVirtualItemsEnabled()){
 					ItemStack move = holding.clone();
 					move.setAmount(amount-1);

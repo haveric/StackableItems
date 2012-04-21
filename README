@@ -19,6 +19,10 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Fixed duplication bug with crafting
+* Removed unnecessary defaultTools and customTools configs.
+
 Version 0.7.5 (4/16/2012)
 * Prevent crafting of disabled items (set to 0)
 * Play pickup sound when picking up stacks
