@@ -11,6 +11,7 @@ public class Commands implements CommandExecutor{
 	
 	static String cmdMain = "stackableitems";
 	static String cmdHelp = "help";
+	static String cmdReload = "reload";
 	
 	public Commands(StackableItems ss){
 		plugin = ss;
@@ -26,6 +27,10 @@ public class Commands implements CommandExecutor{
 		if (commandLabel.equalsIgnoreCase(cmdMain)){
 			if(args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase(cmdHelp))){
 				sender.sendMessage(title+"github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
+				sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
+			// TODO: reload functionality
+			} else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)){
+				
 			}
 		}
 		return false;
