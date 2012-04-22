@@ -2,14 +2,10 @@ Stackable Items
 
 Allows you to change the default stack size of items. 
 
-Currently Working on:
-
-
 Todo/Ideas:
 * Fix Shift clicking
 * Larger than normal stacks (17 snowballs) can be placed in inventory slots they aren't supposed to go in.
 * Virtual Stacks (stack of tools that each are unique) (Partially implemented)
-* Fix chest stacking maxing out at 64
 * Separate chest/player amounts
 * In-game commands to set/adjust stack amounts
 * Look into making work with InventoryTweaks (or possible API?) 
@@ -22,6 +18,10 @@ Changelog:
 Coming soon:
 * Fixed duplication bug with crafting
 * Removed unnecessary defaultTools and customTools configs.
+* Made config check player.yml before group.yml as player should be able to override group.
+* Fix chest stacking maxing out at 64 (Client won't show the correct number above 64)
+* Capping max items to 127 due to item loss after reloading. (I have an idea for a workaround, so it may come back)
+* Fixed unstacking bug when a stack of tools was separated after max being set to normal (-1) again.
 
 Version 0.7.5 (4/16/2012)
 * Prevent crafting of disabled items (set to 0)

@@ -185,7 +185,7 @@ public class SIPlayerListener implements Listener{
 		if (event.isCancelled()){
 			return;
 		}
-		event.getInventory().setMaxStackSize(1024);
+		event.getInventory().setMaxStackSize(127);
 		ItemStack cursor = event.getCursor();
 		ItemStack clicked = event.getCurrentItem();
 		
@@ -785,6 +785,9 @@ public class SIPlayerListener implements Listener{
 		short durability = add.getDurability();
 		
 		int maxAmount = Config.getItemMax(player, addType, durability);
+		if (maxAmount == Config.ITEM_DEFAULT){
+			maxAmount = addType.getMaxStackSize();
+		}
 		int addAmount = add.getAmount();
 		// add to existing stacks
 		addAmount = addToExistingStacks(player, add, false, false);
@@ -820,14 +823,18 @@ public class SIPlayerListener implements Listener{
 		short durability = add.getDurability();
 		
 		int maxAmount = Config.getItemMax(player, addType, durability);
+		if (maxAmount == Config.ITEM_DEFAULT){
+			maxAmount = addType.getMaxStackSize();
+		}
 		int addAmount = add.getAmount();
-		
+
 		// add to existing stacks
 		addAmount = addToExistingStacks(player, add, false, false);
-		
+
 		boolean fullInventory = false;
 		ItemStack clone = add.clone();
 		while (addAmount > 0 && !fullInventory){
+			player.sendMessage("addamount: " + addAmount);
 			// check for empty slots
 			int freeSlot = inventory.firstEmpty();
 			if (freeSlot == -1){
@@ -856,6 +863,9 @@ public class SIPlayerListener implements Listener{
 	private int addToExistingStacks(Player player, ItemStack add, boolean hotbarOnly, boolean mainInvOnly) {
 		int canAdd;
 		int maxAmount = Config.getItemMax(player, add.getType(), add.getDurability());
+		if (maxAmount == Config.ITEM_DEFAULT){
+			maxAmount = add.getType().getMaxStackSize();
+		}
 		int addAmount = add.getAmount();
 		
 		ItemStack[] contents = player.getInventory().getContents();
@@ -905,7 +915,6 @@ public class SIPlayerListener implements Listener{
 				if (!Config.isVirtualItemsEnabled()){
 					ItemStack move = holding.clone();
 					move.setAmount(amount-1);
-					
 					scheduleAddItems(player, move);
 					holding.setAmount(1);
 				}

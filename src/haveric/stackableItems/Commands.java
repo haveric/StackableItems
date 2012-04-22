@@ -28,9 +28,16 @@ public class Commands implements CommandExecutor{
 			if(args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase(cmdHelp))){
 				sender.sendMessage(title+"github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
 				sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
+				sender.sendMessage("/" + cmdMain + " <player/group/default> item [amt] - " + msgColor + "Get/set a player/group's max items");
 			// TODO: reload functionality
 			} else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)){
 				
+			} else if (args.length == 2 || args.length == 3){
+				if (args[0].equalsIgnoreCase("default")){
+					
+				} else {
+					
+				}
 			}
 		}
 		return false;

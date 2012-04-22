@@ -101,16 +101,17 @@ public class Config {
 	    	configGroupFile = new File(plugin.getDataFolder() + "/" + group + ".yml");
 	    	configPlayerFile = new File(plugin.getDataFolder() + "/" + player.getName() + ".yml");
 	    	
-	    	// load from a group.yml
-	    	if (configGroupFile.exists()){
-	    		configGroup = YamlConfiguration.loadConfiguration(configGroupFile);
-
-	    		max = getMaxFromConfig(configGroup, mat, dur);
-    		// load from a player.yml
-	    	} else if (configPlayerFile.exists()){
+	    	// load from a player.yml
+    		if (configPlayerFile.exists()){
 	    		configPlayer = YamlConfiguration.loadConfiguration(configPlayerFile);
 	    		
 	    		max = getMaxFromConfig(configPlayer, mat, dur);
+    		
+	    	// load from a group.yml
+    		} else if (configGroupFile.exists()){
+	    		configGroup = YamlConfiguration.loadConfiguration(configGroupFile);
+
+	    		max = getMaxFromConfig(configGroup, mat, dur);
 	    	} else {
 	    		max = getMaxFromConfig(defaultItems, mat, dur);
 	    	}
@@ -152,6 +153,11 @@ public class Config {
 		// no individual item set, use the all items value
 		if (max == ITEM_DEFAULT){
 			max = getAllItemsMax(fileConfig);
+		}
+		
+		// TODO: implement workaround to allow larger stacks after player leaving and logging back in.
+		if (max > 127){
+			max = 127;
 		}
 		
 		return max;
