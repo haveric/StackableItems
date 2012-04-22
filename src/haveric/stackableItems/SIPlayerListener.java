@@ -785,7 +785,7 @@ public class SIPlayerListener implements Listener{
 		short durability = add.getDurability();
 		
 		int maxAmount = Config.getItemMax(player, addType, durability);
-		if (maxAmount == Config.ITEM_DEFAULT){
+		if (maxAmount <= Config.ITEM_DEFAULT){
 			maxAmount = addType.getMaxStackSize();
 		}
 		int addAmount = add.getAmount();
@@ -823,7 +823,7 @@ public class SIPlayerListener implements Listener{
 		short durability = add.getDurability();
 		
 		int maxAmount = Config.getItemMax(player, addType, durability);
-		if (maxAmount == Config.ITEM_DEFAULT){
+		if (maxAmount <= Config.ITEM_DEFAULT){
 			maxAmount = addType.getMaxStackSize();
 		}
 		int addAmount = add.getAmount();
@@ -834,7 +834,6 @@ public class SIPlayerListener implements Listener{
 		boolean fullInventory = false;
 		ItemStack clone = add.clone();
 		while (addAmount > 0 && !fullInventory){
-			player.sendMessage("addamount: " + addAmount);
 			// check for empty slots
 			int freeSlot = inventory.firstEmpty();
 			if (freeSlot == -1){
@@ -863,7 +862,7 @@ public class SIPlayerListener implements Listener{
 	private int addToExistingStacks(Player player, ItemStack add, boolean hotbarOnly, boolean mainInvOnly) {
 		int canAdd;
 		int maxAmount = Config.getItemMax(player, add.getType(), add.getDurability());
-		if (maxAmount == Config.ITEM_DEFAULT){
+		if (maxAmount <= Config.ITEM_DEFAULT){
 			maxAmount = add.getType().getMaxStackSize();
 		}
 		int addAmount = add.getAmount();
