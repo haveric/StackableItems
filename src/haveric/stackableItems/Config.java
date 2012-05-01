@@ -166,5 +166,4 @@ public class Config {
 	public static boolean isVirtualItemsEnabled(){
 		return config.getBoolean(cfgVirtualItems);
 	}
-	
 }
