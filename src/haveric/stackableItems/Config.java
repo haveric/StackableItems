@@ -1,6 +1,7 @@
 package haveric.stackableItems;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -61,6 +63,21 @@ public class Config {
 		configGroups = YamlConfiguration.loadConfiguration(configGroupsFile);
     }
     
+    public static void reload(){
+    	try {
+			config.load(configFile);
+			
+			defaultItems.load(defaultItemsFile);
+			
+			configGroups.load(configGroupsFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+    }
     /** 
      * Sets up the default variables if they don't exist yet.
      * 

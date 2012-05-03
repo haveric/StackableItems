@@ -27,15 +27,17 @@ public class Commands implements CommandExecutor{
 		
 		if (commandLabel.equalsIgnoreCase(cmdMain)){
 			if(args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase(cmdHelp))){
-				sender.sendMessage(title+"github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
-				//sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
+				sender.sendMessage(title + "github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
+				sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
 				//sender.sendMessage("/" + cmdMain + " <player/group/default> item [amt] - " + msgColor + "Get/set a player/group's max items");
-			// TODO: reload functionality
 			}
-			/*
+			
 			else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)){
-				
-			} else if (args.length == 2 || args.length == 3){
+				Config.reload();
+				sender.sendMessage(title + "Configuration files reloaded.");
+			} 
+			/*
+			else if (args.length == 2 || args.length == 3){
 				String fileString = "";
 				if (args[0].equalsIgnoreCase("default")){
 					fileString = "defaultItems.yml";
