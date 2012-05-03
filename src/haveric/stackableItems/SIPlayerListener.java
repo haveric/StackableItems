@@ -253,7 +253,7 @@ public class SIPlayerListener implements Listener{
 			short clickedDur = clicked.getDurability();
 			int clickedAmount = clicked.getAmount();
 			
-			
+			player.sendMessage("Type: " + clickedType);
 			int maxItems = Config.getItemMax(player, clickedType, clickedDur);
 			
 			int slot = event.getSlot();
@@ -278,12 +278,13 @@ public class SIPlayerListener implements Listener{
 					virtualCursor = true;
 				}
 			}
+			Inventory bot = event.getView().getBottomInventory();
+
+			InventoryType botType = event.getView().getBottomInventory().getType();
 			/*
 			if (event.isShiftClick()){
-				Inventory top = event.getView().getTopInventory();
-				Inventory bot = event.getView().getBottomInventory();
-				InventoryType topType = top.getType();
-				InventoryType botType = event.getView().getBottomInventory().getType();
+
+				
 				
 				player.sendMessage("Bot: " + botType + ", Raw: " + rawSlot + ", Slot: " + slot);
 				
@@ -309,10 +310,13 @@ public class SIPlayerListener implements Listener{
 					// TODO: Find a way to fix this
 					// TODO: try cancelling and schedule add
 					} else if (topType == InventoryType.CHEST){
+						fromTop = true;
+						//endNum = 26;
 						
 						endNum = top.getContents().length - 1;
-						scheduleAddItems(player, clicked.clone());
-						event.setCancelled(true);
+						player.sendMessage("size: " + endNum);
+						//scheduleAddItems(player, clicked.clone());
+						//event.setCancelled(true);
 					}
 					
 
@@ -401,6 +405,24 @@ public class SIPlayerListener implements Listener{
 				}
 			} else 
 			*/
+			if (event.isShiftClick()){
+				player.sendMessage("Top: " + topType + ", Bot: " + botType + ", Raw: " + rawSlot);
+				//event.setCancelled(true);
+				
+				if (topType == InventoryType.CHEST){
+					if (rawSlot < top.getContents().length - 1){
+						if (clicked.getAmount() > clickedType.getMaxStackSize()){
+							scheduleAddItems(player, clicked.clone());
+							
+							event.setCurrentItem(null);
+							
+							//event.setResult(Result.ALLOW);
+						}
+						//
+					}
+				}
+			} else
+			
 			if (event.isLeftClick()){
 				// Pick up a stack with an empty hand
 				if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){

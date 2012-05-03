@@ -2,8 +2,12 @@ package haveric.stackableItems;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -27,6 +31,9 @@ public class Config {
     private static FileConfiguration configPlayer;
     private static File configPlayerFile;
     
+    private static FileConfiguration configGroups;
+    private static File configGroupsFile;
+    
     //private static FileConfiguration configChest;
     //private static File configFileChest;
     
@@ -49,6 +56,9 @@ public class Config {
 		
 		defaultItemsFile = new File(plugin.getDataFolder() + "/defaultItems.yml");
 		defaultItems = YamlConfiguration.loadConfiguration(defaultItemsFile);
+		
+		configGroupsFile = new File(plugin.getDataFolder() + "/groups.yml");
+		configGroups = YamlConfiguration.loadConfiguration(configGroupsFile);
     }
     
     /** 
@@ -94,38 +104,52 @@ public class Config {
 	
 	public static int getItemMax(Player player, Material mat, short dur){
 		int max;
-
+		
+		ArrayList<String> itemGroups = getItemGroups(mat, dur);
+		
 		if (plugin.permEnabled() && plugin.getPerm().has(player, Perms.getStack())){
 			
 			String group = plugin.getPerm().getPrimaryGroup(player);
-	    	configGroupFile = new File(plugin.getDataFolder() + "/" + group + ".yml");
-	    	configPlayerFile = new File(plugin.getDataFolder() + "/" + player.getName() + ".yml");
-	    	
-	    	// load from a player.yml
-    		if (configPlayerFile.exists()){
-	    		configPlayer = YamlConfiguration.loadConfiguration(configPlayerFile);
-	    		
-	    		max = getMaxFromConfig(configPlayer, mat, dur);
-    		
-	    	// load from a group.yml
-    		} else if (configGroupFile.exists()){
-	    		configGroup = YamlConfiguration.loadConfiguration(configGroupFile);
+			configGroupFile = new File(plugin.getDataFolder() + "/" + group + ".yml");
+			configPlayerFile = new File(plugin.getDataFolder() + "/" + player.getName() + ".yml");
+			
+			// load from a player.yml
+			if (configPlayerFile.exists()){
+				configPlayer = YamlConfiguration.loadConfiguration(configPlayerFile);
+				
+				max = getMaxFromConfig(configPlayer, mat, dur, itemGroups);
+			
+			// load from a group.yml
+			} else if (configGroupFile.exists()){
+				configGroup = YamlConfiguration.loadConfiguration(configGroupFile);
 
-	    		max = getMaxFromConfig(configGroup, mat, dur);
-	    	} else {
-	    		max = getMaxFromConfig(defaultItems, mat, dur);
-	    	}
+				max = getMaxFromConfig(configGroup, mat, dur, itemGroups);
+			} else {
+				max = getMaxFromConfig(defaultItems, mat, dur, itemGroups);
+			}
 		} else {
-			max = getMaxFromConfig(defaultItems, mat, dur);
+			max = getMaxFromConfig(defaultItems, mat, dur, itemGroups);
 		}
 
 		return max;
 	}
 	
-	private static int getMaxFromConfig(FileConfiguration fileConfig, Material mat, short dur){
+	private static int getMaxFromConfig(FileConfiguration fileConfig, Material mat, short dur, ArrayList<String> itemGroups){
 		int max;
+		
 		// Check for material name and durability
 		max = fileConfig.getInt(mat.name() + " " + dur, ITEM_DEFAULT);
+
+		// Check for group
+		int size = itemGroups.size();
+		if (max == ITEM_DEFAULT && size > 0){
+			for (int i = 0; i < size; i++){
+				int tempVal = fileConfig.getInt(itemGroups.get(i), ITEM_DEFAULT);
+				if (tempVal > max){
+					max = tempVal;
+				}
+			}
+		}
 		
 		// Check for lowercase items
 		if (max == ITEM_DEFAULT){
@@ -165,5 +189,34 @@ public class Config {
 	
 	public static boolean isVirtualItemsEnabled(){
 		return config.getBoolean(cfgVirtualItems);
+	}
+	
+	private static ArrayList<String> getItemGroups(Material mat, short dur){
+		ArrayList<String> inGroup = new ArrayList<String>();
+		ArrayList<String> saveList = new ArrayList<String>();
+		for (String key : configGroups.getKeys(false)){
+			List<String> items = configGroups.getStringList(key);
+			int size = items.size();
+			
+			for (int i = 0; i < size; i++){
+				String item = items.get(i).toUpperCase();
+				if (item.equals(mat.name() + " " + dur) || item.equals(mat.getId() + " " + dur) || item.equals(mat.name()) || item.equals(mat.getId() + "")){
+					inGroup.add(key);
+					
+					if (saveList.size() > 0){
+						inGroup.addAll(saveList);
+						saveList.clear();
+					}
+					break;
+				}
+			}
+			
+			if (size == 0){
+				saveList.add(key);
+			} else {
+				saveList.clear();
+			}
+		}
+		return inGroup;
 	}
 }

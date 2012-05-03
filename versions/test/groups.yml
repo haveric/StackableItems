@@ -1,0 +1,293 @@
+# See http://jd.bukkit.org/apidocs/org/bukkit/Material.html for proper Material Names
+#
+# Correct functionality:
+#
+# Group:
+#   - ItemName
+#   - ItemId
+#   - ItemName ItemDurability
+#
+# Blocks:
+#   - Stone
+#   - 2 #Grass
+#   - Wool 15 #black wool
+#   - 35 14 #red wool
+#
+# Courtesy of golvok
+# Edited to match Bukkit's Materials by: haveric
+#
+Blocks:
+  - Stone
+  - Grass
+  - Dirt
+  - Cobblestone
+  - Sand
+  - Gravel
+  - Glass
+  - Mossy_Cobblestone
+  - Sandstone
+  - Log
+  - Wood
+  - Ender_Stone
+  - Netherrack
+  - Soul_Sand
+  - Glowstone
+  - step
+  - Bricks
+  - TNT
+  - Bookshelf
+  - Obsidian
+  - Wood_Stairs
+  - Diamond_Ore
+  - Wool
+  - Cobblestone_Stairs
+  - Ice
+  - Snow_Block
+  - Cactus
+  - Clay
+  - Smooth_Brick
+  - Brick_Stairs
+  - Smooth_Stairs
+  - Mycel
+  - Nether_Brick
+  - Nether_Fence
+  - Nether_Brick_Stairs
+
+Rare_Blocks:
+  - GOLD_BLOCK
+  - IRON_BLOCK
+  - LAPIS_BLOCK
+  - DIAMOND_BLOCK
+
+
+Resources:
+  - Iron_ingot
+  - Gold_ingot
+  - Coal
+  - Coal 1 #charcoal (could probably just stick with coal as well
+  - Diamond
+
+Crafted_Blocks:
+  - Dispenser
+  - Note_Block
+  - Piston_Sticky_base
+  - Piston_base
+  - Furnace
+  - Workbench
+  - Chest
+  - Jukebox
+  - Enchantment_Table
+  - Brewing_Stand
+  - Cauldron
+
+Crafted_Items:
+  - Flint_and_Steel
+  - Arrow
+  - Clay_Brick
+  - Thin_glass
+  - Fence
+  - Fence_Gate
+  - Torch
+  - Ladder
+  
+Mob_Items:
+  - Egg
+  - Eye_of_Ender
+  - Gold_Nugget
+  - String
+  - Bone
+  - Feather
+  - Sulphur
+  - Spider_Eye
+  - Fermented_Spider_Eye
+  - Blaze_Powder
+  - Magma_Cream
+  - Slime_ball
+  - Ender_Pearl
+  - Blaze_Rod
+  - Ghast_Tear
+  - Leather
+
+Misc_Items:
+  - Stick
+  - Bowl
+  - Flint
+  - Golden_Apple
+  - Sign
+  - Painting
+  - ink_sack
+  - Paper
+  - Book
+  - Compass
+  - watch
+  - Snow_ball
+  - Sugar
+  - Fireball
+  - Clay_ball
+  - Glowstone_Dust
+  # see Not_Listed (bottom of file) for more
+
+Ores:
+  - Gold_Ore
+  - Iron_Ore
+  - Coal_Ore
+  - Lapis_Ore
+  - Redstone_Ore
+
+Food:
+  - Cake
+  - Mushroom_Soup
+  - Raw_Fish
+  - Cooked_Fish
+  - Bread
+  - Pork
+  - Grilled_Pork
+  - Cookie
+  - Melon
+  - Raw_Beef
+  - cooked_beef
+  - Raw_Chicken
+  - Cooked_Chicken
+  - Rotten_Flesh
+  - speckled_melon #not that you can eat them
+
+Redstone:
+  - Redstone_Torch_on
+  - Stone_Button
+  - Diode #Redstone_Repeater
+  - Lever
+  - Redstone_Lamp_off
+  - Wood_Plate
+  - Stone_Plate
+  - Redstone_wire
+
+Rails:
+  - Rails
+  - Powered_Rail
+  - Detector_Rail
+
+Plants:
+  - Sapling
+  - Leaves
+  - yellow_flower #dandelion
+  - red_Rose
+  - Brown_Mushroom
+  - Red_Mushroom
+  - water_lily
+  - Apple
+  - Pumpkin
+  - Jack_O_Lantern
+  - Melon_block
+  - Vine
+  - Seeds
+  - Sugar_Cane
+  - Wheat
+  - Pumpkin_Seeds
+  - Melon_Seeds
+  - Nether_Warts
+
+Containers:
+  - Milk_Bucket #careful when using stacks of these, currently broken
+  - Glass_Bottle
+  - Water_bucket
+  - Lava_bucket
+  - Bucket
+
+Discs:
+  - Gold_record
+  - Green_record
+  - Record_3
+  - Record_4
+  - Record_5
+  - Record_6
+  - Record_7
+  - Record_8
+  - Record_9
+  - Record_10
+  - Record_11
+  #- 13_Disc
+  #- Cat_Disc
+  #- Blocks_Disc
+  #- Chirp_Disc
+  #- Far_Disc
+  #- Mall_Disc
+  #- Mellohi_Disc
+  #- Stal_Disc
+  #- Strad_Disc
+  #- Ward_Disc
+  #- 11_Disc
+
+Armor: 
+  - 
+Armour:
+  - Leather_Helmet
+  - Leather_chestplate
+  - Leather_leggings
+  - Leather_Boots
+  - Chainmail_Helmet
+  - Chainmail_Chestplate
+  - Chainmail_Leggings
+  - Chainmail_Boots
+  - Iron_Helmet
+  - Iron_Chestplate
+  - Iron_Leggings
+  - Iron_Boots
+  - Diamond_Helmet
+  - Diamond_Chestplate
+  - Diamond_Leggings
+  - iamond_Boots
+  - Gold_Helmet
+  - Gold_Chestplate
+  - Gold_Leggings
+  - Gold_Boots
+
+Tools:
+  - Wood_Hoe
+  - Stone_Hoe
+  - Iron_Hoe
+  - Diamond_Hoe
+  - Gold_Hoe
+  - Gold_Sword
+  - Gold_Shovel
+  - Gold_Pickaxe
+  - Gold_Axe
+  - Wooden_Sword
+  - Wooden_Shovel
+  - Wooden_Pickaxe
+  - Wooden_Axe
+  - Stone_Sword
+  - Stone_Shovel
+  - Stone_Pickaxe
+  - Stone_Axe
+  - Diamond_Sword
+  - Diamond_Shovel
+  - Diamond_Pickaxe
+  - Diamond_Axe
+  - Iron_Sword
+  - Iron_Shovel
+  - Iron_Pickaxe
+  - Iron_Axe
+  - Bow
+  - Fishing_Rod
+  - Shears
+
+Doors:
+  - Wood_Door
+  - Iron_Door
+  - Trap_door
+
+Vehicles:
+  - Minecart
+  - storage_minecart
+  - Powered_minecart
+  - Boat
+
+Not_Listed: #ones I felt didn't belong in misc.
+  - Map
+  - Bed
+  - Fire
+  - Mob_Spawner
+  - Dragon_Egg
+  - Saddle
+  - Potion
+
