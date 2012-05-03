@@ -24,7 +24,7 @@ Coming soon:
 * Right clicking on a stack while holding another drops items one at a time as vanilla does.
 * Fixed large stacks from being put in armor slots, enchantment tables, and brewing stands.
 * Item groups
-* Added /stackableditems reload command to reload config files
+* Added /stackableitems reload command to reload config files
 
 Version 0.7.5 (4/16/2012)
 * Prevent crafting of disabled items (set to 0)
