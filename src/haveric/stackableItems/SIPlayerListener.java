@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.server.Packet22Collect;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -45,6 +47,48 @@ public class SIPlayerListener implements Listener{
 		plugin = si;
 	}
 
+	@EventHandler
+	public void furnaceSmelt(FurnaceSmeltEvent event){
+		if (event.isCancelled()){
+			return;
+		}
+		
+		
+		int amt = 0;
+
+		Furnace furnace = (Furnace) event.getBlock().getState();
+		ItemStack result = furnace.getInventory().getResult(); 
+		if (result == null){
+			amt = 0;
+		} else {
+			amt = result.getAmount()+1;
+		}
+		
+		int maxFurnaceSize = Config.getMaxFurnaceAmount();
+		if (maxFurnaceSize > 64 && maxFurnaceSize <= 127){
+			
+			// going to be a full furnace
+			if (amt == 64){
+				int furnaceAmt = Config.getFurnaceAmount(furnace);
+				if (furnaceAmt == maxFurnaceSize - 1){
+					result.setAmount(furnaceAmt);
+					Config.clearFurnace(furnace);
+				// increment virtual count
+				} else {
+					if (furnaceAmt == -1){
+						furnaceAmt = 64;
+					} else {
+						furnaceAmt ++;
+					}
+					
+					Config.setFurnaceAmount(furnace, furnaceAmt);
+					
+					result.setAmount(62);
+				}
+			}
+		}
+	}
+	
 /*
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void commandPreprocess(PlayerCommandPreprocessEvent event){
@@ -193,6 +237,10 @@ public class SIPlayerListener implements Listener{
 		
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
+			PlayerClickData clickData = SIPlayers.getPlayerData(event.getPlayer().getName());
+			clickData.setLastBlock(event.getClickedBlock().getType());
+			clickData.setLastBlockLocation(event.getClickedBlock().getLocation());
+			
 			ItemStack holding = event.getItem();
 			if (holding != null){
 				Material holdingType = holding.getType();
@@ -226,9 +274,33 @@ public class SIPlayerListener implements Listener{
 		
 		SlotType slotType = event.getSlotType();
 		
-		
+		if (cursor != null && clicked != null && slotType == SlotType.RESULT){
+			Inventory top = event.getView().getTopInventory();
+			InventoryType topType = top.getType();
+			
+			if (topType == InventoryType.FURNACE){
+				int maxFurnaceSize = Config.getMaxFurnaceAmount();
+				if (maxFurnaceSize > 64 && maxFurnaceSize <= 127){
+					
+					PlayerClickData clickData = SIPlayers.getPlayerData(event.getWhoClicked().getName());
+					Material lastClicked = clickData.getLastBlock();
+					if (lastClicked == Material.FURNACE || lastClicked == Material.BURNING_FURNACE){
+						Location loc = clickData.getLastBlockLocation();
+						
+						int amt = Config.getFurnaceAmount(loc);
+						if (amt > -1){
+							ItemStack clone = clicked.clone();
+							clone.setAmount(amt);
+							
+							event.setCurrentItem(null);
+							event.setCursor(clone);
+							event.setResult(Result.ALLOW);
+						}
+					}
+				}
+			}
 		// prevent clicks outside the inventory area or within result slots
-		if (cursor != null && clicked != null && slotType != SlotType.RESULT && slotType != SlotType.ARMOR) {
+		} else if (cursor != null && clicked != null && slotType != SlotType.RESULT && slotType != SlotType.ARMOR) {
 			Inventory top = event.getView().getTopInventory();
 			InventoryType topType = top.getType();
 			
@@ -253,7 +325,6 @@ public class SIPlayerListener implements Listener{
 			short clickedDur = clicked.getDurability();
 			int clickedAmount = clicked.getAmount();
 			
-			player.sendMessage("Type: " + clickedType);
 			int maxItems = Config.getItemMax(player, clickedType, clickedDur);
 			
 			int slot = event.getSlot();

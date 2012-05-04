@@ -1,6 +1,7 @@
 package haveric.stackableItems;
 
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class PlayerClickData {
@@ -8,11 +9,15 @@ public class PlayerClickData {
 	private Material type;
 	private int slot;
 	private int amount;
+	private Material lastBlock;
+	private Location lastBlockLoc;
 
 	public PlayerClickData(){
 		slot = -1;
 		amount = -1;
 		type = null;
+		lastBlock = null;
+		lastBlockLoc = null;
 	}
 	
 	public PlayerClickData(int slot, Material type, int amt, int dur){
@@ -43,5 +48,21 @@ public class PlayerClickData {
 
 	public void setAmount(int amount) {
 		this.amount = amount;
-	}	
+	}
+	
+	public Material getLastBlock(){
+		return lastBlock;
+	}
+	
+	public void setLastBlock(Material mat){
+		lastBlock = mat;
+	}
+	
+	public Location getLastBlockLocation(){
+		return lastBlockLoc;
+	}
+	
+	public void setLastBlockLocation(Location loc){
+		lastBlockLoc = loc;
+	}
 }

@@ -14,6 +14,7 @@ public class StackableItems extends JavaPlugin {
 	private Commands commands = new Commands(this);
 	
 	protected final SIPlayerListener playerListener = new SIPlayerListener(this);
+	protected final SIBlockBreak blockBreak = new SIBlockBreak(this);
 	
     
     // Vault  
@@ -24,6 +25,7 @@ public class StackableItems extends JavaPlugin {
 		
 		// Register the plugin events
 		pm.registerEvents(playerListener, this);
+		pm.registerEvents(blockBreak, this);
 		
 		Config.init(this);
 		VirtualItemConfig.init(this);

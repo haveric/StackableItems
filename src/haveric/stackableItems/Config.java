@@ -5,10 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.block.Furnace;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,6 +19,7 @@ public class Config {
 	static StackableItems plugin;
 	
 	private static String cfgVirtualItems = "Virtual Items";
+	private static String cfgFurnaceAmount = "Furnace Amount";
 	private static String cfgAllItemsMax = "All items Max";
 	
     private static FileConfiguration config;
@@ -36,6 +37,9 @@ public class Config {
     private static FileConfiguration configGroups;
     private static File configGroupsFile;
     
+    private static FileConfiguration configFurnaces;
+    private static File configFurnacesFile;
+    
     //private static FileConfiguration configChest;
     //private static File configFileChest;
     
@@ -45,6 +49,7 @@ public class Config {
     public static final int ITEM_DEFAULT = -1;
     
     private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
+    private static final int FURNACE_AMOUNT_DEFAULT = -1;
     
 
     /**
@@ -61,6 +66,10 @@ public class Config {
 		
 		configGroupsFile = new File(plugin.getDataFolder() + "/groups.yml");
 		configGroups = YamlConfiguration.loadConfiguration(configGroupsFile);
+		
+		
+		configFurnacesFile = new File(plugin.getDataFolder() + "/data/furnaces.yml");
+		configFurnaces = YamlConfiguration.loadConfiguration(configFurnacesFile);
     }
     
     public static void reload(){
@@ -86,12 +95,17 @@ public class Config {
     	boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
     	config.set(cfgVirtualItems, virtualItems);
     			
+    	int furnaceAmt = config.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
+    	config.set(cfgFurnaceAmount, furnaceAmt);
+    	
     	int allItems = defaultItems.getInt(cfgAllItemsMax, ALL_ITEMS_MAX_DEFAULT); 
     	defaultItems.set(cfgAllItemsMax, allItems);
     	
     	saveConfig();
     	
     	saveCustomConfig(defaultItems, defaultItemsFile);
+    	
+    	saveCustomConfig(configFurnaces, configFurnacesFile);
     }
     
     /**
@@ -235,5 +249,57 @@ public class Config {
 			}
 		}
 		return inGroup;
+	}
+	
+	public static int getFurnaceAmount(Furnace furnace){
+		return getFurnaceAmount(furnace.getLocation());
+	}
+	
+	public static int getFurnaceAmount(Location loc){
+		String world = loc.getWorld().getName();
+		int x = loc.getBlockX();
+		int y = loc.getBlockY();
+		int z = loc.getBlockZ();
+		
+		int amt = configFurnaces.getInt(world + "." + x + "," + y + "," + z, ITEM_DEFAULT);
+		
+		return amt;
+	}
+	
+	public static void setFurnaceAmount(Furnace furnace, int newAmt){
+		Location loc = furnace.getLocation();
+		String world = loc.getWorld().getName();
+		int x = loc.getBlockX();
+		int y = loc.getBlockY();
+		int z = loc.getBlockZ();
+		
+		configFurnaces.set(world + "." + x + "," + y + "," + z, newAmt);
+		
+		saveCustomConfig(configFurnaces, configFurnacesFile);
+	}
+	
+	public static void clearFurnace(Furnace furnace){
+		clearFurnace(furnace.getLocation());
+	}
+	
+	public static void clearFurnace(Location loc){
+		String world = loc.getWorld().getName();
+		int x = loc.getBlockX();
+		int y = loc.getBlockY();
+		int z = loc.getBlockZ();
+		
+		configFurnaces.set(world + "." + x + "," + y + "," + z, null);
+		
+		saveCustomConfig(configFurnaces, configFurnacesFile);
+	}
+	
+	public static int getMaxFurnaceAmount(){
+		return config.getInt(cfgFurnaceAmount, ITEM_DEFAULT);
+	}
+	
+	public static void setMaxFurnaceAmount(int newAmt){
+		config.set(cfgFurnaceAmount, newAmt);
+		
+		saveConfig();
 	}
 }
