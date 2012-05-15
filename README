@@ -14,7 +14,7 @@ Todo/Ideas:
 
 Changelog:
 
-Version 0.8 (Coming soon):
+Version 0.8 (5/14/2012):
 * Fixed duplication bug with crafting
 * Removed unnecessary defaultTools and customTools configs.
 * Made config check player.yml before group.yml as player should be able to override group.
