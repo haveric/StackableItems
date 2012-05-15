@@ -36,11 +36,10 @@ public class StackableItems extends JavaPlugin {
 		Config.setup();
 		
 		getCommand(Commands.getMain()).setExecutor(commands);
-		log.info(String.format("[%s] v%s Started",getDescription().getName(), getDescription().getVersion()));
 	}
 	
 	public void onDisable() {
-		log.info(String.format("[%s] Disabled",getDescription().getName()));
+
 	}
 	
     private void setupVault() {
