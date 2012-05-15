@@ -89,7 +89,7 @@ public class Config {
 	}
 	
 	
-	private static void saveCustomConfig(FileConfiguration fileConfig, File file){
+	public static void saveCustomConfig(FileConfiguration fileConfig, File file){
 		try {
 			fileConfig.save(file);
 		} catch (IOException e) {

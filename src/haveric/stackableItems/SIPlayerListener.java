@@ -479,6 +479,7 @@ public class SIPlayerListener implements Listener{
 				}
 			} else 
 			*/
+			/*
 			if (event.isShiftClick()){
 				player.sendMessage("Top: " + topType + ", Bot: " + botType + ", Raw: " + rawSlot);
 				//event.setCancelled(true);
@@ -496,7 +497,7 @@ public class SIPlayerListener implements Listener{
 					}
 				}
 			} else
-			
+			*/
 			if (event.isLeftClick()){
 				// Pick up a stack with an empty hand
 				if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){

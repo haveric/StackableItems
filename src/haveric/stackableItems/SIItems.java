@@ -28,6 +28,9 @@ public class SIItems {
     private static FileConfiguration configGroups;
     private static File configGroupsFile;
 	
+    private static FileConfiguration defaultItems;
+    private static File defaultItemsFile;
+    
     private static String cfgAllItemsMax = "ALL ITEMS MAX";
     
     public static final int ITEM_DEFAULT = -1;
@@ -37,8 +40,21 @@ public class SIItems {
 		
 		configGroupsFile = new File(plugin.getDataFolder() + "/groups.yml");
 		configGroups = YamlConfiguration.loadConfiguration(configGroupsFile);
+		Config.saveCustomConfig(configGroups, configGroupsFile);
+		
+		defaultItemsFile = new File(plugin.getDataFolder() + "/defaultItems.yml");
+		defaultItems = YamlConfiguration.loadConfiguration(configGroupsFile);
+		
+		setupDefaultItemsFile();
+		Config.saveCustomConfig(defaultItems, defaultItemsFile);
 		
 		reload();
+	}
+	
+	private static void setupDefaultItemsFile(){
+		if (defaultItemsFile.length() == 0){
+			defaultItems.set(cfgAllItemsMax, ITEM_DEFAULT);
+		}
 	}
 	
 	public static void reload(){
@@ -47,6 +63,8 @@ public class SIItems {
 		
 		try {
 			configGroups.load(configGroupsFile);
+			
+			defaultItems.load(defaultItemsFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
