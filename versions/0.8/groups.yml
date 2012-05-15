@@ -14,7 +14,7 @@
 #   - 35 14 #red wool
 #
 # Courtesy of golvok
-# Edited to match Bukkit's Materials by: haveric
+#  - Edited to match Bukkit's Materials
 #
 Blocks:
   - Stone
@@ -235,7 +235,7 @@ Armour:
   - Diamond_Helmet
   - Diamond_Chestplate
   - Diamond_Leggings
-  - iamond_Boots
+  - Diamond_Boots
   - Gold_Helmet
   - Gold_Chestplate
   - Gold_Leggings
