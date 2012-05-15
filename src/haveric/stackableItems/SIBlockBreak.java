@@ -10,12 +10,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class SIBlockBreak implements Listener{
 
-    private static StackableItems plugin;
-
-    public SIBlockBreak(StackableItems si) {
-        plugin = si;
-    }
-
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
     	Block block = event.getBlock();

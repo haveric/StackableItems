@@ -33,6 +33,7 @@ public class Commands implements CommandExecutor{
 			
 			else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)){
 				Config.reload();
+				SIItems.reload();
 				sender.sendMessage(title + "Configuration files reloaded.");
 			} 
 			/*

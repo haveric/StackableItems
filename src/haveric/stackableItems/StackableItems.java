@@ -12,25 +12,24 @@ public class StackableItems extends JavaPlugin {
 	
 	final Logger log = Logger.getLogger("Minecraft");
 	private Commands commands = new Commands(this);
-	
-	protected final SIPlayerListener playerListener = new SIPlayerListener(this);
-	protected final SIBlockBreak blockBreak = new SIBlockBreak(this);
-	
     
-    // Vault  
-    private Permission perm = null;
     
 	public void onEnable() {
 		PluginManager pm = getServer().getPluginManager();
 		
 		// Register the plugin events
-		pm.registerEvents(playerListener, this);
-		pm.registerEvents(blockBreak, this);
+		pm.registerEvents(new SIPlayerListener(this), this);
+		pm.registerEvents(new SIBlockBreak(), this);
+		pm.registerEvents(new PlayerJoinQuit(), this);
 		
 		Config.init(this);
 		VirtualItemConfig.init(this);
+		
+		
         // Vault
         setupVault();
+        
+        SIItems.init(this);
         
         SIPlayers.setup();
         
@@ -51,15 +50,7 @@ public class StackableItems extends JavaPlugin {
     	}
         RegisteredServiceProvider<Permission> permProvider = getServer().getServicesManager().getRegistration(Permission.class);
         if (permProvider != null) {
-            perm = permProvider.getProvider();
+        	Perms.setPerm(permProvider.getProvider());
         }
-    }
-    
-    public Permission getPerm(){
-    	return perm;
-    }
-    
-    public boolean permEnabled(){
-    	return (perm != null);
     }
 }

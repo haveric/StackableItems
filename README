@@ -14,7 +14,7 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
+Version 0.8 (Coming soon):
 * Fixed duplication bug with crafting
 * Removed unnecessary defaultTools and customTools configs.
 * Made config check player.yml before group.yml as player should be able to override group.
@@ -25,6 +25,8 @@ Coming soon:
 * Fixed large stacks from being put in armor slots, enchantment tables, and brewing stands.
 * Item groups
 * Added /stackableitems reload command to reload config files
+* All config/item files are loaded into the plugin now when users need them, which means less i/o and possibly faster
+* Item files should now handle any case -> IRON_BOOTS, iron_boots, IrOn_BOOts should all work.
 * Added optional furnace stack amount which allows furnaces to stack above 64 (65-127 or -1 for disabled). 
 ** The client won't show it correctly, and the server can't smelt above 64 so it is faked (reverts to 63 and a counter saved) until picked up or the furnace is destroyed
 * Now ignores creative mode so that items can be removed properly (temp fix)

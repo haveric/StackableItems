@@ -127,7 +127,7 @@ public class SIPlayerListener implements Listener{
 		Player player = (Player) event.getWhoClicked();
 		ItemStack craftedItem = event.getCurrentItem();
 		
-		if (Config.getItemMax(player, craftedItem.getType(), craftedItem.getDurability()) == 0){
+		if (SIItems.getItemMax(player, craftedItem.getType(), craftedItem.getDurability()) == 0){
 			player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
 			event.setCancelled(true);
 		}
@@ -328,8 +328,8 @@ public class SIPlayerListener implements Listener{
 			short clickedDur = clicked.getDurability();
 			int clickedAmount = clicked.getAmount();
 			
-			int maxItems = Config.getItemMax(player, clickedType, clickedDur);
-			
+			int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
+
 			int slot = event.getSlot();
 			
 			boolean cursorEmpty = cursorType == Material.AIR;
@@ -382,7 +382,7 @@ public class SIPlayerListener implements Listener{
 						fromTop = true;
 						endNum = 3;
 					// TODO: Find a way to fix this
-					// TODO: try cancelling and schedule add
+					// TODO: try canceling and schedule add
 					} else if (topType == InventoryType.CHEST){
 						fromTop = true;
 						//endNum = 26;
@@ -882,7 +882,7 @@ public class SIPlayerListener implements Listener{
 		
 		int numLeft = event.getRemaining();
 		
-		int maxItems = Config.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
+		int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
 		if (maxItems == 0){
 			event.setCancelled(true);
 		} else if (maxItems > Config.ITEM_DEFAULT){
@@ -920,7 +920,7 @@ public class SIPlayerListener implements Listener{
 		Material addType = add.getType();
 		short durability = add.getDurability();
 		
-		int maxAmount = Config.getItemMax(player, addType, durability);
+		int maxAmount = SIItems.getItemMax(player, addType, durability);
 		if (maxAmount <= Config.ITEM_DEFAULT){
 			maxAmount = addType.getMaxStackSize();
 		}
@@ -958,7 +958,7 @@ public class SIPlayerListener implements Listener{
 		Material addType = add.getType();
 		short durability = add.getDurability();
 		
-		int maxAmount = Config.getItemMax(player, addType, durability);
+		int maxAmount = SIItems.getItemMax(player, addType, durability);
 		if (maxAmount <= Config.ITEM_DEFAULT){
 			maxAmount = addType.getMaxStackSize();
 		}
@@ -997,7 +997,7 @@ public class SIPlayerListener implements Listener{
 	
 	private int addToExistingStacks(Player player, ItemStack add, boolean hotbarOnly, boolean mainInvOnly) {
 		int canAdd;
-		int maxAmount = Config.getItemMax(player, add.getType(), add.getDurability());
+		int maxAmount = SIItems.getItemMax(player, add.getType(), add.getDurability());
 		if (maxAmount <= Config.ITEM_DEFAULT){
 			maxAmount = add.getType().getMaxStackSize();
 		}
