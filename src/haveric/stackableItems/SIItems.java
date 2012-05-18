@@ -76,7 +76,9 @@ public class SIItems {
 		}
 		
 		addItemFiles("defaultItems");
-		loadGroupItemFiles();
+		if (Perms.permEnabled()){
+			loadGroupItemFiles();
+		}
 		loadPlayerItemFiles();
 		loadItemGroups();
 	}
@@ -143,7 +145,7 @@ public class SIItems {
 		int max = ITEM_DEFAULT;
 		
 		max = getMaxFromMap(player.getName(), mat, dur);
-		if (max == ITEM_DEFAULT && Perms.permEnabled() && Perms.getPerm().has(player, Perms.getStack())){
+		if (max == ITEM_DEFAULT && Perms.permEnabled() && Perms.getPerm().has(player, Perms.getStackString())){
 			String group = Perms.getPerm().getPrimaryGroup(player);	
 			max = getMaxFromMap(group, mat, dur);
 		}

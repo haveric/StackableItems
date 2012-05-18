@@ -14,10 +14,13 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Fixed an exception when Vault wasn't found.
+
 Version 0.8.1 (5/18/2012)
 * Fixed file writing issues
 
-Version 0.8 (5/14/2012):
+Version 0.8 (5/14/2012)
 * Fixed duplication bug with crafting
 * Removed unnecessary defaultTools and customTools configs.
 * Made config check player.yml before group.yml as player should be able to override group.

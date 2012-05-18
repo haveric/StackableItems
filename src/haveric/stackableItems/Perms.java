@@ -27,11 +27,11 @@ public class Perms {
 		stack = newPerm;
 	}
 	
-	public static String getStack(){
+	public static String getStackString(){
 		return stack;
 	}
 	
-	public static String getItem(){
+	public static String getItemString(){
 		return item;
 	}
 }
