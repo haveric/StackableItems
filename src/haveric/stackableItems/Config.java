@@ -67,14 +67,18 @@ public class Config {
      */
     public static void setup(){
     	boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
-    	config.set(cfgVirtualItems, virtualItems);
     			
     	int furnaceAmt = config.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
-    	config.set(cfgFurnaceAmount, furnaceAmt);
     	
-    	saveConfig();
+    	if (configFile.length() == 0){
+    		config.set(cfgVirtualItems, virtualItems);
+    		config.set(cfgFurnaceAmount, furnaceAmt);
+    		saveConfig();
+    	}
     	
-    	saveCustomConfig(configFurnaces, configFurnacesFile);
+    	if (configFurnacesFile.length() == 0){
+    		saveCustomConfig(configFurnaces, configFurnacesFile);
+    	}
     }
     
     /**
