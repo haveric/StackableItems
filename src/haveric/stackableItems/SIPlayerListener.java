@@ -1018,10 +1018,10 @@ public class SIPlayerListener implements Listener{
 		
 		for(int i = iStart; i < length && addAmount > 0; i++){
 			ItemStack item = contents[i];
-				
+			
 			if (item != null){
 				int free = item.getAmount();
-				if (item.getType() == add.getType() && item.getDurability() == add.getDurability() && free < maxAmount){
+				if (item.getType() == add.getType() && item.getDurability() == add.getDurability() && item.getEnchantments().equals(add.getEnchantments()) && free < maxAmount){
 					canAdd = maxAmount - free;
 					if (addAmount <= canAdd){
 						item.setAmount(free + addAmount);

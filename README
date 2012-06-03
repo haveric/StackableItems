@@ -16,6 +16,7 @@ Changelog:
 
 Coming soon:
 * Fixed an exception when Vault wasn't found.
+* Fixed unenchanted items combining with enchanted items when picked up
 
 Version 0.8.1 (5/18/2012)
 * Fixed file writing issues
