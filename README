@@ -14,6 +14,9 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Fixed id's in config files
+
 Version 0.8.2 (6/3/2012)
 * Fixed an exception when Vault wasn't found.
 * Fixed unenchanted items combining with enchanted items when picked up

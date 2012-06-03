@@ -168,8 +168,8 @@ public class SIItems {
 			groups = itemGroups.get(mat.getId() + " " + dur);
 		} else if (itemGroups.containsKey(mat.name())){
 			groups = itemGroups.get(mat.name());
-		} else if (itemGroups.containsKey(mat.getId())){
-			groups = itemGroups.get(mat.getId());
+		} else if (itemGroups.containsKey("" + mat.getId())){
+			groups = itemGroups.get("" + mat.getId());
 		}
 		
 		
@@ -194,8 +194,8 @@ public class SIItems {
 				} else if (subMap.containsKey(mat.name())){
 					max = subMap.get(mat.name());
 				// item id with no durability
-				} else if (subMap.containsKey(mat.getId())){
-					max = subMap.get(mat.getId());
+				} else if (subMap.containsKey("" + mat.getId())){
+					max = subMap.get("" + mat.getId());
 				// no individual item set, use the 'all items' value
 				} else if (subMap.containsKey(cfgAllItemsMax)){
 					max = subMap.get(cfgAllItemsMax);
