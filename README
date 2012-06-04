@@ -16,6 +16,7 @@ Changelog:
 
 Coming soon:
 * Fixed id's in config files
+* Player's cannot pick up larger stacks than their permissions allow for. (May not work with the experimental furnaces config)
 
 Version 0.8.2 (6/3/2012)
 * Fixed an exception when Vault wasn't found.

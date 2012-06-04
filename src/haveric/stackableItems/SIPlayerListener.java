@@ -499,9 +499,27 @@ public class SIPlayerListener implements Listener{
 			} else
 			*/
 			if (event.isLeftClick()){
-				// Pick up a stack with an empty hand
-				if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){
+				
+				if (cursorEmpty && !slotEmpty && clickedAmount <= clickedType.getMaxStackSize() && maxItems > SIItems.ITEM_DEFAULT && maxItems < clickedAmount){
+					if (!virtualClicked){
+						//player.sendMessage("Pick up stack with empty hand.");
+						if (clickedAmount <= maxItems){
+							event.setCursor(clicked.clone());
+							event.setCurrentItem(new ItemStack(Material.AIR));
+							event.setResult(Result.ALLOW);
+						} else {
+							ItemStack clone = clicked.clone();
+							clone.setAmount(maxItems);
+							event.setCursor(clone);
+
+							clone.setAmount(clickedAmount - maxItems);
+							event.setCurrentItem(clone);
+							event.setResult(Result.ALLOW);
+						}
+					}
 					
+				// Pick up a stack with an empty hand
+				} else if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()){
 					if (virtualClicked){
 						//player.sendMessage("Pick up stack with empty hand. (Virtual item)");
 						VirtualItemConfig.setVirtualItemStack(player, slot, null);
@@ -509,9 +527,19 @@ public class SIPlayerListener implements Listener{
 						VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
 					} else {
 						//player.sendMessage("Pick up stack with empty hand.");
-						event.setCursor(clicked.clone());
-						event.setCurrentItem(new ItemStack(Material.AIR));
-						event.setResult(Result.ALLOW);
+						if (clickedAmount <= maxItems){
+							event.setCursor(clicked.clone());
+							event.setCurrentItem(new ItemStack(Material.AIR));
+							event.setResult(Result.ALLOW);
+						} else {
+							ItemStack clone = clicked.clone();
+							clone.setAmount(maxItems);
+							event.setCursor(clone);
+
+							clone.setAmount(clickedAmount - maxItems);
+							event.setCurrentItem(clone);
+							event.setResult(Result.ALLOW);
+						}
 					}
 				// Drop a stack into an empty slot
 				} else if (!cursorEmpty && slotEmpty && cursorAmount > cursorType.getMaxStackSize()){
@@ -814,8 +842,28 @@ public class SIPlayerListener implements Listener{
 						
 					}
 				// pick up half a stack
-				} else if (!slotEmpty && cursorEmpty){
-					
+				} else if (!slotEmpty && cursorEmpty && maxItems > -1){
+					if (clickedAmount > maxItems){
+						int maxPickup = (int) Math.round((clickedAmount + 0.5) / 2);
+						
+						ItemStack clone = clicked.clone();
+						
+						if (maxPickup < maxItems){
+							clone.setAmount(maxPickup);
+							event.setCursor(clone);
+							
+							clone.setAmount(clickedAmount - maxPickup);
+							event.setCurrentItem(clone);
+							event.setResult(Result.ALLOW);
+						} else {
+							clone.setAmount(maxItems);
+							event.setCursor(clone);
+							
+							clone.setAmount(clickedAmount - maxItems);
+							event.setCurrentItem(clone);
+							event.setResult(Result.ALLOW);
+						}
+					}
 				}
 			//
 			}
