@@ -30,6 +30,7 @@ public class StackableItems extends JavaPlugin {
         setupVault();
         
         SIItems.init(this);
+        InventoryUtil.init(this);
         
         SIPlayers.setup();
         

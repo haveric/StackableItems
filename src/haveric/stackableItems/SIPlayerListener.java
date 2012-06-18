@@ -165,7 +165,7 @@ public class SIPlayerListener implements Listener{
 		Player player = event.getPlayer();
 		int amount = player.getInventory().getItemInHand().getAmount();
 		if (amount > 1){
-			scheduleAddItems(player, new ItemStack(Material.BUCKET, amount - 1));
+			InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, amount - 1));
 		}
 	}
 	
@@ -185,7 +185,7 @@ public class SIPlayerListener implements Listener{
 				clone.setAmount(amount - 1);
 				
 				scheduleReplaceItem(player, slot, clone);
-				scheduleAddItems(player, new ItemStack(Material.BUCKET, 1));	
+				InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, 1));	
 			}
 		
 		}
@@ -202,7 +202,8 @@ public class SIPlayerListener implements Listener{
 				ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
 				if (itemAtSlot.getType() == Material.MUSHROOM_SOUP){
 					scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount()-1));
-					scheduleAddItems(player, new ItemStack(Material.BOWL, 1));
+					
+					InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
 				}
 			}
 		}
@@ -251,7 +252,7 @@ public class SIPlayerListener implements Listener{
 						move.setAmount(amount-1);
 						
 						holding.setAmount(1);
-						scheduleAddItems(player, move);
+						InventoryUtil.addItems(player, move);
 					}
 				}
 			}
@@ -488,21 +489,21 @@ public class SIPlayerListener implements Listener{
 				player.sendMessage("Top: " + topType + ", Bot: " + botType + ", Raw: " + rawSlot);
 				player.sendMessage("TItems: " + top.getContents().length);
 				player.sendMessage("BItems: " + bot.getContents().length);
-				
+				event.setCancelled(true);
 				if (rawSlot < top.getContents().length){
-					event.setCancelled(true);
+					
 					
 					ItemStack clone = clicked.clone();
 					
 					int free = InventoryUtil.getFreeSpaces(player, clone);
 					if (free >= clickedAmount){
-						scheduleAddItems(player, clone);
+						InventoryUtil.addItems(player, clone);
 						event.setCurrentItem(null);
 					} else {
 						int left = clickedAmount - free;
 						if (left > 0){
 							clone.setAmount(free);
-							scheduleAddItems(player, clone);
+							InventoryUtil.addItems(player, clone);
 							
 							ItemStack clone2 = clicked.clone();
 							clone2.setAmount(left);
@@ -511,7 +512,45 @@ public class SIPlayerListener implements Listener{
 					}
 				} else {
 					if (topType == InventoryType.CRAFTING){
-						
+						// move from main inventory to hotbar
+						if (rawSlot >= 9 && rawSlot <= 35){
+							ItemStack clone = clicked.clone();
+							int free = InventoryUtil.getFreeSpaces(player, clone, 0, 9);
+							
+							if (free >= clickedAmount){
+								InventoryUtil.addItems(player, clone, 0, 9);
+								event.setCurrentItem(null);
+							} else {
+								int left = clickedAmount - free;
+								if (left > 0){
+									clone.setAmount(free);
+									InventoryUtil.addItems(player, clone, 0, 9);
+									
+									ItemStack clone2 = clicked.clone();
+									clone2.setAmount(left);
+									event.setCurrentItem(clone2);
+								}
+							}
+						// move from hotbar to main inventory
+						} else if (rawSlot >= 36 && rawSlot <= 44){
+							ItemStack clone = clicked.clone();
+							int free = InventoryUtil.getFreeSpaces(player, clone, 9, 36);
+							
+							if (free >= clickedAmount){
+								InventoryUtil.addItems(player, clone, 9, 36);
+								event.setCurrentItem(null);
+							} else {
+								int left = clickedAmount - free;
+								if (left > 0){
+									clone.setAmount(free);
+									InventoryUtil.addItems(player, clone, 9, 36);
+									
+									ItemStack clone2 = clicked.clone();
+									clone2.setAmount(left);
+									event.setCurrentItem(clone2);
+								}
+							}
+						}
 					} else {
 						
 					}
@@ -898,14 +937,6 @@ public class SIPlayerListener implements Listener{
 		    }
 		});
 	}
-
-	private void scheduleAddItems(final Player player, final ItemStack stack){
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-			@Override public void run() {
-				InventoryUtil.addItems(player, stack);
-		    }
-		});	
-	}
 	
 	private void scheduleReplaceItem(final Player player, final int slot, final ItemStack stack) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
@@ -1110,7 +1141,7 @@ public class SIPlayerListener implements Listener{
 				if (!Config.isVirtualItemsEnabled()){
 					ItemStack move = holding.clone();
 					move.setAmount(amount-1);
-					scheduleAddItems(player, move);
+					InventoryUtil.addItems(player, move);
 					holding.setAmount(1);
 				}
 			}
