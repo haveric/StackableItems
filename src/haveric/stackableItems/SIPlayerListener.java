@@ -1,7 +1,5 @@
 package haveric.stackableItems;
 
-import java.util.List;
-
 import net.minecraft.server.Packet22Collect;
 
 import org.bukkit.Bukkit;
@@ -11,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Furnace;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -131,8 +128,6 @@ public class SIPlayerListener implements Listener{
 			player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
 			event.setCancelled(true);
 		}
-		
-		
 	}
 	
 	@EventHandler
@@ -208,12 +203,9 @@ public class SIPlayerListener implements Listener{
 			}
 		}
 	}
-	
-
 
 	@EventHandler
 	public void playerClick(PlayerInteractEvent event){
-		
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR){
 			ItemStack holding = event.getItem();
 			if (holding != null){
@@ -233,7 +225,6 @@ public class SIPlayerListener implements Listener{
 		}
 		
 		
-
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			PlayerClickData clickData = SIPlayers.getPlayerData(event.getPlayer().getName());
 			clickData.setLastBlock(event.getClickedBlock().getType());
@@ -258,7 +249,6 @@ public class SIPlayerListener implements Listener{
 			}
 		}
 	}
-	
 
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent event){
@@ -360,199 +350,27 @@ public class SIPlayerListener implements Listener{
 			Inventory bot = event.getView().getBottomInventory();
 
 			InventoryType botType = event.getView().getBottomInventory().getType();
-			/*
-			if (event.isShiftClick()){
-
-				player.sendMessage("Bot: " + botType + ", Raw: " + rawSlot + ", Slot: " + slot);
-				
-				if (botType == InventoryType.PLAYER){
-					// In crafting area, move to main inventory
-					int startNum = 0;
-					int endNum = 0;
-					boolean fromTop = false;
-
-					// TODO: Handle stacking large stacks in other containers (chests)
-					if (topType == InventoryType.CRAFTING || topType == InventoryType.DISPENSER){
-						fromTop = true;
-						endNum = 8;
-					} else if (topType == InventoryType.WORKBENCH){
-						fromTop = true;
-						endNum = 9;
-					} else if (topType == InventoryType.FURNACE){
-						fromTop = true;
-						endNum = 2;
-					} else if (topType == InventoryType.BREWING){
-						fromTop = true;
-						endNum = 3;
-					// TODO: Find a way to fix this
-					// TODO: try canceling and schedule add
-					} else if (topType == InventoryType.CHEST){
-						fromTop = true;
-						
-						endNum = top.getContents().length - 1;
-						player.sendMessage("size: " + endNum);
-						
-						event.setCancelled(true);
-						scheduleAddItems(player, clicked.clone());
-						
-						event.setCurrentItem(null);
-					}
-					
-
-					
-					if (fromTop){
-						if (rawSlot >= startNum && rawSlot <= endNum){
-							int addAmount = addToExistingStacks(player, clicked.clone(), false, true);
-							
-							if (addAmount > 0){
-								ItemStack[] contents = bot.getContents();
-								
-								int length = contents.length;
-								for(int i = 9; i < length && addAmount > 0; i++){
-									ItemStack item = contents[i];
-									
-									if (item != null){
-										if (item.getAmount() == 0 || item.getType() == Material.AIR){
-											ItemStack clone = clicked.clone();
-											clone.setAmount(addAmount);
-											bot.setItem(i, clone);
-											addAmount = 0;
-										}
-									}
-								}
-							}
-							if (addAmount > 0){
-								ItemStack clone = clicked.clone();
-								clone.setAmount(addAmount);
-								top.setItem(slot, clone);
-							} else {
-								top.setItem(slot, new ItemStack(Material.AIR, 0));
-							}
-						}
-						scheduleUpdate(player);
-					}
-					player.sendMessage("SlotType: " + event.getSlotType());
-					// In main inventory, move to hotbar
-					if (rawSlot >= 9 && rawSlot <= 35){
-						int addAmount = addToExistingStacks(player, clicked.clone(), true, false);
-						player.sendMessage("Addamount: " + addAmount);
-						if (addAmount > 0){
-							int emptySlot = bot.firstEmpty();
-							if (emptySlot < 9){
-								if (addAmount > maxItems){
-									
-									bot.setItem(emptySlot, clicked.clone());
-								}
-							}
-						}
-						if (addAmount > 0){
-							ItemStack clone = clicked.clone();
-							clone.setAmount(addAmount);
-							bot.setItem(slot, clone);
-						} else {
-							bot.setItem(slot, new ItemStack(Material.AIR, 0));
-						}
-					// In hotbar, move to main inventory
-					} else if (rawSlot >= 36 && rawSlot <= 44){
-						int addAmount = addToExistingStacks(player, clicked.clone(), false, true);
-						if (addAmount > 0){
-							ItemStack[] contents = bot.getContents();
-							
-							int length = contents.length;
-							for(int i = 9; i < length && addAmount > 0; i++){
-								ItemStack item = contents[i];
-								
-								if (item != null){
-									if (item.getAmount() == 0){
-										ItemStack clone = clicked.clone();
-										clone.setAmount(addAmount);
-										bot.setItem(i, clone);
-										addAmount = 0;
-									}
-								}
-							}
-							
-						}
-						if (addAmount > 0){
-							ItemStack clone = clicked.clone();
-							clone.setAmount(addAmount);
-							bot.setItem(slot, clone);
-						} else {
-							bot.setItem(slot, new ItemStack(Material.AIR, 0));
-						}
-					}
-				}
-			} else 
-			*/
 			
 			if (event.isShiftClick()){
 				player.sendMessage("Top: " + topType + ", Bot: " + botType + ", Raw: " + rawSlot);
 				player.sendMessage("TItems: " + top.getContents().length);
 				player.sendMessage("BItems: " + bot.getContents().length);
-				event.setCancelled(true);
+				
 				if (rawSlot < top.getContents().length){
-					
-					
-					ItemStack clone = clicked.clone();
-					
-					int free = InventoryUtil.getFreeSpaces(player, clone);
-					if (free >= clickedAmount){
-						InventoryUtil.addItems(player, clone);
-						event.setCurrentItem(null);
-					} else {
-						int left = clickedAmount - free;
-						if (left > 0){
-							clone.setAmount(free);
-							InventoryUtil.addItems(player, clone);
-							
-							ItemStack clone2 = clicked.clone();
-							clone2.setAmount(left);
-							event.setCurrentItem(clone2);
-						}
-					}
+					InventoryUtil.moveItems(player, clicked, event, 0, 36);
 				} else {
 					if (topType == InventoryType.CRAFTING){
 						// move from main inventory to hotbar
 						if (rawSlot >= 9 && rawSlot <= 35){
-							ItemStack clone = clicked.clone();
-							int free = InventoryUtil.getFreeSpaces(player, clone, 0, 9);
-							
-							if (free >= clickedAmount){
-								InventoryUtil.addItems(player, clone, 0, 9);
-								event.setCurrentItem(null);
-							} else {
-								int left = clickedAmount - free;
-								if (left > 0){
-									clone.setAmount(free);
-									InventoryUtil.addItems(player, clone, 0, 9);
-									
-									ItemStack clone2 = clicked.clone();
-									clone2.setAmount(left);
-									event.setCurrentItem(clone2);
-								}
-							}
+							InventoryUtil.moveItems(player, clicked, event, 0, 9);
 						// move from hotbar to main inventory
 						} else if (rawSlot >= 36 && rawSlot <= 44){
-							ItemStack clone = clicked.clone();
-							int free = InventoryUtil.getFreeSpaces(player, clone, 9, 36);
-							
-							if (free >= clickedAmount){
-								InventoryUtil.addItems(player, clone, 9, 36);
-								event.setCurrentItem(null);
-							} else {
-								int left = clickedAmount - free;
-								if (left > 0){
-									clone.setAmount(free);
-									InventoryUtil.addItems(player, clone, 9, 36);
-									
-									ItemStack clone2 = clicked.clone();
-									clone2.setAmount(left);
-									event.setCurrentItem(clone2);
-								}
-							}
+							InventoryUtil.moveItems(player, clicked, event, 9, 36);
 						}
-					} else {
-						
+					} else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER){
+						InventoryUtil.moveItems(player, clicked, event, top);
+					} else if (topType == InventoryType.WORKBENCH){
+						InventoryUtil.moveItems(player, clicked, event, top, 1, 10);
 					}
 					// TODO add items to containers
 				}
@@ -691,7 +509,6 @@ public class SIPlayerListener implements Listener{
 						boolean sameEnchants = cursor.getEnchantments().equals(clicked.getEnchantments());
 						boolean noEnchants = cursor.getEnchantments() == null && clicked.getEnchantments() == null;
 						
-						
 						if (sameType){
 							if (sameDur && (sameEnchants || noEnchants)){
 								if (maxItems > Config.ITEM_DEFAULT){
@@ -825,7 +642,6 @@ public class SIPlayerListener implements Listener{
 						boolean sameEnchants = cursor.getEnchantments().equals(clicked.getEnchantments());
 						boolean noEnchants = cursor.getEnchantments() == null && clicked.getEnchantments() == null;
 						
-						
 						if (sameType){
 							if (sameDur && (sameEnchants || noEnchants)){
 								if (maxItems > Config.ITEM_DEFAULT){
@@ -890,7 +706,6 @@ public class SIPlayerListener implements Listener{
 						cursor.setAmount(cursorAmount - removed.getAmount());
 						event.setCursor(cursor);
 						
-						
 						VirtualItemConfig.setVirtualItemStack(player, -1, cursorStack);
 						
 						event.setResult(Result.ALLOW);
@@ -927,15 +742,6 @@ public class SIPlayerListener implements Listener{
 		} else {
 			// TODO: handle throwing out a virtual stack
 		}
-	}
-
-	private void scheduleUpdate(final HumanEntity player) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-		    @SuppressWarnings("deprecation")
-			@Override public void run() {
-		      ((Player) player).updateInventory();
-		    }
-		});
 	}
 	
 	private void scheduleReplaceItem(final Player player, final int slot, final ItemStack stack) {
@@ -991,7 +797,6 @@ public class SIPlayerListener implements Listener{
 			
 			event.setCancelled(true);
 		}
-	
 	}
 	
 	public void collectItem(Player player, Item item) {
@@ -999,139 +804,6 @@ public class SIPlayerListener implements Listener{
         ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
     }
 	
-	/*
-	public int addItemsToInventory(Player player, Item entity){
-		
-		Inventory inventory = player.getInventory();
-		
-		ItemStack add = entity.getItemStack();
-
-		Material addType = add.getType();
-		short durability = add.getDurability();
-		
-		int maxAmount = SIItems.getItemMax(player, addType, durability);
-		if (maxAmount <= Config.ITEM_DEFAULT){
-			maxAmount = addType.getMaxStackSize();
-		}
-		int addAmount = add.getAmount();
-		// add to existing stacks
-		addAmount = addToExistingStacks(player, add, false, false);
-		boolean fullInventory = false;
-		
-		
-		ItemStack clone = entity.getItemStack().clone();
-		while (addAmount > 0 && !fullInventory){
-			// check for empty slots
-			int freeSlot = inventory.firstEmpty();
-			if (freeSlot == -1){
-				fullInventory = true;
-			} else {
-				if (addAmount <= maxAmount){
-					clone.setAmount(addAmount);
-					inventory.setItem(freeSlot, clone);
-					addAmount = 0;
-				} else {
-					clone.setAmount(maxAmount);
-					inventory.setItem(freeSlot, clone);
-					addAmount -= maxAmount;
-				}
-			}
-		}
-
-		return addAmount;
-	}
-	*/
-	/*
-	public void addItemsToInventory(Player player, ItemStack add){
-		Inventory inventory = player.getInventory();
-		
-		Material addType = add.getType();
-		short durability = add.getDurability();
-		
-		int maxAmount = SIItems.getItemMax(player, addType, durability);
-		if (maxAmount <= Config.ITEM_DEFAULT){
-			maxAmount = addType.getMaxStackSize();
-		}
-		int addAmount = add.getAmount();
-
-		// add to existing stacks
-		addAmount = addToExistingStacks(player, add, false, false);
-
-		boolean fullInventory = false;
-		ItemStack clone = add.clone();
-		while (addAmount > 0 && !fullInventory){
-			// check for empty slots
-			int freeSlot = inventory.firstEmpty();
-			if (freeSlot == -1){
-				fullInventory = true;
-			} else {
-				if (addAmount <= maxAmount){
-					clone.setAmount(addAmount);
-					inventory.setItem(freeSlot, clone);
-					addAmount = 0;
-				} else {
-					clone.setAmount(maxAmount);
-					inventory.setItem(freeSlot, clone);
-					addAmount -= maxAmount;
-				}
-			}
-		}
-		
-		if (addAmount == 0){
-			
-		} else {
-			clone.setAmount(addAmount);
-			player.getWorld().dropItemNaturally(player.getLocation(), clone);
-		}
-	}
-	*/
-	/*
-	private int addToExistingStacks(Player player, ItemStack add, boolean hotbarOnly, boolean mainInvOnly) {
-		int canAdd;
-		int maxAmount = SIItems.getItemMax(player, add.getType(), add.getDurability());
-		if (maxAmount <= Config.ITEM_DEFAULT){
-			maxAmount = add.getType().getMaxStackSize();
-		}
-		int addAmount = add.getAmount();
-		
-		ItemStack[] contents = player.getInventory().getContents();
-		int length;
-		int iStart = 0;
-		if (hotbarOnly){
-			length = 9;
-		} else if (mainInvOnly){
-			iStart = 9;
-			length = 36;
-		} else {
-			length = contents.length;
-		}
-		
-		for(int i = iStart; i < length && addAmount > 0; i++){
-			ItemStack item = contents[i];
-			
-			if (item != null){
-				int free = item.getAmount();
-				if (item.getType() == add.getType() && item.getDurability() == add.getDurability() && item.getEnchantments().equals(add.getEnchantments()) && free < maxAmount){
-					canAdd = maxAmount - free;
-					if (addAmount <= canAdd){
-						item.setAmount(free + addAmount);
-						addAmount = 0;
-						
-					} else if (addAmount <= maxAmount){
-						item.setAmount(maxAmount);
-						addAmount -= canAdd;
-						
-					} else {
-						item.setAmount(maxAmount);
-						addAmount -= maxAmount;
-					}
-				}
-			}
-		}
-
-		return addAmount;
-	}
-	*/
 	public void splitStack(Player player, boolean toolCheck){
 		ItemStack holding = player.getItemInHand();
 		int amount = holding.getAmount();

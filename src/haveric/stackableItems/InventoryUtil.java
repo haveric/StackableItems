@@ -3,6 +3,7 @@ package haveric.stackableItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,6 +14,7 @@ public class InventoryUtil {
 	public static void init(StackableItems si){
     	plugin = si;
 	}
+	/*
 	public static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory){
 		return getFreeSpaces(player, itemToCheck, inventory, 0, inventory.getContents().length);
 	}
@@ -24,7 +26,7 @@ public class InventoryUtil {
 	public static int getFreeSpaces(Player player, ItemStack itemToCheck){
 		return getFreeSpaces(player, itemToCheck, player.getInventory(), 0, 36);
 	}
-	
+	*/
 	public static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory, int start, int end){
 		int free = 0;
 
@@ -58,6 +60,7 @@ public class InventoryUtil {
 		return free;
 	}
 	
+	/*
 	public static void addItems(Player player, ItemStack itemToAdd, Inventory inventory){
 		addItems(player, itemToAdd, inventory, 0, inventory.getContents().length);
 	}
@@ -65,6 +68,7 @@ public class InventoryUtil {
 	public static void addItems(Player player, ItemStack itemToAdd, int start, int end){
 		addItems(player, itemToAdd, player.getInventory(), start, end);
 	}
+	*/
 	
 	public static void addItems(Player player, ItemStack itemToAdd){
 		addItems(player, itemToAdd, player.getInventory(), 0, 36);
@@ -136,5 +140,36 @@ public class InventoryUtil {
 				}
 			}
 		});
+	}
+	
+	public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end){
+		moveItems(player, clicked, event, player.getInventory(), start, end);
+	}
+	
+	public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory){
+		moveItems(player, clicked, event, inventory, 0, inventory.getContents().length);
+	}
+	
+	public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end){
+		event.setCancelled(true);
+		ItemStack clone = clicked.clone();
+		int free = getFreeSpaces(player, clone, inventory, start, end);
+		
+		int clickedAmount = clicked.getAmount();
+		
+		if (free >= clickedAmount){
+			addItems(player, clone, inventory, start, end);
+			event.setCurrentItem(null);
+		} else {
+			int left = clickedAmount - free;
+			if (left > 0){
+				clone.setAmount(free);
+				addItems(player, clone, inventory, start, end);
+				
+				ItemStack clone2 = clicked.clone();
+				clone2.setAmount(left);
+				event.setCurrentItem(clone2);
+			}
+		}
 	}
 }
