@@ -8,26 +8,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class SIBlockBreak implements Listener{
+public class SIBlockBreak implements Listener {
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event){
-    	Block block = event.getBlock();
+    public void onBlockBreak(BlockBreakEvent event) {
+        Block block = event.getBlock();
 
-    	if (block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE){
-    		int maxAmount = Config.getFurnaceAmount(block.getLocation());
-    		if (maxAmount > -1){
-    			Furnace furnace = (Furnace) block.getState();
-    			ItemStack result = furnace.getInventory().getResult();
-    			
-        		ItemStack toDrop = result.clone();
-        		toDrop.setAmount(maxAmount - 63);
-        		
-        		block.getWorld().dropItem(block.getLocation(), toDrop);
+        if (block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE) {
+            int maxAmount = Config.getFurnaceAmount(block.getLocation());
+            if (maxAmount > -1) {
+                Furnace furnace = (Furnace) block.getState();
+                ItemStack result = furnace.getInventory().getResult();
 
-        		Config.clearFurnace(furnace);
-    		}
+                ItemStack toDrop = result.clone();
+                toDrop.setAmount(maxAmount - 63);
 
-	    }
+                block.getWorld().dropItem(block.getLocation(), toDrop);
+
+                Config.clearFurnace(furnace);
+            }
+
+        }
     }
 }
