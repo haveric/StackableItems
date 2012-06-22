@@ -346,15 +346,11 @@ public class SIPlayerListener implements Listener {
                     virtualCursor = true;
                 }
             }
-            Inventory bot = event.getView().getBottomInventory();
+            //Inventory bot = event.getView().getBottomInventory();
 
-            InventoryType botType = event.getView().getBottomInventory().getType();
+            //InventoryType botType = event.getView().getBottomInventory().getType();
 
             if (event.isShiftClick()) {
-                player.sendMessage("Top: " + topType + ", Bot: " + botType + ", Raw: " + rawSlot);
-                player.sendMessage("TItems: " + top.getContents().length);
-                player.sendMessage("BItems: " + bot.getContents().length);
-
                 if (rawSlot < top.getContents().length) {
                     InventoryUtil.moveItems(player, clicked, event, 0, 36);
                 } else {
@@ -374,7 +370,6 @@ public class SIPlayerListener implements Listener {
                     // TODO add items to containers
                 }
             } else if (event.isLeftClick()) {
-                player.sendMessage("left click");
                 if (cursorEmpty && !slotEmpty && clickedAmount <= clickedType.getMaxStackSize() && maxItems > SIItems.ITEM_DEFAULT && maxItems < clickedAmount) {
                     if (!virtualClicked) {
                         //player.sendMessage("Pick up stack with empty hand.");

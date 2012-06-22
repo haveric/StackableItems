@@ -3,7 +3,7 @@ Stackable Items
 Allows you to change the default stack size of items. 
 
 Todo/Ideas:
-* Fix Shift clicking
+* Improve Shift Clicking
 * Virtual Stacks (stack of tools that each are unique) (Partially implemented)
 * Separate chest/player amounts
 * In-game commands to set/adjust stack amounts
@@ -14,9 +14,10 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
+Version 0.8.3 (6/21/2012)
+* Fix Shift Clicking (mostly)
 * Fixed id's in config files
-* Player's cannot pick up larger stacks than their permissions allow for. (May not work with the experimental furnaces config)
+* Player's cannot pick up larger stacks than their permissions allow for.
 
 Version 0.8.2 (6/3/2012)
 * Fixed an exception when Vault wasn't found.
