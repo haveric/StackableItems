@@ -81,6 +81,11 @@ public class SIPlayerListener implements Listener {
                     result.setAmount(62);
                 }
             }
+        } else if (maxFurnaceSize < 64) {
+            if (amt == maxFurnaceSize) {
+                //event.setCancelled(true);
+                // TODO: Can we somehow stop the furnace burning so we can keep the fuel?
+            }
         }
     }
 /*
@@ -216,7 +221,6 @@ public class SIPlayerListener implements Listener {
                 scheduleReplaceItem(player, slot, clone);
                 InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, 1));
             }
-
         }
     }
 
@@ -303,22 +307,80 @@ public class SIPlayerListener implements Listener {
 
         if (cursor != null && clicked != null && slotType == SlotType.RESULT) {
             if (topType == InventoryType.FURNACE) {
-                int maxFurnaceSize = Config.getMaxFurnaceAmount();
-                if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
 
-                    PlayerClickData clickData = SIPlayers.getPlayerData(event.getWhoClicked().getName());
-                    Material lastClicked = clickData.getLastBlock();
-                    if (lastClicked == Material.FURNACE || lastClicked == Material.BURNING_FURNACE) {
-                        Location loc = clickData.getLastBlockLocation();
+                Player player = (Player) event.getWhoClicked();
 
-                        int amt = Config.getFurnaceAmount(loc);
-                        if (amt > -1) {
-                            ItemStack clone = clicked.clone();
-                            clone.setAmount(amt);
+                Material cursorType = cursor.getType();
+                short cursorDur = cursor.getDurability();
+                int cursorAmount = cursor.getAmount();
 
-                            event.setCurrentItem(null);
-                            event.setCursor(clone);
-                            event.setResult(Result.ALLOW);
+                Material clickedType = clicked.getType();
+                short clickedDur = clicked.getDurability();
+                int clickedAmount = clicked.getAmount();
+
+                int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
+
+                if (maxItems == 0) {
+                    player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
+                    event.setCancelled(true);
+                } else {
+                    int freeSpaces = InventoryUtil.getFreeSpaces(player, clicked);
+
+                    ItemStack clone = clicked.clone();
+
+                    int maxFurnaceSize = Config.getMaxFurnaceAmount();
+                    if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+
+                        PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
+                        Material lastClicked = clickData.getLastBlock();
+                        if (lastClicked == Material.FURNACE || lastClicked == Material.BURNING_FURNACE) {
+                            Location loc = clickData.getLastBlockLocation();
+
+                            int amt = Config.getFurnaceAmount(loc);
+                            if (amt > -1) {
+                                clone.setAmount(amt);
+
+                                event.setCurrentItem(null);
+                                event.setCursor(clone);
+                                event.setResult(Result.ALLOW);
+                            }
+                        }
+                    // normal amounts in the furnace
+                    } else {
+                        if (event.isShiftClick()) {
+                            if (freeSpaces > clickedAmount) {
+                                event.setCancelled(true);
+
+                                event.setCurrentItem(null);
+                                InventoryUtil.addItems(player, clone);
+                            } else {
+                                event.setCancelled(true);
+
+                                int newAmount = clickedAmount - freeSpaces;
+                                clone.setAmount(newAmount);
+                                event.setCurrentItem(clone);
+
+                                ItemStack clone2 = clicked.clone();
+                                clone2.setAmount(freeSpaces);
+                                InventoryUtil.addItems(player, clone2);
+                            }
+                        } else if (event.isLeftClick() || event.isRightClick()) {
+                            if (maxItems > SIItems.ITEM_DEFAULT && cursorAmount + clickedAmount > maxItems) {
+                                if (maxItems > 0 && cursorAmount == 0) {
+                                    if (clickedAmount > maxItems) {
+                                        event.setCancelled(true);
+
+                                        clone.setAmount(clickedAmount - maxItems);
+                                        event.setCurrentItem(clone);
+
+                                        ItemStack clone2 = clicked.clone();
+                                        clone2.setAmount(maxItems);
+                                        event.setCursor(clone2);
+                                    }
+                                } else {
+                                    event.setCancelled(true);
+                                }
+                            }
                         }
                     }
                 }
