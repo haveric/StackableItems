@@ -10,7 +10,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class StackableItems extends JavaPlugin {
 
-    private final Logger log = Logger.getLogger("Minecraft");
+    //private final Logger log = Logger.getLogger("Minecraft");
+    final Logger log = Logger.getLogger("Minecraft");
+
     private Commands commands = new Commands(this);
 
 

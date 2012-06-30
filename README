@@ -14,6 +14,10 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Can no longer craft larger stacks than you're allowed to.
+* Custom adding of items to inventory fixed
+
 Version 0.8.3 (6/21/2012)
 * Fix Shift Clicking (mostly)
 * Fixed id's in config files

@@ -29,6 +29,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -123,9 +124,43 @@ public class SIPlayerListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getCurrentItem();
 
-        if (SIItems.getItemMax(player, craftedItem.getType(), craftedItem.getDurability()) == 0) {
+        int maxItems = SIItems.getItemMax(player, craftedItem.getType(), craftedItem.getDurability());
+        if (maxItems == 0) {
             player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
             event.setCancelled(true);
+        } else {
+            int cursorAmount = event.getCursor().getAmount();
+            int recipeAmount = event.getRecipe().getResult().getAmount();
+
+            if (event.isShiftClick()) {
+                CraftingInventory inventory = event.getInventory();
+
+                int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
+                int actualCraft = amtCanCraft * recipeAmount;
+                //plugin.log.info("CanCraft: " + amtCanCraft + " x " + recipeAmount + " = " + actualCraft);
+
+                int freeSpaces = InventoryUtil.getFreeSpaces(player, craftedItem);
+                ItemStack clone = craftedItem.clone();
+
+                if (freeSpaces > actualCraft) {
+                    event.setCancelled(true);
+                    //event.setResult(Result.ALLOW);
+
+                    InventoryUtil.removeFromCrafting(inventory, amtCanCraft);
+                    clone.setAmount(actualCraft);
+                    InventoryUtil.addItems(player, clone);
+                } else {
+                    event.setCancelled(true);
+                    //event.setResult(Result.ALLOW);
+                    InventoryUtil.removeFromCrafting(inventory, freeSpaces);
+                    clone.setAmount(freeSpaces);
+                    InventoryUtil.addItems(player, clone);
+                }
+            } else if (event.isLeftClick() || event.isRightClick()) {
+                if (maxItems > SIItems.ITEM_DEFAULT && cursorAmount + recipeAmount > maxItems) {
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 
@@ -249,6 +284,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void inventoryClick(InventoryClickEvent event) {
         if (event.isCancelled()) {
@@ -261,10 +297,11 @@ public class SIPlayerListener implements Listener {
 
         SlotType slotType = event.getSlotType();
 
-        if (cursor != null && clicked != null && slotType == SlotType.RESULT) {
-            Inventory top = event.getView().getTopInventory();
-            InventoryType topType = top.getType();
+        Inventory top = event.getView().getTopInventory();
+        InventoryType topType = top.getType();
 
+
+        if (cursor != null && clicked != null && slotType == SlotType.RESULT) {
             if (topType == InventoryType.FURNACE) {
                 int maxFurnaceSize = Config.getMaxFurnaceAmount();
                 if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
@@ -288,11 +325,18 @@ public class SIPlayerListener implements Listener {
             }
         // prevent clicks outside the inventory area or within result slots
         } else if (cursor != null && clicked != null && slotType != SlotType.RESULT && slotType != SlotType.ARMOR) {
-            Inventory top = event.getView().getTopInventory();
-            InventoryType topType = top.getType();
-
-            int rawSlot = event.getRawSlot();
             Player player = (Player) event.getWhoClicked();
+
+            Material cursorType = cursor.getType();
+            short cursorDur = cursor.getDurability();
+            int cursorAmount = cursor.getAmount();
+
+            Material clickedType = clicked.getType();
+            short clickedDur = clicked.getDurability();
+            int clickedAmount = clicked.getAmount();
+
+            int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
+            int rawSlot = event.getRawSlot();
 
             // we want to ignore creative players (for now) TODO: handle creative players
             if (player.getGameMode() == GameMode.CREATIVE) {
@@ -313,16 +357,6 @@ public class SIPlayerListener implements Listener {
                     }
                 }
             }
-
-            Material cursorType = cursor.getType();
-            short cursorDur = cursor.getDurability();
-            int cursorAmount = cursor.getAmount();
-
-            Material clickedType = clicked.getType();
-            short clickedDur = clicked.getDurability();
-            int clickedAmount = clicked.getAmount();
-
-            int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
 
             int slot = event.getSlot();
 
