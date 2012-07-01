@@ -122,6 +122,10 @@ public class Config {
 
     public static void setFurnaceAmount(Furnace furnace, int newAmt) {
         Location loc = furnace.getLocation();
+        setFurnaceAmount(loc, newAmt);
+    }
+
+    public static void setFurnaceAmount(Location loc, int newAmt) {
         String world = loc.getWorld().getName();
         int x = loc.getBlockX();
         int y = loc.getBlockY();

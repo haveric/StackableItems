@@ -129,7 +129,12 @@ public class SIPlayerListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getCurrentItem();
 
-        int maxItems = SIItems.getItemMax(player, craftedItem.getType(), craftedItem.getDurability());
+        Material type = craftedItem.getType();
+        
+        int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
+        if (maxItems <= Config.ITEM_DEFAULT) {
+            maxItems = type.getMaxStackSize();
+        }
         if (maxItems == 0) {
             player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
             event.setCancelled(true);
@@ -310,8 +315,6 @@ public class SIPlayerListener implements Listener {
 
                 Player player = (Player) event.getWhoClicked();
 
-                Material cursorType = cursor.getType();
-                short cursorDur = cursor.getDurability();
                 int cursorAmount = cursor.getAmount();
 
                 Material clickedType = clicked.getType();
@@ -319,7 +322,9 @@ public class SIPlayerListener implements Listener {
                 int clickedAmount = clicked.getAmount();
 
                 int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
-
+                if (maxItems <= Config.ITEM_DEFAULT) {
+                    maxItems = clickedType.getMaxStackSize();
+                }
                 if (maxItems == 0) {
                     player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
                     event.setCancelled(true);
@@ -398,6 +403,9 @@ public class SIPlayerListener implements Listener {
             int clickedAmount = clicked.getAmount();
 
             int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
+            if (maxItems <= Config.ITEM_DEFAULT) {
+                maxItems = clickedType.getMaxStackSize();
+            }
             int rawSlot = event.getRawSlot();
 
             // we want to ignore creative players (for now) TODO: handle creative players
