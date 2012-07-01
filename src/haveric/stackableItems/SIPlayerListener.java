@@ -883,17 +883,23 @@ public class SIPlayerListener implements Listener {
         Item item = event.getItem();
         ItemStack stack = item.getItemStack();
 
-        int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
-        if (maxItems == 0) {
+        int freeSpaces = InventoryUtil.getFreeSpaces(player, stack);
+
+        if (freeSpaces == 0) {
             event.setCancelled(true);
-        } else if (maxItems > Config.ITEM_DEFAULT) {
-            InventoryUtil.addItems(player, stack);
+        } else {
+            int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
+            if (maxItems == 0) {
+                event.setCancelled(true);
+            } else if (maxItems > Config.ITEM_DEFAULT) {
+                InventoryUtil.addItems(player, stack);
 
-            collectItem(player, item);
+                collectItem(player, item);
 
-            item.remove();
+                item.remove();
 
-            event.setCancelled(true);
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -902,7 +908,7 @@ public class SIPlayerListener implements Listener {
         ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(packet);
     }
 
-    public void splitStack(Player player, boolean toolCheck){
+    public void splitStack(Player player, boolean toolCheck) {
         ItemStack holding = player.getItemInHand();
         int amount = holding.getAmount();
 

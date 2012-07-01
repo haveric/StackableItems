@@ -18,6 +18,7 @@ Coming soon:
 * Can no longer craft larger stacks than you're allowed to.
 * Custom adding of items to inventory fixed
 * Fixed infinite stack bug with large stacks for people without permissions to use large stacks.
+* Items no longer bounce around when picking up if the stack size is normally bigger.
 
 Version 0.8.3 (6/21/2012)
 * Fix Shift Clicking (mostly)
