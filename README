@@ -6,9 +6,7 @@ Todo/Ideas:
 * Improve Shift Clicking
 * Virtual Stacks (stack of tools that each are unique) (Partially implemented)
 * Separate chest/player amounts
-* In-game commands to set/adjust stack amounts
 * Look into making work with InventoryTweaks (or possible API?) 
-* Look into problems with RealShop
 - I'm sure I'll think of/find more
 
 
@@ -19,6 +17,8 @@ Coming soon:
 * Custom adding of items to inventory fixed
 * Fixed infinite stack bug with large stacks for people without permissions to use large stacks.
 * Items no longer bounce around when picking up if the stack size is normally bigger.
+* Added /si as an alias for /stackableitems
+* In-game commands to set/adjust stack amounts
 
 Version 0.8.3 (6/21/2012)
 * Fix Shift Clicking (mostly)

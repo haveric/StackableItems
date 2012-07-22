@@ -34,4 +34,13 @@ public class Perms {
     public static String getItemString() {
         return item;
     }
+
+    public static boolean groupExists(String group) {
+        for (String g : perm.getGroups()) {
+            if (g.equals(group)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

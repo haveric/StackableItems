@@ -144,16 +144,60 @@ public class SIItems {
     public static int getItemMax(Player player, Material mat, short dur) {
         int max = ITEM_DEFAULT;
 
-        max = getMaxFromMap(player.getName(), mat, dur);
+        max = getMax(player.getName(), mat, dur);
         if (max == ITEM_DEFAULT && Perms.permEnabled() && Perms.getPerm().has(player, Perms.getStackString())) {
             String group = Perms.getPerm().getPrimaryGroup(player);
-            max = getMaxFromMap(group, mat, dur);
+            max = getMax(group, mat, dur);
         }
         if (max == ITEM_DEFAULT) {
-            max = getMaxFromMap("defaultItems", mat, dur);
+            max = getDefaultMax(mat, dur);
         }
 
         return max;
+    }
+
+    public static int getMax(String playerOrGroup, Material mat, short dur) {
+        if (dur == -1) {
+            return getMaxFromMap(playerOrGroup, mat);
+        }
+
+        return getMaxFromMap(playerOrGroup, mat, dur);
+    }
+
+    public static int getDefaultMax(Material mat, short dur) {
+        if (dur == -1) {
+            return getMaxFromMap("defaultItems", mat);
+        }
+
+        return getMaxFromMap("defaultItems", mat, dur);
+    }
+
+    public static void setDefaultMax(Material mat, short dur, int newAmount) {
+        setMax("defaultItems", mat, dur, newAmount);
+    }
+
+    public static void setMax(String playerOrGroup, Material mat, short dur, int newAmount) {
+        configItemsFile = new File(plugin.getDataFolder() + "/" + playerOrGroup + ".yml");
+        configItems = YamlConfiguration.loadConfiguration(configItemsFile);
+        if (dur == -1) {
+            configItems.set(mat.name(), newAmount);
+            if (!itemsMap.containsKey(playerOrGroup)) {
+                itemsMap.put(playerOrGroup, new HashMap<String, Integer>());
+            }
+            itemsMap.get(playerOrGroup).put(mat.name(), newAmount);
+        } else {
+            configItems.set(mat.name() + " " + dur, newAmount);
+            if (!itemsMap.containsKey(playerOrGroup)) {
+                itemsMap.put(playerOrGroup, new HashMap<String, Integer>());
+            }
+            itemsMap.get(playerOrGroup).put(mat.name() + " " + dur, newAmount);
+        }
+
+        try {
+            configItems.save(configItemsFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static int getMaxFromMap(String file, Material mat, short dur) {
@@ -189,6 +233,49 @@ public class SIItems {
                     max = subMap.get(mat.getId() + " " + dur);
                 // material name with no durability
                 } else if (subMap.containsKey(mat.name())) {
+                    max = subMap.get(mat.name());
+                // item id with no durability
+                } else if (subMap.containsKey("" + mat.getId())) {
+                    max = subMap.get("" + mat.getId());
+                // no individual item set, use the 'all items' value
+                } else if (subMap.containsKey(cfgAllItemsMax)) {
+                    max = subMap.get(cfgAllItemsMax);
+                }
+            }
+
+            // TODO: implement workaround to allow larger stacks after player leaving and logging back in.
+            if (max > 127) {
+                max = 127;
+            }
+        }
+
+        return max;
+    }
+
+    private static int getMaxFromMap(String file, Material mat) {
+        int max = ITEM_DEFAULT;
+
+        List<String> groups = null;
+
+        if (itemGroups.containsKey(mat.name())) {
+            groups = itemGroups.get(mat.name());
+        } else if (itemGroups.containsKey("" + mat.getId())) {
+            groups = itemGroups.get("" + mat.getId());
+        }
+
+        if (itemsMap.containsKey(file)) {
+            HashMap<String, Integer> subMap = itemsMap.get(file);
+            if (groups != null) {
+                for (int i = 0; i < groups.size(); i++) {
+                    if (subMap.containsKey(groups.get(i).toUpperCase())) {
+                        max = subMap.get(groups.get(i).toUpperCase());
+                    }
+                }
+            }
+
+            if (max == ITEM_DEFAULT) {
+                // material name with no durability
+                if (subMap.containsKey(mat.name())) {
                     max = subMap.get(mat.name());
                 // item id with no durability
                 } else if (subMap.containsKey("" + mat.getId())) {

@@ -6,5 +6,6 @@ dev-url: http://dev.bukkit.org/server-mods/stackableitems/
 softdepend: [Vault]
 commands:
     stackableitems:
+        aliases: [si]
         description: Allows you to change an item's max stack amount.
         usage:
