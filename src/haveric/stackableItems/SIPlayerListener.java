@@ -466,6 +466,15 @@ public class SIPlayerListener implements Listener {
                         } else if (rawSlot >= 36 && rawSlot <= 44) {
                             InventoryUtil.moveItems(player, clicked, event, 9, 36);
                         }
+                    } else if (topType == InventoryType.BREWING) {
+                        // move from main inventory to hotbar
+                        if (rawSlot >= 4 && rawSlot <= 30) {
+                            InventoryUtil.moveItems(player, clicked, event, 0, 9);
+                        // move from hotbar to main inventory
+                        } else if (rawSlot >= 31 && rawSlot <= 39) {
+                            InventoryUtil.moveItems(player, clicked, event, 9, 36);
+                        }
+                        
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER) {
                         InventoryUtil.moveItems(player, clicked, event, top);
                     } else if (topType == InventoryType.WORKBENCH) {

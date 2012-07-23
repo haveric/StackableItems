@@ -4,6 +4,7 @@ Allows you to change the default stack size of items.
 
 Todo/Ideas:
 * Improve Shift Clicking
+* Improve in-game commands
 * Virtual Stacks (stack of tools that each are unique) (Partially implemented)
 * Separate chest/player amounts
 * Look into making work with InventoryTweaks (or possible API?) 
@@ -12,13 +13,14 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
+Version 0.8.4 (7/22/2012)
 * Can no longer craft larger stacks than you're allowed to.
 * Custom adding of items to inventory fixed
 * Fixed infinite stack bug with large stacks for people without permissions to use large stacks.
 * Items no longer bounce around when picking up if the stack size is normally bigger.
 * Added /si as an alias for /stackableitems
 * In-game commands to set/adjust stack amounts
+* Fixed shift clicking for brewing stands
 
 Version 0.8.3 (6/21/2012)
 * Fix Shift Clicking (mostly)
