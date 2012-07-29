@@ -9,7 +9,10 @@ public class Perms {
     // TODO: make dynamic?
     private static String stack = "stackableitems.stack";
 
-    private static String item = "stackableitems.item";
+    // TODO: Figure out why I created this
+    //private static String item = "stackableitems.item";
+
+    private static String adjust = "stackableitems.adjust";
 
     public static void setPerm(Permission p) {
         perm = p;
@@ -30,11 +33,15 @@ public class Perms {
     public static String getStackString() {
         return stack;
     }
-
+/*
     public static String getItemString() {
         return item;
     }
-
+*/
+    public static String getAdjustString() {
+        return adjust;
+    }
+    
     public static boolean groupExists(String group) {
         for (String g : perm.getGroups()) {
             if (g.equals(group)) {

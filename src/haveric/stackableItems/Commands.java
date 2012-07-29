@@ -29,16 +29,35 @@ public class Commands implements CommandExecutor {
         String title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
         String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
 
+        boolean op = false;
+        if (sender.isOp()) {
+            op = true;
+        }
+
+        boolean canAdjust = false;
+        if (Perms.getPerm().has(sender, Perms.getAdjustString())) {
+            canAdjust = true;
+        }
+
         if (commandLabel.equalsIgnoreCase(cmdMain) || commandLabel.equalsIgnoreCase(cmdMainAlt)) {
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase(cmdHelp))) {
                 sender.sendMessage(title + "github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
-                sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
-                sender.sendMessage("/" + cmdMain + " <player/group/default> item:dur [amt] - " + msgColor + "Get/set a player/group's max items");
+
+                if (op || canAdjust) {
+                    sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
+                    sender.sendMessage("/" + cmdMain + " <player/group/default> item:dur [amt] - " + msgColor + "Get/set a player/group's max items");
+                } else {
+                    sender.sendMessage("/" + cmdMain + " <player/group/default> item:dur - " + msgColor + "Get a player/group's max items");
+                }
 
             } else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)) {
-                Config.reload();
-                SIItems.reload();
-                sender.sendMessage(title + "Configuration files reloaded.");
+                if (op || canAdjust) {
+                    Config.reload();
+                    SIItems.reload();
+                    sender.sendMessage(title + "Configuration files reloaded.");
+                } else {
+                    sender.sendMessage(title + ChatColor.RED + "You do not have permission to reload the config.");
+                }
             }
 
             else if (args.length == 2 || args.length == 3) {
@@ -75,30 +94,34 @@ public class Commands implements CommandExecutor {
                     int max = -1;
                     // set value
                     if (args.length == 3) {
-                        int numToSet = Integer.parseInt(args[2]);
-                        String displayName;
-                        if (dur == -1) {
-                            displayName = mat.name();
-                        } else {
-                            displayName = mat.name() + ":" + dur;
-                        }
+                        if (op || canAdjust) {
+                            int numToSet = Integer.parseInt(args[2]);
+                            String displayName;
+                            if (dur == -1) {
+                                displayName = mat.name();
+                            } else {
+                                displayName = mat.name() + ":" + dur;
+                            }
 
-                        if (type.equals("default")) {
-                            max = SIItems.getDefaultMax(mat, dur);
-                            if (numToSet == max) {
-                                sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " is already set to " + highlightColor + numToSet);
-                            } else {
-                                SIItems.setDefaultMax(mat, dur, numToSet);
-                                sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " set to " + highlightColor + numToSet);
+                            if (type.equals("default")) {
+                                max = SIItems.getDefaultMax(mat, dur);
+                                if (numToSet == max) {
+                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " is already set to " + highlightColor + numToSet);
+                                } else {
+                                    SIItems.setDefaultMax(mat, dur, numToSet);
+                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " set to " + highlightColor + numToSet);
+                                }
+                            } else if (type.equals("group") || type.equals("player")) {
+                                max = SIItems.getMax(permType, mat, dur);
+                                if (numToSet == max) {
+                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " is already set to " + highlightColor + numToSet);
+                                } else {
+                                    SIItems.setMax(permType, mat, dur, numToSet);
+                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " set to " + highlightColor + numToSet);
+                                }
                             }
-                        } else if (type.equals("group") || type.equals("player")) {
-                            max = SIItems.getMax(permType, mat, dur);
-                            if (numToSet == max) {
-                                sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " is already set to " + highlightColor + numToSet);
-                            } else {
-                                SIItems.setMax(permType, mat, dur, numToSet);
-                                sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " set to " + highlightColor + numToSet);
-                            }
+                        } else {
+                            sender.sendMessage(shortTitle + ChatColor.RED + "You do not have permission to set config values.");
                         }
                     // get value
                     } else if (args.length == 2) {

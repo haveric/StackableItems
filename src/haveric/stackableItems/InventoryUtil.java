@@ -80,7 +80,7 @@ public class InventoryUtil {
     public static void addItems(Player player, ItemStack itemToAdd) {
         addItems(player, itemToAdd, player.getInventory(), 0, 36);
     }
-    // TODO: BROKEN
+
     public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
@@ -187,57 +187,52 @@ public class InventoryUtil {
 
         //plugin.log.info("Item: " + recipe.getResult().getType());
         List<Recipe> recipes = plugin.getServer().getRecipesFor(recipe.getResult());
+        //plugin.log.info("Result: " + recipe.getResult());
         for (Recipe rec : recipes) {
             if (rec instanceof ShapedRecipe) {
                 //plugin.log.info("Shaped");
+
                 ShapedRecipe shaped = (ShapedRecipe) rec;
                 Map<Character, ItemStack> itemMap = shaped.getIngredientMap();
+                //plugin.log.info("Shaped: " + shaped.getResult());
                 String[] shape = shaped.getShape();
                 int width = shape.length;
                 int height = shape[0].length();
 
                 int max = width * height;
 
-                //plugin.log.info("AMT0: " + amt);
                 amt = checkItemInInventory(inventory, itemMap.get('a'), amt);
-                //plugin.log.info("AMT1: " + amt);
                 if (max >= 2) {
                     amt = checkItemInInventory(inventory, itemMap.get('b'), amt);
-                    //plugin.log.info("AMT2: " + amt);
                 }
                 if (max >= 3) {
                     amt = checkItemInInventory(inventory, itemMap.get('c'), amt);
-                    //plugin.log.info("AMT3: " + amt);
                 }
                 if (max >= 4) {
                     amt = checkItemInInventory(inventory, itemMap.get('d'), amt);
-                    //plugin.log.info("AMT4: " + amt);
                 }
                 if (max >= 5) {
                     amt = checkItemInInventory(inventory, itemMap.get('e'), amt);
-                    //plugin.log.info("AMT5: " + amt);
                 }
                 if (max >= 6) {
                     amt = checkItemInInventory(inventory, itemMap.get('f'), amt);
-                    //plugin.log.info("AMT6: " + amt);
                 }
                 if (max >= 7) {
                     amt = checkItemInInventory(inventory, itemMap.get('g'), amt);
-                    //plugin.log.info("AMT7: " + amt);
                 }
                 if (max >= 8) {
                     amt = checkItemInInventory(inventory, itemMap.get('h'), amt);
-                    //plugin.log.info("AMT8: " + amt);
                 }
                 if (max == 9) {
                     amt = checkItemInInventory(inventory, itemMap.get('i'), amt);
-                    //plugin.log.info("AMT9: " + amt);
                 }
             } else if (rec instanceof ShapelessRecipe) {
                 ShapelessRecipe shapeless = (ShapelessRecipe) rec;
-                //List<ItemStack> items = shapeless.getIngredientList();
-                plugin.log.info("Please report the following line to github: ");
-                plugin.log.info("Shapeless: " + shapeless.getResult());
+                List<ItemStack> items = shapeless.getIngredientList();
+
+                for (ItemStack i : items) {
+                    amt = checkItemInInventory(inventory, i, amt);
+                }
 
             // TODO: Figure out if we need to handle FurnaceRecipes or not
             } else {

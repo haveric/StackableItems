@@ -130,7 +130,7 @@ public class SIPlayerListener implements Listener {
         ItemStack craftedItem = event.getCurrentItem();
 
         Material type = craftedItem.getType();
-        
+
         int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
         if (maxItems <= Config.ITEM_DEFAULT) {
             maxItems = type.getMaxStackSize();
@@ -474,13 +474,11 @@ public class SIPlayerListener implements Listener {
                         } else if (rawSlot >= 31 && rawSlot <= 39) {
                             InventoryUtil.moveItems(player, clicked, event, 9, 36);
                         }
-                        
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER) {
                         InventoryUtil.moveItems(player, clicked, event, top);
                     } else if (topType == InventoryType.WORKBENCH) {
                         InventoryUtil.moveItems(player, clicked, event, top, 1, 10);
                     }
-                    // TODO add items to containers
                 }
             } else if (event.isLeftClick()) {
                 if (cursorEmpty && !slotEmpty && clickedAmount <= clickedType.getMaxStackSize() && maxItems > SIItems.ITEM_DEFAULT && maxItems < clickedAmount) {

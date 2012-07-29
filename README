@@ -7,11 +7,15 @@ Todo/Ideas:
 * Improve in-game commands
 * Virtual Stacks (stack of tools that each are unique) (Partially implemented)
 * Separate chest/player amounts
-* Look into making work with InventoryTweaks (or possible API?) 
+* Look into making work with InventoryTweaks (or possible API?)
 - I'm sure I'll think of/find more
 
 
 Changelog:
+
+Version 0.8.5 (7/28/2012)
+* In-game commands for setting stack amounts and reloading now require players to be an op or have permission "- stackableitems.adjust"
+* Shapeless recipe support for crafting
 
 Version 0.8.4 (7/22/2012)
 * Can no longer craft larger stacks than you're allowed to.
