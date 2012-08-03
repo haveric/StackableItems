@@ -238,7 +238,7 @@ public class SIPlayerListener implements Listener {
             if (clickData.getType() == Material.MUSHROOM_SOUP) {
                 PlayerInventory inventory = player.getInventory();
                 ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
-                if (itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
+                if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
                     scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
 
                     InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
@@ -456,28 +456,105 @@ public class SIPlayerListener implements Listener {
 
             if (event.isShiftClick()) {
                 if (rawSlot < top.getContents().length) {
-                    InventoryUtil.moveItems(player, clicked, event, 0, 36);
+                    InventoryUtil.moveItems(player, clicked, event, 0, 36, true);
                 } else {
                     if (topType == InventoryType.CRAFTING) {
                         // move from main inventory to hotbar
                         if (rawSlot >= 9 && rawSlot <= 35) {
-                            InventoryUtil.moveItems(player, clicked, event, 0, 9);
+                            InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
                         // move from hotbar to main inventory
                         } else if (rawSlot >= 36 && rawSlot <= 44) {
-                            InventoryUtil.moveItems(player, clicked, event, 9, 36);
+                            InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
                         }
                     } else if (topType == InventoryType.BREWING) {
                         // move from main inventory to hotbar
                         if (rawSlot >= 4 && rawSlot <= 30) {
-                            InventoryUtil.moveItems(player, clicked, event, 0, 9);
+                            InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
                         // move from hotbar to main inventory
                         } else if (rawSlot >= 31 && rawSlot <= 39) {
-                            InventoryUtil.moveItems(player, clicked, event, 9, 36);
+                            InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
                         }
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER) {
-                        InventoryUtil.moveItems(player, clicked, event, top);
+                        InventoryUtil.moveItems(player, clicked, event, top, true);
                     } else if (topType == InventoryType.WORKBENCH) {
-                        InventoryUtil.moveItems(player, clicked, event, top, 1, 10);
+                        InventoryUtil.moveItems(player, clicked, event, top, 1, 10, true);
+                    } else if (topType == InventoryType.FURNACE) {
+                        // TODO Handle different furnace amounts (furnaces stay 64 or use max stack sizes)
+
+                        boolean isFuel = FurnaceUtil.isFuel(clickedType);
+                        boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
+
+                        // Furnace:
+                        // 0 - Burnable
+                        // 1 - Fuel
+                        // 2 - Result
+                        ItemStack burnable = top.getItem(0);
+                        ItemStack fuel = top.getItem(1);
+
+                        boolean fuelMoved = false;
+                        if (isFuel) {
+                            if (rawSlot >= 3 && rawSlot <= 38) {
+                                if (fuel == null) {
+                                    fuelMoved = true;
+                                } else {
+                                    boolean sameType = fuel.getType() == clickedType;
+                                    boolean sameDur = fuel.getDurability() == clickedDur;
+                                    boolean sameEnchant = fuel.getEnchantments().equals(clicked.getEnchantments());
+                                    boolean noEnchant = fuel.getEnchantments() == null && clicked.getEnchantments() == null;
+
+                                    if (sameType && sameDur && (sameEnchant || noEnchant)) {
+                                        fuelMoved = true;
+                                    }
+                                }
+
+                                if (fuelMoved) {
+                                    int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 2, false);
+                                    if (left > 0) {
+                                        clicked.setAmount(left);
+                                        fuelMoved = false;
+                                    }
+                                }
+                            }
+                        }
+
+                        boolean burnableMoved = false;
+                        if (!fuelMoved && isBurnable) {
+
+                            if (rawSlot >= 3 && rawSlot <= 38) {
+                                if (burnable == null) {
+                                    burnableMoved = true;
+                                } else {
+                                    boolean sameType = burnable.getType() == clickedType;
+                                    boolean sameDur = burnable.getDurability() == clickedDur;
+                                    boolean sameEnchant = burnable.getEnchantments().equals(clicked.getEnchantments());
+                                    boolean noEnchant = burnable.getEnchantments() == null && clicked.getEnchantments() == null;
+
+                                    if (sameType && sameDur && (sameEnchant || noEnchant)) {
+                                        burnableMoved = true;
+                                    }
+                                }
+
+                                if (burnableMoved) {
+                                    int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
+                                    if (left > 0) {
+                                        clicked.setAmount(left);
+                                        burnableMoved = false;
+                                    }
+                                }
+                            }
+
+                        }
+                        // normal item;
+                        if ((!fuelMoved && !burnableMoved) || (!isFuel && !isBurnable)) {
+                            // move from main inventory to hotbar
+                            if (rawSlot >= 3 && rawSlot <= 29) {
+                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                            // move from hotbar to main inventory
+                            } else if (rawSlot >= 30 && rawSlot <= 38) {
+                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                            }
+                        }
+
                     }
                 }
             } else if (event.isLeftClick()) {

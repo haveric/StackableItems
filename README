@@ -13,6 +13,9 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon
+* Fixed(hopefully) a null pointer exception when eating food
+
 Version 0.8.5 (7/28/2012)
 * In-game commands for setting stack amounts and reloading now require players to be an op or have permission "- stackableitems.adjust"
 * Shapeless recipe support for crafting

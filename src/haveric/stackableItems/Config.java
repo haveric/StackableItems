@@ -15,6 +15,7 @@ public class Config {
 
     private static String cfgVirtualItems = "Virtual Items";
     private static String cfgFurnaceAmount = "Furnace Amount";
+    private static String cfgFurnaceUseStacks = "UseStackAmountsInFurnace";
 
     private static FileConfiguration config;
     private static File configFile;
@@ -30,6 +31,7 @@ public class Config {
     public static final int ITEM_DEFAULT = -1;
 
 
+    private static final boolean FURNACE_USE_STACKS_DEFAULT = false;
     private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
 
@@ -46,6 +48,8 @@ public class Config {
 
         configFurnacesFile = new File(plugin.getDataFolder() + "/data/furnaces.yml");
         configFurnaces = YamlConfiguration.loadConfiguration(configFurnacesFile);
+
+        config.options().copyDefaults(true);
     }
 
     public static void reload() {
@@ -68,13 +72,16 @@ public class Config {
     public static void setup() {
         boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
 
+        boolean furnaceUseStacks = config.getBoolean(cfgFurnaceUseStacks, FURNACE_USE_STACKS_DEFAULT);
+
         int furnaceAmt = config.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
-        if (configFile.length() == 0) {
+        //if (configFile.length() == 0) {
+            config.set(cfgFurnaceUseStacks, furnaceUseStacks);
             config.set(cfgVirtualItems, virtualItems);
             config.set(cfgFurnaceAmount, furnaceAmt);
             saveConfig();
-        }
+        //}
 
         if (configFurnacesFile.length() == 0) {
             saveCustomConfig(configFurnaces, configFurnacesFile);
@@ -157,6 +164,16 @@ public class Config {
 
     public static void setMaxFurnaceAmount(int newAmt) {
         config.set(cfgFurnaceAmount, newAmt);
+
+        saveConfig();
+    }
+
+    public static boolean isFurnaceUsingStacks() {
+        return config.getBoolean(cfgFurnaceUseStacks);
+    }
+
+    public static void setFurnaceUsingStacks(boolean isUsing) {
+        config.set(cfgFurnaceUseStacks, isUsing);
 
         saveConfig();
     }

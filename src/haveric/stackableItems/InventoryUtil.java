@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -44,6 +45,14 @@ public class InventoryUtil {
             int maxAmount = SIItems.getItemMax(player, type, durability);
             if (maxAmount <= Config.ITEM_DEFAULT) {
                 maxAmount = type.getMaxStackSize();
+            }
+            if (inventory.getType() == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
+                int maxFurnaceSize = Config.getMaxFurnaceAmount();
+                if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+                    maxAmount = maxFurnaceSize;
+                } else {
+                    maxAmount = 64;
+                }
             }
 
             for (int i = start; i < end; i++) {
@@ -91,6 +100,15 @@ public class InventoryUtil {
                     int maxAmount = SIItems.getItemMax(player, type, durability);
                     if (maxAmount <= Config.ITEM_DEFAULT) {
                         maxAmount = type.getMaxStackSize();
+                    }
+
+                    if (inventory.getType() == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
+                        int maxFurnaceSize = Config.getMaxFurnaceAmount();
+                        if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+                            maxAmount = maxFurnaceSize;
+                        } else {
+                            maxAmount = 64;
+                        }
                     }
 
                     int addAmount = itemToAdd.getAmount();
@@ -151,35 +169,39 @@ public class InventoryUtil {
         });
     }
 
-    public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end) {
-        moveItems(player, clicked, event, player.getInventory(), start, end);
+    public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft) {
+        moveItems(player, clicked, event, player.getInventory(), start, end, setLeft);
     }
 
-    public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory) {
-        moveItems(player, clicked, event, inventory, 0, inventory.getContents().length);
+    public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft) {
+        moveItems(player, clicked, event, inventory, 0, inventory.getContents().length, setLeft);
     }
 
-    public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end) {
+    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft) {
         event.setCancelled(true);
         ItemStack clone = clicked.clone();
         int free = getFreeSpaces(player, clone, inventory, start, end);
 
         int clickedAmount = clicked.getAmount();
 
+        int left = 0;
         if (free >= clickedAmount) {
             addItems(player, clone, inventory, start, end);
             event.setCurrentItem(null);
         } else {
-            int left = clickedAmount - free;
+            left = clickedAmount - free;
             if (left > 0) {
                 clone.setAmount(free);
                 addItems(player, clone, inventory, start, end);
 
-                ItemStack clone2 = clicked.clone();
-                clone2.setAmount(left);
-                event.setCurrentItem(clone2);
+                if (setLeft) {
+                    ItemStack clone2 = clicked.clone();
+                    clone2.setAmount(left);
+                    event.setCurrentItem(clone2);
+                }
             }
         }
+        return left;
     }
 
     public static int getCraftingAmount(Inventory inventory, Recipe recipe) {

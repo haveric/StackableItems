@@ -33,6 +33,7 @@ public class StackableItems extends JavaPlugin {
 
         SIItems.init(this);
         InventoryUtil.init(this);
+        FurnaceUtil.init(this);
 
         SIPlayers.setup();
 
