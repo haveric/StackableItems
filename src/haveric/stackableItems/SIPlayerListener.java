@@ -406,6 +406,8 @@ public class SIPlayerListener implements Listener {
             if (maxItems <= Config.ITEM_DEFAULT) {
                 maxItems = clickedType.getMaxStackSize();
             }
+            
+            
             int rawSlot = event.getRawSlot();
 
             // we want to ignore creative players (for now) TODO: handle creative players
@@ -691,8 +693,17 @@ public class SIPlayerListener implements Listener {
                         boolean sameEnchants = cursor.getEnchantments().equals(clicked.getEnchantments());
                         boolean noEnchants = cursor.getEnchantments() == null && clicked.getEnchantments() == null;
 
+                        
                         if (sameType) {
                             if (sameDur && (sameEnchants || noEnchants)) {
+                                if (top.getType() == InventoryType.FURNACE && rawSlot <= 1 && !Config.isFurnaceUsingStacks()) {
+                                    int maxFurnaceSize = Config.getMaxFurnaceAmount();
+                                    if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+                                        maxItems = maxFurnaceSize;
+                                    } else {
+                                        maxItems = 64;
+                                    }
+                                }
                                 if (maxItems > Config.ITEM_DEFAULT) {
 
                                     int total = clickedAmount + cursorAmount;
@@ -826,6 +837,14 @@ public class SIPlayerListener implements Listener {
 
                         if (sameType) {
                             if (sameDur && (sameEnchants || noEnchants)) {
+                                if (top.getType() == InventoryType.FURNACE && rawSlot <= 1 && !Config.isFurnaceUsingStacks()) {
+                                    int maxFurnaceSize = Config.getMaxFurnaceAmount();
+                                    if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+                                        maxItems = maxFurnaceSize;
+                                    } else {
+                                        maxItems = 64;
+                                    }
+                                }
                                 if (maxItems > Config.ITEM_DEFAULT) {
 
                                     int total = clickedAmount + 1;
