@@ -21,10 +21,10 @@ Coming soon
 ** 1. Is the item a fuel? If so, check the fuel slot and move it there if you can. If not a fuel or fuel slot is full->
 ** 2. Is the item used in any furnace recipe? If so, add it to the ingredient slot if possible. If not used in any recipes->
 ** 3. Move the item between hotbar and main inventory.
-
 ** Added lists/defaultFuels.txt and lists/customFuels.txt
 ** /lists/defaultFuels.txt - This is a default fuel list that I provide and can update between versions (there is also a version # to this file which is listed at the top). This file will be used if customFuels.txt is empty
 ** /lists/customFuels.txt - If an update comes out that adds more fuels and I disappear off the face of the planet or you have another plugin that uses something else as a fuel, this can be used to keep updated or add custom fuels. If there is anything in this file, it will override anything in defaultFuels.
+* No longer overriding armor in crafting inventory
 
 Version 0.8.5 (7/28/2012)
 * In-game commands for setting stack amounts and reloading now require players to be an op or have permission "- stackableitems.adjust"

@@ -391,7 +391,7 @@ public class SIPlayerListener implements Listener {
                 }
             }
         // prevent clicks outside the inventory area or within result slots
-        } else if (cursor != null && clicked != null && slotType != SlotType.RESULT && slotType != SlotType.ARMOR) {
+        } else if (cursor != null && clicked != null && slotType != SlotType.RESULT) {
             Player player = (Player) event.getWhoClicked();
 
             Material cursorType = cursor.getType();
@@ -463,10 +463,14 @@ public class SIPlayerListener implements Listener {
                     if (topType == InventoryType.CRAFTING) {
                         // move from main inventory to hotbar
                         if (rawSlot >= 9 && rawSlot <= 35) {
-                            InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                            if (!ArmorUtil.isArmor(clickedType)) {
+                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                            }
                         // move from hotbar to main inventory
                         } else if (rawSlot >= 36 && rawSlot <= 44) {
-                            InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                            if (!ArmorUtil.isArmor(clickedType)) {
+                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                            }
                         }
                     } else if (topType == InventoryType.BREWING) {
                         // move from main inventory to hotbar
@@ -481,8 +485,6 @@ public class SIPlayerListener implements Listener {
                     } else if (topType == InventoryType.WORKBENCH) {
                         InventoryUtil.moveItems(player, clicked, event, top, 1, 10, true);
                     } else if (topType == InventoryType.FURNACE) {
-                        // TODO Handle different furnace amounts (furnaces stay 64 or use max stack sizes)
-
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);
                         boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
 
