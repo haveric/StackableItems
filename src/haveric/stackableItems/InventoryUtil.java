@@ -207,16 +207,15 @@ public class InventoryUtil {
     public static int getCraftingAmount(Inventory inventory, Recipe recipe) {
         int amt = -1;
 
-        //plugin.log.info("Item: " + recipe.getResult().getType());
         List<Recipe> recipes = plugin.getServer().getRecipesFor(recipe.getResult());
-        //plugin.log.info("Result: " + recipe.getResult());
+
         for (Recipe rec : recipes) {
             if (rec instanceof ShapedRecipe) {
-                //plugin.log.info("Shaped");
+
 
                 ShapedRecipe shaped = (ShapedRecipe) rec;
                 Map<Character, ItemStack> itemMap = shaped.getIngredientMap();
-                //plugin.log.info("Shaped: " + shaped.getResult());
+
                 String[] shape = shaped.getShape();
                 int width = shape.length;
                 int height = shape[0].length();

@@ -144,24 +144,26 @@ public class SIPlayerListener implements Listener {
 
             if (event.isShiftClick()) {
                 CraftingInventory inventory = event.getInventory();
-
+                
                 int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
                 int actualCraft = amtCanCraft * recipeAmount;
-                //plugin.log.info("CanCraft: " + amtCanCraft + " x " + recipeAmount + " = " + actualCraft);
 
                 int freeSpaces = InventoryUtil.getFreeSpaces(player, craftedItem);
                 ItemStack clone = craftedItem.clone();
 
-                if (freeSpaces > actualCraft) {
+                // custom repairing
+                if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
+                    // TODO: handle custom repairing to allow stacking
+                    // TODO: don't let people repair two fully repaired items.. that's just stupid
+                } else if (freeSpaces > actualCraft) {
                     event.setCancelled(true);
-                    //event.setResult(Result.ALLOW);
 
                     InventoryUtil.removeFromCrafting(inventory, amtCanCraft);
                     clone.setAmount(actualCraft);
                     InventoryUtil.addItems(player, clone);
                 } else {
                     event.setCancelled(true);
-                    //event.setResult(Result.ALLOW);
+                    
                     InventoryUtil.removeFromCrafting(inventory, freeSpaces);
                     clone.setAmount(freeSpaces);
                     InventoryUtil.addItems(player, clone);
@@ -232,16 +234,23 @@ public class SIPlayerListener implements Listener {
     @EventHandler
     public void eatFood(FoodLevelChangeEvent event) {
         Player player = (Player) event.getEntity();
-
         PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
-        if (clickData.getAmount() > 1) {
-            if (clickData.getType() == Material.MUSHROOM_SOUP) {
-                PlayerInventory inventory = player.getInventory();
-                ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
-                if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
-                    scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
-
-                    InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
+        
+        double foodLevel = event.getFoodLevel();
+        //plugin.log.info("Food: " + foodLevel + ", Last: " + clickData.getLastFoodLevel());
+        if (foodLevel > clickData.getLastFoodLevel()) {
+            clickData.setLastFoodLevel(foodLevel);
+            
+            if (clickData.getAmount() > 1) {
+                if (clickData.getType() == Material.MUSHROOM_SOUP) {
+                    PlayerInventory inventory = player.getInventory();
+                    ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
+                    if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
+                        scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
+                        //plugin.log.info("Left: " + (clickData.getAmount() - 1));
+    
+                        InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
+                    }
                 }
             }
         }
@@ -463,12 +472,12 @@ public class SIPlayerListener implements Listener {
                     if (topType == InventoryType.CRAFTING) {
                         // move from main inventory to hotbar
                         if (rawSlot >= 9 && rawSlot <= 35) {
-                            if (!ArmorUtil.isArmor(clickedType)) {
+                            if (!ItemUtil.isArmor(clickedType)) {
                                 InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
                             }
                         // move from hotbar to main inventory
                         } else if (rawSlot >= 36 && rawSlot <= 44) {
-                            if (!ArmorUtil.isArmor(clickedType)) {
+                            if (!ItemUtil.isArmor(clickedType)) {
                                 InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
                             }
                         }
@@ -1018,7 +1027,7 @@ public class SIPlayerListener implements Listener {
         int amount = holding.getAmount();
 
         if (amount > 1) {
-            if (!toolCheck || ToolUtil.isTool(holding.getType())) {
+            if (!toolCheck || ItemUtil.isTool(holding.getType())) {
                 if (!Config.isVirtualItemsEnabled()) {
                     ItemStack move = holding.clone();
                     move.setAmount(amount - 1);
