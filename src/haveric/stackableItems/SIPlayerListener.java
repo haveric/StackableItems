@@ -979,6 +979,7 @@ public class SIPlayerListener implements Listener {
     
     private void scheduleUpdateInventory(final Player player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @SuppressWarnings("deprecation")
             @Override public void run() {
                 player.updateInventory();
             }
