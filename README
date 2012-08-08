@@ -27,6 +27,7 @@ Coming soon
 * No longer overriding armor in crafting inventory
 * No longer overriding repairing recipes
 * Mushroom soup will not be fake consumed when you lose hunger
+* Fixed bucket stacking
 
 Version 0.8.5 (7/28/2012)
 * In-game commands for setting stack amounts and reloading now require players to be an op or have permission "- stackableitems.adjust"

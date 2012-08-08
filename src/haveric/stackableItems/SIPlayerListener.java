@@ -204,8 +204,21 @@ public class SIPlayerListener implements Listener {
     @EventHandler
     public void fillBucket(PlayerBucketFillEvent event) {
         Player player = event.getPlayer();
-        int amount = player.getInventory().getItemInHand().getAmount();
+        
+        ItemStack holding = player.getInventory().getItemInHand();
+        int amount = holding.getAmount();
+        
+        int slot = player.getInventory().getHeldItemSlot();
+        
         if (amount > 1) {
+            ItemStack clone = event.getItemStack().clone();
+            
+            scheduleReplaceItem(player, slot, clone);
+            scheduleUpdateInventory(player);
+            
+            event.setCancelled(true);
+            event.getBlockClicked().setType(Material.AIR);
+            
             InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, amount - 1));
         }
     }
@@ -960,6 +973,14 @@ public class SIPlayerListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
                 player.getInventory().setItem(slot, stack);
+            }
+        });
+    }
+    
+    private void scheduleUpdateInventory(final Player player) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override public void run() {
+                player.updateInventory();
             }
         });
     }
