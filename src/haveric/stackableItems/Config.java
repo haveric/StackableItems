@@ -13,9 +13,9 @@ public class Config {
 
     private static StackableItems plugin;
 
-    private static String cfgVirtualItems = "Virtual Items";
-    private static String cfgFurnaceAmount = "Furnace Amount";
-    private static String cfgFurnaceUseStacks = "UseStackAmountsInFurnace";
+    private static String cfgVirtualItems = "Virtual_Items";
+    private static String cfgFurnaceAmount = "Furnace_Amount";
+    private static String cfgFurnaceUseStacks = "Use_Stack_Amounts_In_Furnace";
 
     private static FileConfiguration config;
     private static File configFile;
@@ -42,7 +42,7 @@ public class Config {
      */
     public static void init(StackableItems si) {
         plugin = si;
-        configFile = new File(plugin.getDataFolder() + "/config.yml");
+        configFile = new File(plugin.getDataFolder() + "/options.yml");
         config = YamlConfiguration.loadConfiguration(configFile);
 
 
