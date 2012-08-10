@@ -11,8 +11,8 @@ public class Commands implements CommandExecutor {
 
     private StackableItems plugin;
 
-    private static String cmdMain = "si";
-    private static String cmdMainAlt = "stackableitems";
+    private static String cmdMain = "stackableitems";
+    private static String cmdMainAlt = "si";
     private static String cmdHelp = "help";
     private static String cmdReload = "reload";
 
