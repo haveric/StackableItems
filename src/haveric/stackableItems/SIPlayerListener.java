@@ -214,7 +214,7 @@ public class SIPlayerListener implements Listener {
             ItemStack clone = event.getItemStack().clone();
             
             scheduleReplaceItem(player, slot, clone);
-            scheduleUpdateInventory(player);
+            InventoryUtil.updateInventory(player);
             
             event.setCancelled(true);
             event.getBlockClicked().setType(Material.AIR);
@@ -479,6 +479,7 @@ public class SIPlayerListener implements Listener {
             //InventoryType botType = event.getView().getBottomInventory().getType();
 
             if (event.isShiftClick()) {
+                
                 if (rawSlot < top.getContents().length) {
                     InventoryUtil.moveItems(player, clicked, event, 0, 36, true);
                 } else {
@@ -586,18 +587,19 @@ public class SIPlayerListener implements Listener {
             } else if (event.isLeftClick()) {
                 if (cursorEmpty && !slotEmpty && clickedAmount <= clickedType.getMaxStackSize() && maxItems > SIItems.ITEM_DEFAULT && maxItems < clickedAmount) {
                     if (!virtualClicked) {
-                        //player.sendMessage("Pick up stack with empty hand.");
+                        //player.sendMessage("Pick up stack with empty hand. Less than max.");
                         if (clickedAmount <= maxItems) {
                             event.setCursor(clicked.clone());
-                            event.setCurrentItem(new ItemStack(Material.AIR));
+                            event.setCurrentItem(null);
                             event.setResult(Result.ALLOW);
                         } else {
                             ItemStack clone = clicked.clone();
                             clone.setAmount(maxItems);
                             event.setCursor(clone);
-
-                            clone.setAmount(clickedAmount - maxItems);
-                            event.setCurrentItem(clone);
+                            
+                            ItemStack clone2 = clicked.clone();
+                            clone2.setAmount(clickedAmount - maxItems);
+                            event.setCurrentItem(clone2);
                             event.setResult(Result.ALLOW);
                         }
                     }
@@ -609,19 +611,21 @@ public class SIPlayerListener implements Listener {
                         // Set cursor to the clicked stack
                         VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
                     } else {
-                        //player.sendMessage("Pick up stack with empty hand.");
+                        //player.sendMessage("Pick up stack with empty hand. Greater than max.");
                         if (clickedAmount <= maxItems) {
                             event.setCursor(clicked.clone());
-                            event.setCurrentItem(new ItemStack(Material.AIR));
+                            event.setCurrentItem(null);
                             event.setResult(Result.ALLOW);
                         } else {
                             ItemStack clone = clicked.clone();
                             clone.setAmount(maxItems);
                             event.setCursor(clone);
 
-                            clone.setAmount(clickedAmount - maxItems);
-                            event.setCurrentItem(clone);
+                            ItemStack clone2 = clicked.clone();
+                            clone2.setAmount(clickedAmount - maxItems);
+                            event.setCurrentItem(clone2);
                             event.setResult(Result.ALLOW);
+                            InventoryUtil.updateInventory(player);
                         }
                     }
                 // Drop a stack into an empty slot
@@ -632,17 +636,16 @@ public class SIPlayerListener implements Listener {
                         // Set slot to the cursor stack
                         VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
                         if (cursorAmount > 64) {
-
-                            event.setCursor(new ItemStack(Material.AIR));
+                            event.setCursor(null);
                             event.setCurrentItem(cursor.clone());
-
                             event.setResult(Result.ALLOW);
                         }
                     } else {
                         //player.sendMessage("Drop a stack into an empty slot");
                         event.setCurrentItem(cursor.clone());
-                        event.setCursor(new ItemStack(Material.AIR));
+                        event.setCursor(null);
                         event.setResult(Result.ALLOW);
+                        InventoryUtil.updateInventory(player);
                     }
                 // Combine two items
                 } else if (!cursorEmpty && !slotEmpty) {
@@ -680,7 +683,7 @@ public class SIPlayerListener implements Listener {
 
                                 cursor.setAmount(clickedAmount + cursorAmount);
                                 event.setCurrentItem(cursor.clone());
-                                event.setCursor(new ItemStack(Material.AIR));
+                                event.setCursor(null);
 
                                 event.setResult(Result.ALLOW);
                             }
@@ -698,7 +701,7 @@ public class SIPlayerListener implements Listener {
                                 VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
                                 VirtualItemConfig.setVirtualItemStack(player, -1, null);
 
-                                event.setCursor(new ItemStack(Material.AIR));
+                                event.setCursor(null);
 
                                 cursor.setAmount(clickedAmount + cursorAmount);
 
@@ -729,7 +732,6 @@ public class SIPlayerListener implements Listener {
                                     }
                                 }
                                 if (maxItems > Config.ITEM_DEFAULT) {
-
                                     int total = clickedAmount + cursorAmount;
                                     if (total <= maxItems) {
                                         if (total > clicked.getMaxStackSize()) {
@@ -738,20 +740,26 @@ public class SIPlayerListener implements Listener {
                                             s.addUnsafeEnchantments(cursor.getEnchantments());
                                             event.setCurrentItem(s);
 
-                                            event.setCursor(new ItemStack(Material.AIR));
+                                            event.setCursor(null);
                                             event.setResult(Result.ALLOW);
                                         }
                                     } else {
                                         //player.sendMessage("Combine two stacks partially");
-                                        ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
-                                        s.addUnsafeEnchantments(cursor.getEnchantments());
-                                        event.setCurrentItem(s);
-
-                                        s = new ItemStack(cursorType, total - maxItems, cursorDur);
-                                        s.addUnsafeEnchantments(cursor.getEnchantments());
-                                        event.setCursor(s);
-
-                                        event.setResult(Result.ALLOW);
+                                        if (total - maxItems > maxItems) {
+                                            event.setCancelled(true);
+                                        } else {
+                                            ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
+                                            s.addUnsafeEnchantments(cursor.getEnchantments());
+                                            event.setCurrentItem(s);
+                                            
+                                            ItemStack s2 = new ItemStack(cursorType, total - maxItems, cursorDur);
+                                            s2.addUnsafeEnchantments(cursor.getEnchantments());
+                                            event.setCursor(s2);
+                                            
+                                            event.setResult(Result.ALLOW);
+                                            InventoryUtil.updateInventory(player);
+                                        }
+                                        
                                     }
                                 }
                             // Create a virtual stack out of two different items
@@ -761,7 +769,7 @@ public class SIPlayerListener implements Listener {
                                 vis.addItemStack(cursor.clone());
                                 vis.addItemStack(clicked.clone());
                                 VirtualItemConfig.setVirtualItemStack(player, slot, vis);
-                                event.setCursor(new ItemStack(Material.AIR));
+                                event.setCursor(null);
 
                                 cursor.setAmount(clickedAmount + cursorAmount);
 
@@ -822,7 +830,7 @@ public class SIPlayerListener implements Listener {
 
                                 cursor.setAmount(clickedAmount + cursorAmount);
                                 event.setCurrentItem(cursor.clone());
-                                event.setCursor(new ItemStack(Material.AIR));
+                                event.setCursor(null);
 
                                 event.setResult(Result.ALLOW);
                             }
@@ -840,7 +848,7 @@ public class SIPlayerListener implements Listener {
                                 VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
                                 VirtualItemConfig.setVirtualItemStack(player, -1, null);
 
-                                event.setCursor(new ItemStack(Material.AIR));
+                                event.setCursor(null);
 
                                 cursor.setAmount(clickedAmount + cursorAmount);
 
@@ -881,7 +889,7 @@ public class SIPlayerListener implements Listener {
 
                                             event.setCurrentItem(clone);
                                             if (cursorAmount == 1) {
-                                                event.setCursor(new ItemStack(Material.AIR));
+                                                event.setCursor(null);
                                             } else {
                                                 cursor.setAmount(cursorAmount - 1);
                                             }
@@ -898,7 +906,7 @@ public class SIPlayerListener implements Listener {
                                 vis.addItemStack(cursor.clone());
                                 vis.addItemStack(clicked.clone());
                                 VirtualItemConfig.setVirtualItemStack(player, slot, vis);
-                                event.setCursor(new ItemStack(Material.AIR));
+                                event.setCursor(null);
 
                                 cursor.setAmount(clickedAmount + cursorAmount);
 
@@ -943,20 +951,21 @@ public class SIPlayerListener implements Listener {
                         int maxPickup = (int) Math.round((clickedAmount + 0.5) / 2);
 
                         ItemStack clone = clicked.clone();
+                        ItemStack clone2 = clicked.clone();
 
                         if (maxPickup < maxItems) {
                             clone.setAmount(maxPickup);
                             event.setCursor(clone);
-
-                            clone.setAmount(clickedAmount - maxPickup);
-                            event.setCurrentItem(clone);
+                            
+                            clone2.setAmount(clickedAmount - maxPickup);
+                            event.setCurrentItem(clone2);
                             event.setResult(Result.ALLOW);
                         } else {
                             clone.setAmount(maxItems);
                             event.setCursor(clone);
 
-                            clone.setAmount(clickedAmount - maxItems);
-                            event.setCurrentItem(clone);
+                            clone2.setAmount(clickedAmount - maxItems);
+                            event.setCurrentItem(clone2);
                             event.setResult(Result.ALLOW);
                         }
                     }
@@ -973,15 +982,6 @@ public class SIPlayerListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
                 player.getInventory().setItem(slot, stack);
-            }
-        });
-    }
-    
-    private void scheduleUpdateInventory(final Player player) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @SuppressWarnings("deprecation")
-            @Override public void run() {
-                player.updateInventory();
             }
         });
     }

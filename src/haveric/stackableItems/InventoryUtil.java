@@ -333,4 +333,13 @@ public class InventoryUtil {
             }
         });
     }
+    
+    public static void updateInventory(final Player player) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @SuppressWarnings("deprecation")
+            @Override public void run() {
+                player.updateInventory();
+            }
+        });
+    }
 }
