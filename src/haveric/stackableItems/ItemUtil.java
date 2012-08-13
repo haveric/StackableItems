@@ -42,7 +42,7 @@ public class ItemUtil {
 
         return isTool;
     }
-    
+
     public static boolean isArmor(Material mat) {
         boolean isArmor = false;
 
@@ -76,10 +76,10 @@ public class ItemUtil {
 
         return isArmor;
     }
-    
-    public static boolean isRepairable(Material mat){
+
+    public static boolean isRepairable(Material mat) {
         boolean repairable = false;
-        
+
         if (isTool(mat) || isArmor(mat)) {
             repairable = true;
         } else {
@@ -89,12 +89,11 @@ public class ItemUtil {
                 case SHEARS:
                     repairable = true;
                     break;
-                    
+
                 default:
                     break;
             }
         }
-        
         return repairable;
     }
 }

@@ -16,6 +16,8 @@ public class Config {
     private static String cfgVirtualItems = "Virtual_Items";
     private static String cfgFurnaceAmount = "Furnace_Amount";
     private static String cfgFurnaceUseStacks = "Use_Stack_Amounts_In_Furnace";
+    private static String cfgMerchantUseStacks = "Use_Stack_Amounts_In_Trading";
+    private static String cfgCraftingUseStacks = "Use_Stack_Amounts_In_Crafting";
 
     private static FileConfiguration config;
     private static File configFile;
@@ -32,6 +34,8 @@ public class Config {
 
 
     private static final boolean FURNACE_USE_STACKS_DEFAULT = false;
+    private static final boolean MERCHANT_USE_STACKS_DEFAULT = false;
+    private static final boolean CRAFTING_USE_STACKS_DEFAULT = false;
     private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
 
@@ -73,11 +77,15 @@ public class Config {
         boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
 
         boolean furnaceUseStacks = config.getBoolean(cfgFurnaceUseStacks, FURNACE_USE_STACKS_DEFAULT);
+        boolean merchantUseStacks = config.getBoolean(cfgMerchantUseStacks, MERCHANT_USE_STACKS_DEFAULT);
+        boolean craftingUseStacks = config.getBoolean(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
 
         int furnaceAmt = config.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
         //if (configFile.length() == 0) {
             config.set(cfgFurnaceUseStacks, furnaceUseStacks);
+            config.set(cfgMerchantUseStacks, merchantUseStacks);
+            config.set(cfgCraftingUseStacks, craftingUseStacks);
             config.set(cfgVirtualItems, virtualItems);
             config.set(cfgFurnaceAmount, furnaceAmt);
             saveConfig();
@@ -173,6 +181,26 @@ public class Config {
     }
 
     public static void setFurnaceUsingStacks(boolean isUsing) {
+        config.set(cfgFurnaceUseStacks, isUsing);
+
+        saveConfig();
+    }
+
+    public static boolean isMerchantUsingStacks() {
+        return config.getBoolean(cfgFurnaceUseStacks);
+    }
+
+    public static void setMerchantUsingStacks(boolean isUsing) {
+        config.set(cfgFurnaceUseStacks, isUsing);
+
+        saveConfig();
+    }
+
+    public static boolean isCraftingUsingStacks() {
+        return config.getBoolean(cfgFurnaceUseStacks);
+    }
+
+    public static void setCraftingUsingStacks(boolean isUsing) {
         config.set(cfgFurnaceUseStacks, isUsing);
 
         saveConfig();

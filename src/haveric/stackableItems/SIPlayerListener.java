@@ -144,7 +144,7 @@ public class SIPlayerListener implements Listener {
 
             if (event.isShiftClick()) {
                 CraftingInventory inventory = event.getInventory();
-                
+
                 int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
                 int actualCraft = amtCanCraft * recipeAmount;
 
@@ -163,7 +163,7 @@ public class SIPlayerListener implements Listener {
                     InventoryUtil.addItems(player, clone);
                 } else {
                     event.setCancelled(true);
-                    
+
                     InventoryUtil.removeFromCrafting(inventory, freeSpaces);
                     clone.setAmount(freeSpaces);
                     InventoryUtil.addItems(player, clone);
@@ -204,21 +204,21 @@ public class SIPlayerListener implements Listener {
     @EventHandler
     public void fillBucket(PlayerBucketFillEvent event) {
         Player player = event.getPlayer();
-        
+
         ItemStack holding = player.getInventory().getItemInHand();
         int amount = holding.getAmount();
-        
+
         int slot = player.getInventory().getHeldItemSlot();
-        
+
         if (amount > 1) {
             ItemStack clone = event.getItemStack().clone();
-            
+
             scheduleReplaceItem(player, slot, clone);
             InventoryUtil.updateInventory(player);
-            
+
             event.setCancelled(true);
             event.getBlockClicked().setType(Material.AIR);
-            
+
             InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, amount - 1));
         }
     }
@@ -248,12 +248,12 @@ public class SIPlayerListener implements Listener {
     public void eatFood(FoodLevelChangeEvent event) {
         Player player = (Player) event.getEntity();
         PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
-        
+
         double foodLevel = event.getFoodLevel();
         //plugin.log.info("Food: " + foodLevel + ", Last: " + clickData.getLastFoodLevel());
         if (foodLevel > clickData.getLastFoodLevel()) {
             clickData.setLastFoodLevel(foodLevel);
-            
+
             if (clickData.getAmount() > 1) {
                 if (clickData.getType() == Material.MUSHROOM_SOUP) {
                     PlayerInventory inventory = player.getInventory();
@@ -261,7 +261,7 @@ public class SIPlayerListener implements Listener {
                     if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
                         scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
                         //plugin.log.info("Left: " + (clickData.getAmount() - 1));
-    
+
                         InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
                     }
                 }
@@ -428,8 +428,7 @@ public class SIPlayerListener implements Listener {
             if (maxItems <= Config.ITEM_DEFAULT) {
                 maxItems = clickedType.getMaxStackSize();
             }
-            
-            
+
             int rawSlot = event.getRawSlot();
 
             // we want to ignore creative players (for now) TODO: handle creative players
@@ -437,7 +436,13 @@ public class SIPlayerListener implements Listener {
                 return;
             }
 
-            if (topType == InventoryType.ENCHANTING) {
+            if (topType == InventoryType.MERCHANT) {
+                // TODO: techincally a result slot, handle accordingly when bukkit fixes the issue
+                if (rawSlot == 2) {
+                    return;
+                }
+            // TODO: Handle enchanting and brewing like furnaces, moving the correct items into the correct slots
+            } else if (topType == InventoryType.ENCHANTING) {
                 top.setMaxStackSize(1);
                 if (rawSlot == 0) {
                     if (!event.isShiftClick()) {
@@ -479,7 +484,6 @@ public class SIPlayerListener implements Listener {
             //InventoryType botType = event.getView().getBottomInventory().getType();
 
             if (event.isShiftClick()) {
-                
                 if (rawSlot < top.getContents().length) {
                     InventoryUtil.moveItems(player, clicked, event, 0, 36, true);
                 } else {
@@ -503,10 +507,19 @@ public class SIPlayerListener implements Listener {
                         } else if (rawSlot >= 31 && rawSlot <= 39) {
                             InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
                         }
-                    } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER) {
+                    } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST) {
                         InventoryUtil.moveItems(player, clicked, event, top, true);
                     } else if (topType == InventoryType.WORKBENCH) {
                         InventoryUtil.moveItems(player, clicked, event, top, 1, 10, true);
+                    // TODO Improve merchant shift click handling (Based on current recipe)
+                    } else if (topType == InventoryType.MERCHANT) {
+                        // move from main inventory to hotbar
+                        if (rawSlot >= 3 && rawSlot <= 29) {
+                            InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                        // move from hotbar to main inventory
+                        } else if (rawSlot >= 30 && rawSlot <= 38) {
+                            InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                        }
                     } else if (topType == InventoryType.FURNACE) {
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);
                         boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
@@ -596,7 +609,7 @@ public class SIPlayerListener implements Listener {
                             ItemStack clone = clicked.clone();
                             clone.setAmount(maxItems);
                             event.setCursor(clone);
-                            
+
                             ItemStack clone2 = clicked.clone();
                             clone2.setAmount(clickedAmount - maxItems);
                             event.setCurrentItem(clone2);
@@ -720,7 +733,6 @@ public class SIPlayerListener implements Listener {
                         boolean sameEnchants = cursor.getEnchantments().equals(clicked.getEnchantments());
                         boolean noEnchants = cursor.getEnchantments() == null && clicked.getEnchantments() == null;
 
-                        
                         if (sameType) {
                             if (sameDur && (sameEnchants || noEnchants)) {
                                 if (top.getType() == InventoryType.FURNACE && rawSlot <= 1 && !Config.isFurnaceUsingStacks()) {
@@ -730,6 +742,11 @@ public class SIPlayerListener implements Listener {
                                     } else {
                                         maxItems = 64;
                                     }
+                                } else if (top.getType() == InventoryType.MERCHANT && rawSlot <= 1 && !Config.isMerchantUsingStacks()) {
+                                    maxItems = 64;
+                                } else if (((top.getType() == InventoryType.CRAFTING && rawSlot >= 1 && rawSlot <= 4) || 
+                                        (top.getType() == InventoryType.WORKBENCH) && rawSlot >= 1 && rawSlot <= 9) && !Config.isCraftingUsingStacks()) {
+                                    maxItems = 64;
                                 }
                                 if (maxItems > Config.ITEM_DEFAULT) {
                                     int total = clickedAmount + cursorAmount;
@@ -751,15 +768,14 @@ public class SIPlayerListener implements Listener {
                                             ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
                                             s.addUnsafeEnchantments(cursor.getEnchantments());
                                             event.setCurrentItem(s);
-                                            
+
                                             ItemStack s2 = new ItemStack(cursorType, total - maxItems, cursorDur);
                                             s2.addUnsafeEnchantments(cursor.getEnchantments());
                                             event.setCursor(s2);
-                                            
+
                                             event.setResult(Result.ALLOW);
                                             InventoryUtil.updateInventory(player);
                                         }
-                                        
                                     }
                                 }
                             // Create a virtual stack out of two different items
@@ -876,6 +892,10 @@ public class SIPlayerListener implements Listener {
                                     } else {
                                         maxItems = 64;
                                     }
+                                } else if (top.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
+                                    maxItems = 64;
+                                } else if ((top.getType() == InventoryType.CRAFTING || top.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
+                                    maxItems = 64;
                                 }
                                 if (maxItems > Config.ITEM_DEFAULT) {
 
@@ -956,7 +976,7 @@ public class SIPlayerListener implements Listener {
                         if (maxPickup < maxItems) {
                             clone.setAmount(maxPickup);
                             event.setCursor(clone);
-                            
+
                             clone2.setAmount(clickedAmount - maxPickup);
                             event.setCurrentItem(clone2);
                             event.setResult(Result.ALLOW);

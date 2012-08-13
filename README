@@ -13,10 +13,9 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon
+Version 0.8.6 (8/12/2012)
 * Fixed(hopefully) a null pointer exception when eating food
 * Shift clicking support in furnaces
-** New config option: useStackAmountsInFurnace - True: Players can only put in the amount they are allowed, False: Furnaces hold their normal amount, no matter what players can stack to
 ** Overrides default shift clicking to work as follows:
 ** 1. Is the item a fuel? If so, check the fuel slot and move it there if you can. If not a fuel or fuel slot is full->
 ** 2. Is the item used in any furnace recipe? If so, add it to the ingredient slot if possible. If not used in any recipes->
@@ -32,6 +31,10 @@ Coming soon
 ** options renamed to avoid spaces
 * Switched cmdMain and cmdMainAlt - Should fix conflicts with OpenInv
 * Fixed picking up and dropping items causing them to be removed/glitchy.
+* Fixed shift clicking in ender chests and villager trading.
+* Any clicking on the villager trading Result slot will use vanilla behavior to prevent item loss/duplication. (until Bukkit implements a trading api)
+* New config option: useStackAmountsInFurnace - True: Players can only put in the amount they are allowed, False: Furnaces hold their normal amount, no matter what players can stack to
+** Also useStackAmountsInTrading and useStackAmountsInCrafting. (False is defaulted for all three) (These may eventually turn into the way chests will be implemented, as in a unique file for each that allows setting all items as defaultItems.yml does)
 
 Version 0.8.5 (7/28/2012)
 * In-game commands for setting stack amounts and reloading now require players to be an op or have permission "- stackableitems.adjust"

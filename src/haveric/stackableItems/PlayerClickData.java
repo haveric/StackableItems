@@ -67,11 +67,11 @@ public class PlayerClickData {
     public void setLastBlockLocation(Location loc) {
         lastBlockLoc = loc;
     }
-    
+
     public double getLastFoodLevel() {
         return lastFoodLevel;
     }
-    
+
     public void setLastFoodLevel(double foodLevel) {
         lastFoodLevel = foodLevel;
     }

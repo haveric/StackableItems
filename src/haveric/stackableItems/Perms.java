@@ -41,7 +41,7 @@ public class Perms {
     public static String getAdjustString() {
         return adjust;
     }
-    
+
     public static boolean groupExists(String group) {
         for (String g : perm.getGroups()) {
             if (g.equals(group)) {

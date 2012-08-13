@@ -53,6 +53,10 @@ public class InventoryUtil {
                 } else {
                     maxAmount = 64;
                 }
+            } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
+                maxAmount = 64;
+            } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
+                maxAmount = 64;
             }
 
             for (int i = start; i < end; i++) {
@@ -109,6 +113,10 @@ public class InventoryUtil {
                         } else {
                             maxAmount = 64;
                         }
+                    } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
+                        maxAmount = 64;
+                    } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
+                        maxAmount = 64;
                     }
 
                     int addAmount = itemToAdd.getAmount();
@@ -333,7 +341,7 @@ public class InventoryUtil {
             }
         });
     }
-    
+
     public static void updateInventory(final Player player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @SuppressWarnings("deprecation")
