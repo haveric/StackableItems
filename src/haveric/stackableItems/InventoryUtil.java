@@ -37,8 +37,15 @@ public class InventoryUtil {
 
     public static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory, int start, int end) {
         int free = 0;
-
-        if (start < end && end <= inventory.getContents().length) {
+        
+        int inventoryLength = -1;
+        if (inventory.getType() == InventoryType.PLAYER) {
+            inventoryLength = 40;
+        } else {
+            inventoryLength = inventory.getContents().length;
+        }
+        
+        if (start < end && end <= inventoryLength && inventoryLength > -1) {
             Material type = itemToCheck.getType();
             short durability = itemToCheck.getDurability();
 
@@ -53,6 +60,10 @@ public class InventoryUtil {
                 } else {
                     maxAmount = 64;
                 }
+            } else if (inventory.getType() == InventoryType.ENCHANTING) {
+                maxAmount = 1;
+            } else if (inventory.getType() == InventoryType.PLAYER && start >= 36 && end <= 40) {
+                maxAmount = 1;
             } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
                 maxAmount = 64;
             } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
@@ -97,7 +108,14 @@ public class InventoryUtil {
     public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
-                if (start < end && end <= inventory.getContents().length) {
+                int inventoryLength = -1;
+                if (inventory.getType() == InventoryType.PLAYER) {
+                    inventoryLength = 40;
+                } else {
+                    inventoryLength = inventory.getContents().length;
+                }
+                
+                if (start < end && end <= inventoryLength && inventoryLength > -1) {
                     Material type = itemToAdd.getType();
                     short durability = itemToAdd.getDurability();
 
@@ -113,12 +131,16 @@ public class InventoryUtil {
                         } else {
                             maxAmount = 64;
                         }
+                    } else if (inventory.getType() == InventoryType.ENCHANTING) {
+                        maxAmount = 1;
+                    } else if (inventory.getType() == InventoryType.PLAYER && start >= 36 && end <= 40) {
+                        maxAmount = 1;
                     } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
                         maxAmount = 64;
                     } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
                         maxAmount = 64;
                     }
-
+                    
                     int addAmount = itemToAdd.getAmount();
                     // Add to existing stacks
                     for (int i = start; i < end && addAmount > 0; i++) {
@@ -177,12 +199,12 @@ public class InventoryUtil {
         });
     }
 
-    public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft) {
-        moveItems(player, clicked, event, player.getInventory(), start, end, setLeft);
+    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft) {
+        return moveItems(player, clicked, event, player.getInventory(), start, end, setLeft);
     }
 
-    public static void moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft) {
-        moveItems(player, clicked, event, inventory, 0, inventory.getContents().length, setLeft);
+    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft) {
+        return moveItems(player, clicked, event, inventory, 0, inventory.getContents().length, setLeft);
     }
 
     public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft) {
@@ -209,6 +231,7 @@ public class InventoryUtil {
                 }
             }
         }
+        updateInventory(player);
         return left;
     }
 

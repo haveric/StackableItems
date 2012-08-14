@@ -4,83 +4,195 @@ import org.bukkit.Material;
 
 public class ItemUtil {
 
-    public static boolean isTool(Material mat) {
-        boolean isTool = false;
-
+    private static boolean isAxe(Material mat) {
+        boolean isAxe = false;
+        
         switch(mat) {
             case WOOD_AXE:
-            case WOOD_HOE:
-            case WOOD_PICKAXE:
-            case WOOD_SPADE:
-            case WOOD_SWORD:
             case STONE_AXE:
-            case STONE_HOE:
-            case STONE_PICKAXE:
-            case STONE_SPADE:
-            case STONE_SWORD:
             case IRON_AXE:
-            case IRON_HOE:
-            case IRON_PICKAXE:
-            case IRON_SPADE:
-            case IRON_SWORD:
             case GOLD_AXE:
-            case GOLD_HOE:
-            case GOLD_PICKAXE:
-            case GOLD_SPADE:
-            case GOLD_SWORD:
             case DIAMOND_AXE:
-            case DIAMOND_HOE:
-            case DIAMOND_PICKAXE:
-            case DIAMOND_SPADE:
-            case DIAMOND_SWORD:
-                isTool = true;
+                isAxe = true;
                 break;
-
             default:
                 break;
         }
+        return isAxe;
+    }
+    
+    private static boolean isHoe(Material mat) {
+        boolean isHoe = false;
+        
+        switch(mat) {
+            case WOOD_HOE:
+            case STONE_HOE:
+            case IRON_HOE:
+            case GOLD_HOE:
+            case DIAMOND_HOE:
+                isHoe = true;
+                break;
+            default:
+                break;
+        }
+        return isHoe;
+    }
+    
+    private static boolean isPickaxe(Material mat) {
+        boolean isPickaxe = false;
+        
+        switch(mat) {
+            case WOOD_PICKAXE:
+            case STONE_PICKAXE:
+            case IRON_PICKAXE:
+            case GOLD_PICKAXE:
+            case DIAMOND_PICKAXE:
+                isPickaxe = true;
+                break;
+            default:
+                break;
+        }
+        return isPickaxe;
+    }
+    
+    private static boolean isShovel(Material mat) {
+        boolean isShovel = false;
+        
+        switch(mat) {
+            case WOOD_SPADE:
+            case STONE_SPADE:
+            case IRON_SPADE:
+            case GOLD_SPADE:
+            case DIAMOND_SPADE:
+                isShovel = true;
+                break;
+            default:
+                break;
+        }
+        return isShovel;
+    }
+    
+    private static boolean isSword(Material mat) {
+        boolean isSword = false;
+        
+        switch(mat) {
+            case WOOD_SWORD:
+            case STONE_SWORD:
+            case IRON_SWORD:
+            case GOLD_SWORD:
+            case DIAMOND_SWORD:
+                isSword = true;
+                break;
+            default:
+                break;
+        }
+        return isSword;
+    }
+    
+    public static boolean isBoots(Material mat) {
+        boolean isBoots = false;
+        
+        switch(mat) {
+            case CHAINMAIL_BOOTS:
+            case LEATHER_BOOTS:
+            case IRON_BOOTS:
+            case GOLD_BOOTS:
+            case DIAMOND_BOOTS:
+                isBoots = true;
+                break;
+            default:
+                break;
+        }
+        return isBoots;
+    }
+    
+    public static boolean isChestplate(Material mat) {
+        boolean isChestplate = false;
+        
+        switch(mat) {
+            case CHAINMAIL_CHESTPLATE:
+            case LEATHER_CHESTPLATE:
+            case IRON_CHESTPLATE:
+            case GOLD_CHESTPLATE:
+            case DIAMOND_CHESTPLATE:
+                isChestplate = true;
+                break;
+            default:
+                break;
+        }
+        return isChestplate;
+    }
+    
+    public static boolean isHelmet(Material mat) {
+        boolean isHelmet = false;
+        
+        switch(mat) {
+            case CHAINMAIL_HELMET:
+            case LEATHER_HELMET:
+            case IRON_HELMET:
+            case GOLD_HELMET:
+            case DIAMOND_HELMET:
+                isHelmet = true;
+                break;
+            default:
+                break;
+        }
+        return isHelmet;
+    }
+    
+    public static boolean isLeggings(Material mat) {
+        boolean isLeggings = false;
+        
+        switch(mat) {
+            case CHAINMAIL_LEGGINGS:
+            case LEATHER_LEGGINGS:
+            case IRON_LEGGINGS:
+            case GOLD_LEGGINGS:
+            case DIAMOND_LEGGINGS:
+                isLeggings = true;
+                break;
+            default:
+                break;
+        }
+        return isLeggings;
+    }
+    
+    public static boolean isTool(Material mat) {
+        boolean isTool = false;
+
+        if (isAxe(mat) || isHoe(mat) || isPickaxe(mat) || isShovel(mat)) {
+            isTool = true;
+        }
 
         return isTool;
+    }
+    
+    
+    
+    public static boolean isWeapon(Material mat) {
+        boolean isWeapon = false;
+        
+        if (isSword(mat) || mat == Material.BOW) {
+            isWeapon = true;
+        }
+
+        return isWeapon;
     }
 
     public static boolean isArmor(Material mat) {
         boolean isArmor = false;
 
-        switch(mat) {
-            case CHAINMAIL_BOOTS:
-            case CHAINMAIL_CHESTPLATE:
-            case CHAINMAIL_HELMET:
-            case CHAINMAIL_LEGGINGS:
-            case LEATHER_BOOTS:
-            case LEATHER_CHESTPLATE:
-            case LEATHER_HELMET:
-            case LEATHER_LEGGINGS:
-            case IRON_BOOTS:
-            case IRON_CHESTPLATE:
-            case IRON_HELMET:
-            case IRON_LEGGINGS:
-            case DIAMOND_BOOTS:
-            case DIAMOND_CHESTPLATE:
-            case DIAMOND_HELMET:
-            case DIAMOND_LEGGINGS:
-            case GOLD_BOOTS:
-            case GOLD_CHESTPLATE:
-            case GOLD_HELMET:
-            case GOLD_LEGGINGS:
-                isArmor = true;
-                break;
-
-            default:
-                break;
+        if (isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat)) {
+            isArmor = true;
         }
-
+        
         return isArmor;
     }
 
     public static boolean isRepairable(Material mat) {
         boolean repairable = false;
 
-        if (isTool(mat) || isArmor(mat)) {
+        if (isTool(mat) || isWeapon(mat) || isArmor(mat)) {
             repairable = true;
         } else {
             switch(mat) {
@@ -95,5 +207,14 @@ public class ItemUtil {
             }
         }
         return repairable;
+    }
+    
+    public static boolean isEnchantable(Material mat) {
+        boolean enchantable = false;
+        if (isWeapon(mat) || isArmor(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
+            enchantable = true;
+        }
+        
+        return enchantable;
     }
 }

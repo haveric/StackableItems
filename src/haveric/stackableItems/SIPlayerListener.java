@@ -437,11 +437,11 @@ public class SIPlayerListener implements Listener {
             }
 
             if (topType == InventoryType.MERCHANT) {
-                // TODO: techincally a result slot, handle accordingly when bukkit fixes the issue
+                // TODO: technically a result slot, handle accordingly when bukkit fixes the issue
                 if (rawSlot == 2) {
                     return;
                 }
-            // TODO: Handle enchanting and brewing like furnaces, moving the correct items into the correct slots
+            // TODO: might be able to remove this (except maxstacksize?)
             } else if (topType == InventoryType.ENCHANTING) {
                 top.setMaxStackSize(1);
                 if (rawSlot == 0) {
@@ -449,6 +449,7 @@ public class SIPlayerListener implements Listener {
                         return;
                     }
                 }
+            // TODO: Handle brewing like furnaces, moving the correct items into the correct slots
             } else if (topType == InventoryType.BREWING) {
                 if (rawSlot <= 3) {
                     if (!event.isShiftClick()) {
@@ -488,14 +489,46 @@ public class SIPlayerListener implements Listener {
                     InventoryUtil.moveItems(player, clicked, event, 0, 36, true);
                 } else {
                     if (topType == InventoryType.CRAFTING) {
-                        // move from main inventory to hotbar
-                        if (rawSlot >= 9 && rawSlot <= 35) {
-                            if (!ItemUtil.isArmor(clickedType)) {
-                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                        if (ItemUtil.isArmor(clickedType)) {
+                            ItemStack armorSlot = null;
+                            int moveSlot = -1;
+                            
+                            PlayerInventory inventory = player.getInventory();
+                            
+                            if (ItemUtil.isHelmet(clickedType)) {
+                                armorSlot = inventory.getHelmet();
+                                moveSlot = 39;
+                            } else if (ItemUtil.isChestplate(clickedType)) {
+                                armorSlot = inventory.getChestplate();
+                                moveSlot = 38;
+                            } else if (ItemUtil.isLeggings(clickedType)) {
+                                armorSlot = inventory.getLeggings();
+                                moveSlot = 37;
+                            } else if (ItemUtil.isBoots(clickedType)) {
+                                armorSlot = inventory.getBoots();
+                                moveSlot = 36;
                             }
-                        // move from hotbar to main inventory
-                        } else if (rawSlot >= 36 && rawSlot <= 44) {
-                            if (!ItemUtil.isArmor(clickedType)) {
+                                
+                            if (armorSlot == null && moveSlot > -1) {
+                                int left = InventoryUtil.moveItems(player, clicked, event, moveSlot, moveSlot + 1, false);
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                            } else {
+                                // move from main inventory to hotbar
+                                if (rawSlot >= 1 && rawSlot <= 27) {
+                                    InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                                // move from hotbar to main inventory
+                                } else if (rawSlot >= 28 && rawSlot <= 36) {
+                                    InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                                }
+                            }
+                        } else {
+                            // move from main inventory to hotbar
+                            if (rawSlot >= 9 && rawSlot <= 35) {
+                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                            // move from hotbar to main inventory
+                            } else if (rawSlot >= 36 && rawSlot <= 44) {
                                 InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
                             }
                         }
@@ -520,11 +553,37 @@ public class SIPlayerListener implements Listener {
                         } else if (rawSlot >= 30 && rawSlot <= 38) {
                             InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
                         }
+                    } else if (topType == InventoryType.ENCHANTING) {
+                        boolean isEnchantable = ItemUtil.isEnchantable(clickedType);
+                        
+                        boolean moved = false;
+                        if (isEnchantable) {
+                            ItemStack enchantSlot = top.getItem(0);
+                            
+                            if (enchantSlot == null) {
+                                int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                                moved = true;
+                            }
+                        }
+                        
+                        if (!moved) {
+                            // move from main inventory to hotbar
+                            if (rawSlot >= 1 && rawSlot <= 27) {
+                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                            // move from hotbar to main inventory
+                            } else if (rawSlot >= 28 && rawSlot <= 36) {
+                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                            }
+                        }
                     } else if (topType == InventoryType.FURNACE) {
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);
                         boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
 
-                        // Furnace:
+                        // Furnace slots:
                         // 0 - Burnable
                         // 1 - Fuel
                         // 2 - Result

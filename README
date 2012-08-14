@@ -13,6 +13,13 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Fixed bow repairing
+* Fixed shift clicking in Enchantment Tables
+** If enchantment table is empty, first click will move 1 item to fill the slot.  Another click will switch it between main inventory and quickslots.
+** Items that cannot be enchanted will be moved between the main inventory and quickslots.
+* Fixed shift clicking on stacks of armor in order to equip one.
+
 Version 0.8.6 (8/12/2012)
 * Fixed(hopefully) a null pointer exception when eating food
 * Shift clicking support in furnaces
