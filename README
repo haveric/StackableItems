@@ -19,6 +19,10 @@ Coming soon:
 ** If enchantment table is empty, first click will move 1 item to fill the slot.  Another click will switch it between main inventory and quickslots.
 ** Items that cannot be enchanted will be moved between the main inventory and quickslots.
 * Fixed shift clicking on stacks of armor in order to equip one.
+* Fixed options to use stacks in merchant and crafting using the furnace option instead of their own.
+* Added Use_Stack_Amounts_In_Brewing
+* Fixed shift clicking in Brewing Stands and regular clicking in the ingredient slot.
+
 
 Version 0.8.6 (8/12/2012)
 * Fixed(hopefully) a null pointer exception when eating food

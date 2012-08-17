@@ -2,7 +2,6 @@ package haveric.stackableItems;
 
 import net.minecraft.server.Packet22Collect;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,7 +46,6 @@ public class SIPlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-
 
         int amt = 0;
 
@@ -125,16 +123,13 @@ public class SIPlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-
+        
         Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getCurrentItem();
 
         Material type = craftedItem.getType();
 
         int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
-        if (maxItems <= Config.ITEM_DEFAULT) {
-            maxItems = type.getMaxStackSize();
-        }
         if (maxItems == 0) {
             player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
             event.setCancelled(true);
@@ -169,7 +164,7 @@ public class SIPlayerListener implements Listener {
                     InventoryUtil.addItems(player, clone);
                 }
             } else if (event.isLeftClick() || event.isRightClick()) {
-                if (maxItems > SIItems.ITEM_DEFAULT && cursorAmount + recipeAmount > maxItems) {
+                if (cursorAmount + recipeAmount > maxItems) {
                     event.setCancelled(true);
                 }
             }
@@ -178,26 +173,26 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler
     public void playerFish(PlayerFishEvent event) {
-        splitStack(event.getPlayer(), false);
+        InventoryUtil.splitStack(event.getPlayer(), false);
     }
 
     @EventHandler
     public void breakBlock(BlockBreakEvent event) {
-        splitStack(event.getPlayer(), true);
+        InventoryUtil.splitStack(event.getPlayer(), true);
     }
 
     @EventHandler
     public void shootBow(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            splitStack(player, false);
+            InventoryUtil.splitStack(player, false);
         }
     }
 
     @EventHandler
     public void entityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
-            splitStack((Player) event.getDamager(), true);
+            InventoryUtil.splitStack((Player) event.getDamager(), true);
         }
     }
 
@@ -206,6 +201,7 @@ public class SIPlayerListener implements Listener {
         Player player = event.getPlayer();
 
         ItemStack holding = player.getInventory().getItemInHand();
+
         int amount = holding.getAmount();
 
         int slot = player.getInventory().getHeldItemSlot();
@@ -213,7 +209,7 @@ public class SIPlayerListener implements Listener {
         if (amount > 1) {
             ItemStack clone = event.getItemStack().clone();
 
-            scheduleReplaceItem(player, slot, clone);
+            InventoryUtil.replaceItem(player, slot, clone);
             InventoryUtil.updateInventory(player);
 
             event.setCancelled(true);
@@ -238,7 +234,7 @@ public class SIPlayerListener implements Listener {
                 ItemStack clone = holding.clone();
                 clone.setAmount(amount - 1);
 
-                scheduleReplaceItem(player, slot, clone);
+                InventoryUtil.replaceItem(player, slot, clone);
                 InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, 1));
             }
         }
@@ -259,7 +255,7 @@ public class SIPlayerListener implements Listener {
                     PlayerInventory inventory = player.getInventory();
                     ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
                     if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
-                        scheduleReplaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
+                        InventoryUtil.replaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
                         //plugin.log.info("Left: " + (clickData.getAmount() - 1));
 
                         InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
@@ -332,81 +328,76 @@ public class SIPlayerListener implements Listener {
         InventoryType topType = top.getType();
 
 
-        if (cursor != null && clicked != null && slotType == SlotType.RESULT) {
-            if (topType == InventoryType.FURNACE) {
+        if (cursor != null && clicked != null && slotType == SlotType.RESULT && topType == InventoryType.FURNACE) {
+            Player player = (Player) event.getWhoClicked();
 
-                Player player = (Player) event.getWhoClicked();
+            int cursorAmount = cursor.getAmount();
 
-                int cursorAmount = cursor.getAmount();
+            Material clickedType = clicked.getType();
+            short clickedDur = clicked.getDurability();
+            int clickedAmount = clicked.getAmount();
 
-                Material clickedType = clicked.getType();
-                short clickedDur = clicked.getDurability();
-                int clickedAmount = clicked.getAmount();
+            int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
+ 
+            if (maxItems == 0) {
+                player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
+                event.setCancelled(true);
+            } else {
+                int freeSpaces = InventoryUtil.getFreeSpaces(player, clicked);
 
-                int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
-                if (maxItems <= Config.ITEM_DEFAULT) {
-                    maxItems = clickedType.getMaxStackSize();
-                }
-                if (maxItems == 0) {
-                    player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
-                    event.setCancelled(true);
-                } else {
-                    int freeSpaces = InventoryUtil.getFreeSpaces(player, clicked);
+                ItemStack clone = clicked.clone();
 
-                    ItemStack clone = clicked.clone();
+                int maxFurnaceSize = Config.getMaxFurnaceAmount();
+                if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
 
-                    int maxFurnaceSize = Config.getMaxFurnaceAmount();
-                    if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+                    PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
+                    Material lastClicked = clickData.getLastBlock();
+                    if (lastClicked == Material.FURNACE || lastClicked == Material.BURNING_FURNACE) {
+                        Location loc = clickData.getLastBlockLocation();
 
-                        PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
-                        Material lastClicked = clickData.getLastBlock();
-                        if (lastClicked == Material.FURNACE || lastClicked == Material.BURNING_FURNACE) {
-                            Location loc = clickData.getLastBlockLocation();
+                        int amt = Config.getFurnaceAmount(loc);
+                        if (amt > -1) {
+                            clone.setAmount(amt);
 
-                            int amt = Config.getFurnaceAmount(loc);
-                            if (amt > -1) {
-                                clone.setAmount(amt);
-
-                                event.setCurrentItem(null);
-                                event.setCursor(clone);
-                                event.setResult(Result.ALLOW);
-                            }
+                            event.setCurrentItem(null);
+                            event.setCursor(clone);
+                            event.setResult(Result.ALLOW);
                         }
-                    // normal amounts in the furnace
-                    } else {
-                        if (event.isShiftClick()) {
-                            if (freeSpaces > clickedAmount) {
-                                event.setCancelled(true);
+                    }
+                // normal amounts in the furnace
+                } else {
+                    if (event.isShiftClick()) {
+                        if (freeSpaces > clickedAmount) {
+                            event.setCancelled(true);
 
-                                event.setCurrentItem(null);
-                                InventoryUtil.addItems(player, clone);
+                            event.setCurrentItem(null);
+                            InventoryUtil.addItems(player, clone);
+                        } else {
+                            event.setCancelled(true);
+
+                            int newAmount = clickedAmount - freeSpaces;
+                            clone.setAmount(newAmount);
+                            event.setCurrentItem(clone);
+
+                            ItemStack clone2 = clicked.clone();
+                            clone2.setAmount(freeSpaces);
+                            InventoryUtil.addItems(player, clone2);
+                        }
+                    } else if (event.isLeftClick() || event.isRightClick()) {
+                        if (cursorAmount + clickedAmount > maxItems) {
+                            if (maxItems > 0 && cursorAmount == 0) {
+                                if (clickedAmount > maxItems) {
+                                    event.setCancelled(true);
+
+                                    clone.setAmount(clickedAmount - maxItems);
+                                    event.setCurrentItem(clone);
+
+                                    ItemStack clone2 = clicked.clone();
+                                    clone2.setAmount(maxItems);
+                                    event.setCursor(clone2);
+                                }
                             } else {
                                 event.setCancelled(true);
-
-                                int newAmount = clickedAmount - freeSpaces;
-                                clone.setAmount(newAmount);
-                                event.setCurrentItem(clone);
-
-                                ItemStack clone2 = clicked.clone();
-                                clone2.setAmount(freeSpaces);
-                                InventoryUtil.addItems(player, clone2);
-                            }
-                        } else if (event.isLeftClick() || event.isRightClick()) {
-                            if (maxItems > SIItems.ITEM_DEFAULT && cursorAmount + clickedAmount > maxItems) {
-                                if (maxItems > 0 && cursorAmount == 0) {
-                                    if (clickedAmount > maxItems) {
-                                        event.setCancelled(true);
-
-                                        clone.setAmount(clickedAmount - maxItems);
-                                        event.setCurrentItem(clone);
-
-                                        ItemStack clone2 = clicked.clone();
-                                        clone2.setAmount(maxItems);
-                                        event.setCursor(clone2);
-                                    }
-                                } else {
-                                    event.setCancelled(true);
-                                }
                             }
                         }
                     }
@@ -425,9 +416,6 @@ public class SIPlayerListener implements Listener {
             int clickedAmount = clicked.getAmount();
 
             int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
-            if (maxItems <= Config.ITEM_DEFAULT) {
-                maxItems = clickedType.getMaxStackSize();
-            }
 
             int rawSlot = event.getRawSlot();
 
@@ -451,7 +439,7 @@ public class SIPlayerListener implements Listener {
                 }
             // TODO: Handle brewing like furnaces, moving the correct items into the correct slots
             } else if (topType == InventoryType.BREWING) {
-                if (rawSlot <= 3) {
+                if (rawSlot <= 2) {
                     if (!event.isShiftClick()) {
                         return;
                     }
@@ -533,12 +521,60 @@ public class SIPlayerListener implements Listener {
                             }
                         }
                     } else if (topType == InventoryType.BREWING) {
-                        // move from main inventory to hotbar
-                        if (rawSlot >= 4 && rawSlot <= 30) {
-                            InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
-                        // move from hotbar to main inventory
-                        } else if (rawSlot >= 31 && rawSlot <= 39) {
-                            InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                        boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
+                        boolean isPotion = clickedType == Material.POTION;
+                        
+                        boolean moved = false;
+                        if (isBrewingIngredient) {
+                            ItemStack brewingSlot = top.getItem(3);
+                            
+                            if (brewingSlot == null || ItemUtil.isSameItem(brewingSlot, clicked)) {
+                                int left = InventoryUtil.moveItems(player, clicked, event, top, 3, 4, false);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                                moved = true;
+                            }
+                        } else if (isPotion) {
+                            ItemStack potionSlot1 = top.getItem(0);
+                            ItemStack potionSlot2 = top.getItem(1);
+                            ItemStack potionSlot3 = top.getItem(2);
+                            
+                            if (potionSlot1 == null) {
+                                int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                                moved = true;
+                            }
+                            if (potionSlot2 == null) {
+                                int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 2, false);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                                moved = true;
+                            }
+                            if (potionSlot3 == null) {
+                                int left = InventoryUtil.moveItems(player, clicked, event, top, 2, 3, false);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                                moved = true;
+                            }
+                            
+                        }
+                        if (!moved) {
+                            // move from main inventory to hotbar
+                            if (rawSlot >= 4 && rawSlot <= 30) {
+                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
+                            // move from hotbar to main inventory
+                            } else if (rawSlot >= 31 && rawSlot <= 39) {
+                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
+                            }
                         }
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST) {
                         InventoryUtil.moveItems(player, clicked, event, top, true);
@@ -593,20 +629,8 @@ public class SIPlayerListener implements Listener {
                         boolean fuelMoved = false;
                         if (isFuel) {
                             if (rawSlot >= 3 && rawSlot <= 38) {
-                                if (fuel == null) {
+                                if (fuel == null || ItemUtil.isSameItem(fuel,  clicked)) {
                                     fuelMoved = true;
-                                } else {
-                                    boolean sameType = fuel.getType() == clickedType;
-                                    boolean sameDur = fuel.getDurability() == clickedDur;
-                                    boolean sameEnchant = fuel.getEnchantments().equals(clicked.getEnchantments());
-                                    boolean noEnchant = fuel.getEnchantments() == null && clicked.getEnchantments() == null;
-
-                                    if (sameType && sameDur && (sameEnchant || noEnchant)) {
-                                        fuelMoved = true;
-                                    }
-                                }
-
-                                if (fuelMoved) {
                                     int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 2, false);
                                     if (left > 0) {
                                         clicked.setAmount(left);
@@ -618,22 +642,9 @@ public class SIPlayerListener implements Listener {
 
                         boolean burnableMoved = false;
                         if (!fuelMoved && isBurnable) {
-
                             if (rawSlot >= 3 && rawSlot <= 38) {
-                                if (burnable == null) {
+                                if (burnable == null || ItemUtil.isSameItem(burnable, clicked)) {
                                     burnableMoved = true;
-                                } else {
-                                    boolean sameType = burnable.getType() == clickedType;
-                                    boolean sameDur = burnable.getDurability() == clickedDur;
-                                    boolean sameEnchant = burnable.getEnchantments().equals(clicked.getEnchantments());
-                                    boolean noEnchant = burnable.getEnchantments() == null && clicked.getEnchantments() == null;
-
-                                    if (sameType && sameDur && (sameEnchant || noEnchant)) {
-                                        burnableMoved = true;
-                                    }
-                                }
-
-                                if (burnableMoved) {
                                     int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
                                     if (left > 0) {
                                         clicked.setAmount(left);
@@ -657,7 +668,7 @@ public class SIPlayerListener implements Listener {
                     }
                 }
             } else if (event.isLeftClick()) {
-                if (cursorEmpty && !slotEmpty && clickedAmount <= clickedType.getMaxStackSize() && maxItems > SIItems.ITEM_DEFAULT && maxItems < clickedAmount) {
+                if (cursorEmpty && !slotEmpty && clickedAmount <= clickedType.getMaxStackSize() && maxItems < clickedAmount) {
                     if (!virtualClicked) {
                         //player.sendMessage("Pick up stack with empty hand. Less than max.");
                         if (clickedAmount <= maxItems) {
@@ -788,12 +799,8 @@ public class SIPlayerListener implements Listener {
                         }
                     // Add two normal items
                     } else {
-                        boolean sameDur = cursorDur == clickedDur;
-                        boolean sameEnchants = cursor.getEnchantments().equals(clicked.getEnchantments());
-                        boolean noEnchants = cursor.getEnchantments() == null && clicked.getEnchantments() == null;
-
                         if (sameType) {
-                            if (sameDur && (sameEnchants || noEnchants)) {
+                            if (ItemUtil.isSameItem(cursor, clicked)) {
                                 if (top.getType() == InventoryType.FURNACE && rawSlot <= 1 && !Config.isFurnaceUsingStacks()) {
                                     int maxFurnaceSize = Config.getMaxFurnaceAmount();
                                     if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
@@ -807,36 +814,36 @@ public class SIPlayerListener implements Listener {
                                         (top.getType() == InventoryType.WORKBENCH) && rawSlot >= 1 && rawSlot <= 9) && !Config.isCraftingUsingStacks()) {
                                     maxItems = 64;
                                 }
-                                if (maxItems > Config.ITEM_DEFAULT) {
-                                    int total = clickedAmount + cursorAmount;
-                                    if (total <= maxItems) {
-                                        if (total > clicked.getMaxStackSize()) {
-                                            //player.sendMessage("Combine two stacks fully");
-                                            ItemStack s = new ItemStack(cursorType, total, cursorDur);
-                                            s.addUnsafeEnchantments(cursor.getEnchantments());
-                                            event.setCurrentItem(s);
+                                
+                                int total = clickedAmount + cursorAmount;
+                                if (total <= maxItems) {
+                                    if (total > clicked.getMaxStackSize()) {
+                                        //player.sendMessage("Combine two stacks fully");
+                                        ItemStack s = new ItemStack(cursorType, total, cursorDur);
+                                        s.addUnsafeEnchantments(cursor.getEnchantments());
+                                        event.setCurrentItem(s);
 
-                                            event.setCursor(null);
-                                            event.setResult(Result.ALLOW);
-                                        }
+                                        event.setCursor(null);
+                                        event.setResult(Result.ALLOW);
+                                    }
+                                } else {
+                                    //player.sendMessage("Combine two stacks partially");
+                                    if (total - maxItems > maxItems) {
+                                        event.setCancelled(true);
                                     } else {
-                                        //player.sendMessage("Combine two stacks partially");
-                                        if (total - maxItems > maxItems) {
-                                            event.setCancelled(true);
-                                        } else {
-                                            ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
-                                            s.addUnsafeEnchantments(cursor.getEnchantments());
-                                            event.setCurrentItem(s);
+                                        ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
+                                        s.addUnsafeEnchantments(cursor.getEnchantments());
+                                        event.setCurrentItem(s);
 
-                                            ItemStack s2 = new ItemStack(cursorType, total - maxItems, cursorDur);
-                                            s2.addUnsafeEnchantments(cursor.getEnchantments());
-                                            event.setCursor(s2);
+                                        ItemStack s2 = new ItemStack(cursorType, total - maxItems, cursorDur);
+                                        s2.addUnsafeEnchantments(cursor.getEnchantments());
+                                        event.setCursor(s2);
 
-                                            event.setResult(Result.ALLOW);
-                                            InventoryUtil.updateInventory(player);
-                                        }
+                                        event.setResult(Result.ALLOW);
+                                        InventoryUtil.updateInventory(player);
                                     }
                                 }
+                                
                             // Create a virtual stack out of two different items
                             } else if (Config.isVirtualItemsEnabled()) {
                                 //player.sendMessage("Combine two items into a virtual stack.");
@@ -938,12 +945,8 @@ public class SIPlayerListener implements Listener {
                         }
                     // Add two normal items
                     } else {
-                        boolean sameDur = cursorDur == clickedDur;
-                        boolean sameEnchants = cursor.getEnchantments().equals(clicked.getEnchantments());
-                        boolean noEnchants = cursor.getEnchantments() == null && clicked.getEnchantments() == null;
-
                         if (sameType) {
-                            if (sameDur && (sameEnchants || noEnchants)) {
+                            if (ItemUtil.isSameItem(cursor, clicked)) {
                                 if (top.getType() == InventoryType.FURNACE && rawSlot <= 1 && !Config.isFurnaceUsingStacks()) {
                                     int maxFurnaceSize = Config.getMaxFurnaceAmount();
                                     if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
@@ -956,28 +959,27 @@ public class SIPlayerListener implements Listener {
                                 } else if ((top.getType() == InventoryType.CRAFTING || top.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
                                     maxItems = 64;
                                 }
-                                if (maxItems > Config.ITEM_DEFAULT) {
 
-                                    int total = clickedAmount + 1;
-                                    if (total <= maxItems) {
-                                        if (total > clicked.getMaxStackSize()) {
-                                            //player.sendMessage("RC:Drop single item");
+                                int total = clickedAmount + 1;
+                                if (total <= maxItems) {
+                                    if (total > clicked.getMaxStackSize()) {
+                                        //player.sendMessage("RC:Drop single item");
 
-                                            ItemStack clone = cursor.clone();
-                                            clone.setAmount(total);
+                                        ItemStack clone = cursor.clone();
+                                        clone.setAmount(total);
 
-                                            event.setCurrentItem(clone);
-                                            if (cursorAmount == 1) {
-                                                event.setCursor(null);
-                                            } else {
-                                                cursor.setAmount(cursorAmount - 1);
-                                            }
-                                            event.setResult(Result.ALLOW);
+                                        event.setCurrentItem(clone);
+                                        if (cursorAmount == 1) {
+                                            event.setCursor(null);
+                                        } else {
+                                            cursor.setAmount(cursorAmount - 1);
                                         }
-                                    } else {
-                                        event.setCancelled(true);
+                                        event.setResult(Result.ALLOW);
                                     }
+                                } else {
+                                    event.setCancelled(true);
                                 }
+                                
                             // Create a virtual stack out of two different items
                             } else if (Config.isVirtualItemsEnabled()) {
                                 //player.sendMessage("RC:Combine two items into a virtual stack.");
@@ -1057,37 +1059,6 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    private void scheduleReplaceItem(final Player player, final int slot, final ItemStack stack) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override public void run() {
-                player.getInventory().setItem(slot, stack);
-            }
-        });
-    }
-
-    /*
-    private void scheduleSetRemainingAmount(final Player player, final ItemStack stack, final int newAmount){
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-            @Override public void run() {
-                List<Entity> entities = player.getNearbyEntities(2, 2, 2);
-
-                boolean found = false;
-
-                int size = entities.size();
-                for (int i = 0; i < size && !found; i++){
-                    if (entities.get(i) instanceof Item){
-                        ItemStack currentStack = ((Item) entities.get(i)).getItemStack();
-                        if (currentStack.getType() == stack.getType() && currentStack.getDurability() == stack.getDurability() && currentStack.getEnchantments().equals(stack.getEnchantments())){
-                            currentStack.setAmount(newAmount);
-                            found = true;
-                        }
-                    }
-                }
-            }
-        });
-    }
-    */
-
     @EventHandler
     public void playerPicksUpItem(PlayerPickupItemEvent event) {
         if (event.isCancelled()) {
@@ -1106,7 +1077,7 @@ public class SIPlayerListener implements Listener {
             int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
             if (maxItems == 0) {
                 event.setCancelled(true);
-            } else if (maxItems > Config.ITEM_DEFAULT) {
+            } else {
                 InventoryUtil.addItems(player, stack);
 
                 collectItem(player, item);
@@ -1121,21 +1092,5 @@ public class SIPlayerListener implements Listener {
     public void collectItem(Player player, Item item) {
         Packet22Collect packet = new Packet22Collect(((Entity) item).getEntityId(), player.getEntityId());
         ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(packet);
-    }
-
-    public void splitStack(Player player, boolean toolCheck) {
-        ItemStack holding = player.getItemInHand();
-        int amount = holding.getAmount();
-
-        if (amount > 1) {
-            if (!toolCheck || ItemUtil.isTool(holding.getType())) {
-                if (!Config.isVirtualItemsEnabled()) {
-                    ItemStack move = holding.clone();
-                    move.setAmount(amount - 1);
-                    InventoryUtil.addItems(player, move);
-                    holding.setAmount(1);
-                }
-            }
-        }
     }
 }

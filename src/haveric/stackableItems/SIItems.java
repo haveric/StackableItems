@@ -153,6 +153,9 @@ public class SIItems {
             max = getDefaultMax(mat, dur);
         }
 
+        if (max <= ITEM_DEFAULT) {
+            max = mat.getMaxStackSize();
+        }
         return max;
     }
 

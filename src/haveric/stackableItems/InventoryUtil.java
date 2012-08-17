@@ -49,41 +49,17 @@ public class InventoryUtil {
             Material type = itemToCheck.getType();
             short durability = itemToCheck.getDurability();
 
-            int maxAmount = SIItems.getItemMax(player, type, durability);
-            if (maxAmount <= Config.ITEM_DEFAULT) {
-                maxAmount = type.getMaxStackSize();
-            }
-            if (inventory.getType() == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
-                int maxFurnaceSize = Config.getMaxFurnaceAmount();
-                if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
-                    maxAmount = maxFurnaceSize;
-                } else {
-                    maxAmount = 64;
-                }
-            } else if (inventory.getType() == InventoryType.ENCHANTING) {
-                maxAmount = 1;
-            } else if (inventory.getType() == InventoryType.PLAYER && start >= 36 && end <= 40) {
-                maxAmount = 1;
-            } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
-                maxAmount = 64;
-            } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
-                maxAmount = 64;
-            }
+            int maxAmount = getInventoryMax(player, inventory, type, durability, start, end);
 
             for (int i = start; i < end; i++) {
                 ItemStack slot = inventory.getItem(i);
 
                 if (slot == null) {
                     free += maxAmount;
-                } else if (slot.getType() == type && slot.getDurability() == durability) {
-                    boolean sameEnchants = slot.getEnchantments().equals(itemToCheck.getEnchantments());
-                    boolean noEnchants = slot.getEnchantments() == null && itemToCheck.getEnchantments() == null;
-
-                    if (sameEnchants || noEnchants) {
-                        int freeInSlot = maxAmount - slot.getAmount();
-                        if (freeInSlot > 0) {
-                            free += freeInSlot;
-                        }
+                } else if (ItemUtil.isSameItem(slot, itemToCheck)) {
+                    int freeInSlot = maxAmount - slot.getAmount();
+                    if (freeInSlot > 0) {
+                        free += freeInSlot;
                     }
                 }
             }
@@ -108,6 +84,7 @@ public class InventoryUtil {
     public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
+                // Include armor slots
                 int inventoryLength = -1;
                 if (inventory.getType() == InventoryType.PLAYER) {
                     inventoryLength = 40;
@@ -119,55 +96,30 @@ public class InventoryUtil {
                     Material type = itemToAdd.getType();
                     short durability = itemToAdd.getDurability();
 
-                    int maxAmount = SIItems.getItemMax(player, type, durability);
-                    if (maxAmount <= Config.ITEM_DEFAULT) {
-                        maxAmount = type.getMaxStackSize();
-                    }
-
-                    if (inventory.getType() == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
-                        int maxFurnaceSize = Config.getMaxFurnaceAmount();
-                        if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
-                            maxAmount = maxFurnaceSize;
-                        } else {
-                            maxAmount = 64;
-                        }
-                    } else if (inventory.getType() == InventoryType.ENCHANTING) {
-                        maxAmount = 1;
-                    } else if (inventory.getType() == InventoryType.PLAYER && start >= 36 && end <= 40) {
-                        maxAmount = 1;
-                    } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
-                        maxAmount = 64;
-                    } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
-                        maxAmount = 64;
-                    }
+                    int maxAmount = getInventoryMax(player, inventory, type, durability, start, end);
                     
                     int addAmount = itemToAdd.getAmount();
                     // Add to existing stacks
                     for (int i = start; i < end && addAmount > 0; i++) {
                         ItemStack slot = inventory.getItem(i);
                         if (slot != null) {
-                            if (slot.getType() == type && slot.getDurability() == durability) {
-                                boolean sameEnchants = slot.getEnchantments().equals(itemToAdd.getEnchantments());
-                                boolean noEnchants = slot.getEnchantments() == null && itemToAdd.getEnchantments() == null;
+                            if (ItemUtil.isSameItem(slot, itemToAdd)) {
+                                int slotAmount = slot.getAmount();
 
-                                if (sameEnchants || noEnchants) {
-                                    int slotAmount = slot.getAmount();
-
-                                    int canAdd = maxAmount - slotAmount;
-                                    if (canAdd > 0) {
-                                        if (addAmount <= canAdd) {
-                                            slot.setAmount(slotAmount + addAmount);
-                                            inventory.setItem(i, slot);
-                                            addAmount = 0;
-                                        } else if (addAmount <= maxAmount) {
-                                            slot.setAmount(maxAmount);
-                                            inventory.setItem(i, slot);
-                                            addAmount -= canAdd;
-                                        } else {
-                                            slot.setAmount(maxAmount);
-                                            inventory.setItem(i, slot);
-                                            addAmount -= maxAmount;
-                                        }
+                                int canAdd = maxAmount - slotAmount;
+                                if (canAdd > 0) {
+                                    if (addAmount <= canAdd) {
+                                        slot.setAmount(slotAmount + addAmount);
+                                        inventory.setItem(i, slot);
+                                        addAmount = 0;
+                                    } else if (addAmount <= maxAmount) {
+                                        slot.setAmount(maxAmount);
+                                        inventory.setItem(i, slot);
+                                        addAmount -= canAdd;
+                                    } else {
+                                        slot.setAmount(maxAmount);
+                                        inventory.setItem(i, slot);
+                                        addAmount -= maxAmount;
                                     }
                                 }
                             }
@@ -242,8 +194,6 @@ public class InventoryUtil {
 
         for (Recipe rec : recipes) {
             if (rec instanceof ShapedRecipe) {
-
-
                 ShapedRecipe shaped = (ShapedRecipe) rec;
                 Map<Character, ItemStack> itemMap = shaped.getIngredientMap();
 
@@ -310,14 +260,7 @@ public class InventoryUtil {
                 ItemStack item = inventory.getItem(i);
 
                 if (item != null) {
-                    boolean sameEnchants = item.getEnchantments().equals(ing.getEnchantments());
-                    boolean noEnchants = item.getEnchantments() == null && ing.getEnchantments() == null;
-
-                    int dur = ing.getDurability();
-
-                    //plugin.log.info("ingType: " + dur);
-                    //plugin.log.info("itemType: " + item.getDurability());
-                    if (ing.getType() == item.getType() && (dur == item.getDurability() || dur == -1) && (sameEnchants || noEnchants)) {
+                    if (ItemUtil.isSameItem(item, ing)) {
                         int temp = item.getAmount();
                         /*
                         if (temp > 0){
@@ -370,6 +313,59 @@ public class InventoryUtil {
             @SuppressWarnings("deprecation")
             @Override public void run() {
                 player.updateInventory();
+            }
+        });
+    }
+    
+    private static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int start, int end) {
+        int maxAmount = SIItems.getItemMax(player, mat, dur);
+
+        if (inventory.getType() == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
+            int maxFurnaceSize = Config.getMaxFurnaceAmount();
+            if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+                maxAmount = maxFurnaceSize;
+            } else {
+                maxAmount = 64;
+            }
+        } else if (inventory.getType() == InventoryType.ENCHANTING) {
+            maxAmount = 1;
+        } else if (inventory.getType() == InventoryType.PLAYER && start >= 36 && end <= 40) {
+            maxAmount = 1;
+        } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
+            maxAmount = 64;
+        } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
+            maxAmount = 64;
+        } else if (inventory.getType() == InventoryType.BREWING && !Config.isBrewingUsingStacks()) {
+            if (start >= 0 && end <= 3) {
+                maxAmount = 1;
+            } else {
+                maxAmount = 64;
+            }
+        }
+        
+        return maxAmount;
+    }
+    
+    public static void splitStack(Player player, boolean toolCheck) {
+        ItemStack holding = player.getItemInHand();
+        int amount = holding.getAmount();
+
+        if (amount > 1) {
+            if (!toolCheck || ItemUtil.isTool(holding.getType())) {
+                if (!Config.isVirtualItemsEnabled()) {
+                    ItemStack move = holding.clone();
+                    move.setAmount(amount - 1);
+                    InventoryUtil.addItems(player, move);
+                    holding.setAmount(1);
+                }
+            }
+        }
+    }
+    
+    public static void replaceItem(final Player player, final int slot, final ItemStack stack) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override public void run() {
+                player.getInventory().setItem(slot, stack);
             }
         });
     }

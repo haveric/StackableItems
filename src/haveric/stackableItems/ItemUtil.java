@@ -1,6 +1,7 @@
 package haveric.stackableItems;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class ItemUtil {
 
@@ -216,5 +217,44 @@ public class ItemUtil {
         }
         
         return enchantable;
+    }
+    
+
+    public static boolean isBrewingIngredient(Material mat) {
+        boolean brewingIngredient = false;
+
+        switch(mat) {
+            case REDSTONE:
+            case NETHER_WARTS:
+            case GLOWSTONE_DUST:
+            case FERMENTED_SPIDER_EYE:
+            case MAGMA_CREAM:
+            case SUGAR:
+            case SPECKLED_MELON:
+            case SPIDER_EYE:
+            case GHAST_TEAR:
+            case BLAZE_POWDER:
+            case SULPHUR:
+                brewingIngredient = true;
+                break;
+                
+            default:
+                break;
+        }
+        return brewingIngredient;
+    }
+    
+    public static boolean isSameItem(ItemStack one, ItemStack two) {
+        boolean same = false;
+
+        boolean sameType = one.getType() == two.getType();
+        boolean sameDur = one.getDurability() == two.getDurability();
+        boolean sameEnchant = one.getEnchantments().equals(two.getEnchantments());
+        boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
+
+        if (sameType && sameDur && (sameEnchant || noEnchant)) {
+            same = true;
+        }
+        return same;
     }
 }
