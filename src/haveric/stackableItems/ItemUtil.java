@@ -3,11 +3,13 @@ package haveric.stackableItems;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemUtil {
+public final class ItemUtil {
+
+    private ItemUtil() { } // Private constructor for utility class
 
     private static boolean isAxe(Material mat) {
         boolean isAxe = false;
-        
+
         switch(mat) {
             case WOOD_AXE:
             case STONE_AXE:
@@ -21,10 +23,10 @@ public class ItemUtil {
         }
         return isAxe;
     }
-    
+
     private static boolean isHoe(Material mat) {
         boolean isHoe = false;
-        
+
         switch(mat) {
             case WOOD_HOE:
             case STONE_HOE:
@@ -38,10 +40,10 @@ public class ItemUtil {
         }
         return isHoe;
     }
-    
+
     private static boolean isPickaxe(Material mat) {
         boolean isPickaxe = false;
-        
+
         switch(mat) {
             case WOOD_PICKAXE:
             case STONE_PICKAXE:
@@ -55,10 +57,10 @@ public class ItemUtil {
         }
         return isPickaxe;
     }
-    
+
     private static boolean isShovel(Material mat) {
         boolean isShovel = false;
-        
+
         switch(mat) {
             case WOOD_SPADE:
             case STONE_SPADE:
@@ -72,10 +74,10 @@ public class ItemUtil {
         }
         return isShovel;
     }
-    
+
     private static boolean isSword(Material mat) {
         boolean isSword = false;
-        
+
         switch(mat) {
             case WOOD_SWORD:
             case STONE_SWORD:
@@ -89,10 +91,10 @@ public class ItemUtil {
         }
         return isSword;
     }
-    
+
     public static boolean isBoots(Material mat) {
         boolean isBoots = false;
-        
+
         switch(mat) {
             case CHAINMAIL_BOOTS:
             case LEATHER_BOOTS:
@@ -106,10 +108,10 @@ public class ItemUtil {
         }
         return isBoots;
     }
-    
+
     public static boolean isChestplate(Material mat) {
         boolean isChestplate = false;
-        
+
         switch(mat) {
             case CHAINMAIL_CHESTPLATE:
             case LEATHER_CHESTPLATE:
@@ -123,10 +125,10 @@ public class ItemUtil {
         }
         return isChestplate;
     }
-    
+
     public static boolean isHelmet(Material mat) {
         boolean isHelmet = false;
-        
+
         switch(mat) {
             case CHAINMAIL_HELMET:
             case LEATHER_HELMET:
@@ -140,10 +142,10 @@ public class ItemUtil {
         }
         return isHelmet;
     }
-    
+
     public static boolean isLeggings(Material mat) {
         boolean isLeggings = false;
-        
+
         switch(mat) {
             case CHAINMAIL_LEGGINGS:
             case LEATHER_LEGGINGS:
@@ -157,7 +159,7 @@ public class ItemUtil {
         }
         return isLeggings;
     }
-    
+
     public static boolean isTool(Material mat) {
         boolean isTool = false;
 
@@ -167,12 +169,10 @@ public class ItemUtil {
 
         return isTool;
     }
-    
-    
-    
+
     public static boolean isWeapon(Material mat) {
         boolean isWeapon = false;
-        
+
         if (isSword(mat) || mat == Material.BOW) {
             isWeapon = true;
         }
@@ -186,7 +186,7 @@ public class ItemUtil {
         if (isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat)) {
             isArmor = true;
         }
-        
+
         return isArmor;
     }
 
@@ -209,16 +209,16 @@ public class ItemUtil {
         }
         return repairable;
     }
-    
+
     public static boolean isEnchantable(Material mat) {
         boolean enchantable = false;
         if (isWeapon(mat) || isArmor(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
             enchantable = true;
         }
-        
+
         return enchantable;
     }
-    
+
 
     public static boolean isBrewingIngredient(Material mat) {
         boolean brewingIngredient = false;
@@ -237,13 +237,13 @@ public class ItemUtil {
             case SULPHUR:
                 brewingIngredient = true;
                 break;
-                
+
             default:
                 break;
         }
         return brewingIngredient;
     }
-    
+
     public static boolean isSameItem(ItemStack one, ItemStack two) {
         boolean same = false;
 
@@ -253,8 +253,10 @@ public class ItemUtil {
         boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
 
         if (sameType && sameDur && (sameEnchant || noEnchant)) {
+            // TODO determine if books are truly the same
             same = true;
         }
+
         return same;
     }
 }

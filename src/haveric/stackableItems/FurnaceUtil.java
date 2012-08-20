@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 import org.bukkit.Material;
@@ -14,16 +15,18 @@ import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-public class FurnaceUtil {
+public final class FurnaceUtil {
 
-    static StackableItems plugin;
+    private static StackableItems plugin;
 
     private static final int FUEL_LIST_VERSION = 1;
     private static File defaultFuel;
     private static File customFuel;
 
-    private static ArrayList<Material> listOfFuels;
-    private static ArrayList<Material> furnaceBurnables;
+    private static List<Material> listOfFuels;
+    private static List<Material> furnaceBurnables;
+
+    private FurnaceUtil() { } // Private constructor for utility class
 
     public static void init(StackableItems si) {
         plugin = si;

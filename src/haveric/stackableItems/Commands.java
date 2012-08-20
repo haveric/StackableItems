@@ -59,9 +59,7 @@ public class Commands implements CommandExecutor {
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You do not have permission to reload the config.");
                 }
-            }
-
-            else if (args.length == 2 || args.length == 3) {
+            } else if (args.length == 2 || args.length == 3) {
                 String type;
                 String permType = args[0];
 
@@ -93,8 +91,10 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage(shortTitle + "No material found matching " + highlightColor + matName);
                 } else {
                     int max = -1;
+                    String msg = shortTitle + highlightColor;
                     // set value
                     if (args.length == 3) {
+
                         if (op || canAdjust) {
                             int numToSet = Integer.parseInt(args[2]);
                             String displayName;
@@ -104,44 +104,54 @@ public class Commands implements CommandExecutor {
                                 displayName = mat.name() + ":" + dur;
                             }
 
+                            msg += displayName + msgColor;
+
                             if (type.equals("default")) {
                                 max = SIItems.getDefaultMax(mat, dur);
+                                msg += " for " + highlightColor + permType + msgColor;
                                 if (numToSet == max) {
-                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " is already set to " + highlightColor + numToSet);
+                                    msg += " is already set to ";
                                 } else {
                                     SIItems.setDefaultMax(mat, dur, numToSet);
-                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " set to " + highlightColor + numToSet);
+                                    msg += " set to ";
                                 }
+                                sender.sendMessage(msg + highlightColor + numToSet);
                             } else if (type.equals("group") || type.equals("player")) {
                                 max = SIItems.getMax(permType, mat, dur);
+                                msg += " for " + highlightColor + permType + msgColor;
                                 if (numToSet == max) {
-                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " is already set to " + highlightColor + numToSet);
+                                    msg += " is already set to ";
                                 } else {
                                     SIItems.setMax(permType, mat, dur, numToSet);
-                                    sender.sendMessage(shortTitle + highlightColor + displayName + msgColor + " for " + highlightColor + permType + msgColor + " set to " + highlightColor + numToSet);
+                                    msg += " set to ";
                                 }
+                                sender.sendMessage(msg + highlightColor + numToSet);
                             }
                         } else {
                             sender.sendMessage(shortTitle + ChatColor.RED + "You do not have permission to set config values.");
                         }
                     // get value
                     } else if (args.length == 2) {
+                        msg += mat.name() + msgColor;
                         if (type.equals("default")) {
                             max = SIItems.getDefaultMax(mat, dur);
                             if (max == -1) {
-                                sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " not found for Default. Vanilla value: " + highlightColor + mat.getMaxStackSize());
+                                msg += " not found for Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
                             } else {
-                                sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " for Default is: " + highlightColor + max);
+                                msg += " for Default is: " + highlightColor + max;
                             }
+                            sender.sendMessage(msg);
                         } else if (type.equals("group")) {
                             max = SIItems.getMax(permType, mat, dur);
                             if (max == -1) {
                                 max = SIItems.getDefaultMax(mat, dur);
+                                msg += " not found for " + highlightColor + permType + msgColor;
                                 if (max == -1) {
-                                    sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " not found for " + highlightColor + permType + msgColor + " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize());
+                                    msg += " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
                                 } else {
-                                    sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " not found for " + highlightColor + permType + msgColor + ". Default value: " + highlightColor + max);
+                                    msg += ". Default value: " + highlightColor + max;
                                 }
+                                sender.sendMessage(msg);
                             } else {
                                 sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " for " + highlightColor + permType + msgColor + " is: " + highlightColor + max);
                             }
@@ -153,21 +163,25 @@ public class Commands implements CommandExecutor {
                                     String group = Perms.getPerm().getPrimaryGroup(player);
                                     max = SIItems.getMax(group, mat, dur);
 
+                                    msg += " not found for " + highlightColor + permType + msgColor;
                                     if (max == -1) {
                                         max = SIItems.getDefaultMax(mat, dur);
+
                                         if (max == -1) {
-                                            sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " not found for " + highlightColor + permType + msgColor + ", " + highlightColor + group + msgColor + " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize());
+                                            msg += ", " + highlightColor + group + msgColor + " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
                                         } else {
-                                            sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " not found for " + highlightColor + permType + msgColor + " or " + highlightColor + group + msgColor + ". Default value: " + highlightColor + max);
+                                            msg += " or " + highlightColor + group + msgColor + ". Default value: " + highlightColor + max;
                                         }
+
                                     } else {
-                                        sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " not found for " + highlightColor + permType + msgColor + ". " + highlightColor + group + msgColor + " value: " + highlightColor + max);
+                                        msg += ". " + highlightColor + group + msgColor + " value: " + highlightColor + max;
                                     }
+                                    sender.sendMessage(msg);
                                 } else {
-                                    sender.sendMessage(shortTitle + highlightColor + permType + msgColor + " does not exist.");
+                                    sender.sendMessage(msg + " does not exist.");
                                 }
                             } else {
-                                sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " for " + highlightColor + permType + msgColor + " is: " + highlightColor + max);
+                                sender.sendMessage(msg + " for " + highlightColor + permType + msgColor + " is: " + highlightColor + max);
                             }
                         }
                     }

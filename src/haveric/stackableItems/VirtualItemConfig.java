@@ -3,18 +3,20 @@ package haveric.stackableItems;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class VirtualItemConfig {
+public final class VirtualItemConfig {
 
     private static StackableItems plugin;
 
     private static FileConfiguration config;
     private static File configFile;
 
+    private VirtualItemConfig() { } // Private constructor for utility class
     /**
      * Initializes the config file
      * @param ss The main class used to

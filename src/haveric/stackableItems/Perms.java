@@ -2,7 +2,7 @@ package haveric.stackableItems;
 
 import net.milkbowl.vault.permission.Permission;
 
-public class Perms {
+public final class Perms {
 
     private static Permission perm = null;
 
@@ -13,6 +13,8 @@ public class Perms {
     //private static String item = "stackableitems.item";
 
     private static String adjust = "stackableitems.adjust";
+
+    private Perms() { } // Private constructor for utility class
 
     public static void setPerm(Permission p) {
         perm = p;

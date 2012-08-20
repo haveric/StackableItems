@@ -1,17 +1,19 @@
 package haveric.stackableItems;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.inventory.ItemStack;
 
 public class VirtualItemStack {
 
-    private ArrayList<ItemStack> virtualStack;
+    private List<ItemStack> virtualStack;
 
     public VirtualItemStack() {
         virtualStack = new ArrayList<ItemStack>();
     }
 
-    public VirtualItemStack(ArrayList<ItemStack> items) {
+    public VirtualItemStack(List<ItemStack> items) {
         if (items == null) {
             virtualStack = new ArrayList<ItemStack>();
         } else {
@@ -19,31 +21,31 @@ public class VirtualItemStack {
         }
     }
 
-    public void addItemStack(ItemStack stack){
+    public void addItemStack(ItemStack stack) {
         virtualStack.add(stack);
     }
 
-    public void addToFront(ItemStack stack){
+    public void addToFront(ItemStack stack) {
         virtualStack.add(0, stack);
     }
 
-    public ItemStack removeLast(){
+    public ItemStack removeLast() {
         return virtualStack.remove(virtualStack.size() - 1);
     }
 
-    public void removeFirst(){
+    public void removeFirst() {
         virtualStack.remove(0);
     }
 
-    public ItemStack getFirst(){
+    public ItemStack getFirst() {
         return virtualStack.get(0);
     }
 
-    public ArrayList<ItemStack> getList() {
+    public List<ItemStack> getList() {
         return virtualStack;
     }
 
-    public boolean isEmpty(){
-        return virtualStack == null || virtualStack.size() == 0;
+    public boolean isEmpty() {
+        return virtualStack == null || virtualStack.isEmpty();
     }
 }

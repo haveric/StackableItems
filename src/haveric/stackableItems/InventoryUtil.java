@@ -19,6 +19,8 @@ public class InventoryUtil {
 
     private static StackableItems plugin;
 
+    private InventoryUtil() { } // Private constructor for utility class
+
     public static void init(StackableItems si) {
         plugin = si;
     }
@@ -37,14 +39,14 @@ public class InventoryUtil {
 
     public static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory, int start, int end) {
         int free = 0;
-        
+
         int inventoryLength = -1;
         if (inventory.getType() == InventoryType.PLAYER) {
             inventoryLength = 40;
         } else {
             inventoryLength = inventory.getContents().length;
         }
-        
+
         if (start < end && end <= inventoryLength && inventoryLength > -1) {
             Material type = itemToCheck.getType();
             short durability = itemToCheck.getDurability();
@@ -91,36 +93,34 @@ public class InventoryUtil {
                 } else {
                     inventoryLength = inventory.getContents().length;
                 }
-                
+
                 if (start < end && end <= inventoryLength && inventoryLength > -1) {
                     Material type = itemToAdd.getType();
                     short durability = itemToAdd.getDurability();
 
                     int maxAmount = getInventoryMax(player, inventory, type, durability, start, end);
-                    
+
                     int addAmount = itemToAdd.getAmount();
                     // Add to existing stacks
                     for (int i = start; i < end && addAmount > 0; i++) {
                         ItemStack slot = inventory.getItem(i);
-                        if (slot != null) {
-                            if (ItemUtil.isSameItem(slot, itemToAdd)) {
-                                int slotAmount = slot.getAmount();
+                        if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
+                            int slotAmount = slot.getAmount();
 
-                                int canAdd = maxAmount - slotAmount;
-                                if (canAdd > 0) {
-                                    if (addAmount <= canAdd) {
-                                        slot.setAmount(slotAmount + addAmount);
-                                        inventory.setItem(i, slot);
-                                        addAmount = 0;
-                                    } else if (addAmount <= maxAmount) {
-                                        slot.setAmount(maxAmount);
-                                        inventory.setItem(i, slot);
-                                        addAmount -= canAdd;
-                                    } else {
-                                        slot.setAmount(maxAmount);
-                                        inventory.setItem(i, slot);
-                                        addAmount -= maxAmount;
-                                    }
+                            int canAdd = maxAmount - slotAmount;
+                            if (canAdd > 0) {
+                                if (addAmount <= canAdd) {
+                                    slot.setAmount(slotAmount + addAmount);
+                                    inventory.setItem(i, slot);
+                                    addAmount = 0;
+                                } else if (addAmount <= maxAmount) {
+                                    slot.setAmount(maxAmount);
+                                    inventory.setItem(i, slot);
+                                    addAmount -= canAdd;
+                                } else {
+                                    slot.setAmount(maxAmount);
+                                    inventory.setItem(i, slot);
+                                    addAmount -= maxAmount;
                                 }
                             }
                         }
@@ -259,17 +259,15 @@ public class InventoryUtil {
             for (int i = 1; i < length; i++) {
                 ItemStack item = inventory.getItem(i);
 
-                if (item != null) {
-                    if (ItemUtil.isSameItem(item, ing)) {
-                        int temp = item.getAmount();
-                        /*
-                        if (temp > 0){
-                            invent[i-1] = temp;
-                        }
-                        */
-                        if (holdingAmount == 0 || holdingAmount > temp) {
-                            holdingAmount = temp;
-                        }
+                if (item != null && ItemUtil.isSameItem(item, ing)) {
+                    int temp = item.getAmount();
+                    /*
+                    if (temp > 0){
+                        invent[i-1] = temp;
+                    }
+                    */
+                    if (holdingAmount == 0 || holdingAmount > temp) {
+                        holdingAmount = temp;
                     }
                 }
             }
@@ -316,7 +314,7 @@ public class InventoryUtil {
             }
         });
     }
-    
+
     private static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int start, int end) {
         int maxAmount = SIItems.getItemMax(player, mat, dur);
 
@@ -333,8 +331,10 @@ public class InventoryUtil {
             maxAmount = 1;
         } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
             maxAmount = 64;
-        } else if ((inventory.getType() == InventoryType.CRAFTING || inventory.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
-            maxAmount = 64;
+        } else if (!Config.isCraftingUsingStacks()) {
+            if ((inventory.getType() == InventoryType.WORKBENCH && start >= 1 && end <= 10) || inventory.getType() == InventoryType.CRAFTING) {
+                maxAmount = 64;
+            }
         } else if (inventory.getType() == InventoryType.BREWING && !Config.isBrewingUsingStacks()) {
             if (start >= 0 && end <= 3) {
                 maxAmount = 1;
@@ -342,10 +342,10 @@ public class InventoryUtil {
                 maxAmount = 64;
             }
         }
-        
+
         return maxAmount;
     }
-    
+
     public static void splitStack(Player player, boolean toolCheck) {
         ItemStack holding = player.getItemInHand();
         int amount = holding.getAmount();
@@ -361,12 +361,22 @@ public class InventoryUtil {
             }
         }
     }
-    
+
     public static void replaceItem(final Player player, final int slot, final ItemStack stack) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
                 player.getInventory().setItem(slot, stack);
             }
         });
+    }
+
+    public static void swapInventory(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
+        // move from main inventory to hotbar
+        if (rawSlot >= startSlot && rawSlot <= startSlot + 26) {
+            InventoryUtil.moveItems(player, toMove, event, 0, 9, true);
+        // move from hotbar to main inventory
+        } else if (rawSlot >= startSlot + 27 && rawSlot <= startSlot + 35) {
+            InventoryUtil.moveItems(player, toMove, event, 9, 36, true);
+        }
     }
 }

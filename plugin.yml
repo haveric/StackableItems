@@ -7,5 +7,5 @@ softdepend: [Vault]
 commands:
     stackableitems:
         aliases: [si]
-        description: Allows you to change an item's max stack amount.
+        description: Allows you to change any item's max stack amount.
         usage:

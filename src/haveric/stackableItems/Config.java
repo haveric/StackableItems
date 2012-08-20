@@ -3,13 +3,14 @@ package haveric.stackableItems;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import org.bukkit.Location;
 import org.bukkit.block.Furnace;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class Config {
+public final class Config {
 
     private static StackableItems plugin;
 
@@ -41,6 +42,7 @@ public class Config {
     private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
 
+    private Config() { } // Private constructor for utility class
 
     /**
      * Initializes the config file
@@ -208,7 +210,7 @@ public class Config {
 
         saveConfig();
     }
-    
+
     public static boolean isBrewingUsingStacks() {
         return config.getBoolean(cfgBrewingUseStacks);
     }

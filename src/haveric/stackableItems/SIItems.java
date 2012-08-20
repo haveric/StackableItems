@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class SIItems {
+public final class SIItems {
 
     //                     player    item            num
     private static HashMap<String, HashMap<String, Integer>> itemsMap;
@@ -34,6 +34,8 @@ public class SIItems {
     private static String cfgAllItemsMax = "ALL ITEMS MAX";
 
     public static final int ITEM_DEFAULT = -1;
+
+    private SIItems() { } // Private constructor for utility class
 
     public static void init(StackableItems si) {
         plugin = si;
@@ -182,19 +184,19 @@ public class SIItems {
     public static void setMax(String playerOrGroup, Material mat, short dur, int newAmount) {
         configItemsFile = new File(plugin.getDataFolder() + "/" + playerOrGroup + ".yml");
         configItems = YamlConfiguration.loadConfiguration(configItemsFile);
+
+        String name;
         if (dur == -1) {
-            configItems.set(mat.name(), newAmount);
-            if (!itemsMap.containsKey(playerOrGroup)) {
-                itemsMap.put(playerOrGroup, new HashMap<String, Integer>());
-            }
-            itemsMap.get(playerOrGroup).put(mat.name(), newAmount);
+            name = mat.name();
         } else {
-            configItems.set(mat.name() + " " + dur, newAmount);
-            if (!itemsMap.containsKey(playerOrGroup)) {
-                itemsMap.put(playerOrGroup, new HashMap<String, Integer>());
-            }
-            itemsMap.get(playerOrGroup).put(mat.name() + " " + dur, newAmount);
+            name = mat.name() + " " + dur;
         }
+
+        configItems.set(name, newAmount);
+        if (!itemsMap.containsKey(playerOrGroup)) {
+            itemsMap.put(playerOrGroup, new HashMap<String, Integer>());
+        }
+        itemsMap.get(playerOrGroup).put(name, newAmount);
 
         try {
             configItems.save(configItemsFile);

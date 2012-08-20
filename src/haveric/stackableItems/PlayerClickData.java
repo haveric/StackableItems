@@ -22,10 +22,10 @@ public class PlayerClickData {
         lastFoodLevel = -1;
     }
 
-    public PlayerClickData(int slot, Material type, int amt, int dur) {
-        this.slot = slot;
-        this.type = type;
-        amount = amt;
+    public PlayerClickData(int newSlot, Material newType, int newAmt/*, int newDur*/) {
+        slot = newSlot;
+        type = newType;
+        amount = newAmt;
     }
 
     public Material getType() {

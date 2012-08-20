@@ -2,10 +2,11 @@ package haveric.stackableItems;
 
 import java.util.HashMap;
 
-public class SIPlayers {
+public final class SIPlayers {
 
     private static HashMap<String, PlayerClickData> playerData;
 
+    private SIPlayers() { } // Private constructor for utility class
     public static void setup() {
         playerData = new HashMap<String, PlayerClickData>();
     }

@@ -35,10 +35,13 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class SIPlayerListener implements Listener {
 
-    StackableItems plugin;
+    private StackableItems plugin;
 
+    private String itemDisabledMessage;
     public SIPlayerListener(StackableItems si) {
         plugin = si;
+
+        itemDisabledMessage = String.format("[%s] This item has been disabled.", plugin.getDescription().getName());
     }
 
     @EventHandler
@@ -123,7 +126,7 @@ public class SIPlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        
+
         Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getCurrentItem();
 
@@ -131,7 +134,7 @@ public class SIPlayerListener implements Listener {
 
         int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
         if (maxItems == 0) {
-            player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
+            player.sendMessage(itemDisabledMessage);
             event.setCancelled(true);
         } else {
             int cursorAmount = event.getCursor().getAmount();
@@ -275,7 +278,7 @@ public class SIPlayerListener implements Listener {
 
                 int amount = holding.getAmount();
 
-                PlayerClickData clickData = new PlayerClickData(player.getInventory().getHeldItemSlot(), holdingType, amount, holding.getDurability());
+                PlayerClickData clickData = new PlayerClickData(player.getInventory().getHeldItemSlot(), holdingType, amount);
                 SIPlayers.setPlayerData(player.getName(), clickData);
             }
         }
@@ -338,9 +341,9 @@ public class SIPlayerListener implements Listener {
             int clickedAmount = clicked.getAmount();
 
             int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
- 
+
             if (maxItems == 0) {
-                player.sendMessage(String.format("[%s] This item has been disabled.", plugin.getDescription().getName()));
+                player.sendMessage(itemDisabledMessage);
                 event.setCancelled(true);
             } else {
                 int freeSpaces = InventoryUtil.getFreeSpaces(player, clicked);
@@ -480,9 +483,9 @@ public class SIPlayerListener implements Listener {
                         if (ItemUtil.isArmor(clickedType)) {
                             ItemStack armorSlot = null;
                             int moveSlot = -1;
-                            
+
                             PlayerInventory inventory = player.getInventory();
-                            
+
                             if (ItemUtil.isHelmet(clickedType)) {
                                 armorSlot = inventory.getHelmet();
                                 moveSlot = 39;
@@ -496,38 +499,26 @@ public class SIPlayerListener implements Listener {
                                 armorSlot = inventory.getBoots();
                                 moveSlot = 36;
                             }
-                                
+
                             if (armorSlot == null && moveSlot > -1) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, moveSlot, moveSlot + 1, false);
                                 if (left > 0) {
                                     clicked.setAmount(left);
                                 }
                             } else {
-                                // move from main inventory to hotbar
-                                if (rawSlot >= 1 && rawSlot <= 27) {
-                                    InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
-                                // move from hotbar to main inventory
-                                } else if (rawSlot >= 28 && rawSlot <= 36) {
-                                    InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
-                                }
+                                InventoryUtil.swapInventory(player, clicked, event, rawSlot, 1);
                             }
                         } else {
-                            // move from main inventory to hotbar
-                            if (rawSlot >= 9 && rawSlot <= 35) {
-                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
-                            // move from hotbar to main inventory
-                            } else if (rawSlot >= 36 && rawSlot <= 44) {
-                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
-                            }
+                            InventoryUtil.swapInventory(player, clicked, event, rawSlot, 9);
                         }
                     } else if (topType == InventoryType.BREWING) {
                         boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
                         boolean isPotion = clickedType == Material.POTION;
-                        
+
                         boolean moved = false;
                         if (isBrewingIngredient) {
                             ItemStack brewingSlot = top.getItem(3);
-                            
+
                             if (brewingSlot == null || ItemUtil.isSameItem(brewingSlot, clicked)) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 3, 4, false);
 
@@ -540,7 +531,7 @@ public class SIPlayerListener implements Listener {
                             ItemStack potionSlot1 = top.getItem(0);
                             ItemStack potionSlot2 = top.getItem(1);
                             ItemStack potionSlot3 = top.getItem(2);
-                            
+
                             if (potionSlot1 == null) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
 
@@ -565,37 +556,36 @@ public class SIPlayerListener implements Listener {
                                 }
                                 moved = true;
                             }
-                            
+
                         }
                         if (!moved) {
-                            // move from main inventory to hotbar
-                            if (rawSlot >= 4 && rawSlot <= 30) {
-                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
-                            // move from hotbar to main inventory
-                            } else if (rawSlot >= 31 && rawSlot <= 39) {
-                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
-                            }
+                            InventoryUtil.swapInventory(player, clicked, event, rawSlot, 4);
                         }
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST) {
                         InventoryUtil.moveItems(player, clicked, event, top, true);
                     } else if (topType == InventoryType.WORKBENCH) {
+                        boolean canMove = false;
+                        for (int i = 1; i < 10 && !canMove; i++) {
+                            if (top.getItem(i) == null) {
+                                canMove = true;
+                            }
+                        }
+
                         InventoryUtil.moveItems(player, clicked, event, top, 1, 10, true);
+
+                        if (!canMove) {
+                            InventoryUtil.swapInventory(player, clicked, event, rawSlot, 10);
+                        }
                     // TODO Improve merchant shift click handling (Based on current recipe)
                     } else if (topType == InventoryType.MERCHANT) {
-                        // move from main inventory to hotbar
-                        if (rawSlot >= 3 && rawSlot <= 29) {
-                            InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
-                        // move from hotbar to main inventory
-                        } else if (rawSlot >= 30 && rawSlot <= 38) {
-                            InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
-                        }
+                        InventoryUtil.swapInventory(player, clicked, event, rawSlot, 3);
                     } else if (topType == InventoryType.ENCHANTING) {
                         boolean isEnchantable = ItemUtil.isEnchantable(clickedType);
-                        
+
                         boolean moved = false;
                         if (isEnchantable) {
                             ItemStack enchantSlot = top.getItem(0);
-                            
+
                             if (enchantSlot == null) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
 
@@ -605,15 +595,9 @@ public class SIPlayerListener implements Listener {
                                 moved = true;
                             }
                         }
-                        
+
                         if (!moved) {
-                            // move from main inventory to hotbar
-                            if (rawSlot >= 1 && rawSlot <= 27) {
-                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
-                            // move from hotbar to main inventory
-                            } else if (rawSlot >= 28 && rawSlot <= 36) {
-                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
-                            }
+                            InventoryUtil.swapInventory(player, clicked, event, rawSlot, 1);
                         }
                     } else if (topType == InventoryType.FURNACE) {
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);
@@ -656,15 +640,8 @@ public class SIPlayerListener implements Listener {
                         }
                         // normal item;
                         if ((!fuelMoved && !burnableMoved) || (!isFuel && !isBurnable)) {
-                            // move from main inventory to hotbar
-                            if (rawSlot >= 3 && rawSlot <= 29) {
-                                InventoryUtil.moveItems(player, clicked, event, 0, 9, true);
-                            // move from hotbar to main inventory
-                            } else if (rawSlot >= 30 && rawSlot <= 38) {
-                                InventoryUtil.moveItems(player, clicked, event, 9, 36, true);
-                            }
+                            InventoryUtil.swapInventory(player, clicked, event, rawSlot, 3);
                         }
-
                     }
                 }
             } else if (event.isLeftClick()) {
@@ -810,11 +787,11 @@ public class SIPlayerListener implements Listener {
                                     }
                                 } else if (top.getType() == InventoryType.MERCHANT && rawSlot <= 1 && !Config.isMerchantUsingStacks()) {
                                     maxItems = 64;
-                                } else if (((top.getType() == InventoryType.CRAFTING && rawSlot >= 1 && rawSlot <= 4) || 
+                                } else if (((top.getType() == InventoryType.CRAFTING && rawSlot >= 1 && rawSlot <= 4) ||
                                         (top.getType() == InventoryType.WORKBENCH) && rawSlot >= 1 && rawSlot <= 9) && !Config.isCraftingUsingStacks()) {
                                     maxItems = 64;
                                 }
-                                
+
                                 int total = clickedAmount + cursorAmount;
                                 if (total <= maxItems) {
                                     if (total > clicked.getMaxStackSize()) {
@@ -843,7 +820,7 @@ public class SIPlayerListener implements Listener {
                                         InventoryUtil.updateInventory(player);
                                     }
                                 }
-                                
+
                             // Create a virtual stack out of two different items
                             } else if (Config.isVirtualItemsEnabled()) {
                                 //player.sendMessage("Combine two items into a virtual stack.");
@@ -979,7 +956,7 @@ public class SIPlayerListener implements Listener {
                                 } else {
                                     event.setCancelled(true);
                                 }
-                                
+
                             // Create a virtual stack out of two different items
                             } else if (Config.isVirtualItemsEnabled()) {
                                 //player.sendMessage("RC:Combine two items into a virtual stack.");
