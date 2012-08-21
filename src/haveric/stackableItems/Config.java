@@ -1,12 +1,10 @@
 package haveric.stackableItems;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.bukkit.Location;
 import org.bukkit.block.Furnace;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -65,11 +63,7 @@ public final class Config {
             config.load(configFile);
 
             configFurnaces.load(configFurnacesFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -97,7 +91,7 @@ public final class Config {
         saveConfig();
 
         if (configFurnacesFile.length() == 0) {
-            saveCustomConfig(configFurnaces, configFurnacesFile);
+            saveConfig(configFurnaces, configFurnacesFile);
         }
     }
 
@@ -113,7 +107,7 @@ public final class Config {
     }
 
 
-    public static void saveCustomConfig(FileConfiguration fileConfig, File file) {
+    public static void saveConfig(FileConfiguration fileConfig, File file) {
         try {
             fileConfig.save(file);
         } catch (IOException e) {
@@ -131,13 +125,8 @@ public final class Config {
 
     public static int getFurnaceAmount(Location loc) {
         String world = loc.getWorld().getName();
-        int x = loc.getBlockX();
-        int y = loc.getBlockY();
-        int z = loc.getBlockZ();
 
-        int amt = configFurnaces.getInt(world + "." + x + "," + y + "," + z, ITEM_DEFAULT);
-
-        return amt;
+        return configFurnaces.getInt(world + "." +  loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), ITEM_DEFAULT);
     }
 
     public static void setFurnaceAmount(Furnace furnace, int newAmt) {
@@ -147,13 +136,10 @@ public final class Config {
 
     public static void setFurnaceAmount(Location loc, int newAmt) {
         String world = loc.getWorld().getName();
-        int x = loc.getBlockX();
-        int y = loc.getBlockY();
-        int z = loc.getBlockZ();
 
-        configFurnaces.set(world + "." + x + "," + y + "," + z, newAmt);
+        configFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), newAmt);
 
-        saveCustomConfig(configFurnaces, configFurnacesFile);
+        saveConfig(configFurnaces, configFurnacesFile);
     }
 
     public static void clearFurnace(Furnace furnace) {
@@ -162,13 +148,10 @@ public final class Config {
 
     public static void clearFurnace(Location loc) {
         String world = loc.getWorld().getName();
-        int x = loc.getBlockX();
-        int y = loc.getBlockY();
-        int z = loc.getBlockZ();
 
-        configFurnaces.set(world + "." + x + "," + y + "," + z, null);
+        configFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), null);
 
-        saveCustomConfig(configFurnaces, configFurnacesFile);
+        saveConfig(configFurnaces, configFurnacesFile);
     }
 
     public static int getMaxFurnaceAmount() {

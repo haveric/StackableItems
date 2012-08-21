@@ -16,18 +16,20 @@ public class Commands implements CommandExecutor {
     private static String cmdHelp = "help";
     private static String cmdReload = "reload";
 
+    ChatColor msgColor = ChatColor.DARK_AQUA;
+    ChatColor highlightColor = ChatColor.YELLOW;
 
-    public Commands(StackableItems ss) {
-        plugin = ss;
+    String title;
+    String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
+
+    public Commands(StackableItems si) {
+        plugin = si;
+
+        title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        ChatColor msgColor = ChatColor.DARK_AQUA;
-        ChatColor highlightColor = ChatColor.YELLOW;
-
-        String title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
-        String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
 
         boolean op = false;
         if (sender.isOp()) {
@@ -116,7 +118,7 @@ public class Commands implements CommandExecutor {
                                     msg += " set to ";
                                 }
                                 sender.sendMessage(msg + highlightColor + numToSet);
-                            } else if (type.equals("group") || type.equals("player")) {
+                            } else { // group or player
                                 max = SIItems.getMax(permType, mat, dur);
                                 msg += " for " + highlightColor + permType + msgColor;
                                 if (numToSet == max) {
@@ -155,11 +157,13 @@ public class Commands implements CommandExecutor {
                             } else {
                                 sender.sendMessage(shortTitle + highlightColor + mat.name() + msgColor + " for " + highlightColor + permType + msgColor + " is: " + highlightColor + max);
                             }
-                        } else if (type.equals("player")) {
+                        } else { // player
                             max = SIItems.getMax(permType, mat, dur);
                             if (max == -1) {
                                 Player player = plugin.getServer().getPlayerExact(permType);
-                                if (player != null) {
+                                if (player == null) {
+                                    sender.sendMessage(msg + " does not exist.");
+                                } else {
                                     String group = Perms.getPerm().getPrimaryGroup(player);
                                     max = SIItems.getMax(group, mat, dur);
 
@@ -177,8 +181,6 @@ public class Commands implements CommandExecutor {
                                         msg += ". " + highlightColor + group + msgColor + " value: " + highlightColor + max;
                                     }
                                     sender.sendMessage(msg);
-                                } else {
-                                    sender.sendMessage(msg + " does not exist.");
                                 }
                             } else {
                                 sender.sendMessage(msg + " for " + highlightColor + permType + msgColor + " is: " + highlightColor + max);

@@ -43,7 +43,7 @@ public final class SIItems {
         configGroupsFile = new File(plugin.getDataFolder() + "/groups.yml");
         configGroups = YamlConfiguration.loadConfiguration(configGroupsFile);
         if (configGroupsFile.length() == 0) {
-            Config.saveCustomConfig(configGroups, configGroupsFile);
+            Config.saveConfig(configGroups, configGroupsFile);
         }
 
         defaultItemsFile = new File(plugin.getDataFolder() + "/defaultItems.yml");
@@ -57,7 +57,7 @@ public final class SIItems {
     private static void setupDefaultItemsFile() {
         if (defaultItemsFile.length() == 0) {
             defaultItems.set(cfgAllItemsMax, ITEM_DEFAULT);
-            Config.saveCustomConfig(defaultItems, defaultItemsFile);
+            Config.saveConfig(defaultItems, defaultItemsFile);
         }
     }
 

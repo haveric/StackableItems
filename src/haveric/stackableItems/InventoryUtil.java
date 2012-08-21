@@ -15,7 +15,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
-public class InventoryUtil {
+public final class InventoryUtil {
 
     private static StackableItems plugin;
 
@@ -350,14 +350,12 @@ public class InventoryUtil {
         ItemStack holding = player.getItemInHand();
         int amount = holding.getAmount();
 
-        if (amount > 1) {
-            if (!toolCheck || ItemUtil.isTool(holding.getType())) {
-                if (!Config.isVirtualItemsEnabled()) {
-                    ItemStack move = holding.clone();
-                    move.setAmount(amount - 1);
-                    InventoryUtil.addItems(player, move);
-                    holding.setAmount(1);
-                }
+        if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
+            if (!Config.isVirtualItemsEnabled()) {
+                ItemStack move = holding.clone();
+                move.setAmount(amount - 1);
+                InventoryUtil.addItems(player, move);
+                holding.setAmount(1);
             }
         }
     }

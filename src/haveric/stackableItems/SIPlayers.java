@@ -1,13 +1,15 @@
 package haveric.stackableItems;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public final class SIPlayers {
 
-    private static HashMap<String, PlayerClickData> playerData;
+    private static Map<String, PlayerClickData> playerData;
 
     private SIPlayers() { } // Private constructor for utility class
-    public static void setup() {
+
+    public static void init() {
         playerData = new HashMap<String, PlayerClickData>();
     }
 

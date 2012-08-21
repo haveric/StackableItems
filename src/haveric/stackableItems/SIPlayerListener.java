@@ -232,14 +232,12 @@ public class SIPlayerListener implements Listener {
         int slot = player.getInventory().getHeldItemSlot();
 
         int amount = holding.getAmount();
-        if (amount > 1) {
-            if (type == Material.WATER_BUCKET || type == Material.LAVA_BUCKET || type == Material.MILK_BUCKET) {
-                ItemStack clone = holding.clone();
-                clone.setAmount(amount - 1);
+        if (amount > 1 && (type == Material.WATER_BUCKET || type == Material.LAVA_BUCKET || type == Material.MILK_BUCKET)) {
+            ItemStack clone = holding.clone();
+            clone.setAmount(amount - 1);
 
-                InventoryUtil.replaceItem(player, slot, clone);
-                InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, 1));
-            }
+            InventoryUtil.replaceItem(player, slot, clone);
+            InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, 1));
         }
     }
 
@@ -253,16 +251,14 @@ public class SIPlayerListener implements Listener {
         if (foodLevel > clickData.getLastFoodLevel()) {
             clickData.setLastFoodLevel(foodLevel);
 
-            if (clickData.getAmount() > 1) {
-                if (clickData.getType() == Material.MUSHROOM_SOUP) {
-                    PlayerInventory inventory = player.getInventory();
-                    ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
-                    if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
-                        InventoryUtil.replaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
-                        //plugin.log.info("Left: " + (clickData.getAmount() - 1));
+            if (clickData.getAmount() > 1 && clickData.getType() == Material.MUSHROOM_SOUP) {
+                PlayerInventory inventory = player.getInventory();
+                ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
+                if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
+                    InventoryUtil.replaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
+                    //plugin.log.info("Left: " + (clickData.getAmount() - 1));
 
-                        InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
-                    }
+                    InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
                 }
             }
         }
@@ -301,14 +297,12 @@ public class SIPlayerListener implements Listener {
 
                 int amount = holding.getAmount();
 
-                if (amount > 1) {
-                    if (holdingType == Material.FLINT_AND_STEEL) {
-                        ItemStack move = holding.clone();
-                        move.setAmount(amount - 1);
+                if (amount > 1 && holdingType == Material.FLINT_AND_STEEL) {
+                    ItemStack move = holding.clone();
+                    move.setAmount(amount - 1);
 
-                        holding.setAmount(1);
-                        InventoryUtil.addItems(player, move);
-                    }
+                    holding.setAmount(1);
+                    InventoryUtil.addItems(player, move);
                 }
             }
         }
@@ -709,7 +703,7 @@ public class SIPlayerListener implements Listener {
                     }
                 // Combine two items
                 } else if (!cursorEmpty && !slotEmpty) {
-                    boolean sameType = clickedType == cursorType;
+                    boolean sameType = clickedType.equals(cursorType);
 
                     // Combine two virtual stacks
                     if (virtualCursor && virtualClicked) {
@@ -855,7 +849,7 @@ public class SIPlayerListener implements Listener {
                 }
             } else if (event.isRightClick()) {
                 if (!slotEmpty && !cursorEmpty) {
-                    boolean sameType = clickedType == cursorType;
+                    boolean sameType = clickedType.equals(cursorType);
 
                     // Combine two virtual stacks
                     if (virtualCursor && virtualClicked) {
