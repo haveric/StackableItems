@@ -24,12 +24,11 @@ public class Commands implements CommandExecutor {
 
     public Commands(StackableItems si) {
         plugin = si;
-
-        title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
 
         boolean op = false;
         if (sender.isOp()) {
