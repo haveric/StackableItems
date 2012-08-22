@@ -1,13 +1,12 @@
 package haveric.stackableItems;
 
-import net.minecraft.server.Packet22Collect;
+import java.util.Random;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Furnace;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -1050,18 +1049,13 @@ public class SIPlayerListener implements Listener {
                 event.setCancelled(true);
             } else {
                 InventoryUtil.addItems(player, stack);
-
-                collectItem(player, item);
+                Random random = new Random();
+                player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
                 item.remove();
 
                 event.setCancelled(true);
             }
         }
-    }
-
-    public void collectItem(Player player, Item item) {
-        Packet22Collect packet = new Packet22Collect(((Entity) item).getEntityId(), player.getEntityId());
-        ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(packet);
     }
 }

@@ -14,6 +14,7 @@ Todo/Ideas:
 Changelog:
 
 Coming soon:
+* Removed dependency on CraftBukkit needed for the pop sound when picking up items thanks to the new Sounds API.
 * Fixed bow repairing
 * Fixed shift clicking in Enchantment Tables
 ** If enchantment table is empty, first click will move 1 item to fill the slot.  Another click will switch it between main inventory and quickslots.
