@@ -129,45 +129,49 @@ public class SIPlayerListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getCurrentItem();
 
-        Material type = craftedItem.getType();
-
-        int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
-        if (maxItems == 0) {
-            player.sendMessage(itemDisabledMessage);
-            event.setCancelled(true);
+        if (craftedItem == null) {
+            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Crafted Item is null.");
         } else {
-            int cursorAmount = event.getCursor().getAmount();
-            int recipeAmount = event.getRecipe().getResult().getAmount();
+            Material type = craftedItem.getType();
 
-            if (event.isShiftClick()) {
-                CraftingInventory inventory = event.getInventory();
+            int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
+            if (maxItems == 0) {
+                player.sendMessage(itemDisabledMessage);
+                event.setCancelled(true);
+            } else {
+                int cursorAmount = event.getCursor().getAmount();
+                int recipeAmount = event.getRecipe().getResult().getAmount();
 
-                int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
-                int actualCraft = amtCanCraft * recipeAmount;
+                if (event.isShiftClick()) {
+                    CraftingInventory inventory = event.getInventory();
 
-                int freeSpaces = InventoryUtil.getFreeSpaces(player, craftedItem);
-                ItemStack clone = craftedItem.clone();
+                    int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
+                    int actualCraft = amtCanCraft * recipeAmount;
 
-                // custom repairing
-                if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
-                    // TODO: handle custom repairing to allow stacking
-                    // TODO: don't let people repair two fully repaired items.. that's just stupid
-                } else if (freeSpaces > actualCraft) {
-                    event.setCancelled(true);
+                    int freeSpaces = InventoryUtil.getFreeSpaces(player, craftedItem);
+                    ItemStack clone = craftedItem.clone();
 
-                    InventoryUtil.removeFromCrafting(inventory, amtCanCraft);
-                    clone.setAmount(actualCraft);
-                    InventoryUtil.addItems(player, clone);
-                } else {
-                    event.setCancelled(true);
+                    // custom repairing
+                    if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
+                        // TODO: handle custom repairing to allow stacking
+                        // TODO: don't let people repair two fully repaired items.. that's just stupid
+                    } else if (freeSpaces > actualCraft) {
+                        event.setCancelled(true);
 
-                    InventoryUtil.removeFromCrafting(inventory, freeSpaces);
-                    clone.setAmount(freeSpaces);
-                    InventoryUtil.addItems(player, clone);
-                }
-            } else if (event.isLeftClick() || event.isRightClick()) {
-                if (cursorAmount + recipeAmount > maxItems) {
-                    event.setCancelled(true);
+                        InventoryUtil.removeFromCrafting(inventory, amtCanCraft);
+                        clone.setAmount(actualCraft);
+                        InventoryUtil.addItems(player, clone);
+                    } else {
+                        event.setCancelled(true);
+
+                        InventoryUtil.removeFromCrafting(inventory, freeSpaces);
+                        clone.setAmount(freeSpaces);
+                        InventoryUtil.addItems(player, clone);
+                    }
+                } else if (event.isLeftClick() || event.isRightClick()) {
+                    if (cursorAmount + recipeAmount > maxItems) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }

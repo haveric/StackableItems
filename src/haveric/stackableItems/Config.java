@@ -18,6 +18,7 @@ public final class Config {
     private static String cfgMerchantUseStacks = "Use_Stack_Amounts_In_Trading";
     private static String cfgCraftingUseStacks = "Use_Stack_Amounts_In_Crafting";
     private static String cfgBrewingUseStacks = "Use_Stack_Amounts_In_Brewing";
+    private static String cfgDebug = "Debug";
 
     private static FileConfiguration config;
     private static File configFile;
@@ -38,6 +39,7 @@ public final class Config {
     private static final boolean CRAFTING_USE_STACKS_DEFAULT = false;
     private static final boolean BREWING_USE_STACKS_DEFAULT = false;
     private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
+    private static final boolean DEBUG_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
 
     private Config() { } // Private constructor for utility class
@@ -54,8 +56,6 @@ public final class Config {
 
         configFurnacesFile = new File(plugin.getDataFolder() + "/data/furnaces.yml");
         configFurnaces = YamlConfiguration.loadConfiguration(configFurnacesFile);
-
-        config.options().copyDefaults(true);
     }
 
     public static void reload() {
@@ -79,6 +79,8 @@ public final class Config {
         boolean craftingUseStacks = config.getBoolean(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
         boolean brewingUseStacks = config.getBoolean(cfgCraftingUseStacks, BREWING_USE_STACKS_DEFAULT);
 
+        boolean debug = config.getBoolean(cfgDebug, DEBUG_DEFAULT);
+
         int furnaceAmt = config.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
         // TODO Find a way to not have to set these every time, but only if they don't exist
@@ -88,6 +90,7 @@ public final class Config {
         config.set(cfgCraftingUseStacks, brewingUseStacks);
         config.set(cfgVirtualItems, virtualItems);
         config.set(cfgFurnaceAmount, furnaceAmt);
+        config.set(cfgDebug, debug);
         saveConfig();
 
         if (configFurnacesFile.length() == 0) {
@@ -200,6 +203,16 @@ public final class Config {
 
     public static void setBrewingUsingStacks(boolean isUsing) {
         config.set(cfgBrewingUseStacks, isUsing);
+
+        saveConfig();
+    }
+
+    public static boolean isDebugging() {
+        return config.getBoolean(cfgDebug);
+    }
+
+    public static void setDebugging(boolean isDebugging) {
+        config.set(cfgDebug, isDebugging);
 
         saveConfig();
     }

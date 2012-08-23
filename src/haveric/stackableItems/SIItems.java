@@ -102,21 +102,31 @@ public final class SIItems {
     }
 
     public static void addItemFiles(String groupOrPlayer) {
-        configItemsFile = new File(plugin.getDataFolder() + "/" + groupOrPlayer + ".yml");
-        configItems = YamlConfiguration.loadConfiguration(configItemsFile);
-        if (!itemsMap.containsKey(groupOrPlayer)) {
-            itemsMap.put(groupOrPlayer, new HashMap<String, Integer>());
-        }
-        for (String key : configItems.getKeys(false)) {
-            itemsMap.get(groupOrPlayer).put(key.toUpperCase(), configItems.getInt(key));
+        if (groupOrPlayer == null) {
+            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Add Item Files: Group or Player is null.");
+        } else {
+            configItemsFile = new File(plugin.getDataFolder() + "/" + groupOrPlayer + ".yml");
+            configItems = YamlConfiguration.loadConfiguration(configItemsFile);
+            if (!itemsMap.containsKey(groupOrPlayer)) {
+                itemsMap.put(groupOrPlayer, new HashMap<String, Integer>());
+            }
+            for (String key : configItems.getKeys(false)) {
+                itemsMap.get(groupOrPlayer).put(key.toUpperCase(), configItems.getInt(key));
+            }
         }
     }
 
     public static void removeItemFiles(String groupOrPlayer) {
-        if (!itemsMap.get(groupOrPlayer).isEmpty()) {
-            itemsMap.get(groupOrPlayer).clear();
+        if (groupOrPlayer == null) {
+            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Remove Item Files: Group or Player is null.");
+        } else if (itemsMap == null) {
+            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Items Map is null. This should never be null.");
+        } else {
+            if (!itemsMap.get(groupOrPlayer).isEmpty()) {
+                itemsMap.get(groupOrPlayer).clear();
+            }
+            itemsMap.remove(groupOrPlayer);
         }
-        itemsMap.remove(groupOrPlayer);
     }
 
 
