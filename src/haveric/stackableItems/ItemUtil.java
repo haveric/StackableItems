@@ -245,14 +245,19 @@ public final class ItemUtil {
     }
 
     public static boolean isSameItem(ItemStack one, ItemStack two) {
+        return isSameItem(one, two, false);
+    }
+
+    public static boolean isSameItem(ItemStack one, ItemStack two, boolean negativeDurAllowed) {
         boolean same = false;
 
         boolean sameType = one.getType() == two.getType();
         boolean sameDur = one.getDurability() == two.getDurability();
+        boolean negativeDur = (one.getDurability() == -1) || (two.getDurability() == -1);
         boolean sameEnchant = one.getEnchantments().equals(two.getEnchantments());
         boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
 
-        if (sameType && sameDur && (sameEnchant || noEnchant)) {
+        if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant)) {
             // TODO determine if books are truly the same
             same = true;
         }

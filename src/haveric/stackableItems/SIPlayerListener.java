@@ -135,6 +135,7 @@ public class SIPlayerListener implements Listener {
             Material type = craftedItem.getType();
 
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
+
             if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
                 event.setCancelled(true);

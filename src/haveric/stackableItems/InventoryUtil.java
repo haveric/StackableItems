@@ -202,7 +202,6 @@ public final class InventoryUtil {
                 int height = shape[0].length();
 
                 int max = width * height;
-
                 amt = checkItemInInventory(inventory, itemMap.get('a'), amt);
                 if (max >= 2) {
                     amt = checkItemInInventory(inventory, itemMap.get('b'), amt);
@@ -259,7 +258,7 @@ public final class InventoryUtil {
             for (int i = 1; i < length; i++) {
                 ItemStack item = inventory.getItem(i);
 
-                if (item != null && ItemUtil.isSameItem(item, ing)) {
+                if (item != null && ItemUtil.isSameItem(item, ing, true)) {
                     int temp = item.getAmount();
                     /*
                     if (temp > 0){

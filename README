@@ -24,6 +24,7 @@ Coming soon:
 * Added Use_Stack_Amounts_In_Brewing
 * Fixed shift clicking in Brewing Stands and regular clicking in the ingredient slot.
 * Improved shift clicking in Crafting window
+* Fixed crafting recipes that use -1 durability for any durability
 
 
 Version 0.8.6 (8/12/2012)
