@@ -13,7 +13,10 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
+Version 0.8.7 (8/26/2012):
+* Added debug option.  If you want to help me test issues, set this to true.  If you start getting spammed with messages in the console, report those to github. At any point, you can set this to false to stop getting messages (after a "/si reload")
+** Will also be used from now on to prevent random message spam from my testing if I don't take them out before release.
+* Adding Metrics support. To opt out, set "opt-out: true" in PluginMetrics/config.yml
 * Removed dependency on CraftBukkit needed for the pop sound when picking up items thanks to the new Sounds API.
 * Fixed bow repairing
 * Fixed shift clicking in Enchantment Tables

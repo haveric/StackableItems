@@ -20,11 +20,11 @@ public final class Config {
     private static String cfgBrewingUseStacks = "Use_Stack_Amounts_In_Brewing";
     private static String cfgDebug = "Debug";
 
-    private static FileConfiguration config;
-    private static File configFile;
+    private static FileConfiguration cfgOptions;
+    private static File cfgOptionsFile;
 
-    private static FileConfiguration configFurnaces;
-    private static File configFurnacesFile;
+    private static FileConfiguration cfgFurnaces;
+    private static File cfgFurnacesFile;
 
     //private static FileConfiguration configChest;
     //private static File configFileChest;
@@ -50,19 +50,19 @@ public final class Config {
      */
     public static void init(StackableItems si) {
         plugin = si;
-        configFile = new File(plugin.getDataFolder() + "/options.yml");
-        config = YamlConfiguration.loadConfiguration(configFile);
+        cfgOptionsFile = new File(plugin.getDataFolder() + "/options.yml");
+        cfgOptions = YamlConfiguration.loadConfiguration(cfgOptionsFile);
 
 
-        configFurnacesFile = new File(plugin.getDataFolder() + "/data/furnaces.yml");
-        configFurnaces = YamlConfiguration.loadConfiguration(configFurnacesFile);
+        cfgFurnacesFile = new File(plugin.getDataFolder() + "/data/furnaces.yml");
+        cfgFurnaces = YamlConfiguration.loadConfiguration(cfgFurnacesFile);
     }
 
     public static void reload() {
         try {
-            config.load(configFile);
+            cfgOptions.load(cfgOptionsFile);
 
-            configFurnaces.load(configFurnacesFile);
+            cfgFurnaces.load(cfgFurnacesFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,29 +72,29 @@ public final class Config {
      * Sets up the default variables if they don't exist yet.
      */
     public static void setup() {
-        boolean virtualItems = config.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
+        boolean virtualItems = cfgOptions.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
 
-        boolean furnaceUseStacks = config.getBoolean(cfgFurnaceUseStacks, FURNACE_USE_STACKS_DEFAULT);
-        boolean merchantUseStacks = config.getBoolean(cfgMerchantUseStacks, MERCHANT_USE_STACKS_DEFAULT);
-        boolean craftingUseStacks = config.getBoolean(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
-        boolean brewingUseStacks = config.getBoolean(cfgCraftingUseStacks, BREWING_USE_STACKS_DEFAULT);
+        boolean furnaceUseStacks = cfgOptions.getBoolean(cfgFurnaceUseStacks, FURNACE_USE_STACKS_DEFAULT);
+        boolean merchantUseStacks = cfgOptions.getBoolean(cfgMerchantUseStacks, MERCHANT_USE_STACKS_DEFAULT);
+        boolean craftingUseStacks = cfgOptions.getBoolean(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
+        boolean brewingUseStacks = cfgOptions.getBoolean(cfgCraftingUseStacks, BREWING_USE_STACKS_DEFAULT);
 
-        boolean debug = config.getBoolean(cfgDebug, DEBUG_DEFAULT);
+        boolean debug = cfgOptions.getBoolean(cfgDebug, DEBUG_DEFAULT);
 
-        int furnaceAmt = config.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
+        int furnaceAmt = cfgOptions.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
         // TODO Find a way to not have to set these every time, but only if they don't exist
-        config.set(cfgFurnaceUseStacks, furnaceUseStacks);
-        config.set(cfgMerchantUseStacks, merchantUseStacks);
-        config.set(cfgCraftingUseStacks, craftingUseStacks);
-        config.set(cfgCraftingUseStacks, brewingUseStacks);
-        config.set(cfgVirtualItems, virtualItems);
-        config.set(cfgFurnaceAmount, furnaceAmt);
-        config.set(cfgDebug, debug);
+        cfgOptions.set(cfgFurnaceUseStacks, furnaceUseStacks);
+        cfgOptions.set(cfgMerchantUseStacks, merchantUseStacks);
+        cfgOptions.set(cfgCraftingUseStacks, craftingUseStacks);
+        cfgOptions.set(cfgCraftingUseStacks, brewingUseStacks);
+        cfgOptions.set(cfgVirtualItems, virtualItems);
+        cfgOptions.set(cfgFurnaceAmount, furnaceAmt);
+        cfgOptions.set(cfgDebug, debug);
         saveConfig();
 
-        if (configFurnacesFile.length() == 0) {
-            saveConfig(configFurnaces, configFurnacesFile);
+        if (cfgFurnacesFile.length() == 0) {
+            saveConfig(cfgFurnaces, cfgFurnacesFile);
         }
     }
 
@@ -103,7 +103,7 @@ public final class Config {
      */
     private static void saveConfig() {
         try {
-            config.save(configFile);
+            cfgOptions.save(cfgOptionsFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -119,7 +119,7 @@ public final class Config {
     }
 
     public static boolean isVirtualItemsEnabled() {
-        return config.getBoolean(cfgVirtualItems);
+        return cfgOptions.getBoolean(cfgVirtualItems);
     }
 
     public static int getFurnaceAmount(Furnace furnace) {
@@ -129,7 +129,7 @@ public final class Config {
     public static int getFurnaceAmount(Location loc) {
         String world = loc.getWorld().getName();
 
-        return configFurnaces.getInt(world + "." +  loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), ITEM_DEFAULT);
+        return cfgFurnaces.getInt(world + "." +  loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), ITEM_DEFAULT);
     }
 
     public static void setFurnaceAmount(Furnace furnace, int newAmt) {
@@ -140,9 +140,9 @@ public final class Config {
     public static void setFurnaceAmount(Location loc, int newAmt) {
         String world = loc.getWorld().getName();
 
-        configFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), newAmt);
+        cfgFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), newAmt);
 
-        saveConfig(configFurnaces, configFurnacesFile);
+        saveConfig(cfgFurnaces, cfgFurnacesFile);
     }
 
     public static void clearFurnace(Furnace furnace) {
@@ -152,67 +152,67 @@ public final class Config {
     public static void clearFurnace(Location loc) {
         String world = loc.getWorld().getName();
 
-        configFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), null);
+        cfgFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), null);
 
-        saveConfig(configFurnaces, configFurnacesFile);
+        saveConfig(cfgFurnaces, cfgFurnacesFile);
     }
 
     public static int getMaxFurnaceAmount() {
-        return config.getInt(cfgFurnaceAmount, ITEM_DEFAULT);
+        return cfgOptions.getInt(cfgFurnaceAmount, ITEM_DEFAULT);
     }
 
     public static void setMaxFurnaceAmount(int newAmt) {
-        config.set(cfgFurnaceAmount, newAmt);
+        cfgOptions.set(cfgFurnaceAmount, newAmt);
 
         saveConfig();
     }
 
     public static boolean isFurnaceUsingStacks() {
-        return config.getBoolean(cfgFurnaceUseStacks);
+        return cfgOptions.getBoolean(cfgFurnaceUseStacks);
     }
 
     public static void setFurnaceUsingStacks(boolean isUsing) {
-        config.set(cfgFurnaceUseStacks, isUsing);
+        cfgOptions.set(cfgFurnaceUseStacks, isUsing);
 
         saveConfig();
     }
 
     public static boolean isMerchantUsingStacks() {
-        return config.getBoolean(cfgMerchantUseStacks);
+        return cfgOptions.getBoolean(cfgMerchantUseStacks);
     }
 
     public static void setMerchantUsingStacks(boolean isUsing) {
-        config.set(cfgMerchantUseStacks, isUsing);
+        cfgOptions.set(cfgMerchantUseStacks, isUsing);
 
         saveConfig();
     }
 
     public static boolean isCraftingUsingStacks() {
-        return config.getBoolean(cfgCraftingUseStacks);
+        return cfgOptions.getBoolean(cfgCraftingUseStacks);
     }
 
     public static void setCraftingUsingStacks(boolean isUsing) {
-        config.set(cfgCraftingUseStacks, isUsing);
+        cfgOptions.set(cfgCraftingUseStacks, isUsing);
 
         saveConfig();
     }
 
     public static boolean isBrewingUsingStacks() {
-        return config.getBoolean(cfgBrewingUseStacks);
+        return cfgOptions.getBoolean(cfgBrewingUseStacks);
     }
 
     public static void setBrewingUsingStacks(boolean isUsing) {
-        config.set(cfgBrewingUseStacks, isUsing);
+        cfgOptions.set(cfgBrewingUseStacks, isUsing);
 
         saveConfig();
     }
 
     public static boolean isDebugging() {
-        return config.getBoolean(cfgDebug);
+        return cfgOptions.getBoolean(cfgDebug);
     }
 
     public static void setDebugging(boolean isDebugging) {
-        config.set(cfgDebug, isDebugging);
+        cfgOptions.set(cfgDebug, isDebugging);
 
         saveConfig();
     }
