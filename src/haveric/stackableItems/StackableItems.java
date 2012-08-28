@@ -1,5 +1,7 @@
 package haveric.stackableItems;
 
+import haveric.stackableItems.mcstats.Metrics;
+
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -8,7 +10,6 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 public class StackableItems extends JavaPlugin {
 

@@ -26,7 +26,7 @@
 * either expressed or implied, of anybody else.
 */
 
-package org.mcstats;
+package haveric.stackableItems.mcstats;
 
 import java.io.BufferedReader;
 import java.io.File;
