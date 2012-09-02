@@ -103,7 +103,7 @@ public final class SIItems {
 
     public static void addItemFiles(String groupOrPlayer) {
         if (groupOrPlayer == null) {
-            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Add Item Files: Group or Player is null.");
+            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Add Item Files: Group or Player is null.");
         } else {
             configItemsFile = new File(plugin.getDataFolder() + "/" + groupOrPlayer + ".yml");
             configItems = YamlConfiguration.loadConfiguration(configItemsFile);
@@ -118,9 +118,9 @@ public final class SIItems {
 
     public static void removeItemFiles(String groupOrPlayer) {
         if (groupOrPlayer == null) {
-            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Remove Item Files: Group or Player is null.");
+            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Remove Item Files: Group or Player is null.");
         } else if (itemsMap == null) {
-            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Items Map is null. This should never be null.");
+            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Items Map is null. This should never be null.");
         } else {
             if (!itemsMap.get(groupOrPlayer).isEmpty()) {
                 itemsMap.get(groupOrPlayer).clear();

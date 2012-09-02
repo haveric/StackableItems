@@ -93,7 +93,7 @@ public final class FurnaceUtil {
 
             sc2.close();
         } catch (FileNotFoundException e) {
-            plugin.log.warning(String.format("[%s] defaultFuel.txt not found." , plugin.getDescription().getName()));
+            plugin.log.warning("defaultFuel.txt not found.");
             e.printStackTrace();
         }
 
@@ -109,7 +109,7 @@ public final class FurnaceUtil {
 
             sc3.close();
         } catch (FileNotFoundException e) {
-            plugin.log.warning(String.format("[%s] customFuel.txt not found." , plugin.getDescription().getName()));
+            plugin.log.warning("customFuel.txt not found.");
             e.printStackTrace();
         }
     }
@@ -151,7 +151,7 @@ public final class FurnaceUtil {
             out.close();
             fstream.close();
         } catch (IOException e) {
-            plugin.log.warning(String.format("[%s] File %s not found." , plugin.getDescription().getName(), f.getName()));
+            plugin.log.warning(String.format("File %s not found.", f.getName()));
         }
     }
 

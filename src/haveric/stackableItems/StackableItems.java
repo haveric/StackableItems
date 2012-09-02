@@ -13,24 +13,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class StackableItems extends JavaPlugin {
 
-    //private final Logger log = Logger.getLogger("Minecraft");
-    final Logger log = Logger.getLogger("Minecraft");
+    Logger log;
 
     private Commands commands = new Commands(this);
 
     private Metrics metrics;
 
     public void onEnable() {
+        log = getLogger();
         PluginManager pm = getServer().getPluginManager();
 
         // Register the plugin events
         pm.registerEvents(new SIPlayerListener(this), this);
         pm.registerEvents(new SIBlockBreak(), this);
-        pm.registerEvents(new PlayerJoinQuit(), this);
+        pm.registerEvents(new PlayerJoinQuit(this), this);
 
         Config.init(this);
         VirtualItemConfig.init(this);
-
 
         // Vault
         setupVault(pm);
@@ -54,7 +53,7 @@ public class StackableItems extends JavaPlugin {
 
     private void setupVault(PluginManager pm) {
         if (pm.getPlugin("Vault") == null) {
-            log.info(String.format("[%s] Vault not found. Permissions disabled.", getDescription().getName()));
+            log.info("Vault not found. Permissions disabled.");
             return;
         }
         RegisteredServiceProvider<Permission> permProvider = getServer().getServicesManager().getRegistration(Permission.class);

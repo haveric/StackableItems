@@ -130,7 +130,7 @@ public class SIPlayerListener implements Listener {
         ItemStack craftedItem = event.getCurrentItem();
 
         if (craftedItem == null) {
-            if (Config.isDebugging()) plugin.log.warning("[StackableItems][DEBUG] Crafted Item is null.");
+            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Crafted Item is null.");
         } else {
             Material type = craftedItem.getType();
 
