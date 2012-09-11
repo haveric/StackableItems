@@ -70,7 +70,7 @@ public class Metrics {
     /**
     * The current revision number
     */
-    private final static int REVISION = 5;
+    private static final int REVISION = 5;
 
     /**
     * The base url of the metrics domain
@@ -243,7 +243,7 @@ public class Metrics {
                                 plugin.getServer().getScheduler().cancelTask(taskId);
                                 taskId = -1;
                                 // Tell all plotters to stop gathering information.
-                                for (Graph graph : graphs){
+                                for (Graph graph : graphs) {
                                     graph.onOptOut();
                                 }
                             }
@@ -273,7 +273,7 @@ public class Metrics {
     * @return true if metrics should be opted out of it
     */
     public boolean isOptOut() {
-        synchronized(optOutLock) {
+        synchronized (optOutLock) {
             try {
                 // Reload the metrics file
                 configuration.load(getConfigFile());

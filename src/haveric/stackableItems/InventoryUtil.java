@@ -51,10 +51,12 @@ public final class InventoryUtil {
             Material type = itemToCheck.getType();
             short durability = itemToCheck.getDurability();
 
-            int maxAmount = getInventoryMax(player, inventory, type, durability, start, end);
+
 
             for (int i = start; i < end; i++) {
                 ItemStack slot = inventory.getItem(i);
+
+                int maxAmount = getInventoryMax(player, inventory, type, durability, i);
 
                 if (slot == null) {
                     free += maxAmount;
@@ -98,7 +100,7 @@ public final class InventoryUtil {
                     Material type = itemToAdd.getType();
                     short durability = itemToAdd.getDurability();
 
-                    int maxAmount = getInventoryMax(player, inventory, type, durability, start, end);
+
 
                     int addAmount = itemToAdd.getAmount();
                     // Add to existing stacks
@@ -106,6 +108,8 @@ public final class InventoryUtil {
                         ItemStack slot = inventory.getItem(i);
                         if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
                             int slotAmount = slot.getAmount();
+
+                            int maxAmount = getInventoryMax(player, inventory, type, durability, i);
 
                             int canAdd = maxAmount - slotAmount;
                             if (canAdd > 0) {
@@ -130,6 +134,7 @@ public final class InventoryUtil {
                     for (int i = start; i < end && addAmount > 0; i++) {
                         ItemStack slot = inventory.getItem(i);
                         if (slot == null) {
+                            int maxAmount = getInventoryMax(player, inventory, type, durability, i);
                             if (addAmount >= maxAmount) {
                                 itemToAdd.setAmount(maxAmount);
                                 inventory.setItem(i, itemToAdd.clone());
@@ -314,7 +319,7 @@ public final class InventoryUtil {
         });
     }
 
-    private static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int start, int end) {
+    public static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int slot) {
         int maxAmount = SIItems.getItemMax(player, mat, dur);
 
         if (inventory.getType() == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
@@ -326,16 +331,16 @@ public final class InventoryUtil {
             }
         } else if (inventory.getType() == InventoryType.ENCHANTING) {
             maxAmount = 1;
-        } else if (inventory.getType() == InventoryType.PLAYER && start >= 36 && end <= 40) {
+        } else if ((inventory.getType() == InventoryType.PLAYER && slot >= 36 && slot < 40) || (inventory.getType() == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
             maxAmount = 1;
         } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
             maxAmount = 64;
         } else if (!Config.isCraftingUsingStacks()) {
-            if ((inventory.getType() == InventoryType.WORKBENCH && start >= 1 && end <= 10) || inventory.getType() == InventoryType.CRAFTING) {
+            if ((inventory.getType() == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventory.getType() == InventoryType.CRAFTING && slot >= 1 && slot < 5)) {
                 maxAmount = 64;
             }
         } else if (inventory.getType() == InventoryType.BREWING && !Config.isBrewingUsingStacks()) {
-            if (start >= 0 && end <= 3) {
+            if (slot >= 0 && slot < 3) {
                 maxAmount = 1;
             } else {
                 maxAmount = 64;

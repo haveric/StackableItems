@@ -16,11 +16,11 @@ public class Commands implements CommandExecutor {
     private static String cmdHelp = "help";
     private static String cmdReload = "reload";
 
-    ChatColor msgColor = ChatColor.DARK_AQUA;
-    ChatColor highlightColor = ChatColor.YELLOW;
+    private ChatColor msgColor = ChatColor.DARK_AQUA;
+    private ChatColor highlightColor = ChatColor.YELLOW;
 
-    String title;
-    String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
+    private String title;
+    private String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
 
     public Commands(StackableItems si) {
         plugin = si;
@@ -36,8 +36,9 @@ public class Commands implements CommandExecutor {
         }
 
         boolean canAdjust = false;
-        if (Perms.getPerm().has(sender, Perms.getAdjustString())) {
-            canAdjust = true;
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            canAdjust = Perms.canAdjust(player);
         }
 
         if (commandLabel.equalsIgnoreCase(cmdMain) || commandLabel.equalsIgnoreCase(cmdMainAlt)) {
@@ -163,21 +164,25 @@ public class Commands implements CommandExecutor {
                                 if (player == null) {
                                     sender.sendMessage(msg + " does not exist.");
                                 } else {
-                                    String group = Perms.getPerm().getPrimaryGroup(player);
-                                    max = SIItems.getMax(group, mat, dur);
-
-                                    msg += " not found for " + highlightColor + permType + msgColor;
-                                    if (max == -1) {
-                                        max = SIItems.getDefaultMax(mat, dur);
-
-                                        if (max == -1) {
-                                            msg += ", " + highlightColor + group + msgColor + " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
-                                        } else {
-                                            msg += " or " + highlightColor + group + msgColor + ". Default value: " + highlightColor + max;
-                                        }
-
+                                    String group = Perms.getPrimaryGroup(player);
+                                    if (group == null) {
+                                        msg += " does not exist.";
                                     } else {
-                                        msg += ". " + highlightColor + group + msgColor + " value: " + highlightColor + max;
+                                        max = SIItems.getMax(group, mat, dur);
+
+                                        msg += " not found for " + highlightColor + permType + msgColor;
+                                        if (max == -1) {
+                                            max = SIItems.getDefaultMax(mat, dur);
+
+                                            if (max == -1) {
+                                                msg += ", " + highlightColor + group + msgColor + " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
+                                            } else {
+                                                msg += " or " + highlightColor + group + msgColor + ". Default value: " + highlightColor + max;
+                                            }
+
+                                        } else {
+                                            msg += ". " + highlightColor + group + msgColor + " value: " + highlightColor + max;
+                                        }
                                     }
                                     sender.sendMessage(msg);
                                 }

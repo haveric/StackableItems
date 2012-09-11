@@ -129,9 +129,7 @@ public class SIPlayerListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getCurrentItem();
 
-        if (craftedItem == null) {
-            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Crafted Item is null.");
-        } else {
+        if (craftedItem != null) {
             Material type = craftedItem.getType();
 
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
@@ -149,25 +147,27 @@ public class SIPlayerListener implements Listener {
                     int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
                     int actualCraft = amtCanCraft * recipeAmount;
 
-                    int freeSpaces = InventoryUtil.getFreeSpaces(player, craftedItem);
-                    ItemStack clone = craftedItem.clone();
+                    if (actualCraft > 0) {
+                        int freeSpaces = InventoryUtil.getFreeSpaces(player, craftedItem);
+                        ItemStack clone = craftedItem.clone();
 
-                    // custom repairing
-                    if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
-                        // TODO: handle custom repairing to allow stacking
-                        // TODO: don't let people repair two fully repaired items.. that's just stupid
-                    } else if (freeSpaces > actualCraft) {
-                        event.setCancelled(true);
+                        // custom repairing
+                        if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
+                            // TODO: handle custom repairing to allow stacking
+                            // TODO: don't let people repair two fully repaired items.. that's just stupid
+                        } else if (freeSpaces > actualCraft) {
+                            event.setCancelled(true);
 
-                        InventoryUtil.removeFromCrafting(inventory, amtCanCraft);
-                        clone.setAmount(actualCraft);
-                        InventoryUtil.addItems(player, clone);
-                    } else {
-                        event.setCancelled(true);
+                            InventoryUtil.removeFromCrafting(inventory, amtCanCraft);
+                            clone.setAmount(actualCraft);
+                            InventoryUtil.addItems(player, clone);
+                        } else {
+                            event.setCancelled(true);
 
-                        InventoryUtil.removeFromCrafting(inventory, freeSpaces);
-                        clone.setAmount(freeSpaces);
-                        InventoryUtil.addItems(player, clone);
+                            InventoryUtil.removeFromCrafting(inventory, freeSpaces);
+                            clone.setAmount(freeSpaces);
+                            InventoryUtil.addItems(player, clone);
+                        }
                     }
                 } else if (event.isLeftClick() || event.isRightClick()) {
                     if (cursorAmount + recipeAmount > maxItems) {
@@ -338,7 +338,7 @@ public class SIPlayerListener implements Listener {
             short clickedDur = clicked.getDurability();
             int clickedAmount = clicked.getAmount();
 
-            int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
+            int maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
 
             if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
@@ -416,7 +416,7 @@ public class SIPlayerListener implements Listener {
             short clickedDur = clicked.getDurability();
             int clickedAmount = clicked.getAmount();
 
-            int maxItems = SIItems.getItemMax(player, clickedType, clickedDur);
+            int maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
 
             int rawSlot = event.getRawSlot();
 
@@ -700,10 +700,24 @@ public class SIPlayerListener implements Listener {
                         }
                     } else {
                         //player.sendMessage("Drop a stack into an empty slot");
-                        event.setCurrentItem(cursor.clone());
-                        event.setCursor(null);
-                        event.setResult(Result.ALLOW);
-                        InventoryUtil.updateInventory(player);
+                        if (cursorAmount <= maxItems) {
+                            event.setCurrentItem(cursor.clone());
+                            event.setCursor(null);
+                            event.setResult(Result.ALLOW);
+                            InventoryUtil.updateInventory(player);
+                        // More items than can fit in this slot
+                        } else {
+                            ItemStack toDrop = cursor.clone();
+                            toDrop.setAmount(maxItems);
+                            event.setCurrentItem(toDrop);
+
+                            ItemStack toHold = cursor.clone();
+                            toHold.setAmount(cursorAmount - maxItems);
+                            event.setCursor(toHold);
+
+                            event.setResult(Result.ALLOW);
+                            InventoryUtil.updateInventory(player);
+                        }
                     }
                 // Combine two items
                 } else if (!cursorEmpty && !slotEmpty) {
@@ -776,19 +790,6 @@ public class SIPlayerListener implements Listener {
                     } else {
                         if (sameType) {
                             if (ItemUtil.isSameItem(cursor, clicked)) {
-                                if (top.getType() == InventoryType.FURNACE && rawSlot <= 1 && !Config.isFurnaceUsingStacks()) {
-                                    int maxFurnaceSize = Config.getMaxFurnaceAmount();
-                                    if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
-                                        maxItems = maxFurnaceSize;
-                                    } else {
-                                        maxItems = 64;
-                                    }
-                                } else if (top.getType() == InventoryType.MERCHANT && rawSlot <= 1 && !Config.isMerchantUsingStacks()) {
-                                    maxItems = 64;
-                                } else if (((top.getType() == InventoryType.CRAFTING && rawSlot >= 1 && rawSlot <= 4) ||
-                                        (top.getType() == InventoryType.WORKBENCH) && rawSlot >= 1 && rawSlot <= 9) && !Config.isCraftingUsingStacks()) {
-                                    maxItems = 64;
-                                }
 
                                 int total = clickedAmount + cursorAmount;
                                 if (total <= maxItems) {
@@ -922,18 +923,6 @@ public class SIPlayerListener implements Listener {
                     } else {
                         if (sameType) {
                             if (ItemUtil.isSameItem(cursor, clicked)) {
-                                if (top.getType() == InventoryType.FURNACE && rawSlot <= 1 && !Config.isFurnaceUsingStacks()) {
-                                    int maxFurnaceSize = Config.getMaxFurnaceAmount();
-                                    if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
-                                        maxItems = maxFurnaceSize;
-                                    } else {
-                                        maxItems = 64;
-                                    }
-                                } else if (top.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
-                                    maxItems = 64;
-                                } else if ((top.getType() == InventoryType.CRAFTING || top.getType() == InventoryType.WORKBENCH) && !Config.isCraftingUsingStacks()) {
-                                    maxItems = 64;
-                                }
 
                                 int total = clickedAmount + 1;
                                 if (total <= maxItems) {

@@ -13,8 +13,12 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
-* Fixed null pointer in PlayerQuitEvent
+Version 0.8.8 (9/10/2012)
+* Fixed some potential NPEs
+* Fixed permissions to handle Vault properly when it is not found.
+* Adding Java Version for Metrics to gather. This should tell me if I need to compile against an older version or can compile against a newer version of java.  If I don't get anything useful out of this, I'll remove it in the next version.
+* Prevent written books as well as book and quills from stacking to prevent duplication. This is a temporary fix until bukkit implements a Book API
+* Fixed some inconsistencies with stack amounts
 
 Version 0.8.7 (8/26/2012):
 * Added debug option.  If you want to help me test issues, set this to true.  If you start getting spammed with messages in the console, report those to github. At any point, you can set this to false to stop getting messages (after a "/si reload")

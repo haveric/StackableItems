@@ -8,11 +8,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerJoinQuit implements Listener {
 
-    StackableItems plugin;
-    public PlayerJoinQuit(StackableItems stackableItems) {
-        plugin = stackableItems;
-    }
-
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
         SIItems.addItemFiles(event.getPlayer().getName());
@@ -22,9 +17,7 @@ public class PlayerJoinQuit implements Listener {
     public void playerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        if (player == null) {
-            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Player is null in PlayerQuitEvent.");
-        } else {
+        if (player != null) {
             SIItems.removeItemFiles(player.getName());
         }
     }

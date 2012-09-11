@@ -78,18 +78,20 @@ public final class SIItems {
         }
 
         addItemFiles("defaultItems");
-        if (Perms.permEnabled()) {
-            loadGroupItemFiles();
-        }
+
+        loadGroupItemFiles();
+
         loadPlayerItemFiles();
         loadItemGroups();
     }
 
     private static void loadGroupItemFiles() {
-        String[] groups = Perms.getPerm().getGroups();
+        String[] groups = Perms.getGroups();
 
-        for (String group : groups) {
-            addItemFiles(group);
+        if (groups != null) {
+            for (String group : groups) {
+                addItemFiles(group);
+            }
         }
     }
 
@@ -102,9 +104,7 @@ public final class SIItems {
     }
 
     public static void addItemFiles(String groupOrPlayer) {
-        if (groupOrPlayer == null) {
-            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Add Item Files: Group or Player is null.");
-        } else {
+        if (groupOrPlayer != null) {
             configItemsFile = new File(plugin.getDataFolder() + "/" + groupOrPlayer + ".yml");
             configItems = YamlConfiguration.loadConfiguration(configItemsFile);
             if (!itemsMap.containsKey(groupOrPlayer)) {
@@ -117,11 +117,7 @@ public final class SIItems {
     }
 
     public static void removeItemFiles(String groupOrPlayer) {
-        if (groupOrPlayer == null) {
-            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Remove Item Files: Group or Player is null.");
-        } else if (itemsMap == null) {
-            if (Config.isDebugging()) plugin.log.warning("[DEBUG] Items Map is null. This should never be null.");
-        } else {
+        if (groupOrPlayer != null && itemsMap != null) {
             if (!itemsMap.get(groupOrPlayer).isEmpty()) {
                 itemsMap.get(groupOrPlayer).clear();
             }
@@ -157,9 +153,12 @@ public final class SIItems {
         int max = ITEM_DEFAULT;
 
         max = getMax(player.getName(), mat, dur);
-        if (max == ITEM_DEFAULT && Perms.permEnabled() && Perms.getPerm().has(player, Perms.getStackString())) {
-            String group = Perms.getPerm().getPrimaryGroup(player);
-            max = getMax(group, mat, dur);
+
+        if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
+            String group = Perms.getPrimaryGroup(player);
+            if (group != null) {
+                max = getMax(group, mat, dur);
+            }
         }
         if (max == ITEM_DEFAULT) {
             max = getDefaultMax(mat, dur);

@@ -251,17 +251,23 @@ public final class ItemUtil {
     public static boolean isSameItem(ItemStack one, ItemStack two, boolean negativeDurAllowed) {
         boolean same = false;
 
-        boolean sameType = one.getType() == two.getType();
-        boolean sameDur = one.getDurability() == two.getDurability();
-        boolean negativeDur = (one.getDurability() == -1) || (two.getDurability() == -1);
-        boolean sameEnchant = one.getEnchantments().equals(two.getEnchantments());
-        boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
+        if (one != null && two != null) {
+            boolean sameType = one.getType() == two.getType();
+            boolean sameDur = one.getDurability() == two.getDurability();
+            boolean negativeDur = (one.getDurability() == -1) || (two.getDurability() == -1);
+            boolean sameEnchant = one.getEnchantments().equals(two.getEnchantments());
+            boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
 
-        if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant)) {
-            // TODO determine if books are truly the same
-            same = true;
+            if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant)) {
+                // TODO: Implement something better whenever bukkit decides to make a Book API
+                if (one.getType() == Material.WRITTEN_BOOK || one.getType() == Material.BOOK_AND_QUILL) {
+                    same = false;
+                // If not a book, this should be the same item
+                } else {
+                    same = true;
+                }
+            }
         }
-
         return same;
     }
 }

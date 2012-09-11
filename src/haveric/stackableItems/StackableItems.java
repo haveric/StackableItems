@@ -1,6 +1,7 @@
 package haveric.stackableItems;
 
 import haveric.stackableItems.mcstats.Metrics;
+import haveric.stackableItems.mcstats.Metrics.Graph;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -13,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class StackableItems extends JavaPlugin {
 
-    Logger log;
+    public Logger log;
 
     private Commands commands = new Commands(this);
 
@@ -26,7 +27,7 @@ public class StackableItems extends JavaPlugin {
         // Register the plugin events
         pm.registerEvents(new SIPlayerListener(this), this);
         pm.registerEvents(new SIBlockBreak(), this);
-        pm.registerEvents(new PlayerJoinQuit(this), this);
+        pm.registerEvents(new PlayerJoinQuit(), this);
 
         Config.init(this);
         VirtualItemConfig.init(this);
@@ -53,7 +54,7 @@ public class StackableItems extends JavaPlugin {
 
     private void setupVault(PluginManager pm) {
         if (pm.getPlugin("Vault") == null) {
-            log.info("Vault not found. Permissions disabled.");
+            log.info("Vault not found. Permission groups disabled.");
             return;
         }
         RegisteredServiceProvider<Permission> permProvider = getServer().getServicesManager().getRegistration(Permission.class);
@@ -65,6 +66,19 @@ public class StackableItems extends JavaPlugin {
     private void setupMetrics() {
         try {
             metrics = new Metrics(this);
+
+            // Custom data
+            Graph javaGraph = metrics.createGraph("Java Version");
+            String javaVersion = System.getProperty("java.version");
+            javaGraph.addPlotter(new Metrics.Plotter(javaVersion) {
+                @Override
+                public int getValue() {
+                    return 1;
+                }
+            });
+            metrics.addGraph(javaGraph);
+            // End Custom data
+
             metrics.start();
         } catch (IOException e) {
             e.printStackTrace();
