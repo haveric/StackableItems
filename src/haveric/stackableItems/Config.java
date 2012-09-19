@@ -87,7 +87,7 @@ public final class Config {
         cfgOptions.set(cfgFurnaceUseStacks, furnaceUseStacks);
         cfgOptions.set(cfgMerchantUseStacks, merchantUseStacks);
         cfgOptions.set(cfgCraftingUseStacks, craftingUseStacks);
-        cfgOptions.set(cfgCraftingUseStacks, brewingUseStacks);
+        cfgOptions.set(cfgBrewingUseStacks, brewingUseStacks);
         cfgOptions.set(cfgVirtualItems, virtualItems);
         cfgOptions.set(cfgFurnaceAmount, furnaceAmt);
         cfgOptions.set(cfgDebug, debug);

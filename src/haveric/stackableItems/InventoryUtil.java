@@ -1,5 +1,6 @@
 package haveric.stackableItems;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -198,6 +199,9 @@ public final class InventoryUtil {
         List<Recipe> recipes = plugin.getServer().getRecipesFor(recipe.getResult());
 
         for (Recipe rec : recipes) {
+            if (amt > 0) {
+                break;
+            }
             if (rec instanceof ShapedRecipe) {
                 ShapedRecipe shaped = (ShapedRecipe) rec;
                 Map<Character, ItemStack> itemMap = shaped.getIngredientMap();
@@ -253,36 +257,32 @@ public final class InventoryUtil {
     }
 
     private static int checkItemInInventory(Inventory inventory, ItemStack ing, int amt) {
-        if (ing != null) {
-            int ingAmount = ing.getAmount();
+        plugin.log.info("Amount: " + amt);
+        if (amt != 0) {
+            if (ing != null) {
+                int ingAmount = ing.getAmount();
 
-            int holdingAmount = 0;
+                int holdingAmount = 0;
 
-            //int[] invent = null;
-            int length = inventory.getContents().length;
-            for (int i = 1; i < length; i++) {
-                ItemStack item = inventory.getItem(i);
+                Iterator<ItemStack> iter = inventory.iterator();
 
-                if (item != null && ItemUtil.isSameItem(item, ing, true)) {
-                    int temp = item.getAmount();
-                    /*
-                    if (temp > 0){
-                        invent[i-1] = temp;
-                    }
-                    */
-                    if (holdingAmount == 0 || holdingAmount > temp) {
-                        holdingAmount = temp;
+                while (iter.hasNext()) {
+                    ItemStack item = iter.next();
+                    if (item != null && ItemUtil.isSameItem(item, ing, true)) {
+                        int temp = item.getAmount();
+
+                        if (holdingAmount == 0 || holdingAmount > temp) {
+                            holdingAmount = temp;
+                        }
                     }
                 }
-            }
 
-            // TODO: re-evaluate if the double is necessary
-            int craftAmount = (int) Math.floor(holdingAmount / (double) ingAmount);
-            //plugin.log.info("hold: " + holdingAmount);
-            //plugin.log.info("ing: " + ingAmount);
-            //plugin.log.info("Craft: " + craftAmount);
-            if ((amt == -1 || amt == 0 || amt > craftAmount) && craftAmount > 0) {
-                amt = craftAmount;
+                // TODO: re-evaluate if the double is necessary
+                int craftAmount = (int) Math.floor(holdingAmount / (double) ingAmount);
+
+                if (amt == -1 || amt > craftAmount) {
+                    amt = craftAmount;
+                }
             }
         }
         return amt;

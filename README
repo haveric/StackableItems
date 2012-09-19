@@ -13,6 +13,10 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Use stacks in Brewing stand option was setting the crafting option again.
+* Fixed repairing when using RepairRecipe plugin.
+
 Version 0.8.8 (9/10/2012)
 * Fixed some potential NPEs
 * Fixed permissions to handle Vault properly when it is not found.
