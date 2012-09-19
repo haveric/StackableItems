@@ -480,36 +480,50 @@ public class SIPlayerListener implements Listener {
                     if (topType == InventoryType.CRAFTING) {
                         if (ItemUtil.isArmor(clickedType)) {
                             ItemStack armorSlot = null;
-                            int moveSlot = -1;
+                            boolean moved = false;
 
                             PlayerInventory inventory = player.getInventory();
 
+                            ItemStack cloneArmor = clicked.clone();
+                            cloneArmor.setAmount(1);
                             if (ItemUtil.isHelmet(clickedType)) {
                                 armorSlot = inventory.getHelmet();
-                                moveSlot = 39;
+                                if (armorSlot == null) {
+                                    inventory.setHelmet(cloneArmor);
+                                    moved = true;
+                                }
                             } else if (ItemUtil.isChestplate(clickedType)) {
                                 armorSlot = inventory.getChestplate();
-                                moveSlot = 38;
+                                if (armorSlot == null) {
+                                    inventory.setChestplate(cloneArmor);
+                                    moved = true;
+                                }
                             } else if (ItemUtil.isLeggings(clickedType)) {
                                 armorSlot = inventory.getLeggings();
-                                moveSlot = 37;
+                                if (armorSlot == null) {
+                                    inventory.setLeggings(cloneArmor);
+                                    moved = true;
+                                }
                             } else if (ItemUtil.isBoots(clickedType)) {
                                 armorSlot = inventory.getBoots();
-                                moveSlot = 36;
+                                if (armorSlot == null) {
+                                    inventory.setBoots(cloneArmor);
+                                    moved = true;
+                                }
                             }
 
-                            if (armorSlot == null && moveSlot > -1) {
-                                int left = InventoryUtil.moveItems(player, clicked, event, moveSlot, moveSlot + 1, false);
-                                if (left > 0) {
-                                    clicked.setAmount(left);
-                                }
+                            if (armorSlot == null && moved) {
+                                event.setCurrentItem(InventoryUtil.decrementStack(clicked));
+                                event.setCancelled(true);
                             } else {
-                                InventoryUtil.swapInventory(player, clicked, event, rawSlot, 1);
+                                InventoryUtil.swapInventory(player, clicked, event, rawSlot, 9);
                             }
+
                         } else {
                             InventoryUtil.swapInventory(player, clicked, event, rawSlot, 9);
                         }
                     } else if (topType == InventoryType.BREWING) {
+                        // TODO Prevent stacks from going into potion slots when shift clicking
                         boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
                         boolean isPotion = clickedType == Material.POTION;
 
@@ -538,7 +552,7 @@ public class SIPlayerListener implements Listener {
                                 }
                                 moved = true;
                             }
-                            if (potionSlot2 == null) {
+                            if (potionSlot2 == null && !moved) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 2, false);
 
                                 if (left > 0) {
@@ -546,7 +560,7 @@ public class SIPlayerListener implements Listener {
                                 }
                                 moved = true;
                             }
-                            if (potionSlot3 == null) {
+                            if (potionSlot3 == null && !moved) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 2, 3, false);
 
                                 if (left > 0) {
@@ -562,16 +576,13 @@ public class SIPlayerListener implements Listener {
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST) {
                         InventoryUtil.moveItems(player, clicked, event, top, true);
                     } else if (topType == InventoryType.WORKBENCH) {
-                        boolean canMove = false;
-                        for (int i = 1; i < 10 && !canMove; i++) {
-                            if (top.getItem(i) == null) {
-                                canMove = true;
-                            }
+                        int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 10, false);
+                        if (left > 0) {
+                            clicked.setAmount(left);
                         }
 
-                        InventoryUtil.moveItems(player, clicked, event, top, 1, 10, true);
 
-                        if (!canMove) {
+                        if (left == clickedAmount) {
                             InventoryUtil.swapInventory(player, clicked, event, rawSlot, 10);
                         }
                     // TODO Improve merchant shift click handling (Based on current recipe)

@@ -16,6 +16,9 @@ Changelog:
 Coming soon:
 * Use stacks in Brewing stand option was setting the crafting option again.
 * Fixed repairing when using RepairRecipe plugin.
+* Fixed some duplication bugs with crafting tables.
+* Fixed duplication bug with brewing stands.
+
 
 Version 0.8.8 (9/10/2012)
 * Fixed some potential NPEs
