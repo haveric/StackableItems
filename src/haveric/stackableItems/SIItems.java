@@ -31,6 +31,9 @@ public final class SIItems {
     private static FileConfiguration defaultItems;
     private static File defaultItemsFile;
 
+    private static FileConfiguration chestItems;
+    private static File chestItemsFile;
+
     private static String cfgAllItemsMax = "ALL ITEMS MAX";
 
     public static final int ITEM_DEFAULT = -1;
@@ -47,9 +50,12 @@ public final class SIItems {
         }
 
         defaultItemsFile = new File(plugin.getDataFolder() + "/defaultItems.yml");
-        defaultItems = YamlConfiguration.loadConfiguration(configGroupsFile);
-
+        defaultItems = YamlConfiguration.loadConfiguration(defaultItemsFile);
         setupDefaultItemsFile();
+
+        chestItemsFile = new File(plugin.getDataFolder() + "/chestItems.yml");
+        chestItems = YamlConfiguration.loadConfiguration(chestItemsFile);
+        setupChestItemsFile();
 
         reload();
     }
@@ -61,6 +67,13 @@ public final class SIItems {
         }
     }
 
+    private static void setupChestItemsFile() {
+        if (chestItemsFile.length() == 0) {
+            chestItems.set(cfgAllItemsMax, ITEM_DEFAULT);
+            Config.saveConfig(chestItems, chestItemsFile);
+        }
+    }
+
     public static void reload() {
         itemsMap = new HashMap<String, HashMap<String, Integer>>();
         itemGroups = new HashMap<String, ArrayList<String>>();
@@ -69,6 +82,8 @@ public final class SIItems {
             configGroups.load(configGroupsFile);
 
             defaultItems.load(defaultItemsFile);
+
+            chestItems.load(chestItemsFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -78,6 +93,7 @@ public final class SIItems {
         }
 
         addItemFiles("defaultItems");
+        addItemFiles("chestItems");
 
         loadGroupItemFiles();
 
@@ -149,23 +165,31 @@ public final class SIItems {
         }
     }
 
-    public static int getItemMax(Player player, Material mat, short dur) {
+    public static int getItemMax(Player player, Material mat, short dur, boolean isAChest) {
         int max = ITEM_DEFAULT;
 
-        max = getMax(player.getName(), mat, dur);
+        if (isAChest) {
+            max = getChestMax(mat, dur);
 
-        if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
-            String group = Perms.getPrimaryGroup(player);
-            if (group != null) {
-                max = getMax(group, mat, dur);
+            if (max == ITEM_DEFAULT) {
+                max = mat.getMaxStackSize();
             }
-        }
-        if (max == ITEM_DEFAULT) {
-            max = getDefaultMax(mat, dur);
-        }
+        } else {
+            max = getMax(player.getName(), mat, dur);
 
-        if (max <= ITEM_DEFAULT) {
-            max = mat.getMaxStackSize();
+            if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
+                String group = Perms.getPrimaryGroup(player);
+                if (group != null) {
+                    max = getMax(group, mat, dur);
+                }
+            }
+            if (max == ITEM_DEFAULT) {
+                max = getDefaultMax(mat, dur);
+            }
+
+            if (max <= ITEM_DEFAULT) {
+                max = mat.getMaxStackSize();
+            }
         }
         return max;
     }
@@ -186,6 +210,13 @@ public final class SIItems {
         return getMaxFromMap("defaultItems", mat, dur);
     }
 
+    public static int getChestMax(Material mat, short dur) {
+        if (dur == -1) {
+            return getMaxFromMap("chestItems", mat);
+        }
+
+        return getMaxFromMap("chestItems", mat, dur);
+    }
     public static void setDefaultMax(Material mat, short dur, int newAmount) {
         setMax("defaultItems", mat, dur, newAmount);
     }

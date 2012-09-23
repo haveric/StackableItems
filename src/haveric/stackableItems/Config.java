@@ -158,7 +158,14 @@ public final class Config {
     }
 
     public static int getMaxFurnaceAmount() {
-        return cfgOptions.getInt(cfgFurnaceAmount, ITEM_DEFAULT);
+        int maxFurnaceSize = cfgOptions.getInt(cfgFurnaceAmount, ITEM_DEFAULT);
+        int maxAmount = 64;
+
+        if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+            maxAmount = maxFurnaceSize;
+        }
+
+        return maxAmount;
     }
 
     public static void setMaxFurnaceAmount(int newAmt) {

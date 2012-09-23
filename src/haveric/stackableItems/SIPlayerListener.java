@@ -132,7 +132,7 @@ public class SIPlayerListener implements Listener {
         if (craftedItem != null) {
             Material type = craftedItem.getType();
 
-            int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability());
+            int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), false);
 
             if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
@@ -416,7 +416,12 @@ public class SIPlayerListener implements Listener {
             short clickedDur = clicked.getDurability();
             int clickedAmount = clicked.getAmount();
 
-            int maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
+            int maxItems = 0;
+            if (clickedType == Material.AIR) {
+                maxItems = InventoryUtil.getInventoryMax(player, top, cursorType, cursorDur, event.getRawSlot());
+            } else {
+                maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
+            }
 
             int rawSlot = event.getRawSlot();
 
@@ -1049,7 +1054,7 @@ public class SIPlayerListener implements Listener {
         if (freeSpaces == 0) {
             event.setCancelled(true);
         } else {
-            int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability());
+            int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability(), false);
             if (maxItems == 0) {
                 event.setCancelled(true);
             } else {

@@ -102,18 +102,16 @@ public final class InventoryUtil {
 
                             int canAdd = maxAmount - slotAmount;
                             if (canAdd > 0) {
+                                // Add less than a full slot
                                 if (addAmount <= canAdd) {
                                     slot.setAmount(slotAmount + addAmount);
                                     inventory.setItem(i, slot);
                                     addAmount = 0;
-                                } else if (addAmount <= maxAmount) {
-                                    slot.setAmount(maxAmount);
-                                    inventory.setItem(i, slot);
-                                    addAmount -= canAdd;
+                                // Fill the slot and leave the rest
                                 } else {
                                     slot.setAmount(maxAmount);
                                     inventory.setItem(i, slot);
-                                    addAmount -= maxAmount;
+                                    addAmount -= canAdd;
                                 }
                             }
                         }
@@ -128,6 +126,7 @@ public final class InventoryUtil {
 
                         if (slot == null) {
                             int maxAmount = getInventoryMax(player, inventory, type, durability, i);
+
                             if (addAmount >= maxAmount) {
                                 itemToAdd.setAmount(maxAmount);
                                 inventory.setItem(i, itemToAdd.clone());
@@ -315,30 +314,33 @@ public final class InventoryUtil {
     }
 
     public static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int slot) {
-        int maxAmount = SIItems.getItemMax(player, mat, dur);
+        InventoryType inventoryType = inventory.getType();
+        boolean isChestSlot = false;
+        if (inventoryType == InventoryType.CHEST) {
+            if (slot < inventory.getSize()) {
+                isChestSlot = true;
+            }
+        }
 
-        if (inventory.getType() == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
-            int maxFurnaceSize = Config.getMaxFurnaceAmount();
-            if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
-                maxAmount = maxFurnaceSize;
-            } else {
-                maxAmount = 64;
-            }
-        } else if (inventory.getType() == InventoryType.ENCHANTING) {
+        int maxAmount = SIItems.getItemMax(player, mat, dur, isChestSlot);
+
+        if (inventoryType == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
+            maxAmount = Config.getMaxFurnaceAmount();
+        } else if (inventoryType == InventoryType.ENCHANTING) {
             maxAmount = 1;
-        } else if ((inventory.getType() == InventoryType.PLAYER && slot >= 36 && slot < 40) || (inventory.getType() == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
+        } else if ((inventoryType == InventoryType.PLAYER && slot >= 36 && slot < 40) || (inventoryType == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
             maxAmount = 1;
-        } else if (inventory.getType() == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
-            maxAmount = 64;
+        } else if (inventoryType == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
+            maxAmount = mat.getMaxStackSize();
         } else if (!Config.isCraftingUsingStacks()) {
-            if ((inventory.getType() == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventory.getType() == InventoryType.CRAFTING && slot >= 1 && slot < 5)) {
-                maxAmount = 64;
+            if ((inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) {
+                maxAmount = mat.getMaxStackSize();
             }
-        } else if (inventory.getType() == InventoryType.BREWING && !Config.isBrewingUsingStacks()) {
+        } else if (inventoryType == InventoryType.BREWING && !Config.isBrewingUsingStacks()) {
             if (slot >= 0 && slot < 3) {
                 maxAmount = 1;
             } else {
-                maxAmount = 64;
+                maxAmount = mat.getMaxStackSize();
             }
         }
 

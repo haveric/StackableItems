@@ -6,7 +6,6 @@ Todo/Ideas:
 * Improve Shift Clicking
 * Improve in-game commands
 * Virtual Stacks (stack of tools that each are unique) (Partially implemented)
-* Separate chest/player amounts
 * Look into making work with InventoryTweaks (or possible API?)
 - I'm sure I'll think of/find more
 
@@ -18,7 +17,9 @@ Coming soon:
 * Fixed repairing when using RepairRecipe plugin.
 * Fixed some duplication bugs with crafting tables.
 * Fixed duplication bug with brewing stands.
-
+* Fixed a bug with default config using the group config.
+* Added chestItems.yml to allow setting different stack amounts in chests.
+* Fixed a bug with stacking that caused loss of items.
 
 Version 0.8.8 (9/10/2012)
 * Fixed some potential NPEs
