@@ -12,7 +12,7 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
+Version 0.8.9 (9/23/2012)
 * Use stacks in Brewing stand option was setting the crafting option again.
 * Fixed repairing when using RepairRecipe plugin.
 * Fixed some duplication bugs with crafting tables.
