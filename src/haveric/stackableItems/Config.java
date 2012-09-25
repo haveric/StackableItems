@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Furnace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -77,7 +78,7 @@ public final class Config {
         boolean furnaceUseStacks = cfgOptions.getBoolean(cfgFurnaceUseStacks, FURNACE_USE_STACKS_DEFAULT);
         boolean merchantUseStacks = cfgOptions.getBoolean(cfgMerchantUseStacks, MERCHANT_USE_STACKS_DEFAULT);
         boolean craftingUseStacks = cfgOptions.getBoolean(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
-        boolean brewingUseStacks = cfgOptions.getBoolean(cfgCraftingUseStacks, BREWING_USE_STACKS_DEFAULT);
+        boolean brewingUseStacks = cfgOptions.getBoolean(cfgBrewingUseStacks, BREWING_USE_STACKS_DEFAULT);
 
         boolean debug = cfgOptions.getBoolean(cfgDebug, DEBUG_DEFAULT);
 
@@ -157,9 +158,9 @@ public final class Config {
         saveConfig(cfgFurnaces, cfgFurnacesFile);
     }
 
-    public static int getMaxFurnaceAmount() {
+    public static int getMaxFurnaceAmount(Material mat) {
         int maxFurnaceSize = cfgOptions.getInt(cfgFurnaceAmount, ITEM_DEFAULT);
-        int maxAmount = 64;
+        int maxAmount = mat.getMaxStackSize();
 
         if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
             maxAmount = maxFurnaceSize;

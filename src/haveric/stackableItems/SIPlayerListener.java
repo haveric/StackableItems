@@ -59,7 +59,7 @@ public class SIPlayerListener implements Listener {
             amt = result.getAmount() + 1;
         }
 
-        int maxFurnaceSize = Config.getMaxFurnaceAmount();
+        int maxFurnaceSize = Config.getMaxFurnaceAmount(result.getType());
         if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
 
             // going to be a full furnace
@@ -348,7 +348,7 @@ public class SIPlayerListener implements Listener {
 
                 ItemStack clone = clicked.clone();
 
-                int maxFurnaceSize = Config.getMaxFurnaceAmount();
+                int maxFurnaceSize = Config.getMaxFurnaceAmount(clickedType);
                 if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
 
                     PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
@@ -549,23 +549,28 @@ public class SIPlayerListener implements Listener {
                             ItemStack potionSlot2 = top.getItem(1);
                             ItemStack potionSlot3 = top.getItem(2);
 
+                            boolean movedAll = false;
                             if (potionSlot1 == null) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
 
                                 if (left > 0) {
                                     clicked.setAmount(left);
+                                } else {
+                                    movedAll = true;
                                 }
                                 moved = true;
                             }
-                            if (potionSlot2 == null && !moved) {
+                            if (potionSlot2 == null && !movedAll) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 2, false);
 
                                 if (left > 0) {
                                     clicked.setAmount(left);
+                                } else {
+                                    movedAll = true;
                                 }
                                 moved = true;
                             }
-                            if (potionSlot3 == null && !moved) {
+                            if (potionSlot3 == null && !movedAll) {
                                 int left = InventoryUtil.moveItems(player, clicked, event, top, 2, 3, false);
 
                                 if (left > 0) {

@@ -12,6 +12,11 @@ Todo/Ideas:
 
 Changelog:
 
+Coming soon:
+* Actually fixed stacking in brewing stands
+* Fixed stacking in trading windows to work properly with Use_Stack_Amounts_In_Trading and only affect the trading slots.
+* Fixed stacking issues with furnaces and enchantment tables
+
 Version 0.8.9 (9/23/2012)
 * Use stacks in Brewing stand option was setting the crafting option again.
 * Fixed repairing when using RepairRecipe plugin.

@@ -325,25 +325,27 @@ public final class InventoryUtil {
         int maxAmount = SIItems.getItemMax(player, mat, dur, isChestSlot);
 
         if (inventoryType == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
-            maxAmount = Config.getMaxFurnaceAmount();
+            if (slot >= 0 && slot < 3) {
+                maxAmount = Config.getMaxFurnaceAmount(mat);
+            }
         } else if (inventoryType == InventoryType.ENCHANTING) {
-            maxAmount = 1;
+            if (slot == 0) {
+                maxAmount = 1;
+            }
         } else if ((inventoryType == InventoryType.PLAYER && slot >= 36 && slot < 40) || (inventoryType == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
             maxAmount = 1;
         } else if (inventoryType == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
-            maxAmount = mat.getMaxStackSize();
-        } else if (!Config.isCraftingUsingStacks()) {
-            if ((inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) {
+            if (slot >= 0 && slot < 2) {
                 maxAmount = mat.getMaxStackSize();
             }
         } else if (inventoryType == InventoryType.BREWING && !Config.isBrewingUsingStacks()) {
             if (slot >= 0 && slot < 3) {
                 maxAmount = 1;
-            } else {
-                maxAmount = mat.getMaxStackSize();
             }
-        }
+        } else if (!Config.isCraftingUsingStacks() && (inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) {
+            maxAmount = mat.getMaxStackSize();
 
+        }
         return maxAmount;
     }
 
