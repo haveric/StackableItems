@@ -73,29 +73,18 @@ public final class Config {
      * Sets up the default variables if they don't exist yet.
      */
     public static void setup() {
-        boolean virtualItems = cfgOptions.getBoolean(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
+        cfgOptions.addDefault(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
+        cfgOptions.addDefault(cfgFurnaceUseStacks, FURNACE_USE_STACKS_DEFAULT);
+        cfgOptions.addDefault(cfgMerchantUseStacks, MERCHANT_USE_STACKS_DEFAULT);
+        cfgOptions.addDefault(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
+        cfgOptions.addDefault(cfgBrewingUseStacks, BREWING_USE_STACKS_DEFAULT);
+        cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
+        cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
-        boolean furnaceUseStacks = cfgOptions.getBoolean(cfgFurnaceUseStacks, FURNACE_USE_STACKS_DEFAULT);
-        boolean merchantUseStacks = cfgOptions.getBoolean(cfgMerchantUseStacks, MERCHANT_USE_STACKS_DEFAULT);
-        boolean craftingUseStacks = cfgOptions.getBoolean(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
-        boolean brewingUseStacks = cfgOptions.getBoolean(cfgBrewingUseStacks, BREWING_USE_STACKS_DEFAULT);
-
-        boolean debug = cfgOptions.getBoolean(cfgDebug, DEBUG_DEFAULT);
-
-        int furnaceAmt = cfgOptions.getInt(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
-
-        // TODO Find a way to not have to set these every time, but only if they don't exist
-        cfgOptions.set(cfgFurnaceUseStacks, furnaceUseStacks);
-        cfgOptions.set(cfgMerchantUseStacks, merchantUseStacks);
-        cfgOptions.set(cfgCraftingUseStacks, craftingUseStacks);
-        cfgOptions.set(cfgBrewingUseStacks, brewingUseStacks);
-        cfgOptions.set(cfgVirtualItems, virtualItems);
-        cfgOptions.set(cfgFurnaceAmount, furnaceAmt);
-        cfgOptions.set(cfgDebug, debug);
-        saveConfig();
-
-        if (cfgFurnacesFile.length() == 0) {
-            saveConfig(cfgFurnaces, cfgFurnacesFile);
+        if (!cfgOptions.isSet(cfgVirtualItems) || !cfgOptions.isSet(cfgFurnaceUseStacks) || !cfgOptions.isSet(cfgMerchantUseStacks) || !cfgOptions.isSet(cfgCraftingUseStacks)
+                || !cfgOptions.isSet(cfgBrewingUseStacks) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)) {
+            cfgOptions.options().copyDefaults(true);
+            saveConfig(cfgOptions, cfgOptionsFile);
         }
     }
 

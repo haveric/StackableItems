@@ -61,15 +61,19 @@ public final class SIItems {
     }
 
     private static void setupDefaultItemsFile() {
-        if (defaultItemsFile.length() == 0) {
-            defaultItems.set(cfgAllItemsMax, ITEM_DEFAULT);
+        defaultItems.addDefault(cfgAllItemsMax, ITEM_DEFAULT);
+
+        if (!defaultItems.isSet(cfgAllItemsMax)) {
+            defaultItems.options().copyDefaults(true);
             Config.saveConfig(defaultItems, defaultItemsFile);
         }
     }
 
     private static void setupChestItemsFile() {
-        if (chestItemsFile.length() == 0) {
-            chestItems.set(cfgAllItemsMax, ITEM_DEFAULT);
+        chestItems.addDefault(cfgAllItemsMax, ITEM_DEFAULT);
+
+        if (!chestItems.isSet(cfgAllItemsMax)) {
+            chestItems.options().copyDefaults(true);
             Config.saveConfig(chestItems, chestItemsFile);
         }
     }
