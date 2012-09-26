@@ -443,7 +443,6 @@ public class SIPlayerListener implements Listener {
                         return;
                     }
                 }
-            // TODO: Handle brewing like furnaces, moving the correct items into the correct slots
             } else if (topType == InventoryType.BREWING) {
                 if (rawSlot <= 2) {
                     if (!event.isShiftClick()) {
