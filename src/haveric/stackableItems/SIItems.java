@@ -35,6 +35,8 @@ public final class SIItems {
     private static File chestItemsFile;
 
     private static String cfgAllItemsMax = "ALL ITEMS MAX";
+    private static String cfgMin = "MIN";
+    private static String cfgMax = "MAX";
 
     public static final int ITEM_DEFAULT = -1;
 
@@ -61,18 +63,20 @@ public final class SIItems {
     }
 
     private static void setupDefaultItemsFile() {
-        defaultItems.addDefault(cfgAllItemsMax, ITEM_DEFAULT);
+        defaultItems.addDefault(cfgMin, ITEM_DEFAULT);
+        defaultItems.addDefault(cfgMax, ITEM_DEFAULT);
 
-        if (!defaultItems.isSet(cfgAllItemsMax)) {
+        if (!defaultItems.isSet(cfgMin) || !defaultItems.isSet(cfgMax)) {
             defaultItems.options().copyDefaults(true);
             Config.saveConfig(defaultItems, defaultItemsFile);
         }
     }
 
     private static void setupChestItemsFile() {
-        chestItems.addDefault(cfgAllItemsMax, ITEM_DEFAULT);
+        chestItems.addDefault(cfgMin, ITEM_DEFAULT);
+        chestItems.addDefault(cfgMax, ITEM_DEFAULT);
 
-        if (!chestItems.isSet(cfgAllItemsMax)) {
+        if (!chestItems.isSet(cfgMin) || !chestItems.isSet(cfgMax)) {
             chestItems.options().copyDefaults(true);
             Config.saveConfig(chestItems, chestItemsFile);
         }
@@ -286,9 +290,21 @@ public final class SIItems {
                 // item id with no durability
                 } else if (subMap.containsKey("" + mat.getId())) {
                     max = subMap.get("" + mat.getId());
-                // no individual item set, use the 'all items' value
-                } else if (subMap.containsKey(cfgAllItemsMax)) {
-                    max = subMap.get(cfgAllItemsMax);
+                // no individual item set, use the max and min values
+                } else {
+                    int defaultMax = mat.getMaxStackSize();
+                    if (subMap.containsKey(cfgMin)) {
+                        int temp = subMap.get(cfgMin);
+                        if (temp > defaultMax && temp > ITEM_DEFAULT) {
+                            max = temp;
+                        }
+                    }
+                    if (subMap.containsKey(cfgMax)) {
+                        int temp = subMap.get(cfgMax);
+                        if (temp < defaultMax && temp > ITEM_DEFAULT) {
+                            max = temp;
+                        }
+                    }
                 }
             }
 
@@ -329,9 +345,21 @@ public final class SIItems {
                 // item id with no durability
                 } else if (subMap.containsKey("" + mat.getId())) {
                     max = subMap.get("" + mat.getId());
-                // no individual item set, use the 'all items' value
-                } else if (subMap.containsKey(cfgAllItemsMax)) {
-                    max = subMap.get(cfgAllItemsMax);
+                 // no individual item set, use the max and min values
+                } else {
+                    int defaultMax = mat.getMaxStackSize();
+                    if (subMap.containsKey(cfgMin)) {
+                        int temp = subMap.get(cfgMin);
+                        if (temp > defaultMax && temp > ITEM_DEFAULT) {
+                            max = temp;
+                        }
+                    }
+                    if (subMap.containsKey(cfgMax)) {
+                        int temp = subMap.get(cfgMax);
+                        if (temp < defaultMax && temp > ITEM_DEFAULT) {
+                            max = temp;
+                        }
+                    }
                 }
             }
 
