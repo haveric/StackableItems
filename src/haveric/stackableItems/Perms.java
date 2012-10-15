@@ -25,19 +25,7 @@ public final class Perms {
     private static boolean permEnabled() {
         return (perm != null);
     }
-    /*
-    public static void setStack(String newPerm) {
-        stack = newPerm;
-    }
 
-    public static String getStackString() {
-        return stack;
-    }
-
-    public static String getAdjustString() {
-        return adjust;
-    }
-    */
     public static boolean groupExists(String group) {
         boolean groupExists = false;
 
@@ -57,6 +45,8 @@ public final class Perms {
 
         if (permEnabled()) {
             canStack = perm.has(player, stack);
+        } else {
+            canStack = player.hasPermission(stack);
         }
         return canStack;
     }
@@ -66,6 +56,8 @@ public final class Perms {
 
         if (permEnabled()) {
             canAdjust = perm.has(player, adjust);
+        } else {
+            canAdjust = player.hasPermission(adjust);
         }
         return canAdjust;
     }
@@ -93,6 +85,8 @@ public final class Perms {
 
         if (permEnabled()) {
             vanishPickup = perm.has(player, vanishNoPickup);
+        } else {
+            vanishPickup = player.hasPermission(vanishNoPickup);
         }
         return vanishPickup;
     }
