@@ -21,6 +21,7 @@ Coming soon:
 ** MIN sets the minimum amount that everything will stack to, but will not override higher default values. Ex: MIN: 2 would allow swords/armor/etc. to stack to 2, but dirt/cobble/etc would still stack to 64.
 ** MAX sets the maximum amount that everything will stack to, but will not override lower default values. EX: MAX: 32 would allow dirt/cobble/etc to only stack to 32, but still allow tools to stack at 1 and snowballs to stack at 16.
 ** If you want it to work as before, set both min and max to "ALL ITEMS MAX" (values above 64 only need min set as no default values go that high)
+* VanishNoPacket support (If vanished and player has vanish.nopickup perm, items will not be picked up)
 
 Version 0.8.9 (9/23/2012)
 * Use stacks in Brewing stand option was setting the crafting option again.
