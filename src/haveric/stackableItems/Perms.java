@@ -41,25 +41,11 @@ public final class Perms {
     }
 
     public static boolean canStackInGroup(Player player) {
-        boolean canStack = false;
-
-        if (permEnabled()) {
-            canStack = perm.has(player, stack);
-        } else {
-            canStack = player.hasPermission(stack);
-        }
-        return canStack;
+        return player.hasPermission(stack);
     }
 
     public static boolean canAdjust(Player player) {
-        boolean canAdjust = false;
-
-        if (permEnabled()) {
-            canAdjust = perm.has(player, adjust);
-        } else {
-            canAdjust = player.hasPermission(adjust);
-        }
-        return canAdjust;
+        return player.hasPermission(adjust);
     }
 
     public static String getPrimaryGroup(Player player) {
@@ -81,14 +67,7 @@ public final class Perms {
     }
 
     public static boolean canVanishPickup(Player player) {
-        boolean vanishPickup = true;
-
-        if (permEnabled()) {
-            vanishPickup = perm.has(player, vanishNoPickup);
-        } else {
-            vanishPickup = player.hasPermission(vanishNoPickup);
-        }
-        return vanishPickup;
+        return player.hasPermission(vanishNoPickup);
     }
 
 }
