@@ -27,6 +27,7 @@ Coming soon:
 ** Picking up and dropping items is not affected by this currently, only using the item (placing a block, hitting an enemy, etc)
 ** Set the item to "infinite", "unlimited", or -2 (Example: DIAMOND_PICKAXE: infinite)
 * Shears now split when used in a stack to prevent durability loss for the rest of the stack.
+* Flint and Steel no longer uses durability on water, lava, and fire since you are never actually setting a fire.
 
 Version 0.8.9 (9/23/2012)
 * Use stacks in Brewing stand option was setting the crafting option again.

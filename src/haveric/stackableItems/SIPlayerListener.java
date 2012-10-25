@@ -8,6 +8,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -374,11 +375,34 @@ public class SIPlayerListener implements Listener {
 
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            PlayerClickData clickData = SIPlayers.getPlayerData(event.getPlayer().getName());
-            clickData.setLastBlock(event.getClickedBlock().getType());
-            clickData.setLastBlockLocation(event.getClickedBlock().getLocation());
+            Block block = event.getClickedBlock();
 
+            ItemStack holding = event.getItem();
+            if (holding != null) {
+                if (holding.getType() == Material.FLINT_AND_STEEL) {
+                    Material placedType = block.getRelative(event.getBlockFace()).getType();
+                    event.getPlayer().sendMessage("Type: " + placedType);
+                    switch(placedType) {
+                        case STATIONARY_WATER:
+                        case WATER:
+                        case STATIONARY_LAVA:
+                        case LAVA:
+                        case FIRE:
+                            event.setUseItemInHand(Result.DENY);
+                            event.setUseInteractedBlock(Result.DENY);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
             Player player = event.getPlayer();
+            PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
+
+            Material blockType = block.getType();
+            clickData.setLastBlock(blockType);
+            clickData.setLastBlockLocation(block.getLocation());
+
             InventoryUtil.splitStack(player, true);
         }
     }

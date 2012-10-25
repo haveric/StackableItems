@@ -138,7 +138,6 @@ public final class SIItems {
             for (String key : configItems.getKeys(false)) {
                 Object temp = configItems.get(key);
                 if (temp instanceof String) {
-                    plugin.log.info("String: " + temp);
                     if (temp.equals("unlimited") || temp.equals("infinite") || temp.equals("infinity")) {
                         itemsMap.get(groupOrPlayer).put(key.toUpperCase(), ITEM_INFINITE);
                     }
