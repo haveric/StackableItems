@@ -99,7 +99,10 @@ public final class InventoryUtil {
                             int slotAmount = slot.getAmount();
 
                             int maxAmount = getInventoryMax(player, inventory, type, durability, i);
-
+                            // Handle infinite items
+                            if (maxAmount == -2) {
+                                maxAmount = type.getMaxStackSize();
+                            }
                             int canAdd = maxAmount - slotAmount;
                             if (canAdd > 0) {
                                 // Add less than a full slot
@@ -126,7 +129,10 @@ public final class InventoryUtil {
 
                         if (slot == null) {
                             int maxAmount = getInventoryMax(player, inventory, type, durability, i);
-
+                            // Handle infinite items
+                            if (maxAmount == -2) {
+                                maxAmount = type.getMaxStackSize();
+                            }
                             if (addAmount >= maxAmount) {
                                 itemToAdd.setAmount(maxAmount);
                                 inventory.setItem(i, itemToAdd.clone());
@@ -344,29 +350,36 @@ public final class InventoryUtil {
             }
         } else if (!Config.isCraftingUsingStacks() && (inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) {
             maxAmount = mat.getMaxStackSize();
-
         }
+
+        // Handle infinite items
+        if (maxAmount == -2) {
+            maxAmount = mat.getMaxStackSize();
+        }
+
         return maxAmount;
     }
 
     public static void splitStack(Player player, boolean toolCheck) {
         ItemStack holding = player.getItemInHand();
-        int amount = holding.getAmount();
+        if (holding != null) {
+            int amount = holding.getAmount();
 
-        if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
-            if (!Config.isVirtualItemsEnabled()) {
-                ItemStack move = holding.clone();
-                move.setAmount(amount - 1);
-                InventoryUtil.addItems(player, move);
-                holding.setAmount(1);
+            if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
+                if (!Config.isVirtualItemsEnabled()) {
+                    ItemStack move = holding.clone();
+                    move.setAmount(amount - 1);
+                    InventoryUtil.addItems(player, move);
+                    holding.setAmount(1);
+                }
             }
         }
     }
 
-    public static void replaceItem(final Player player, final int slot, final ItemStack stack) {
+    public static void replaceItem(final Inventory inventory, final int slot, final ItemStack stack) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
-                player.getInventory().setItem(slot, stack);
+                inventory.setItem(slot, stack);
             }
         });
     }

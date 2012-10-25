@@ -197,16 +197,16 @@ public final class ItemUtil {
             repairable = true;
         } else {
             switch(mat) {
-                case FISHING_ROD:
-                case FLINT_AND_STEEL:
-                case SHEARS:
-                    repairable = true;
-                    break;
-
-                default:
-                    break;
+            case FISHING_ROD:
+            case FLINT_AND_STEEL:
+            case SHEARS:
+                repairable = true;
+                break;
+            default:
+                break;
             }
         }
+
         return repairable;
     }
 

@@ -16,6 +16,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -29,6 +32,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -136,6 +140,27 @@ public class SIPlayerListener implements Listener {
 
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), false);
 
+            // Handle infinite items for the crafted item
+            if (maxItems == -2) {
+                maxItems = type.getMaxStackSize();
+
+                CraftingInventory inventory = event.getInventory();
+
+                // Handle infinite recipe items
+                int inventSize = inventory.getSize();
+                for (int i = 1; i < inventSize; i++) {
+                    ItemStack temp = inventory.getItem(i);
+                    if (temp != null) {
+                        int maxSlot = SIItems.getItemMax(player, temp.getType(), temp.getDurability(), false);
+
+                        if (maxSlot == -2) {
+                            ItemStack clone = temp.clone();
+                            InventoryUtil.replaceItem(inventory, i, clone);
+                        }
+                    }
+                }
+            }
+
             if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
                 event.setCancelled(true);
@@ -182,26 +207,83 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler
     public void playerFish(PlayerFishEvent event) {
-        InventoryUtil.splitStack(event.getPlayer(), false);
+        Player player = event.getPlayer();
+
+        ItemStack clone = player.getItemInHand().clone();
+
+        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
+        // Handle infinite fishing rods
+        if (maxItems == -2) {
+            player.setItemInHand(clone);
+        } else {
+            InventoryUtil.splitStack(player, false);
+        }
+
     }
 
     @EventHandler
     public void breakBlock(BlockBreakEvent event) {
-        InventoryUtil.splitStack(event.getPlayer(), true);
+        Player player = event.getPlayer();
+
+        ItemStack hand = player.getItemInHand();
+        if (hand != null) {
+            Material type = hand.getType();
+            int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), false);
+
+            if (maxItems == -2) {
+                ItemStack clone = hand.clone();
+                PlayerInventory inventory = player.getInventory();
+                InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
+                InventoryUtil.updateInventory(player);
+            } else {
+                if (type == Material.SHEARS || type == Material.FLINT_AND_STEEL) {
+                    InventoryUtil.splitStack(player, false);
+                } else {
+                    InventoryUtil.splitStack(player, true);
+                }
+            }
+        }
     }
 
     @EventHandler
     public void shootBow(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            InventoryUtil.splitStack(player, false);
+
+            ItemStack clone = event.getBow().clone();
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
+
+            // Handle infinite bows
+            if (maxItems == -2) {
+                player.setItemInHand(clone);
+                InventoryUtil.updateInventory(player);
+
+                // TODO Handle infinite arrows
+            } else {
+                InventoryUtil.splitStack(player, false);
+            }
         }
     }
 
     @EventHandler
     public void entityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
-            InventoryUtil.splitStack((Player) event.getDamager(), true);
+            Player player = (Player) event.getDamager();
+
+            ItemStack hold = player.getItemInHand();
+            if (hold != null) {
+                int maxItems = SIItems.getItemMax(player, hold.getType(), hold.getDurability(), false);
+
+                // Handle infinite weapons
+                if (maxItems == -2) {
+                    ItemStack clone = hold.clone();
+                    PlayerInventory inventory = player.getInventory();
+                    InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
+                    InventoryUtil.updateInventory(player);
+                } else {
+                    InventoryUtil.splitStack(player, true);
+                }
+            }
         }
     }
 
@@ -218,7 +300,7 @@ public class SIPlayerListener implements Listener {
         if (amount > 1) {
             ItemStack clone = event.getItemStack().clone();
 
-            InventoryUtil.replaceItem(player, slot, clone);
+            InventoryUtil.replaceItem(player.getInventory(), slot, clone);
             InventoryUtil.updateInventory(player);
 
             event.setCancelled(true);
@@ -242,7 +324,7 @@ public class SIPlayerListener implements Listener {
             ItemStack clone = holding.clone();
             clone.setAmount(amount - 1);
 
-            InventoryUtil.replaceItem(player, slot, clone);
+            InventoryUtil.replaceItem(player.getInventory(), slot, clone);
             InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, 1));
         }
     }
@@ -261,7 +343,7 @@ public class SIPlayerListener implements Listener {
                 PlayerInventory inventory = player.getInventory();
                 ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
                 if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
-                    InventoryUtil.replaceItem(player, clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
+                    InventoryUtil.replaceItem(player.getInventory(), clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
                     //plugin.log.info("Left: " + (clickData.getAmount() - 1));
 
                     InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
@@ -296,21 +378,8 @@ public class SIPlayerListener implements Listener {
             clickData.setLastBlock(event.getClickedBlock().getType());
             clickData.setLastBlockLocation(event.getClickedBlock().getLocation());
 
-            ItemStack holding = event.getItem();
-            if (holding != null) {
-                Material holdingType = holding.getType();
-                Player player = event.getPlayer();
-
-                int amount = holding.getAmount();
-
-                if (amount > 1 && holdingType == Material.FLINT_AND_STEEL) {
-                    ItemStack move = holding.clone();
-                    move.setAmount(amount - 1);
-
-                    holding.setAmount(1);
-                    InventoryUtil.addItems(player, move);
-                }
-            }
+            Player player = event.getPlayer();
+            InventoryUtil.splitStack(player, true);
         }
     }
 
@@ -1061,6 +1130,7 @@ public class SIPlayerListener implements Listener {
             event.setCancelled(true);
         } else {
             int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability(), false);
+
             if (maxItems == 0) {
                 event.setCancelled(true);
             } else {
@@ -1071,6 +1141,53 @@ public class SIPlayerListener implements Listener {
                 item.remove();
 
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void playerPlaceBlock(BlockPlaceEvent event) {
+        ItemStack clone = event.getItemInHand().clone();
+
+        Player player = event.getPlayer();
+        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
+
+        // Restore unlimited items
+        if (maxItems == -2) {
+            player.setItemInHand(clone);
+        }
+    }
+
+    @EventHandler
+    public void playerShearEntity(PlayerShearEntityEvent event) {
+        Player player = event.getPlayer();
+
+        ItemStack clone = player.getItemInHand().clone();
+        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
+
+        // Handle unlimited shears
+        if (maxItems == -2) {
+            player.setItemInHand(clone);
+        } else {
+            InventoryUtil.splitStack(player, false);
+        }
+    }
+
+    @EventHandler
+    public void playerIgniteBlock(BlockIgniteEvent event) {
+        if (event.getCause() == IgniteCause.FLINT_AND_STEEL) {
+            Player player = event.getPlayer();
+
+            // Since repeatedly using flint and steel causes durability loss, reset durability on a new hit.
+            ItemStack newStack = new ItemStack(Material.FLINT_AND_STEEL);
+            int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), false);
+
+            // Handle unlimited flint and steel
+            if (maxItems == -2) {
+                player.setItemInHand(newStack);
+                InventoryUtil.updateInventory(player);
+            } else {
+                InventoryUtil.splitStack(player, false);
             }
         }
     }

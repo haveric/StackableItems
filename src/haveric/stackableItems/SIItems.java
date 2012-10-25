@@ -34,11 +34,12 @@ public final class SIItems {
     private static FileConfiguration chestItems;
     private static File chestItemsFile;
 
-    private static String cfgAllItemsMax = "ALL ITEMS MAX";
+    //private static String cfgAllItemsMax = "ALL ITEMS MAX";
     private static String cfgMin = "MIN";
     private static String cfgMax = "MAX";
 
     public static final int ITEM_DEFAULT = -1;
+    public static final int ITEM_INFINITE = -2;
 
     private SIItems() { } // Private constructor for utility class
 
@@ -135,7 +136,17 @@ public final class SIItems {
                 itemsMap.put(groupOrPlayer, new HashMap<String, Integer>());
             }
             for (String key : configItems.getKeys(false)) {
-                itemsMap.get(groupOrPlayer).put(key.toUpperCase(), configItems.getInt(key));
+                Object temp = configItems.get(key);
+                if (temp instanceof String) {
+                    plugin.log.info("String: " + temp);
+                    if (temp.equals("unlimited") || temp.equals("infinite") || temp.equals("infinity")) {
+                        itemsMap.get(groupOrPlayer).put(key.toUpperCase(), ITEM_INFINITE);
+                    }
+                } else if (temp instanceof Integer) {
+                    itemsMap.get(groupOrPlayer).put(key.toUpperCase(), configItems.getInt(key));
+                }
+
+
             }
         }
     }
@@ -195,7 +206,7 @@ public final class SIItems {
                 max = getDefaultMax(mat, dur);
             }
 
-            if (max <= ITEM_DEFAULT) {
+            if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
                 max = mat.getMaxStackSize();
             }
         }

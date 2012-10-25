@@ -23,6 +23,10 @@ Coming soon:
 ** If you want it to work as before, set both min and max to "ALL ITEMS MAX" (values above 64 only need min set as no default values go that high)
 * VanishNoPacket support (If vanished and player has vanish.nopickup perm, items will not be picked up)
 * Better support for default Perms
+* Initial support for infinite items (Note: not every item is supported and may still be buggy)
+** Picking up and dropping items is not affected by this currently, only using the item (placing a block, hitting an enemy, etc)
+** Set the item to "infinite", "unlimited", or -2 (Example: DIAMOND_PICKAXE: infinite)
+* Shears now split when used in a stack to prevent durability loss for the rest of the stack.
 
 Version 0.8.9 (9/23/2012)
 * Use stacks in Brewing stand option was setting the crafting option again.
