@@ -60,7 +60,6 @@ public class StackableItems extends JavaPlugin {
 
     private void setupVault(PluginManager pm) {
         if (pm.getPlugin("Vault") == null) {
-            log.info("Vault not found. Permission groups disabled.");
             return;
         }
 

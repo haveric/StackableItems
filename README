@@ -12,7 +12,7 @@ Todo/Ideas:
 
 Changelog:
 
-Coming soon:
+Version 0.9 (10/26/2012)
 * Actually fixed stacking in brewing stands
 * Fixed stacking in trading windows to work properly with Use_Stack_Amounts_In_Trading and only affect the trading slots.
 * Fixed stacking issues with furnaces and enchantment tables
