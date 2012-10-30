@@ -1,18 +1,12 @@
-Stackable Items
+StackableItems is a bukkit plugin that allows you to raise or lower the default stack amounts for any item.  Items can be disabled which disallows pickup and crafting).  Some items can also be set to be infinite which allows you to keep a certain item around no matter how much you use it.
 
-Allows you to change the default stack size of items. 
 
-Todo/Ideas:
-* Improve Shift Clicking
-* Improve in-game commands
-* Virtual Stacks (stack of tools that each are unique) (Partially implemented)
-* Look into making work with InventoryTweaks (or possible API?)
-- I'm sure I'll think of/find more
+For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 
 
 Changelog:
 
-Version 0.9 (10/26/2012)
+Version 0.9 (10/29/2012)
 * Actually fixed stacking in brewing stands
 * Fixed stacking in trading windows to work properly with Use_Stack_Amounts_In_Trading and only affect the trading slots.
 * Fixed stacking issues with furnaces and enchantment tables
