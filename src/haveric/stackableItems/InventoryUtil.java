@@ -241,11 +241,13 @@ public final class InventoryUtil {
                 for (ItemStack i : items) {
                     amt = checkItemInInventory(inventory, i, amt);
                 }
-
+            }
             // TODO: Figure out if we need to handle FurnaceRecipes or not
-            } else {
+            /*
+            else {
 
             }
+            */
         }
 
         if (amt == -1) {

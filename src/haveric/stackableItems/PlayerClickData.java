@@ -22,7 +22,7 @@ public class PlayerClickData {
         lastFoodLevel = -1;
     }
 
-    public PlayerClickData(int newSlot, Material newType, int newAmt/*, int newDur*/) {
+    public PlayerClickData(int newSlot, Material newType, int newAmt) {
         slot = newSlot;
         type = newType;
         amount = newAmt;

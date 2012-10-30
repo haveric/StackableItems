@@ -64,36 +64,40 @@ public class SIPlayerListener implements Listener {
             amt = 0;
         } else {
             amt = result.getAmount() + 1;
-        }
 
-        int maxFurnaceSize = Config.getMaxFurnaceAmount(result.getType());
-        if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+            int maxFurnaceSize = Config.getMaxFurnaceAmount(result.getType());
+            if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
 
-            // going to be a full furnace
-            if (amt == 64) {
-                int furnaceAmt = Config.getFurnaceAmount(furnace);
-                if (furnaceAmt == maxFurnaceSize - 1) {
-                    result.setAmount(furnaceAmt);
-                    Config.clearFurnace(furnace);
-                // increment virtual count
-                } else {
-                    if (furnaceAmt == -1) {
-                        furnaceAmt = 64;
+                // going to be a full furnace
+                if (amt == 64) {
+                    int furnaceAmt = Config.getFurnaceAmount(furnace);
+                    if (furnaceAmt == maxFurnaceSize - 1) {
+                        result.setAmount(furnaceAmt);
+                        Config.clearFurnace(furnace);
+                    // increment virtual count
                     } else {
-                        furnaceAmt++;
+                        if (furnaceAmt == -1) {
+                            furnaceAmt = 64;
+                        } else {
+                            furnaceAmt++;
+                        }
+
+                        Config.setFurnaceAmount(furnace, furnaceAmt);
+
+                        result.setAmount(62);
                     }
-
-                    Config.setFurnaceAmount(furnace, furnaceAmt);
-
-                    result.setAmount(62);
                 }
             }
-        } else if (maxFurnaceSize < 64) {
+        }
+        // TODO: Handle a max furnace amount of less than 64 items
+        /*
+        else if (maxFurnaceSize < 64) {
             if (amt == maxFurnaceSize) {
                 //event.setCancelled(true);
                 // TODO: Can we somehow stop the furnace burning so we can keep the fuel?
             }
         }
+        */
     }
 /*
     @EventHandler (priority = EventPriority.HIGHEST)
@@ -1102,9 +1106,12 @@ public class SIPlayerListener implements Listener {
                         VirtualItemConfig.setVirtualItemStack(player, -1, cursorStack);
 
                         event.setResult(Result.ALLOW);
-                    } else {
+                    }
+                    /* TOOD: Finish handling Virtual stacks
+                    else {
 
                     }
+                    */
                 // pick up half a stack
                 } else if (!slotEmpty && cursorEmpty && maxItems > -1) {
                     if (clickedAmount > maxItems) {
