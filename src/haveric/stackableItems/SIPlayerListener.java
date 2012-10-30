@@ -381,7 +381,7 @@ public class SIPlayerListener implements Listener {
             if (holding != null) {
                 if (holding.getType() == Material.FLINT_AND_STEEL) {
                     Material placedType = block.getRelative(event.getBlockFace()).getType();
-                    event.getPlayer().sendMessage("Type: " + placedType);
+
                     switch(placedType) {
                         case STATIONARY_WATER:
                         case WATER:
