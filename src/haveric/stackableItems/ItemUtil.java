@@ -244,6 +244,23 @@ public final class ItemUtil {
         return brewingIngredient;
     }
 
+    public static boolean isBeaconFuel(Material mat) {
+        boolean beaconFuel = false;
+
+        switch(mat) {
+            case DIAMOND:
+            case EMERALD:
+            case IRON_INGOT:
+            case GOLD_INGOT:
+                beaconFuel = true;
+                break;
+
+            default:
+                break;
+        }
+        return beaconFuel;
+    }
+
     public static boolean isSameItem(ItemStack one, ItemStack two) {
         return isSameItem(one, two, false);
     }

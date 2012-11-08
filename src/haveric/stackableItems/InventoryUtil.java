@@ -25,15 +25,7 @@ public final class InventoryUtil {
     public static void init(StackableItems si) {
         plugin = si;
     }
-    /*
-    public static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory){
-        return getFreeSpaces(player, itemToCheck, inventory, 0, inventory.getContents().length);
-    }
 
-    public static int getFreeSpaces(Player player, ItemStack itemToCheck, int start, int end){
-        return getFreeSpaces(player, itemToCheck, player.getInventory(), start, end);
-    }
-    */
     public static int getFreeSpaces(Player player, ItemStack itemToCheck) {
         return getFreeSpaces(player, itemToCheck, player.getInventory(), 0, 36);
     }
@@ -41,7 +33,7 @@ public final class InventoryUtil {
     public static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory, int start, int end) {
         int free = 0;
 
-        if (start < end && end <= inventory.getContents().length) {
+        if (start < end && end <= inventory.getSize()) {
             Material type = itemToCheck.getType();
             short durability = itemToCheck.getDurability();
 
@@ -66,16 +58,6 @@ public final class InventoryUtil {
         return free;
     }
 
-    /*
-    public static void addItems(Player player, ItemStack itemToAdd, Inventory inventory){
-        addItems(player, itemToAdd, inventory, 0, inventory.getContents().length);
-    }
-
-    public static void addItems(Player player, ItemStack itemToAdd, int start, int end){
-        addItems(player, itemToAdd, player.getInventory(), start, end);
-    }
-    */
-
     public static void addItems(Player player, ItemStack itemToAdd) {
         addItems(player, itemToAdd, player.getInventory(), 0, 36);
     }
@@ -83,7 +65,7 @@ public final class InventoryUtil {
     public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
-                if (start < end && end <= inventory.getContents().length) {
+                if (start < end && end <= inventory.getSize()) {
                     Material type = itemToAdd.getType();
                     short durability = itemToAdd.getDurability();
 
@@ -160,7 +142,7 @@ public final class InventoryUtil {
     }
 
     public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft) {
-        return moveItems(player, clicked, event, inventory, 0, inventory.getContents().length, setLeft);
+        return moveItems(player, clicked, event, inventory, 0, inventory.getSize(), setLeft);
     }
 
     public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft) {
@@ -352,6 +334,10 @@ public final class InventoryUtil {
             }
         } else if (!Config.isCraftingUsingStacks() && (inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) {
             maxAmount = mat.getMaxStackSize();
+        } else if (!Config.isAnvilUsingStacks() && inventoryType == InventoryType.ANVIL && slot < 2) {
+            maxAmount = mat.getMaxStackSize();
+        } else if (!Config.isBeaconUsingStacks() && inventoryType == InventoryType.BEACON && slot == 0) {
+            maxAmount = 1;
         }
 
         // Handle infinite items

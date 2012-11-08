@@ -6,6 +6,9 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 
 Changelog:
 
+Version ???
+* Added Beacon and Anvil support
+
 Version 0.9 (10/29/2012)
 * Actually fixed stacking in brewing stands
 * Fixed stacking in trading windows to work properly with Use_Stack_Amounts_In_Trading and only affect the trading slots.

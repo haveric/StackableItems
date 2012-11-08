@@ -19,6 +19,8 @@ public final class Config {
     private static String cfgMerchantUseStacks = "Use_Stack_Amounts_In_Trading";
     private static String cfgCraftingUseStacks = "Use_Stack_Amounts_In_Crafting";
     private static String cfgBrewingUseStacks = "Use_Stack_Amounts_In_Brewing";
+    private static String cfgAnvilUseStacks = "Use_Stack_Amounts_In_Anvil";
+    private static String cfgBeaconUseStacks = "Use_Stack_Amounts_In_Beacon";
     private static String cfgDebug = "Debug";
 
     private static FileConfiguration cfgOptions;
@@ -39,6 +41,8 @@ public final class Config {
     private static final boolean MERCHANT_USE_STACKS_DEFAULT = false;
     private static final boolean CRAFTING_USE_STACKS_DEFAULT = false;
     private static final boolean BREWING_USE_STACKS_DEFAULT = false;
+    private static final boolean ANVIL_USE_STACKS_DEFAULT = false;
+    private static final boolean BEACON_USE_STACKS_DEFAULT = false;
     private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
     private static final boolean DEBUG_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
@@ -78,11 +82,13 @@ public final class Config {
         cfgOptions.addDefault(cfgMerchantUseStacks, MERCHANT_USE_STACKS_DEFAULT);
         cfgOptions.addDefault(cfgCraftingUseStacks, CRAFTING_USE_STACKS_DEFAULT);
         cfgOptions.addDefault(cfgBrewingUseStacks, BREWING_USE_STACKS_DEFAULT);
+        cfgOptions.addDefault(cfgAnvilUseStacks, ANVIL_USE_STACKS_DEFAULT);
+        cfgOptions.addDefault(cfgBeaconUseStacks, BEACON_USE_STACKS_DEFAULT);
         cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
         cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
         if (!cfgOptions.isSet(cfgVirtualItems) || !cfgOptions.isSet(cfgFurnaceUseStacks) || !cfgOptions.isSet(cfgMerchantUseStacks) || !cfgOptions.isSet(cfgCraftingUseStacks)
-                || !cfgOptions.isSet(cfgBrewingUseStacks) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)) {
+                || !cfgOptions.isSet(cfgBrewingUseStacks) || !cfgOptions.isSet(cfgAnvilUseStacks) || !cfgOptions.isSet(cfgBeaconUseStacks) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)) {
             cfgOptions.options().copyDefaults(true);
             saveConfig(cfgOptions, cfgOptionsFile);
         }
@@ -160,7 +166,6 @@ public final class Config {
 
     public static void setMaxFurnaceAmount(int newAmt) {
         cfgOptions.set(cfgFurnaceAmount, newAmt);
-
         saveConfig();
     }
 
@@ -170,7 +175,6 @@ public final class Config {
 
     public static void setFurnaceUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgFurnaceUseStacks, isUsing);
-
         saveConfig();
     }
 
@@ -180,7 +184,6 @@ public final class Config {
 
     public static void setMerchantUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgMerchantUseStacks, isUsing);
-
         saveConfig();
     }
 
@@ -190,7 +193,6 @@ public final class Config {
 
     public static void setCraftingUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgCraftingUseStacks, isUsing);
-
         saveConfig();
     }
 
@@ -200,7 +202,24 @@ public final class Config {
 
     public static void setBrewingUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgBrewingUseStacks, isUsing);
+        saveConfig();
+    }
 
+    public static boolean isAnvilUsingStacks() {
+        return cfgOptions.getBoolean(cfgAnvilUseStacks);
+    }
+
+    public static void setAnvilUsingStacks(boolean isUsing) {
+        cfgOptions.set(cfgAnvilUseStacks, isUsing);
+        saveConfig();
+    }
+
+    public static boolean isBeaconUsingStacks() {
+        return cfgOptions.getBoolean(cfgBeaconUseStacks);
+    }
+
+    public static void setBeaconUsingStacks(boolean isUsing) {
+        cfgOptions.set(cfgBeaconUseStacks, isUsing);
         saveConfig();
     }
 
@@ -210,7 +229,6 @@ public final class Config {
 
     public static void setDebugging(boolean isDebugging) {
         cfgOptions.set(cfgDebug, isDebugging);
-
         saveConfig();
     }
 }

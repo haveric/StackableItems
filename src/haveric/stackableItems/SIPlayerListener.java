@@ -418,6 +418,7 @@ public class SIPlayerListener implements Listener {
             return;
         }
         event.getInventory().setMaxStackSize(127);
+
         ItemStack cursor = event.getCursor();
         ItemStack clicked = event.getCurrentItem();
 
@@ -426,7 +427,6 @@ public class SIPlayerListener implements Listener {
 
         Inventory top = event.getView().getTopInventory();
         InventoryType topType = top.getType();
-
 
         if (cursor != null && clicked != null && slotType == SlotType.RESULT && topType == InventoryType.FURNACE) {
             Player player = (Player) event.getWhoClicked();
@@ -529,13 +529,8 @@ public class SIPlayerListener implements Listener {
                 return;
             }
 
-            if (topType == InventoryType.MERCHANT) {
-                // TODO: technically a result slot, handle accordingly when bukkit fixes the issue
-                if (rawSlot == 2) {
-                    return;
-                }
             // TODO: might be able to remove this (except maxstacksize?)
-            } else if (topType == InventoryType.ENCHANTING) {
+             if (topType == InventoryType.ENCHANTING) {
                 top.setMaxStackSize(1);
                 if (rawSlot == 0) {
                     if (!event.isShiftClick()) {
@@ -577,7 +572,8 @@ public class SIPlayerListener implements Listener {
             //InventoryType botType = event.getView().getBottomInventory().getType();
 
             if (event.isShiftClick()) {
-                if (rawSlot < top.getContents().length) {
+
+                if (rawSlot < top.getSize()) {
                     InventoryUtil.moveItems(player, clicked, event, 0, 36, true);
                 } else {
                     if (topType == InventoryType.CRAFTING) {
@@ -696,6 +692,38 @@ public class SIPlayerListener implements Listener {
                     // TODO Improve merchant shift click handling (Based on current recipe)
                     } else if (topType == InventoryType.MERCHANT) {
                         InventoryUtil.swapInventory(player, clicked, event, rawSlot, 3);
+                    } else if (topType == InventoryType.BEACON) {
+                        ItemStack beaconSlot = top.getItem(0);
+                        if (ItemUtil.isBeaconFuel(clickedType) && beaconSlot == null) {
+                            InventoryUtil.moveItems(player, clicked, event, top, true);
+                        } else {
+                            InventoryUtil.swapInventory(player, clicked, event, rawSlot, 1);
+                        }
+                    } else if (topType == InventoryType.ANVIL) {
+                        ItemStack renameSlot = top.getItem(0);
+                        ItemStack repairSlot = top.getItem(1);
+
+                        boolean movedAll = false;
+                        if (renameSlot == null || ItemUtil.isSameItem(clicked, renameSlot)) {
+                            int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+
+                        if (!movedAll && (repairSlot == null || ItemUtil.isSameItem(clicked, repairSlot))) {
+                            int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 2, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+                        if (!movedAll) {
+                            InventoryUtil.swapInventory(player, clicked, event, rawSlot, 3);
+                        }
                     } else if (topType == InventoryType.ENCHANTING) {
                         boolean isEnchantable = ItemUtil.isEnchantable(clickedType);
 
