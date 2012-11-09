@@ -66,10 +66,10 @@ public class SIPlayerListener implements Listener {
             amt = result.getAmount() + 1;
 
             int maxFurnaceSize = Config.getMaxFurnaceAmount(result.getType());
-            if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+            if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
 
                 // going to be a full furnace
-                if (amt == 64) {
+                if (amt == SIItems.ITEM_DEFAULT_MAX) {
                     int furnaceAmt = Config.getFurnaceAmount(furnace);
                     if (furnaceAmt == maxFurnaceSize - 1) {
                         result.setAmount(furnaceAmt);
@@ -77,7 +77,7 @@ public class SIPlayerListener implements Listener {
                     // increment virtual count
                     } else {
                         if (furnaceAmt == -1) {
-                            furnaceAmt = 64;
+                            furnaceAmt = SIItems.ITEM_DEFAULT_MAX;
                         } else {
                             furnaceAmt++;
                         }
@@ -91,7 +91,7 @@ public class SIPlayerListener implements Listener {
         }
         // TODO: Handle a max furnace amount of less than 64 items
         /*
-        else if (maxFurnaceSize < 64) {
+        else if (maxFurnaceSize < SIItems.ITEM_DEFAULT_MAX) {
             if (amt == maxFurnaceSize) {
                 //event.setCancelled(true);
                 // TODO: Can we somehow stop the furnace burning so we can keep the fuel?
@@ -146,7 +146,7 @@ public class SIPlayerListener implements Listener {
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), false);
 
             // Handle infinite items for the crafted item
-            if (maxItems == -2) {
+            if (maxItems == SIItems.ITEM_DEFAULT) {
                 maxItems = type.getMaxStackSize();
 
                 CraftingInventory inventory = event.getInventory();
@@ -158,7 +158,7 @@ public class SIPlayerListener implements Listener {
                     if (temp != null) {
                         int maxSlot = SIItems.getItemMax(player, temp.getType(), temp.getDurability(), false);
 
-                        if (maxSlot == -2) {
+                        if (maxSlot == SIItems.ITEM_DEFAULT) {
                             ItemStack clone = temp.clone();
                             InventoryUtil.replaceItem(inventory, i, clone);
                         }
@@ -218,7 +218,7 @@ public class SIPlayerListener implements Listener {
 
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
         // Handle infinite fishing rods
-        if (maxItems == -2) {
+        if (maxItems == SIItems.ITEM_DEFAULT) {
             player.setItemInHand(clone);
         } else {
             InventoryUtil.splitStack(player, false);
@@ -235,7 +235,7 @@ public class SIPlayerListener implements Listener {
             Material type = hand.getType();
             int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), false);
 
-            if (maxItems == -2) {
+            if (maxItems == SIItems.ITEM_DEFAULT) {
                 ItemStack clone = hand.clone();
                 PlayerInventory inventory = player.getInventory();
                 InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
@@ -259,7 +259,7 @@ public class SIPlayerListener implements Listener {
             int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
 
             // Handle infinite bows
-            if (maxItems == -2) {
+            if (maxItems == SIItems.ITEM_DEFAULT) {
                 player.setItemInHand(clone);
                 InventoryUtil.updateInventory(player);
 
@@ -280,7 +280,7 @@ public class SIPlayerListener implements Listener {
                 int maxItems = SIItems.getItemMax(player, hold.getType(), hold.getDurability(), false);
 
                 // Handle infinite weapons
-                if (maxItems == -2) {
+                if (maxItems == SIItems.ITEM_DEFAULT) {
                     ItemStack clone = hold.clone();
                     PlayerInventory inventory = player.getInventory();
                     InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
@@ -417,7 +417,7 @@ public class SIPlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        event.getInventory().setMaxStackSize(127);
+        event.getInventory().setMaxStackSize(SIItems.ITEM_NEW_MAX);
 
         ItemStack cursor = event.getCursor();
         ItemStack clicked = event.getCurrentItem();
@@ -448,7 +448,7 @@ public class SIPlayerListener implements Listener {
                 ItemStack clone = clicked.clone();
 
                 int maxFurnaceSize = Config.getMaxFurnaceAmount(clickedType);
-                if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+                if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
 
                     PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
                     Material lastClicked = clickData.getLastBlock();
@@ -840,7 +840,7 @@ public class SIPlayerListener implements Listener {
                         VirtualItemConfig.setVirtualItemStack(player, -1, null);
                         // Set slot to the cursor stack
                         VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
-                        if (cursorAmount > 64) {
+                        if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
                             event.setCursor(null);
                             event.setCurrentItem(cursor.clone());
                             event.setResult(Result.ALLOW);
@@ -989,7 +989,7 @@ public class SIPlayerListener implements Listener {
 
                                 event.setResult(Result.ALLOW);
                             }
-                        } else if (cursorAmount > 64) {
+                        } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
                             //player.sendMessage("Swap two items");
 
                             event.setCurrentItem(cursor.clone());
@@ -1113,7 +1113,7 @@ public class SIPlayerListener implements Listener {
 
                                 event.setResult(Result.ALLOW);
                             }
-                        } else if (cursorAmount > 64) {
+                        } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
                             //player.sendMessage("RC:Swap two items");
 
                             event.setCurrentItem(cursor.clone());
@@ -1151,26 +1151,27 @@ public class SIPlayerListener implements Listener {
                         if (maxPickup < maxItems) {
                             clone.setAmount(maxPickup);
                             event.setCursor(clone);
-
                             clone2.setAmount(clickedAmount - maxPickup);
-                            event.setCurrentItem(clone2);
-                            event.setResult(Result.ALLOW);
+
                         } else {
                             clone.setAmount(maxItems);
                             event.setCursor(clone);
-
                             clone2.setAmount(clickedAmount - maxItems);
-                            event.setCurrentItem(clone2);
-                            event.setResult(Result.ALLOW);
                         }
+                        event.setCurrentItem(clone2);
+                        event.setResult(Result.ALLOW);
                     }
                 }
             //
             }
         // Throwing out a stack
-        } else {
-            // TODO: handle throwing out a virtual stack
         }
+        // TODO: handle throwing out a virtual stack
+        /*
+        else {
+
+        }
+        */
     }
 
     @EventHandler
@@ -1212,7 +1213,7 @@ public class SIPlayerListener implements Listener {
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
 
         // Restore unlimited items
-        if (maxItems == -2) {
+        if (maxItems == SIItems.ITEM_DEFAULT) {
             player.setItemInHand(clone);
         }
     }
@@ -1225,7 +1226,7 @@ public class SIPlayerListener implements Listener {
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
 
         // Handle unlimited shears
-        if (maxItems == -2) {
+        if (maxItems == SIItems.ITEM_DEFAULT) {
             player.setItemInHand(clone);
         } else {
             InventoryUtil.splitStack(player, false);
@@ -1242,7 +1243,7 @@ public class SIPlayerListener implements Listener {
             int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), false);
 
             // Handle unlimited flint and steel
-            if (maxItems == -2) {
+            if (maxItems == SIItems.ITEM_DEFAULT) {
                 player.setItemInHand(newStack);
                 InventoryUtil.updateInventory(player);
             } else {

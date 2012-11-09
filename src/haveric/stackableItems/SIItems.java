@@ -34,12 +34,14 @@ public final class SIItems {
     private static FileConfiguration chestItems;
     private static File chestItemsFile;
 
-    //private static String cfgAllItemsMax = "ALL ITEMS MAX";
     private static String cfgMin = "MIN";
     private static String cfgMax = "MAX";
 
     public static final int ITEM_DEFAULT = -1;
+    public static final int DUR_MATCH_ANY = -1;
     public static final int ITEM_INFINITE = -2;
+    public static final int ITEM_DEFAULT_MAX = 64;
+    public static final int ITEM_NEW_MAX = 127;
 
     private SIItems() { } // Private constructor for utility class
 
@@ -213,7 +215,7 @@ public final class SIItems {
     }
 
     public static int getMax(String playerOrGroup, Material mat, short dur) {
-        if (dur == -1) {
+        if (dur == DUR_MATCH_ANY) {
             return getMaxFromMap(playerOrGroup, mat);
         }
 
@@ -221,7 +223,7 @@ public final class SIItems {
     }
 
     public static int getDefaultMax(Material mat, short dur) {
-        if (dur == -1) {
+        if (dur == DUR_MATCH_ANY) {
             return getMaxFromMap("defaultItems", mat);
         }
 
@@ -229,7 +231,7 @@ public final class SIItems {
     }
 
     public static int getChestMax(Material mat, short dur) {
-        if (dur == -1) {
+        if (dur == DUR_MATCH_ANY) {
             return getMaxFromMap("chestItems", mat);
         }
 
@@ -244,7 +246,7 @@ public final class SIItems {
         configItems = YamlConfiguration.loadConfiguration(configItemsFile);
 
         String name;
-        if (dur == -1) {
+        if (dur == DUR_MATCH_ANY) {
             name = mat.name();
         } else {
             name = mat.name() + " " + dur;
@@ -319,8 +321,8 @@ public final class SIItems {
             }
 
             // TODO: implement workaround to allow larger stacks after player leaving and logging back in.
-            if (max > 127) {
-                max = 127;
+            if (max > SIItems.ITEM_NEW_MAX) {
+                max = SIItems.ITEM_NEW_MAX;
             }
         }
 
@@ -374,8 +376,8 @@ public final class SIItems {
             }
 
             // TODO: implement workaround to allow larger stacks after player leaving and logging back in.
-            if (max > 127) {
-                max = 127;
+            if (max > SIItems.ITEM_NEW_MAX) {
+                max = SIItems.ITEM_NEW_MAX;
             }
         }
 

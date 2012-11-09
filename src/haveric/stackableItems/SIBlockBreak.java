@@ -16,7 +16,7 @@ public class SIBlockBreak implements Listener {
 
         if (block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE) {
             int maxAmount = Config.getFurnaceAmount(block.getLocation());
-            if (maxAmount > -1) {
+            if (maxAmount > SIItems.ITEM_DEFAULT) {
                 Furnace furnace = (Furnace) block.getState();
                 ItemStack result = furnace.getInventory().getResult();
 

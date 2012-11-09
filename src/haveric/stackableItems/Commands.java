@@ -92,7 +92,7 @@ public class Commands implements CommandExecutor {
                 if (mat == null) {
                     sender.sendMessage(shortTitle + "No material found matching " + highlightColor + matName);
                 } else {
-                    int max = -1;
+                    int max = SIItems.ITEM_DEFAULT;
                     String msg = shortTitle + highlightColor;
                     // set value
                     if (args.length == 3) {
@@ -100,7 +100,7 @@ public class Commands implements CommandExecutor {
                         if (op || canAdjust) {
                             int numToSet = Integer.parseInt(args[2]);
                             String displayName;
-                            if (dur == -1) {
+                            if (dur == SIItems.DUR_MATCH_ANY) {
                                 displayName = mat.name();
                             } else {
                                 displayName = mat.name() + ":" + dur;
@@ -137,7 +137,7 @@ public class Commands implements CommandExecutor {
                         msg += mat.name() + msgColor;
                         if (type.equals("default")) {
                             max = SIItems.getDefaultMax(mat, dur);
-                            if (max == -1) {
+                            if (max == SIItems.ITEM_DEFAULT) {
                                 msg += " not found for Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
                             } else {
                                 msg += " for Default is: " + highlightColor + max;
@@ -145,10 +145,10 @@ public class Commands implements CommandExecutor {
                             sender.sendMessage(msg);
                         } else if (type.equals("group")) {
                             max = SIItems.getMax(permType, mat, dur);
-                            if (max == -1) {
+                            if (max == SIItems.ITEM_DEFAULT) {
                                 max = SIItems.getDefaultMax(mat, dur);
                                 msg += " not found for " + highlightColor + permType + msgColor;
-                                if (max == -1) {
+                                if (max == SIItems.ITEM_DEFAULT) {
                                     msg += " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
                                 } else {
                                     msg += ". Default value: " + highlightColor + max;
@@ -159,7 +159,7 @@ public class Commands implements CommandExecutor {
                             }
                         } else { // player
                             max = SIItems.getMax(permType, mat, dur);
-                            if (max == -1) {
+                            if (max == SIItems.ITEM_DEFAULT) {
                                 Player player = plugin.getServer().getPlayerExact(permType);
                                 if (player == null) {
                                     sender.sendMessage(msg + " does not exist.");
@@ -171,10 +171,10 @@ public class Commands implements CommandExecutor {
                                         max = SIItems.getMax(group, mat, dur);
 
                                         msg += " not found for " + highlightColor + permType + msgColor;
-                                        if (max == -1) {
+                                        if (max == -SIItems.ITEM_DEFAULT) {
                                             max = SIItems.getDefaultMax(mat, dur);
 
-                                            if (max == -1) {
+                                            if (max == SIItems.ITEM_DEFAULT) {
                                                 msg += ", " + highlightColor + group + msgColor + " or Default. Vanilla value: " + highlightColor + mat.getMaxStackSize();
                                             } else {
                                                 msg += " or " + highlightColor + group + msgColor + ". Default value: " + highlightColor + max;

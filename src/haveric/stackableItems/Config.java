@@ -29,14 +29,6 @@ public final class Config {
     private static FileConfiguration cfgFurnaces;
     private static File cfgFurnacesFile;
 
-    //private static FileConfiguration configChest;
-    //private static File configFileChest;
-
-
-    // Defaults
-    public static final int ITEM_DEFAULT = -1;
-
-
     private static final boolean FURNACE_USE_STACKS_DEFAULT = false;
     private static final boolean MERCHANT_USE_STACKS_DEFAULT = false;
     private static final boolean CRAFTING_USE_STACKS_DEFAULT = false;
@@ -125,7 +117,7 @@ public final class Config {
     public static int getFurnaceAmount(Location loc) {
         String world = loc.getWorld().getName();
 
-        return cfgFurnaces.getInt(world + "." +  loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), ITEM_DEFAULT);
+        return cfgFurnaces.getInt(world + "." +  loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), SIItems.ITEM_DEFAULT);
     }
 
     public static void setFurnaceAmount(Furnace furnace, int newAmt) {
@@ -154,10 +146,10 @@ public final class Config {
     }
 
     public static int getMaxFurnaceAmount(Material mat) {
-        int maxFurnaceSize = cfgOptions.getInt(cfgFurnaceAmount, ITEM_DEFAULT);
+        int maxFurnaceSize = cfgOptions.getInt(cfgFurnaceAmount, SIItems.ITEM_DEFAULT);
         int maxAmount = mat.getMaxStackSize();
 
-        if (maxFurnaceSize > 64 && maxFurnaceSize <= 127) {
+        if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
             maxAmount = maxFurnaceSize;
         }
 
