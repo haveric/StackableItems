@@ -277,6 +277,7 @@ public final class ItemUtil {
 
             if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant)) {
                 // TODO: Implement something better whenever bukkit decides to make a Book API
+
                 if (one.getType() == Material.WRITTEN_BOOK || one.getType() == Material.BOOK_AND_QUILL) {
                     same = false;
                 // If not a book, this should be the same item

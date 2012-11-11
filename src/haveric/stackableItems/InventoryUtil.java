@@ -82,9 +82,10 @@ public final class InventoryUtil {
 
                             int maxAmount = getInventoryMax(player, inventory, type, durability, i);
                             // Handle infinite items
-                            if (maxAmount == SIItems.ITEM_DEFAULT) {
+                            if (maxAmount == SIItems.ITEM_INFINITE) {
                                 maxAmount = type.getMaxStackSize();
                             }
+
                             int canAdd = maxAmount - slotAmount;
                             if (canAdd > 0) {
                                 // Add less than a full slot
@@ -112,7 +113,7 @@ public final class InventoryUtil {
                         if (slot == null) {
                             int maxAmount = getInventoryMax(player, inventory, type, durability, i);
                             // Handle infinite items
-                            if (maxAmount == SIItems.ITEM_DEFAULT) {
+                            if (maxAmount == SIItems.ITEM_INFINITE) {
                                 maxAmount = type.getMaxStackSize();
                             }
                             if (addAmount >= maxAmount) {
@@ -341,7 +342,7 @@ public final class InventoryUtil {
         }
 
         // Handle infinite items
-        if (maxAmount == SIItems.ITEM_DEFAULT) {
+        if (maxAmount == SIItems.ITEM_INFINITE) {
             maxAmount = mat.getMaxStackSize();
         }
 

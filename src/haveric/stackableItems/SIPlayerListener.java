@@ -146,7 +146,7 @@ public class SIPlayerListener implements Listener {
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), false);
 
             // Handle infinite items for the crafted item
-            if (maxItems == SIItems.ITEM_DEFAULT) {
+            if (maxItems == SIItems.ITEM_INFINITE) {
                 maxItems = type.getMaxStackSize();
 
                 CraftingInventory inventory = event.getInventory();
@@ -158,7 +158,7 @@ public class SIPlayerListener implements Listener {
                     if (temp != null) {
                         int maxSlot = SIItems.getItemMax(player, temp.getType(), temp.getDurability(), false);
 
-                        if (maxSlot == SIItems.ITEM_DEFAULT) {
+                        if (maxSlot == SIItems.ITEM_INFINITE) {
                             ItemStack clone = temp.clone();
                             InventoryUtil.replaceItem(inventory, i, clone);
                         }
@@ -218,7 +218,7 @@ public class SIPlayerListener implements Listener {
 
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
         // Handle infinite fishing rods
-        if (maxItems == SIItems.ITEM_DEFAULT) {
+        if (maxItems == SIItems.ITEM_INFINITE) {
             player.setItemInHand(clone);
         } else {
             InventoryUtil.splitStack(player, false);
@@ -235,7 +235,7 @@ public class SIPlayerListener implements Listener {
             Material type = hand.getType();
             int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), false);
 
-            if (maxItems == SIItems.ITEM_DEFAULT) {
+            if (maxItems == SIItems.ITEM_INFINITE) {
                 ItemStack clone = hand.clone();
                 PlayerInventory inventory = player.getInventory();
                 InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
@@ -259,7 +259,7 @@ public class SIPlayerListener implements Listener {
             int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
 
             // Handle infinite bows
-            if (maxItems == SIItems.ITEM_DEFAULT) {
+            if (maxItems == SIItems.ITEM_INFINITE) {
                 player.setItemInHand(clone);
                 InventoryUtil.updateInventory(player);
 
@@ -280,7 +280,7 @@ public class SIPlayerListener implements Listener {
                 int maxItems = SIItems.getItemMax(player, hold.getType(), hold.getDurability(), false);
 
                 // Handle infinite weapons
-                if (maxItems == SIItems.ITEM_DEFAULT) {
+                if (maxItems == SIItems.ITEM_INFINITE) {
                     ItemStack clone = hold.clone();
                     PlayerInventory inventory = player.getInventory();
                     InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
@@ -1190,7 +1190,6 @@ public class SIPlayerListener implements Listener {
             event.setCancelled(true);
         } else {
             int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability(), false);
-
             if (maxItems == 0) {
                 event.setCancelled(true);
             } else {
@@ -1213,7 +1212,7 @@ public class SIPlayerListener implements Listener {
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
 
         // Restore unlimited items
-        if (maxItems == SIItems.ITEM_DEFAULT) {
+        if (maxItems == SIItems.ITEM_INFINITE) {
             player.setItemInHand(clone);
         }
     }
@@ -1226,7 +1225,7 @@ public class SIPlayerListener implements Listener {
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
 
         // Handle unlimited shears
-        if (maxItems == SIItems.ITEM_DEFAULT) {
+        if (maxItems == SIItems.ITEM_INFINITE) {
             player.setItemInHand(clone);
         } else {
             InventoryUtil.splitStack(player, false);
@@ -1243,7 +1242,7 @@ public class SIPlayerListener implements Listener {
             int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), false);
 
             // Handle unlimited flint and steel
-            if (maxItems == SIItems.ITEM_DEFAULT) {
+            if (maxItems == SIItems.ITEM_INFINITE) {
                 player.setItemInHand(newStack);
                 InventoryUtil.updateInventory(player);
             } else {
