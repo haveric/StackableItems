@@ -6,8 +6,8 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 
 Changelog:
 
-Version ???
-* Added Beacon and Anvil support
+Version 0.9.0.1
+* 1.4 support - Added Beacon and Anvil support
 
 Version 0.9 (10/29/2012)
 * Actually fixed stacking in brewing stands

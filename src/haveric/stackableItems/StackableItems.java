@@ -59,21 +59,17 @@ public class StackableItems extends JavaPlugin {
     }
 
     private void setupVault(PluginManager pm) {
-        if (pm.getPlugin("Vault") == null) {
-            return;
-        }
-
-        RegisteredServiceProvider<Permission> permProvider = getServer().getServicesManager().getRegistration(Permission.class);
-        if (permProvider != null) {
-            Perms.setPerm(permProvider.getProvider());
+        if (pm.getPlugin("Vault") != null) {
+            RegisteredServiceProvider<Permission> permProvider = getServer().getServicesManager().getRegistration(Permission.class);
+            if (permProvider != null) {
+                Perms.setPerm(permProvider.getProvider());
+            }
         }
     }
 
     private void setupVanish(PluginManager pm) {
         Plugin vanish = pm.getPlugin("VanishNoPacket");
-        if (vanish == null || !(vanish instanceof VanishPlugin)) {
-            // No VanishNoPacket
-        } else {
+        if (vanish != null && vanish instanceof VanishPlugin) {
             Vanish.setVanish((VanishPlugin) vanish);
         }
     }
