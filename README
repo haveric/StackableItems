@@ -6,6 +6,9 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 
 Changelog:
 
+Coming soon:
+* Hopefully fixed getting permission groups when none exist
+
 Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support
 

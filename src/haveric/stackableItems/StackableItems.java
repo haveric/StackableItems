@@ -62,7 +62,7 @@ public class StackableItems extends JavaPlugin {
         if (pm.getPlugin("Vault") != null) {
             RegisteredServiceProvider<Permission> permProvider = getServer().getServicesManager().getRegistration(Permission.class);
             if (permProvider != null) {
-                Perms.setPerm(permProvider.getProvider());
+                Perms.init(this, permProvider.getProvider());
             }
         }
     }

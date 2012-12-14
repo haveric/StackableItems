@@ -7,10 +7,9 @@ import org.bukkit.entity.Player;
 public final class Perms {
 
     private static Permission perm = null;
+    private static StackableItems plugin = null;
 
-    // TODO: make dynamic?
     private static String stack = "stackableitems.stack";
-
     private static String adjust = "stackableitems.adjust";
 
     // Vanish nopickup
@@ -18,7 +17,8 @@ public final class Perms {
 
     private Perms() { } // Private constructor for utility class
 
-    public static void setPerm(Permission p) {
+    public static void init(StackableItems si, Permission p) {
+        plugin = si;
         perm = p;
     }
 
@@ -30,11 +30,16 @@ public final class Perms {
         boolean groupExists = false;
 
         if (permEnabled()) {
-            for (String g : perm.getGroups()) {
-                if (g.equals(group)) {
-                    groupExists = true;
-                    break;
+            try {
+                for (String g : perm.getGroups()) {
+                    if (g.equals(group)) {
+                        groupExists = true;
+                        break;
+                    }
                 }
+            } catch (Exception e) {
+                // No groups
+                if (Config.isDebugging()) plugin.log.warning("DEBUG: groupExists() - No group found.");
             }
         }
         return groupExists;
@@ -52,7 +57,12 @@ public final class Perms {
         String primaryGroup = null;
 
         if (permEnabled()) {
-            primaryGroup = perm.getPrimaryGroup(player);
+            try {
+                primaryGroup = perm.getPrimaryGroup(player);
+            } catch (Exception e) {
+                // No groups
+                if (Config.isDebugging()) plugin.log.warning("DEBUG: getPrimaryGroup() - No group found.");
+            }
         }
         return primaryGroup;
     }
@@ -61,7 +71,12 @@ public final class Perms {
         String[] groups = null;
 
         if (permEnabled()) {
-            groups = perm.getGroups();
+            try {
+                groups = perm.getGroups();
+            } catch (Exception e) {
+                // No groups
+                if (Config.isDebugging()) plugin.log.warning("DEBUG: getgroups() - No group found.");
+            }
         }
         return groups;
     }
