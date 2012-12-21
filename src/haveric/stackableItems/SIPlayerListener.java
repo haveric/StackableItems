@@ -14,6 +14,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -50,7 +51,7 @@ public class SIPlayerListener implements Listener {
         itemDisabledMessage = String.format("[%s] This item has been disabled.", plugin.getDescription().getName());
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void furnaceSmelt(FurnaceSmeltEvent event) {
         if (event.isCancelled()) {
             return;
@@ -131,7 +132,7 @@ public class SIPlayerListener implements Listener {
     }
 */
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void craftItem(CraftItemEvent event) {
         if (event.isCancelled()) {
             return;
@@ -210,7 +211,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void playerFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
 
@@ -226,7 +227,7 @@ public class SIPlayerListener implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void breakBlock(BlockBreakEvent event) {
         Player player = event.getPlayer();
 
@@ -250,7 +251,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void shootBow(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
@@ -270,7 +271,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void entityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
@@ -292,7 +293,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void fillBucket(PlayerBucketFillEvent event) {
         Player player = event.getPlayer();
 
@@ -315,7 +316,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void emptyBucket(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
 
@@ -334,7 +335,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void eatFood(FoodLevelChangeEvent event) {
         Player player = (Player) event.getEntity();
         PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
@@ -357,7 +358,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void playerClick(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             ItemStack holding = event.getItem();
@@ -412,7 +413,7 @@ public class SIPlayerListener implements Listener {
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void inventoryClick(InventoryClickEvent event) {
         if (event.isCancelled()) {
             return;
@@ -1174,7 +1175,7 @@ public class SIPlayerListener implements Listener {
         */
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void playerPicksUpItem(PlayerPickupItemEvent event) {
         if (event.isCancelled()) {
             return;
@@ -1204,7 +1205,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void playerPlaceBlock(BlockPlaceEvent event) {
         ItemStack clone = event.getItemInHand().clone();
 
@@ -1217,7 +1218,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void playerShearEntity(PlayerShearEntityEvent event) {
         Player player = event.getPlayer();
 
@@ -1232,7 +1233,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void playerIgniteBlock(BlockIgniteEvent event) {
         if (event.getCause() == IgniteCause.FLINT_AND_STEEL) {
             Player player = event.getPlayer();
