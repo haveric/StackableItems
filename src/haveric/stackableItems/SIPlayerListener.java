@@ -99,37 +99,6 @@ public class SIPlayerListener implements Listener {
         }
         */
     }
-/*
-    @EventHandler (priority = EventPriority.HIGHEST)
-    public void commandPreprocess(PlayerCommandPreprocessEvent event){
-        String msg[] = event.getMessage().split(" ");
-
-        int amt = 1;
-        int data = 0;
-        if (msg[0].equalsIgnoreCase("/item") || msg[0].equalsIgnoreCase("/i")){
-            event.setCancelled(true);
-            event.getPlayer().sendMessage("No items for you.");
-            if (msg.length == 2 || msg.length == 3){
-
-                String item[] = msg[1].split(":");
-                event.getPlayer().sendMessage("item: " + item[0]);
-                if (item.length == 2){
-                    event.getPlayer().sendMessage("data: " + item[1]);
-                }
-
-                // TODO: deal with enchantments
-                //String enchants[] = msg[1].split("|");
-                //if (enchants.length == 2){
-                //    event.getPlayer().sendMessage("Enchants: " + enchants[1]);
-                //}
-
-                if (msg.length == 3){
-                    amt = Integer.parseInt(msg[2]);
-                }
-            }
-        }
-    }
-*/
 
     @EventHandler
     public void craftItem(CraftItemEvent event) {
@@ -834,7 +803,7 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 // Drop a stack into an empty slot
-                } else if (!cursorEmpty && slotEmpty && cursorAmount > cursorType.getMaxStackSize()) {
+                } else if (!cursorEmpty && slotEmpty) {
                     if (virtualCursor) {
                         //player.sendMessage("Drop a stack into an empty slot (virtual cursor)");
                         VirtualItemConfig.setVirtualItemStack(player, -1, null);

@@ -1,7 +1,6 @@
 package haveric.stackableItems;
 
 import haveric.stackableItems.mcstats.Metrics;
-import haveric.stackableItems.mcstats.Metrics.Graph;
 import haveric.stackableItems.vanish.Vanish;
 
 import java.io.IOException;
@@ -77,19 +76,6 @@ public class StackableItems extends JavaPlugin {
     private void setupMetrics() {
         try {
             metrics = new Metrics(this);
-
-            // Custom data
-            Graph javaGraph = metrics.createGraph("Java Version");
-            String javaVersion = System.getProperty("java.version");
-            javaGraph.addPlotter(new Metrics.Plotter(javaVersion) {
-                @Override
-                public int getValue() {
-                    return 1;
-                }
-            });
-            metrics.addGraph(javaGraph);
-            // End Custom data
-
             metrics.start();
         } catch (IOException e) {
             e.printStackTrace();

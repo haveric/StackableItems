@@ -8,6 +8,8 @@ Changelog:
 
 Coming soon:
 * Hopefully fixed getting permission groups when none exist
+* Updated Metrics
+* Fixed large stacks being able to be placed in inventories with smaller max stacks.
 
 Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support
