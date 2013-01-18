@@ -202,8 +202,7 @@ public final class ItemUtil {
             case SHEARS:
                 repairable = true;
                 break;
-            default:
-                break;
+            default: break;
             }
         }
 
@@ -214,6 +213,13 @@ public final class ItemUtil {
         boolean enchantable = false;
         if (isWeapon(mat) || isArmor(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
             enchantable = true;
+        } else {
+            switch(mat) {
+                case BOOK:
+                    enchantable = true;
+                    break;
+                default: break;
+            }
         }
 
         return enchantable;
@@ -237,9 +243,7 @@ public final class ItemUtil {
             case SULPHUR:
                 brewingIngredient = true;
                 break;
-
-            default:
-                break;
+            default: break;
         }
         return brewingIngredient;
     }
@@ -254,9 +258,7 @@ public final class ItemUtil {
             case GOLD_INGOT:
                 beaconFuel = true;
                 break;
-
-            default:
-                break;
+            default: break;
         }
         return beaconFuel;
     }
@@ -274,16 +276,11 @@ public final class ItemUtil {
             boolean negativeDur = (one.getDurability() == SIItems.DUR_MATCH_ANY) || (two.getDurability() == SIItems.DUR_MATCH_ANY);
             boolean sameEnchant = one.getEnchantments().equals(two.getEnchantments());
             boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
+            boolean sameMeta = one.getItemMeta().equals(two.getItemMeta());
+            boolean noMeta = one.getItemMeta() == null && two.getItemMeta() == null;
 
-            if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant)) {
-                // TODO: Implement something better whenever bukkit decides to make a Book API
-
-                if (one.getType() == Material.WRITTEN_BOOK || one.getType() == Material.BOOK_AND_QUILL) {
-                    same = false;
-                // If not a book, this should be the same item
-                } else {
-                    same = true;
-                }
+            if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant) && (sameMeta || noMeta)) {
+                same = true;
             }
         }
         return same;

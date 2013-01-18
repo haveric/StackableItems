@@ -10,6 +10,8 @@ Coming soon:
 * Hopefully fixed getting permission groups when none exist
 * Updated Metrics
 * Fixed large stacks being able to be placed in inventories with smaller max stacks.
+* Books work for shift clicking into enchantment tables.
+* Fixed all book stacking.
 
 Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support

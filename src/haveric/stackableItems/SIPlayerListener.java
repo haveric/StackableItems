@@ -906,14 +906,13 @@ public class SIPlayerListener implements Listener {
                     } else {
                         if (sameType) {
                             if (ItemUtil.isSameItem(cursor, clicked)) {
-
                                 int total = clickedAmount + cursorAmount;
                                 if (total <= maxItems) {
                                     if (total > clicked.getMaxStackSize()) {
                                         //player.sendMessage("Combine two stacks fully");
-                                        ItemStack s = new ItemStack(cursorType, total, cursorDur);
-                                        s.addUnsafeEnchantments(cursor.getEnchantments());
-                                        event.setCurrentItem(s);
+                                        ItemStack clone = cursor.clone();
+                                        clone.setAmount(total);
+                                        event.setCurrentItem(clone);
 
                                         event.setCursor(null);
                                         event.setResult(Result.ALLOW);
@@ -923,13 +922,13 @@ public class SIPlayerListener implements Listener {
                                     if (total - maxItems > maxItems) {
                                         event.setCancelled(true);
                                     } else {
-                                        ItemStack s = new ItemStack(cursorType, maxItems, cursorDur);
-                                        s.addUnsafeEnchantments(cursor.getEnchantments());
-                                        event.setCurrentItem(s);
+                                        ItemStack clone = cursor.clone();
+                                        clone.setAmount(maxItems);
+                                        event.setCurrentItem(clone);
 
-                                        ItemStack s2 = new ItemStack(cursorType, total - maxItems, cursorDur);
-                                        s2.addUnsafeEnchantments(cursor.getEnchantments());
-                                        event.setCursor(s2);
+                                        ItemStack clone2 = cursor.clone();
+                                        clone.setAmount(total - maxItems);
+                                        event.setCursor(clone2);
 
                                         event.setResult(Result.ALLOW);
                                         InventoryUtil.updateInventory(player);
@@ -1206,8 +1205,10 @@ public class SIPlayerListener implements Listener {
         if (event.getCause() == IgniteCause.FLINT_AND_STEEL) {
             Player player = event.getPlayer();
 
+            ItemStack holding = player.getItemInHand();
             // Since repeatedly using flint and steel causes durability loss, reset durability on a new hit.
-            ItemStack newStack = new ItemStack(Material.FLINT_AND_STEEL);
+            ItemStack newStack = holding.clone();
+            newStack.setDurability((short) 0);
             int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), false);
 
             // Handle unlimited flint and steel
