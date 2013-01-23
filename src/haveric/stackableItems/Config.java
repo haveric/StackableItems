@@ -146,11 +146,16 @@ public final class Config {
     }
 
     public static int getMaxFurnaceAmount(Material mat) {
-        int maxFurnaceSize = cfgOptions.getInt(cfgFurnaceAmount, SIItems.ITEM_DEFAULT);
-        int maxAmount = mat.getMaxStackSize();
+        int maxAmount = SIItems.ITEM_DEFAULT;
 
-        if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
-            maxAmount = maxFurnaceSize;
+        // Force air to keep default value
+        if (mat != Material.AIR) {
+            int maxFurnaceSize = cfgOptions.getInt(cfgFurnaceAmount, SIItems.ITEM_DEFAULT);
+            maxAmount = mat.getMaxStackSize();
+
+            if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
+                maxAmount = maxFurnaceSize;
+            }
         }
 
         return maxAmount;

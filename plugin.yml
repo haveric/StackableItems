@@ -3,7 +3,7 @@ author: haveric
 main: haveric.stackableItems.StackableItems
 version: 0.9.0.1-t1
 dev-url: http://dev.bukkit.org/server-mods/stackableitems/
-softdepend: [Vault]
+softdepend: [Vault, VanishNoPacket]
 commands:
     stackableitems:
         aliases: [si]

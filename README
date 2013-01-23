@@ -12,6 +12,7 @@ Coming soon:
 * Fixed large stacks being able to be placed in inventories with smaller max stacks.
 * Books work for shift clicking into enchantment tables.
 * Fixed all book stacking.
+* Removed message spam on furnaces when clicking on the results slot.
 
 Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support

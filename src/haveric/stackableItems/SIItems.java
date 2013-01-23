@@ -188,27 +188,30 @@ public final class SIItems {
     public static int getItemMax(Player player, Material mat, short dur, boolean isAChest) {
         int max = ITEM_DEFAULT;
 
-        if (isAChest) {
-            max = getChestMax(mat, dur);
+        // Force air to keep default value
+        if (mat != Material.AIR) {
+            if (isAChest) {
+                max = getChestMax(mat, dur);
 
-            if (max == ITEM_DEFAULT) {
-                max = mat.getMaxStackSize();
-            }
-        } else {
-            max = getMax(player.getName(), mat, dur);
-
-            if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
-                String group = Perms.getPrimaryGroup(player);
-                if (group != null) {
-                    max = getMax(group, mat, dur);
+                if (max == ITEM_DEFAULT) {
+                    max = mat.getMaxStackSize();
                 }
-            }
-            if (max == ITEM_DEFAULT) {
-                max = getDefaultMax(mat, dur);
-            }
+            } else {
+                max = getMax(player.getName(), mat, dur);
 
-            if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
-                max = mat.getMaxStackSize();
+                if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
+                    String group = Perms.getPrimaryGroup(player);
+                    if (group != null) {
+                        max = getMax(group, mat, dur);
+                    }
+                }
+                if (max == ITEM_DEFAULT) {
+                    max = getDefaultMax(mat, dur);
+                }
+
+                if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
+                    max = mat.getMaxStackSize();
+                }
             }
         }
         return max;

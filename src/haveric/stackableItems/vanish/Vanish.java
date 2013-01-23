@@ -3,6 +3,7 @@ package haveric.stackableItems.vanish;
 import haveric.stackableItems.Perms;
 
 import org.bukkit.entity.Player;
+import org.kitteh.vanish.VanishManager;
 import org.kitteh.vanish.VanishPlugin;
 
 public class Vanish {
@@ -23,7 +24,10 @@ public class Vanish {
         boolean vanished = false;
 
         if (vanishEnabled()) {
-            vanished = vanish.getManager().isVanished(playerName);
+            VanishManager manager = vanish.getManager();
+            if (manager != null) {
+                vanished = manager.isVanished(playerName);
+            }
         }
 
         return vanished;
