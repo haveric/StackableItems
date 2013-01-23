@@ -474,7 +474,6 @@ public class SIPlayerListener implements Listener {
             }
         // prevent clicks outside the inventory area or within result slots
         } else if (cursor != null && clicked != null && slotType != SlotType.RESULT) {
-            plugin.log.info("slottype: " + slotType);
             Player player = (Player) event.getWhoClicked();
 
             Material cursorType = cursor.getType();
@@ -547,12 +546,7 @@ public class SIPlayerListener implements Listener {
             //InventoryType botType = event.getView().getBottomInventory().getType();
 
             if (event.isShiftClick()) {
-                int topSize = top.getSize();
-                // TODO: Remove hack when bukkit fixes Anvil's inventory size
-                if (topType == InventoryType.ANVIL) {
-                    topSize = 3;
-                }
-                if (rawSlot < topSize) {
+                if (rawSlot < top.getSize()) {
                     InventoryUtil.moveItems(player, clicked, event, 0, 36, true);
                 } else {
                     if (topType == InventoryType.CRAFTING) {
