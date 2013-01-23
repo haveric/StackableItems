@@ -13,6 +13,7 @@ Coming soon:
 * Books work for shift clicking into enchantment tables.
 * Fixed all book stacking.
 * Removed message spam on furnaces when clicking on the results slot.
+* Fixed Anvil dupe due to bukkit not recognizing the result slot as a result slot..
 
 Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support
