@@ -243,20 +243,25 @@ public final class InventoryUtil {
         if (amt != 0) {
             if (ing != null) {
                 int ingAmount = ing.getAmount();
-
+                plugin.log.info("Ing amount: " + ingAmount);
                 int holdingAmount = 0;
 
                 Iterator<ItemStack> iter = inventory.iterator();
 
+                boolean skipOnce = false;
                 while (iter.hasNext()) {
                     ItemStack item = iter.next();
-                    if (item != null && ItemUtil.isSameItem(item, ing, true)) {
-                        int temp = item.getAmount();
+                    // Don't check the first slot as it is the result slot.
+                    if (skipOnce) {
+                        if (item != null && ItemUtil.isSameItem(item, ing, true)) {
+                            int temp = item.getAmount();
 
-                        if (holdingAmount == 0 || holdingAmount > temp) {
-                            holdingAmount = temp;
+                            if (holdingAmount == 0 || holdingAmount > temp) {
+                                holdingAmount = temp;
+                            }
                         }
                     }
+                    skipOnce = true;
                 }
 
                 // TODO: re-evaluate if the double is necessary
