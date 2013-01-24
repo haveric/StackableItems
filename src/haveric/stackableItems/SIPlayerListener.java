@@ -911,6 +911,7 @@ public class SIPlayerListener implements Listener {
                         if (sameType) {
                             if (ItemUtil.isSameItem(cursor, clicked)) {
                                 int total = clickedAmount + cursorAmount;
+
                                 if (total <= maxItems) {
                                     if (total > clicked.getMaxStackSize()) {
                                         //player.sendMessage("Combine two stacks fully");
@@ -923,20 +924,16 @@ public class SIPlayerListener implements Listener {
                                     }
                                 } else {
                                     //player.sendMessage("Combine two stacks partially");
-                                    if (total - maxItems > maxItems) {
-                                        event.setCancelled(true);
-                                    } else {
-                                        ItemStack clone = cursor.clone();
-                                        clone.setAmount(maxItems);
-                                        event.setCurrentItem(clone);
+                                    ItemStack clone = cursor.clone();
+                                    clone.setAmount(maxItems);
+                                    event.setCurrentItem(clone);
 
-                                        ItemStack clone2 = cursor.clone();
-                                        clone.setAmount(total - maxItems);
-                                        event.setCursor(clone2);
+                                    ItemStack clone2 = cursor.clone();
+                                    clone2.setAmount(total - maxItems);
+                                    event.setCursor(clone2);
 
-                                        event.setResult(Result.ALLOW);
-                                        InventoryUtil.updateInventory(player);
-                                    }
+                                    event.setResult(Result.ALLOW);
+                                    InventoryUtil.updateInventory(player);
                                 }
 
                             // Create a virtual stack out of two different items
