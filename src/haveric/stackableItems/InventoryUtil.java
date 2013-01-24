@@ -243,7 +243,6 @@ public final class InventoryUtil {
         if (amt != 0) {
             if (ing != null) {
                 int ingAmount = ing.getAmount();
-                plugin.log.info("Ing amount: " + ingAmount);
                 int holdingAmount = 0;
 
                 Iterator<ItemStack> iter = inventory.iterator();
@@ -275,7 +274,7 @@ public final class InventoryUtil {
         return amt;
     }
 
-    public static void removeFromCrafting(final CraftingInventory inventory, final int removeAmount) {
+    public static void removeFromCrafting(final Player player, final CraftingInventory inventory, final int removeAmount) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
 
@@ -292,6 +291,15 @@ public final class InventoryUtil {
                             int newAmount = itemAmount - removeAmount;
                             item.setAmount(newAmount);
                             inventory.setItem(i, item);
+                        }
+
+                        Material itemType = item.getType();
+                        // Give back buckets when used in a recipe
+                        if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET) {
+                            addItems(player, new ItemStack(Material.BUCKET, removeAmount));
+                        // Give back bowls if mushroom soup is ever used in a recipe
+                        } else if (itemType == Material.MUSHROOM_SOUP) {
+                            addItems(player, new ItemStack(Material.BOWL, removeAmount));
                         }
                     }
                     i++;

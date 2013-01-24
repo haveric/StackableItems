@@ -159,13 +159,13 @@ public class SIPlayerListener implements Listener {
                         } else if (freeSpaces > actualCraft) {
                             event.setCancelled(true);
 
-                            InventoryUtil.removeFromCrafting(inventory, amtCanCraft);
+                            InventoryUtil.removeFromCrafting(player, inventory, amtCanCraft);
                             clone.setAmount(actualCraft);
                             InventoryUtil.addItems(player, clone);
                         } else {
                             event.setCancelled(true);
 
-                            InventoryUtil.removeFromCrafting(inventory, freeSpaces);
+                            InventoryUtil.removeFromCrafting(player, inventory, freeSpaces);
                             clone.setAmount(freeSpaces);
                             InventoryUtil.addItems(player, clone);
                         }
