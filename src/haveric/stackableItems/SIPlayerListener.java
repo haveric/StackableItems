@@ -132,7 +132,9 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 }
-            } else if (maxItems == 0) {
+            }
+
+            if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
                 event.setCancelled(true);
             } else {
@@ -175,7 +177,7 @@ public class SIPlayerListener implements Listener {
                     } else {
                         // Only handle stacks that are above normal stack amounts.
                         if (cursorAmount + recipeAmount > result.getMaxStackSize()) {
-                            int numCanHold = maxItems-cursorAmount;
+                            int numCanHold = maxItems - cursorAmount;
                             int craftTimes = numCanHold / recipeAmount;
                             int canCraft = InventoryUtil.getCraftingAmount(event.getInventory(), event.getRecipe());
 

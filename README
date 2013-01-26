@@ -6,7 +6,7 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 
 Changelog:
 
-Coming soon:
+Version 0.9.1 (1/26/2013)
 * Hopefully fixed getting permission groups when none exist
 * Updated Metrics
 * Fixed large stacks being able to be placed in inventories with smaller max stacks.
@@ -20,6 +20,11 @@ Coming soon:
 * Set some methods to HIGHEST priority. This should allow other plugins to take action before StackableItems tries to deal with some things.
 * Checking for more cancelled events, which should also help plugin compatibility.
 * Handle crafting when the result is greater than the normal stack amount.
+* Fixed shift clicking an empty slot in an anvil (one ItemStack doesn't have a metadata while the other does)
+* Since github dropped support for their vesrion of downloads, I have set up a new folder structure under downloads:
+** release: always has the latest official version
+** dev: always has the most up to date version (could be the official or a development/test version)
+** old: storage of all old versions in case somebody wants to download an older version.
 
 Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support
