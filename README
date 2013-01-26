@@ -11,12 +11,15 @@ Coming soon:
 * Updated Metrics
 * Fixed large stacks being able to be placed in inventories with smaller max stacks.
 * Books work for shift clicking into enchantment tables.
-* Fixed all book stacking.
+* Fixed all book/metadata stacking.
 * Removed message spam on furnaces when clicking on the results slot.
 * Fixed Anvil dupe due to bukkit not recognizing the result slot as a result slot..
 * Fixed shift clicking for crafting
 * Fixed stacking across different stack amounts (ex: inventory: 100, crafting: 64)
-* Buckets/bowls will be returned if used in a recipe
+* Buckets/bowls will be returned to inventory if used in a recipe
+* Set some methods to HIGHEST priority. This should allow other plugins to take action before StackableItems tries to deal with some things.
+* Checking for more cancelled events, which should also help plugin compatibility.
+* Handle crafting when the result is greater than the normal stack amount.
 
 Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support

@@ -17,7 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -114,7 +113,6 @@ public class SIPlayerListener implements Listener {
             Material type = craftedItem.getType();
 
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), false);
-
             // Handle infinite items for the crafted item
             if (maxItems == SIItems.ITEM_INFINITE) {
                 maxItems = type.getMaxStackSize();
@@ -134,14 +132,14 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 }
-            }
-
-            if (maxItems == 0) {
+            } else if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
                 event.setCancelled(true);
             } else {
-                int cursorAmount = event.getCursor().getAmount();
-                int recipeAmount = event.getRecipe().getResult().getAmount();
+                ItemStack cursor = event.getCursor();
+                int cursorAmount = cursor.getAmount();
+                ItemStack result = event.getRecipe().getResult();
+                int recipeAmount = result.getAmount();
 
                 if (event.isShiftClick()) {
                     CraftingInventory inventory = event.getInventory();
@@ -174,6 +172,32 @@ public class SIPlayerListener implements Listener {
                 } else if (event.isLeftClick() || event.isRightClick()) {
                     if (cursorAmount + recipeAmount > maxItems) {
                         event.setCancelled(true);
+                    } else {
+                        // Only handle stacks that are above normal stack amounts.
+                        if (cursorAmount + recipeAmount > result.getMaxStackSize()) {
+                            int numCanHold = maxItems-cursorAmount;
+                            int craftTimes = numCanHold / recipeAmount;
+                            int canCraft = InventoryUtil.getCraftingAmount(event.getInventory(), event.getRecipe());
+
+                            int actualCraft = 0;
+                            if (craftTimes <= canCraft) {
+                                actualCraft = craftTimes;
+                            } else {
+                                actualCraft = canCraft;
+                            }
+
+                            if (actualCraft > 0) {
+                                ItemStack cursorClone = cursor.clone();
+
+                                // Remove one stack from the crafting grid
+                                InventoryUtil.removeFromCrafting(player, event.getInventory(), 1);
+
+                                // Add one set of items to the cursor
+                                cursorClone.setAmount(cursorAmount + recipeAmount);
+                                event.setCursor(cursorClone);
+                                event.setResult(Result.ALLOW);
+                            }
+                        }
                     }
                 }
             }
@@ -182,6 +206,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void playerFish(PlayerFishEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         Player player = event.getPlayer();
 
         ItemStack clone = player.getItemInHand().clone();
@@ -197,31 +224,10 @@ public class SIPlayerListener implements Listener {
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
-    public void breakBlock(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-
-        ItemStack hand = player.getItemInHand();
-        if (hand != null) {
-            Material type = hand.getType();
-            int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), false);
-
-            if (maxItems == SIItems.ITEM_INFINITE) {
-                ItemStack clone = hand.clone();
-                PlayerInventory inventory = player.getInventory();
-                InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
-                InventoryUtil.updateInventory(player);
-            } else {
-                if (type == Material.SHEARS || type == Material.FLINT_AND_STEEL) {
-                    InventoryUtil.splitStack(player, false);
-                } else {
-                    InventoryUtil.splitStack(player, true);
-                }
-            }
-        }
-    }
-
-    @EventHandler (priority = EventPriority.HIGHEST)
     public void shootBow(EntityShootBowEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
 
@@ -242,6 +248,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void entityDamage(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
 
@@ -264,6 +273,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void fillBucket(PlayerBucketFillEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         Player player = event.getPlayer();
 
         ItemStack holding = player.getInventory().getItemInHand();
@@ -287,6 +299,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void emptyBucket(PlayerBucketEmptyEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         Player player = event.getPlayer();
 
         ItemStack holding = player.getInventory().getItemInHand();
@@ -306,6 +321,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void eatFood(FoodLevelChangeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         Player player = (Player) event.getEntity();
         PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
 
@@ -1176,6 +1194,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void playerPlaceBlock(BlockPlaceEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         ItemStack clone = event.getItemInHand().clone();
 
         Player player = event.getPlayer();
@@ -1189,6 +1210,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void playerShearEntity(PlayerShearEntityEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         Player player = event.getPlayer();
 
         ItemStack clone = player.getItemInHand().clone();
@@ -1204,6 +1228,9 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void playerIgniteBlock(BlockIgniteEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         if (event.getCause() == IgniteCause.FLINT_AND_STEEL) {
             Player player = event.getPlayer();
 
