@@ -6,6 +6,10 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 
 Changelog:
 
+Coming Soon:
+    Version 0.9.1.t1 (2/10/2013)
+    * Fixed dupe bug with crafting.
+
 Version 0.9.1 (1/26/2013)
 * Hopefully fixed getting permission groups when none exist
 * Updated Metrics
