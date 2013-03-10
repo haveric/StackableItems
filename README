@@ -7,6 +7,8 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 Changelog:
 
 Coming Soon:
+    * Fixed drinking from stacked milk buckets
+
     Version 0.9.1.t1 (2/10/2013)
     * Fixed dupe bug with crafting.
 

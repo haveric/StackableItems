@@ -11,7 +11,6 @@ public class PlayerClickData {
     private int amount;
     private Material lastBlock;
     private Location lastBlockLoc;
-    private double lastFoodLevel;
 
     public PlayerClickData() {
         slot = -1;
@@ -19,7 +18,6 @@ public class PlayerClickData {
         type = null;
         lastBlock = null;
         lastBlockLoc = null;
-        lastFoodLevel = -1;
     }
 
     public PlayerClickData(int newSlot, Material newType, int newAmt) {
@@ -66,13 +64,5 @@ public class PlayerClickData {
 
     public void setLastBlockLocation(Location loc) {
         lastBlockLoc = loc;
-    }
-
-    public double getLastFoodLevel() {
-        return lastFoodLevel;
-    }
-
-    public void setLastFoodLevel(double foodLevel) {
-        lastFoodLevel = foodLevel;
     }
 }

@@ -22,7 +22,6 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,6 +31,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -324,27 +324,21 @@ public class SIPlayerListener implements Listener {
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
-    public void eatFood(FoodLevelChangeEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-        Player player = (Player) event.getEntity();
-        PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
+    public void consumeItem(PlayerItemConsumeEvent event) {
+        ItemStack consumedItem = event.getItem();
+        Material type = consumedItem.getType();
 
-        double foodLevel = event.getFoodLevel();
-        //plugin.log.info("Food: " + foodLevel + ", Last: " + clickData.getLastFoodLevel());
-        if (foodLevel > clickData.getLastFoodLevel()) {
-            clickData.setLastFoodLevel(foodLevel);
+        int amt = consumedItem.getAmount();
+        Player player = event.getPlayer();
 
-            if (clickData.getAmount() > 1 && clickData.getType() == Material.MUSHROOM_SOUP) {
-                PlayerInventory inventory = player.getInventory();
-                ItemStack itemAtSlot = inventory.getItem(clickData.getSlot());
-                if (itemAtSlot != null && itemAtSlot.getType() == Material.MUSHROOM_SOUP) {
-                    InventoryUtil.replaceItem(player.getInventory(), clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, clickData.getAmount() - 1));
-                    //plugin.log.info("Left: " + (clickData.getAmount() - 1));
+        if (amt > 1) {
+            if (type == Material.MILK_BUCKET) {
+                InventoryUtil.addItems(player, new ItemStack(Material.BUCKET));
+            } else if (type == Material.MUSHROOM_SOUP) {
+                PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
 
-                    InventoryUtil.addItems(player, new ItemStack(Material.BOWL, 1));
-                }
+                InventoryUtil.replaceItem(player.getInventory(), clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, amt - 1));
+                InventoryUtil.addItems(player, new ItemStack(Material.BOWL));
             }
         }
     }
@@ -842,7 +836,7 @@ public class SIPlayerListener implements Listener {
                             event.setResult(Result.ALLOW);
                         }
                     } else {
-                        //player.sendMessage("Drop a stack into an empty slot");
+                        //player.sendMessage("Drop a stack into an empty slot: " + rawSlot + "," + slotType);
                         if (cursorAmount <= maxItems) {
                             event.setCurrentItem(cursor.clone());
                             event.setCursor(null);
