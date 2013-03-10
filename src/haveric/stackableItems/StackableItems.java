@@ -1,18 +1,15 @@
 package haveric.stackableItems;
 
 import haveric.stackableItems.mcstats.Metrics;
-import haveric.stackableItems.vanish.Vanish;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.permission.Permission;
 
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.kitteh.vanish.VanishPlugin;
 
 public class StackableItems extends JavaPlugin {
 
@@ -37,9 +34,6 @@ public class StackableItems extends JavaPlugin {
         // Vault
         setupVault(pm);
 
-        // VanishNoPacket
-        setupVanish(pm);
-
         SIItems.init(this);
         InventoryUtil.init(this);
         FurnaceUtil.init(this);
@@ -63,13 +57,6 @@ public class StackableItems extends JavaPlugin {
             if (permProvider != null) {
                 Perms.init(this, permProvider.getProvider());
             }
-        }
-    }
-
-    private void setupVanish(PluginManager pm) {
-        Plugin vanish = pm.getPlugin("VanishNoPacket");
-        if (vanish != null && vanish instanceof VanishPlugin) {
-            Vanish.setVanish((VanishPlugin) vanish);
         }
     }
 

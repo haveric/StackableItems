@@ -1,7 +1,5 @@
 package haveric.stackableItems;
 
-import haveric.stackableItems.vanish.Vanish;
-
 import java.util.Random;
 
 import org.bukkit.GameMode;
@@ -1172,7 +1170,7 @@ public class SIPlayerListener implements Listener {
 
         int freeSpaces = InventoryUtil.getFreeSpaces(player, stack);
 
-        if (freeSpaces == 0 || Vanish.isPickupDisabled(player)) {
+        if (freeSpaces == 0) {
             event.setCancelled(true);
         } else {
             int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability(), false);
