@@ -9,7 +9,9 @@ Changelog:
 Coming Soon:
     * Removed dependency on VanishNoPacket. The event priority handles this and I get a cancelled event. 
     * Fixed drinking from stacked milk buckets (Requires CraftBukkit build #2636 or higher)
-
+    * Custom XP Handling for Furnaces
+    ** Added furnaceXP.yml
+    
     Version 0.9.1.t1 (2/10/2013)
     * Fixed dupe bug with crafting.
 

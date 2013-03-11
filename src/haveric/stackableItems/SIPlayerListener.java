@@ -444,6 +444,15 @@ public class SIPlayerListener implements Listener {
                             clone.setAmount(amt);
 
                             event.setCurrentItem(null);
+
+                            int xp = FurnaceXPConfig.getXP(clone);
+                            if (xp > 0) {
+                                player.giveExp(xp);
+                                Random random = new Random();
+                                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            }
+
+
                             event.setCursor(clone);
                             event.setResult(Result.ALLOW);
                         }
@@ -455,6 +464,14 @@ public class SIPlayerListener implements Listener {
                             event.setCancelled(true);
 
                             event.setCurrentItem(null);
+
+                            int xp = FurnaceXPConfig.getXP(clone);
+                            if (xp > 0) {
+                                player.giveExp(xp);
+                                Random random = new Random();
+                                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            }
+
                             InventoryUtil.addItems(player, clone);
                         } else {
                             event.setCancelled(true);
@@ -465,6 +482,14 @@ public class SIPlayerListener implements Listener {
 
                             ItemStack clone2 = clicked.clone();
                             clone2.setAmount(freeSpaces);
+
+                            int xp = FurnaceXPConfig.getXP(clone2);
+                            if (xp > 0) {
+                                player.giveExp(xp);
+                                Random random = new Random();
+                                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            }
+
                             InventoryUtil.addItems(player, clone2);
                         }
                     } else if (event.isLeftClick() || event.isRightClick()) {
@@ -478,6 +503,14 @@ public class SIPlayerListener implements Listener {
 
                                     ItemStack clone2 = clicked.clone();
                                     clone2.setAmount(maxItems);
+
+                                    int xp = FurnaceXPConfig.getXP(clone2);
+                                    if (xp > 0) {
+                                        player.giveExp(xp);
+                                        Random random = new Random();
+                                        player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                                    }
+
                                     event.setCursor(clone2);
                                 }
                             } else {

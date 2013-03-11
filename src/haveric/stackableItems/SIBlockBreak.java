@@ -20,6 +20,8 @@ public class SIBlockBreak implements Listener {
         }
         Block block = event.getBlock();
 
+        Player player = event.getPlayer();
+
         // Handle breaking furnaces with larger stacks in them than normally allowed
         if (block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE) {
             int maxAmount = Config.getFurnaceAmount(block.getLocation());
@@ -36,7 +38,6 @@ public class SIBlockBreak implements Listener {
             }
         }
 
-        Player player = event.getPlayer();
         ItemStack hand = player.getItemInHand();
 
         // Handle splitting tool stacks when used to break blocks

@@ -29,6 +29,7 @@ public class StackableItems extends JavaPlugin {
         pm.registerEvents(new PlayerJoinQuit(), this);
 
         Config.init(this);
+        FurnaceXPConfig.init(this);
         VirtualItemConfig.init(this);
 
         // Vault
@@ -41,6 +42,7 @@ public class StackableItems extends JavaPlugin {
         SIPlayers.init();
 
         Config.setup();
+        FurnaceXPConfig.setup();
 
         getCommand(Commands.getMain()).setExecutor(commands);
 

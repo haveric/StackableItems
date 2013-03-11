@@ -57,6 +57,7 @@ public class Commands implements CommandExecutor {
                     Config.reload();
                     SIItems.reload();
                     FurnaceUtil.reload();
+                    FurnaceXPConfig.reload();
                     sender.sendMessage(title + "Configuration files reloaded.");
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You do not have permission to reload the config.");
