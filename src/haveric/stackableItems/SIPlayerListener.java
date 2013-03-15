@@ -868,23 +868,26 @@ public class SIPlayerListener implements Listener {
                         }
                     } else {
                         //player.sendMessage("Drop a stack into an empty slot: " + rawSlot + "," + slotType);
-                        if (cursorAmount <= maxItems) {
-                            event.setCurrentItem(cursor.clone());
-                            event.setCursor(null);
-                            event.setResult(Result.ALLOW);
-                            InventoryUtil.updateInventory(player);
-                        // More items than can fit in this slot
-                        } else {
-                            ItemStack toDrop = cursor.clone();
-                            toDrop.setAmount(maxItems);
-                            event.setCurrentItem(toDrop);
+                        // Ignore armor slots when dropping items, let default Minecraft handle them.
+                        if (event.getSlotType() != SlotType.ARMOR) {
+                            if (cursorAmount <= maxItems) {
+                                event.setCurrentItem(cursor.clone());
+                                event.setCursor(null);
+                                event.setResult(Result.ALLOW);
+                                InventoryUtil.updateInventory(player);
+                            // More items than can fit in this slot
+                            } else {
+                                ItemStack toDrop = cursor.clone();
+                                toDrop.setAmount(maxItems);
+                                event.setCurrentItem(toDrop);
 
-                            ItemStack toHold = cursor.clone();
-                            toHold.setAmount(cursorAmount - maxItems);
-                            event.setCursor(toHold);
+                                ItemStack toHold = cursor.clone();
+                                toHold.setAmount(cursorAmount - maxItems);
+                                event.setCursor(toHold);
 
-                            event.setResult(Result.ALLOW);
-                            InventoryUtil.updateInventory(player);
+                                event.setResult(Result.ALLOW);
+                                InventoryUtil.updateInventory(player);
+                            }
                         }
                     }
                 // Combine two items
