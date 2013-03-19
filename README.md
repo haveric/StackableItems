@@ -1,13 +1,12 @@
-### StackableItems is a bukkit plugin that allows you to raise or lower the default stack amounts for any item.
-#### Items can be disabled which disallows pickup and crafting).  Some items can also be set to be infinite which allows you to keep a certain item around no matter how much you use it.
+## StackableItems is a bukkit plugin that allows you to raise or lower the default stack amounts for any item.
+### Items can be disabled which disallows pickup and crafting).  Some items can also be set to be infinite which allows you to keep a certain item around no matter how much you use it.
 
 
-### For more info, visit http://dev.bukkit.org/server-mods/stackableitems/ ###
+### For more info, visit [http://dev.bukkit.org/server-mods/stackableitems](http://dev.bukkit.org/server-mods/stackableitems) 
 
+### Changelog:
 
-Changelog:
-
-Coming Soon:
+#### Coming Soon:
 #### Version 0.9.1.t3 (3/17/2013)
 * Added Hopper support (Requires CraftBukkit build #2664)
 * Ignore armor slots when dropping items
