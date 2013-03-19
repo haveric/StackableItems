@@ -15,7 +15,7 @@
 * Removed dependency on VanishNoPacket. The event priority handles this and I get a cancelled event. 
 * Fixed drinking from stacked milk buckets (Requires CraftBukkit build #2636 or higher)
 * Custom XP Handling for Furnaces
-- Added furnaceXP.yml
+    1. Added furnaceXP.yml
     
 #### Version 0.9.1.t1 (2/10/2013)
 * Fixed dupe bug with crafting.
@@ -36,9 +36,9 @@
 * Handle crafting when the result is greater than the normal stack amount.
 * Fixed shift clicking an empty slot in an anvil (one ItemStack doesn't have a metadata while the other does)
 * Since github dropped support for their version of downloads, I have set up a new folder structure under downloads:
-> release: always has the latest official version
-> dev: always has the most up to date version (could be the official or a development/test version)
-> old: storage of all old versions in case somebody wants to download an older version.
+    1. release: always has the latest official version
+    1. dev: always has the most up to date version (could be the official or a development/test version)
+    1. old: storage of all old versions in case somebody wants to download an older version.
 
 #### Version 0.9.0.1
 * 1.4 support - Added Beacon and Anvil support
@@ -49,14 +49,14 @@
 * Fixed stacking issues with furnaces and enchantment tables
 * Use default values for configs to prevent unnecessary file saving
 * Replaced "ALL ITEMS MAX" with MIN and MAX
-> MIN sets the minimum amount that everything will stack to, but will not override higher default values. Ex: MIN: 2 would allow swords/armor/etc. to stack to 2, but dirt/cobble/etc would still stack to 64.
-> MAX sets the maximum amount that everything will stack to, but will not override lower default values. EX: MAX: 32 would allow dirt/cobble/etc to only stack to 32, but still allow tools to stack at 1 and snowballs to stack at 16.
-> If you want it to work as before, set both min and max to "ALL ITEMS MAX" (values above 64 only need min set as no default values go that high)
+    1. MIN sets the minimum amount that everything will stack to, but will not override higher default values. Ex: MIN: 2 would allow swords/armor/etc. to stack to 2, but dirt/cobble/etc would still stack to 64.
+    1. MAX sets the maximum amount that everything will stack to, but will not override lower default values. EX: MAX: 32 would allow dirt/cobble/etc to only stack to 32, but still allow tools to stack at 1 and snowballs to stack at 16.
+    1. If you want it to work as before, set both min and max to "ALL ITEMS MAX" (values above 64 only need min set as no default values go that high)
 * VanishNoPacket support (If vanished and player has vanish.nopickup perm, items will not be picked up)
 * Better support for default Perms
 * Initial support for infinite items (Note: not every item is supported and may still be buggy)
-> Picking up and dropping items is not affected by this currently, only using the item (placing a block, hitting an enemy, etc)
-> Set the item to "infinite", "unlimited", or -2 (Example: DIAMOND_PICKAXE: infinite)
+    1. Picking up and dropping items is not affected by this currently, only using the item (placing a block, hitting an enemy, etc)
+    1. Set the item to "infinite", "unlimited", or -2 (Example: DIAMOND_PICKAXE: infinite)
 * Shears now split when used in a stack to prevent durability loss for the rest of the stack.
 * Flint and Steel no longer uses durability on water, lava, and fire since you are never actually setting a fire.
 
@@ -78,13 +78,13 @@
 
 #### Version 0.8.7 (8/26/2012):
 * Added debug option.  If you want to help me test issues, set this to true.  If you start getting spammed with messages in the console, report those to github. At any point, you can set this to false to stop getting messages (after a "/si reload")
-> Will also be used from now on to prevent random message spam from my testing if I don't take them out before release.
+    1. Will also be used from now on to prevent random message spam from my testing if I don't take them out before release.
 * Adding Metrics support. To opt out, set "opt-out: true" in PluginMetrics/config.yml
 * Removed dependency on CraftBukkit needed for the pop sound when picking up items thanks to the new Sounds API.
 * Fixed bow repairing
 * Fixed shift clicking in Enchantment Tables
-> If enchantment table is empty, first click will move 1 item to fill the slot.  Another click will switch it between main inventory and quickslots.
-> Items that cannot be enchanted will be moved between the main inventory and quickslots.
+    1. If enchantment table is empty, first click will move 1 item to fill the slot.  Another click will switch it between main inventory and quickslots.
+    1. Items that cannot be enchanted will be moved between the main inventory and quickslots.
 * Fixed shift clicking on stacks of armor in order to equip one.
 * Fixed options to use stacks in merchant and crafting using the furnace option instead of their own.
 * Added Use_Stack_Amounts_In_Brewing
@@ -95,25 +95,25 @@
 #### Version 0.8.6 (8/12/2012)
 * Fixed(hopefully) a null pointer exception when eating food
 * Shift clicking support in furnaces
-> Overrides default shift clicking to work as follows:
-> 1. Is the item a fuel? If so, check the fuel slot and move it there if you can. If not a fuel or fuel slot is full->
-> 2. Is the item used in any furnace recipe? If so, add it to the ingredient slot if possible. If not used in any recipes->
-> 3. Move the item between hotbar and main inventory.
-> Added lists/defaultFuels.txt and lists/customFuels.txt
-> /lists/defaultFuels.txt - This is a default fuel list that I provide and can update between versions (there is also a version # to this file which is listed at the top). This file will be used if customFuels.txt is empty
-> /lists/customFuels.txt - If an update comes out that adds more fuels and I disappear off the face of the planet or you have another plugin that uses something else as a fuel, this can be used to keep updated or add custom fuels. If there is anything in this file, it will override anything in defaultFuels.
+    1. Overrides default shift clicking to work as follows:
+    1. 1. Is the item a fuel? If so, check the fuel slot and move it there if you can. If not a fuel or fuel slot is full->
+    1. 2. Is the item used in any furnace recipe? If so, add it to the ingredient slot if possible. If not used in any recipes->
+    1. 3. Move the item between hotbar and main inventory.
+    1. Added lists/defaultFuels.txt and lists/customFuels.txt
+    1. /lists/defaultFuels.txt - This is a default fuel list that I provide and can update between versions (there is also a version # to this file which is listed at the top). This file will be used if customFuels.txt is empty
+    1. /lists/customFuels.txt - If an update comes out that adds more fuels and I disappear off the face of the planet or you have another plugin that uses something else as a fuel, this can be used to keep updated or add custom fuels. If there is anything in this file, it will override anything in defaultFuels.
 * No longer overriding armor in crafting inventory
 * No longer overriding repairing recipes
 * Mushroom soup will not be fake consumed when you lose hunger
 * Fixed bucket stacking
 * Renamed config.yml to options.yml to hopefully avoid confusion in the future.
-> options renamed to avoid spaces
+    1. options renamed to avoid spaces
 * Switched cmdMain and cmdMainAlt - Should fix conflicts with OpenInv
 * Fixed picking up and dropping items causing them to be removed/glitchy.
 * Fixed shift clicking in ender chests and villager trading.
 * Any clicking on the villager trading Result slot will use vanilla behavior to prevent item loss/duplication. (until Bukkit implements a trading api)
 * New config option: useStackAmountsInFurnace - True: Players can only put in the amount they are allowed, False: Furnaces hold their normal amount, no matter what players can stack to
-> Also useStackAmountsInTrading and useStackAmountsInCrafting. (False is defaulted for all three) (These may eventually turn into the way chests will be implemented, as in a unique file for each that allows setting all items as defaultItems.yml does)
+    1. Also useStackAmountsInTrading and useStackAmountsInCrafting. (False is defaulted for all three) (These may eventually turn into the way chests will be implemented, as in a unique file for each that allows setting all items as defaultItems.yml does)
 
 #### Version 0.8.5 (7/28/2012)
 * In-game commands for setting stack amounts and reloading now require players to be an op or have permission "- stackableitems.adjust"
@@ -154,7 +154,7 @@
 * All config/item files are loaded into the plugin now when users need them, which means less i/o and possibly faster
 * Item files should now handle any case -> IRON_BOOTS, iron_boots, IrOn_BOOts should all work.
 * Added optional furnace stack amount which allows furnaces to stack above 64 (65-127 or -1 for disabled). 
-> The client won't show it correctly, and the server can't smelt above 64 so it is faked (reverts to 63 and a counter saved) until picked up or the furnace is destroyed
+    1. The client won't show it correctly, and the server can't smelt above 64 so it is faked (reverts to 63 and a counter saved) until picked up or the furnace is destroyed
 * Now ignores creative mode so that items can be removed properly (temp fix)
 
 #### Version 0.7.5 (4/16/2012)
