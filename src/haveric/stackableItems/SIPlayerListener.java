@@ -693,7 +693,9 @@ public class SIPlayerListener implements Listener {
                             if (!moved) {
                                 InventoryUtil.swapInventory(player, clicked, event, rawSlot, 4);
                             }
-                        } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST || topType == InventoryType.HOPPER) {
+                        } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST
+                                || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER) {
+
                             InventoryUtil.moveItems(player, clicked, event, top, true);
                         } else if (topType == InventoryType.WORKBENCH) {
                             int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 10, false);

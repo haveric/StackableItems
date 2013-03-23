@@ -7,6 +7,8 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 Changelog:
 
 Coming Soon:
+    * Added Dropper support
+    
     Version 0.9.1.t3 (3/17/2013)
     * Added Hopper support (Requires CraftBukkit build #2664)
     * Ignore armor slots when dropping items
