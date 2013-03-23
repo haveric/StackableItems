@@ -101,7 +101,7 @@ public class Commands implements CommandExecutor {
                         if (op || canAdjust) {
                             int numToSet = Integer.parseInt(args[2]);
                             String displayName;
-                            if (dur == SIItems.DUR_MATCH_ANY) {
+                            if (dur == SIItems.ITEM_DEFAULT) {
                                 displayName = mat.name();
                             } else {
                                 displayName = mat.name() + ":" + dur;

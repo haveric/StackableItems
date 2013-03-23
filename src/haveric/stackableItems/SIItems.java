@@ -38,7 +38,6 @@ public final class SIItems {
     private static String cfgMax = "MAX";
 
     public static final int ITEM_DEFAULT = -1;
-    public static final int DUR_MATCH_ANY = -1;
     public static final int ITEM_INFINITE = -2;
     public static final int ITEM_DEFAULT_MAX = 64;
     public static final int ITEM_NEW_MAX = 127;
@@ -218,7 +217,7 @@ public final class SIItems {
     }
 
     public static int getMax(String playerOrGroup, Material mat, short dur) {
-        if (dur == DUR_MATCH_ANY) {
+        if (dur == ITEM_DEFAULT) {
             return getMaxFromMap(playerOrGroup, mat);
         }
 
@@ -226,7 +225,7 @@ public final class SIItems {
     }
 
     public static int getDefaultMax(Material mat, short dur) {
-        if (dur == DUR_MATCH_ANY) {
+        if (dur == ITEM_DEFAULT) {
             return getMaxFromMap("defaultItems", mat);
         }
 
@@ -234,7 +233,7 @@ public final class SIItems {
     }
 
     public static int getChestMax(Material mat, short dur) {
-        if (dur == DUR_MATCH_ANY) {
+        if (dur == ITEM_DEFAULT) {
             return getMaxFromMap("chestItems", mat);
         }
 
@@ -249,7 +248,7 @@ public final class SIItems {
         configItems = YamlConfiguration.loadConfiguration(configItemsFile);
 
         String name;
-        if (dur == DUR_MATCH_ANY) {
+        if (dur == ITEM_DEFAULT) {
             name = mat.name();
         } else {
             name = mat.name() + " " + dur;

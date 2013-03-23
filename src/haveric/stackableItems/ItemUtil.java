@@ -273,7 +273,7 @@ public final class ItemUtil {
         if (one != null && two != null) {
             boolean sameType = one.getType() == two.getType();
             boolean sameDur = one.getDurability() == two.getDurability();
-            boolean negativeDur = (one.getDurability() == SIItems.DUR_MATCH_ANY) || (two.getDurability() == SIItems.DUR_MATCH_ANY);
+            boolean negativeDur = (one.getDurability() == Short.MAX_VALUE) || (two.getDurability() == Short.MAX_VALUE);
 
             boolean sameEnchant = false;
             boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;

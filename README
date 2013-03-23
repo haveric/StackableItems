@@ -8,6 +8,7 @@ Changelog:
 
 Coming Soon:
     * Added Dropper support
+    * Fixed crafting for items that can match any durability
     
     Version 0.9.1.t3 (3/17/2013)
     * Added Hopper support (Requires CraftBukkit build #2664)
