@@ -18,6 +18,7 @@ public class Commands implements CommandExecutor {
 
     private ChatColor msgColor = ChatColor.DARK_AQUA;
     private ChatColor highlightColor = ChatColor.YELLOW;
+    private ChatColor defaultColor = ChatColor.WHITE;
 
     private String title;
     private String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
@@ -47,9 +48,13 @@ public class Commands implements CommandExecutor {
 
                 if (op || canAdjust) {
                     sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
-                    sender.sendMessage("/" + cmdMain + " <player/group/default> item:dur [amt] - " + msgColor + "Get/set a player/group's max items");
+                    sender.sendMessage("/" + cmdMain + highlightColor + " playerName" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set a player's max items");
+                    sender.sendMessage("/" + cmdMain + highlightColor + " permissionGroupName" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set a group's max items");
+                    sender.sendMessage("/" + cmdMain + highlightColor + " default" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set the default max items");
                 } else {
-                    sender.sendMessage("/" + cmdMain + " <player/group/default> item:dur - " + msgColor + "Get a player/group's max items");
+                    sender.sendMessage("/" + cmdMain + highlightColor + " playerName" + defaultColor + " item:dur - " + msgColor + "Get a player's max items");
+                    sender.sendMessage("/" + cmdMain + highlightColor + " permissionGroupName" + defaultColor + " item:dur - " + msgColor + "Get a group's max items");
+                    sender.sendMessage("/" + cmdMain + highlightColor + " default" + defaultColor + " item:dur - " + msgColor + "Get the default max items");
                 }
 
             } else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)) {

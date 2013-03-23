@@ -6,22 +6,30 @@ For more info, visit http://dev.bukkit.org/server-mods/stackableitems/
 
 Changelog:
 
-Coming Soon:
-    * Added Dropper support
-    * Fixed crafting for items that can match any durability
-    
-    Version 0.9.1.t3 (3/17/2013)
-    * Added Hopper support (Requires CraftBukkit build #2664)
-    * Ignore armor slots when dropping items
+Version 0.9.2 (3/22/2013) (Requires CraftBukkit build #2700+)
+* Added Dropper support 
+* Fixed crafting for items that can match any durability
+* Added Hopper support
+* Ignore armor slots when dropping items
+* Removed dependency on VanishNoPacket. The event priority handles this and I get a cancelled event. 
+* Fixed drinking from stacked milk buckets
+* Custom XP Handling for Furnaces
+** Added furnaceXP.yml
+* Fixed dupe bug with crafting.
+* Split up the player/group/default commands when using /stackableitems or /si to make them a bit clearer.
 
-    Version 0.9.1.t2 (3/12/2013)
-    * Removed dependency on VanishNoPacket. The event priority handles this and I get a cancelled event. 
-    * Fixed drinking from stacked milk buckets (Requires CraftBukkit build #2636 or higher)
-    * Custom XP Handling for Furnaces
-    ** Added furnaceXP.yml
-    
-    Version 0.9.1.t1 (2/10/2013)
-    * Fixed dupe bug with crafting.
+TEST Version 0.9.1.t3 (3/17/2013)
+* Added Hopper support (Requires CraftBukkit build #2664)
+* Ignore armor slots when dropping items
+
+TEST Version 0.9.1.t2 (3/12/2013)
+* Removed dependency on VanishNoPacket. The event priority handles this and I get a cancelled event. 
+* Fixed drinking from stacked milk buckets (Requires CraftBukkit build #2636 or higher)
+* Custom XP Handling for Furnaces
+** Added furnaceXP.yml
+
+TEST Version 0.9.1.t1 (2/10/2013)
+* Fixed dupe bug with crafting.
 
 Version 0.9.1 (1/26/2013)
 * Hopefully fixed getting permission groups when none exist
