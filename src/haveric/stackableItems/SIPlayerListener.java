@@ -153,21 +153,28 @@ public class SIPlayerListener implements Listener {
                         // Avoid crafting when there is nothing being crafted
                         if (clone.getType() != Material.AIR) {
                             // custom repairing
+                            int defaultCanMove = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory());
                             if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
                                 // TODO: handle custom repairing to allow stacking
                                 // TODO: don't let people repair two fully repaired items.. that's just stupid
                             } else if (freeSpaces > actualCraft) {
-                                event.setCancelled(true);
+                                // We only want to override if moving more than a vanilla stack will hold
+                                if (defaultCanMove < actualCraft) {
+                                    event.setCancelled(true);
 
-                                InventoryUtil.removeFromCrafting(player, inventory, amtCanCraft);
-                                clone.setAmount(actualCraft);
-                                InventoryUtil.addItems(player, clone);
+                                    InventoryUtil.removeFromCrafting(player, inventory, amtCanCraft);
+                                    clone.setAmount(actualCraft);
+                                    InventoryUtil.addItems(player, clone);
+                                }
                             } else {
-                                event.setCancelled(true);
+                                // We only want to override if moving more than a vanilla stack will hold
+                                if (defaultCanMove < freeSpaces) {
+                                    event.setCancelled(true);
 
-                                InventoryUtil.removeFromCrafting(player, inventory, freeSpaces);
-                                clone.setAmount(freeSpaces);
-                                InventoryUtil.addItems(player, clone);
+                                    InventoryUtil.removeFromCrafting(player, inventory, freeSpaces);
+                                    clone.setAmount(freeSpaces);
+                                    InventoryUtil.addItems(player, clone);
+                                }
                             }
                         }
                     }

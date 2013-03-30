@@ -107,6 +107,10 @@ public final class InventoryUtil {
             int emptySlot = inventory.firstEmpty();
             if (emptySlot > -1) {
                 free = getInventoryMax(player, inventory, type, durability, emptySlot);
+
+                if (free > defaultMax) {
+                    free = defaultMax;
+                }
             }
         }
         // Handle erroneous situations
