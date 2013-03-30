@@ -554,11 +554,6 @@ public class SIPlayerListener implements Listener {
                         return;
                     }
                 }
-            // TODO: Remove when Bukkit fixes anvil's result slot being a container
-            } else if (topType == InventoryType.ANVIL) {
-                if (rawSlot == 2) {
-                    return;
-                }
             }
 
             int slot = event.getSlot();

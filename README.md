@@ -6,12 +6,13 @@
 
 ### Changelog:
 
-#### Coming Soon:
+#### Coming Soon: (Requires CraftBukkit #2723+)
 * Prevent item flashing from top inventory to player inventory by letting vanilla handle it if it can.
 * Prevent item flashing when possible from player inventory to chests, dispensers, ender chests, hoppers, droppers, and enchantment tables.
 * Added Ender Chests, Hoppers, and Droppers to "Use_Stacks_Amounts" Options config
 * All Options config "Use_Stack_Amounts" now default to true
 * Prevent item loss from Hoppers and Anvils (This means stacks are capped to 64 in each until bukkit fixes this bug)
+* Removed extra check for anvil slot as it is now a RESULT slot as it should have been. (Requires CraftBukkit #2723)
 
 #### Version 0.9.2 (3/22/2013) (Requires CraftBukkit build #2700+)
 * Added Dropper support 
