@@ -75,19 +75,20 @@ public final class InventoryUtil {
                 int amt = slot.getAmount();
                 int slotMax = getInventoryMax(player, inventory, type, durability, i);
 
-                if (slotMax > defaultMax) {
+                if (slotMax == defaultMax){
+                    // Let vanilla always handle this
+                    free = -1;
+                } else if (slotMax > defaultMax) {
                     if (amt == slotMax) {
                         // Continue, slot is full and vanilla should ignore this
                         free = 0;
                     } else if (amt >= defaultMax && amt < slotMax) {
                         // Vanilla can't handle this
-                        free = -1;
+                        free = -2;
                     } else { // amt < defaultMax
                         // Let Vanilla handle this
                         free = defaultMax - amt;
                     }
-                //} else if (slotMax == defaultMax){
-                    // Let vanilla always handle this
                 } else if (slotMax < defaultMax){ // slotMax < defaultMax
                     if (amt < slotMax) {
                         // Vanilla can only add up to slotMax
@@ -110,11 +111,13 @@ public final class InventoryUtil {
 
                 if (free > defaultMax) {
                     free = defaultMax;
+                } else if (free == defaultMax) {
+                    free= -1;
                 }
             }
         }
         // Handle erroneous situations
-        if (free < 0) {
+        if (free == -2) {
             free = 0;
         }
 
