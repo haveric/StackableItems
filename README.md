@@ -10,6 +10,7 @@
 * Prevent item flashing from top inventory to player inventory by letting vanilla handle it if it can.
 * Prevent item flashing when possible from player inventory to chests, dispensers, ender chests, hoppers, droppers, and enchantment tables.
 * Prevent item flashing when possible from crafting.
+* Let vanilla handle the pickup event if it can.
 * Added Ender Chests, Hoppers, and Droppers to "Use_Stacks_Amounts" Options config
 * All Options config "Use_Stack_Amounts" now default to true
 * Prevent item loss from Hoppers and Anvils (This means stacks are capped to 64 in each until bukkit fixes this bug)

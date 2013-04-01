@@ -452,7 +452,7 @@ public final class InventoryUtil {
                 if (!Config.isVirtualItemsEnabled()) {
                     ItemStack move = holding.clone();
                     move.setAmount(amount - 1);
-                    InventoryUtil.addItems(player, move);
+                    addItems(player, move);
                     holding.setAmount(1);
                 }
             }

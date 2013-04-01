@@ -1228,13 +1228,17 @@ public class SIPlayerListener implements Listener {
             if (maxItems == 0) {
                 event.setCancelled(true);
             } else {
-                InventoryUtil.addItems(player, stack);
-                Random random = new Random();
-                player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+             // We only want to override if moving more than a vanilla stack will hold
+                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory());
+                if (defaultStack > -1 && stack.getAmount() > defaultStack) {
+                    InventoryUtil.addItems(player, stack);
+                    Random random = new Random();
+                    player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
-                item.remove();
+                    item.remove();
 
-                event.setCancelled(true);
+                    event.setCancelled(true);
+                }
             }
         }
     }
