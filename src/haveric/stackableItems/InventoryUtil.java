@@ -433,7 +433,7 @@ public final class InventoryUtil {
 
         // Prevent Item loss when bukkit doesn't handle the inventory's max stack size
         int inventoryMax = inventory.getMaxStackSize();
-        if (inventoryType != InventoryType.PLAYER && maxAmount > inventoryMax) {
+        if (inventoryType != InventoryType.PLAYER && maxAmount > inventoryMax && slot < inventory.getSize()) {
             if (Config.isDebugging()) {
                 plugin.log.info("Bukkit isn't handling max stack size for: " + inventoryType);
                 plugin.log.info("  Max: " + maxAmount + ", inventoryMax: " + inventoryMax);
