@@ -707,12 +707,12 @@ public class SIPlayerListener implements Listener {
                             if (defaultStack > -1 && clickedAmount > defaultStack) {
                                 InventoryUtil.moveItems(player, clicked, event, top, true);
                             }
+                        // This adds shift clicking from the player inventory to the workbench.
                         } else if (topType == InventoryType.WORKBENCH) {
                             int left = InventoryUtil.moveItems(player, clicked, event, top, 1, 10, false);
                             if (left > 0) {
                                 clicked.setAmount(left);
                             }
-
 
                             if (left == clickedAmount) {
                                 InventoryUtil.swapInventory(player, clicked, event, rawSlot, 10);

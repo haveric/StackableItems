@@ -112,11 +112,11 @@ public final class InventoryUtil {
                 if (free > defaultMax) {
                     free = defaultMax;
                 } else if (free == defaultMax) {
-                    free= -1;
+                    free = -1;
                 }
             }
         }
-        // Handle erroneous situations
+        // Handle situations where vanilla won't be able to help us.
         if (free == -2) {
             free = 0;
         }
@@ -412,7 +412,7 @@ public final class InventoryUtil {
             if (slot >= 0 && slot < 3) {
                 maxAmount = 1;
             }
-        } else if ((inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5) && !Config.isCraftingUsingStacks()) {
+        } else if (((inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) && !Config.isCraftingUsingStacks()) {
             maxAmount = mat.getMaxStackSize();
         } else if (inventoryType == InventoryType.ANVIL && slot < 2 && !Config.isAnvilUsingStacks()) {
             maxAmount = mat.getMaxStackSize();
@@ -435,7 +435,6 @@ public final class InventoryUtil {
         int inventoryMax = inventory.getMaxStackSize();
         if (inventoryType != InventoryType.PLAYER && maxAmount > inventoryMax) {
             if (Config.isDebugging()) {
-
                 plugin.log.info("Bukkit isn't handling max stack size for: " + inventoryType);
                 plugin.log.info("  Max: " + maxAmount + ", inventoryMax: " + inventoryMax);
             }
