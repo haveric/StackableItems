@@ -599,11 +599,11 @@ public class SIPlayerListener implements Listener {
                         }
                     } else {
                         if (topType == InventoryType.CRAFTING) {
+                            PlayerInventory inventory = player.getInventory();
+
                             if (ItemUtil.isArmor(clickedType)) {
                                 ItemStack armorSlot = null;
                                 boolean moved = false;
-
-                                PlayerInventory inventory = player.getInventory();
 
                                 ItemStack cloneArmor = clicked.clone();
                                 cloneArmor.setAmount(1);
@@ -639,7 +639,6 @@ public class SIPlayerListener implements Listener {
                                 } else {
                                     InventoryUtil.swapInventory(player, clicked, event, rawSlot, 9);
                                 }
-
                             } else {
                                 InventoryUtil.swapInventory(player, clicked, event, rawSlot, 9);
                             }
@@ -753,30 +752,17 @@ public class SIPlayerListener implements Listener {
                                 InventoryUtil.swapInventory(player, clicked, event, rawSlot, 3);
                             }
                         } else if (topType == InventoryType.ENCHANTING) {
-                            boolean isEnchantable = ItemUtil.isEnchantable(clickedType);
+                            if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
+                                // We only want to override if moving more than a vanilla stack will hold
+                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top);
+                                if (defaultStack > -1 && clickedAmount > defaultStack) {
+                                    int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
 
-                            boolean moved = false;
-                            if (isEnchantable) {
-                                ItemStack enchantSlot = top.getItem(0);
-
-                                if (enchantSlot == null) {
-                                    // We only want to override if moving more than a vanilla stack will hold
-                                    int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top);
-                                    if (defaultStack > -1 && clickedAmount > defaultStack) {
-                                        int left = InventoryUtil.moveItems(player, clicked, event, top, 0, 1, false);
-
-                                        if (left > 0) {
-                                            clicked.setAmount(left);
-                                        }
-                                        moved = true;
-                                    } else {
-                                        // Vanilla moved it
-                                        moved = true;
+                                    if (left > 0) {
+                                        clicked.setAmount(left);
                                     }
                                 }
-                            }
-
-                            if (!moved) {
+                            } else {
                                 InventoryUtil.swapInventory(player, clicked, event, rawSlot, 1);
                             }
                         } else if (topType == InventoryType.FURNACE) {
