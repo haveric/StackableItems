@@ -48,7 +48,7 @@ public class FurnaceXPConfig {
 
         cfgFurnaceXP.addDefault("INK_SACK 2", 0.2);
         cfgFurnaceXP.addDefault("INK_SACK 4", 0.2);
-        //cfgFurnaceXP.addDefault("NETHER_QUARTZ", 0.2);
+        cfgFurnaceXP.addDefault("NETHER_QUARTZ", 0.2);
 
         cfgFurnaceXP.addDefault("COAL 1", 0.15);
 

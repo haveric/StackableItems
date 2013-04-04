@@ -61,7 +61,6 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.WOOD_STEP);
         listOfFuels.add(Material.WOOD_SWORD);
         listOfFuels.add(Material.WORKBENCH);
-
     }
 
     public static void reload() {
