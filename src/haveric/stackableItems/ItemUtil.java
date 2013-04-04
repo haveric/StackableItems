@@ -200,6 +200,7 @@ public final class ItemUtil {
             case FISHING_ROD:
             case FLINT_AND_STEEL:
             case SHEARS:
+            case CARROT_STICK:
                 repairable = true;
                 break;
             default: break;
@@ -241,6 +242,7 @@ public final class ItemUtil {
             case GHAST_TEAR:
             case BLAZE_POWDER:
             case SULPHUR:
+            case GOLDEN_CARROT:
                 brewingIngredient = true;
                 break;
             default: break;

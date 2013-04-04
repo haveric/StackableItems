@@ -75,7 +75,7 @@ public final class InventoryUtil {
                 int amt = slot.getAmount();
                 int slotMax = getInventoryMax(player, inventory, type, durability, i);
 
-                if (slotMax == defaultMax){
+                if (slotMax == defaultMax) {
                     // Let vanilla always handle this
                     free = -1;
                 } else if (slotMax > defaultMax) {
@@ -89,7 +89,7 @@ public final class InventoryUtil {
                         // Let Vanilla handle this
                         free = defaultMax - amt;
                     }
-                } else if (slotMax < defaultMax){ // slotMax < defaultMax
+                } else if (slotMax < defaultMax) { // slotMax < defaultMax
                     if (amt < slotMax) {
                         // Vanilla can only add up to slotMax
                         free = slotMax - amt;
@@ -258,30 +258,24 @@ public final class InventoryUtil {
                 int height = shape[0].length();
 
                 int max = width * height;
-                amt = checkItemInInventory(inventory, itemMap.get('a'), amt);
-                if (max >= 2) {
-                    amt = checkItemInInventory(inventory, itemMap.get('b'), amt);
-                }
-                if (max >= 3) {
-                    amt = checkItemInInventory(inventory, itemMap.get('c'), amt);
-                }
-                if (max >= 4) {
-                    amt = checkItemInInventory(inventory, itemMap.get('d'), amt);
-                }
-                if (max >= 5) {
-                    amt = checkItemInInventory(inventory, itemMap.get('e'), amt);
-                }
-                if (max >= 6) {
-                    amt = checkItemInInventory(inventory, itemMap.get('f'), amt);
-                }
-                if (max >= 7) {
-                    amt = checkItemInInventory(inventory, itemMap.get('g'), amt);
-                }
-                if (max >= 8) {
-                    amt = checkItemInInventory(inventory, itemMap.get('h'), amt);
-                }
-                if (max == 9) {
-                    amt = checkItemInInventory(inventory, itemMap.get('i'), amt);
+
+                char c = 'a';
+                amt = checkItemInInventory(inventory, itemMap.get(c), amt);
+
+                /*
+                 * Check 'b' though 'i' for max >= 2 to 9
+                 */
+                int testMax = 2;
+                while (testMax < 10) {
+                    c++;
+
+                    if (max >= testMax) {
+                        amt = checkItemInInventory(inventory, itemMap.get(c), amt);
+                    } else {
+                        break;
+                    }
+
+                    testMax++;
                 }
             } else if (rec instanceof ShapelessRecipe) {
                 ShapelessRecipe shapeless = (ShapelessRecipe) rec;
@@ -306,35 +300,30 @@ public final class InventoryUtil {
     }
 
     private static int checkItemInInventory(Inventory inventory, ItemStack ing, int amt) {
-        if (amt != 0) {
-            if (ing != null) {
-                int ingAmount = ing.getAmount();
-                int holdingAmount = 0;
+        if (amt != 0 && ing != null) {
+            int ingAmount = ing.getAmount();
+            int holdingAmount = 0;
 
-                Iterator<ItemStack> iter = inventory.iterator();
+            Iterator<ItemStack> iter = inventory.iterator();
+            // Don't check the first slot as it is the result slot.
+            iter.next();
+            while (iter.hasNext()) {
+                ItemStack item = iter.next();
 
-                boolean skipOnce = false;
-                while (iter.hasNext()) {
-                    ItemStack item = iter.next();
-                    // Don't check the first slot as it is the result slot.
-                    if (skipOnce) {
-                        if (item != null && ItemUtil.isSameItem(item, ing, true)) {
-                            int temp = item.getAmount();
+                if (item != null && ItemUtil.isSameItem(item, ing, true)) {
+                    int temp = item.getAmount();
 
-                            if (holdingAmount == 0 || holdingAmount > temp) {
-                                holdingAmount = temp;
-                            }
-                        }
+                    if (holdingAmount == 0 || holdingAmount > temp) {
+                        holdingAmount = temp;
                     }
-                    skipOnce = true;
                 }
+            }
 
-                // TODO: re-evaluate if the double is necessary
-                int craftAmount = (int) Math.floor(holdingAmount / (double) ingAmount);
+            // TODO: re-evaluate if the double is necessary
+            int craftAmount = (int) Math.floor(holdingAmount / (double) ingAmount);
 
-                if (amt == -1 || amt > craftAmount) {
-                    amt = craftAmount;
-                }
+            if (amt == -1 || amt > craftAmount) {
+                amt = craftAmount;
             }
         }
         return amt;
