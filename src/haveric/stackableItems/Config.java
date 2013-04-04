@@ -97,6 +97,7 @@ public final class Config {
     /**
      * Saves the configuration to the file.
      */
+    /* TODO: Only used for setters, add back in when they are
     private static void saveConfig() {
         try {
             cfgOptions.save(cfgOptionsFile);
@@ -104,7 +105,7 @@ public final class Config {
             e.printStackTrace();
         }
     }
-
+    */
 
     public static void saveConfig(FileConfiguration fileConfig, File file) {
         try {
@@ -169,13 +170,54 @@ public final class Config {
         return maxAmount;
     }
 
+    public static boolean isFurnaceUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksFurnace);
+    }
+
+    public static boolean isMerchantUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksMerchant);
+    }
+
+    public static boolean isCraftingUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksCrafting);
+    }
+
+    public static boolean isBrewingUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksBrewing);
+    }
+
+    public static boolean isAnvilUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksAnvil);
+    }
+
+    public static boolean isBeaconUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksBeacon);
+    }
+
+    public static boolean isEnderChestUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksEnderChest);
+    }
+
+    public static boolean isHopperUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksHopper);
+    }
+
+    public static boolean isDropperUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksDropper);
+    }
+
+    public static boolean isDispenserUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksDispenser);
+    }
+
+    public static boolean isDebugging() {
+        return cfgOptions.getBoolean(cfgDebug);
+    }
+
+    /* TODO: Implement in game commands to use setters
     public static void setMaxFurnaceAmount(int newAmt) {
         cfgOptions.set(cfgFurnaceAmount, newAmt);
         saveConfig();
-    }
-
-    public static boolean isFurnaceUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksFurnace);
     }
 
     public static void setFurnaceUsingStacks(boolean isUsing) {
@@ -183,17 +225,9 @@ public final class Config {
         saveConfig();
     }
 
-    public static boolean isMerchantUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksMerchant);
-    }
-
     public static void setMerchantUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgUseStacksMerchant, isUsing);
         saveConfig();
-    }
-
-    public static boolean isCraftingUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksCrafting);
     }
 
     public static void setCraftingUsingStacks(boolean isUsing) {
@@ -201,17 +235,9 @@ public final class Config {
         saveConfig();
     }
 
-    public static boolean isBrewingUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksBrewing);
-    }
-
     public static void setBrewingUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgUseStacksBrewing, isUsing);
         saveConfig();
-    }
-
-    public static boolean isAnvilUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksAnvil);
     }
 
     public static void setAnvilUsingStacks(boolean isUsing) {
@@ -219,17 +245,9 @@ public final class Config {
         saveConfig();
     }
 
-    public static boolean isBeaconUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksBeacon);
-    }
-
     public static void setBeaconUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgUseStacksBeacon, isUsing);
         saveConfig();
-    }
-
-    public static boolean isEnderChestUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksEnderChest);
     }
 
     public static void setEnderChestUsingStacks(boolean isUsing) {
@@ -237,17 +255,9 @@ public final class Config {
         saveConfig();
     }
 
-    public static boolean isHopperUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksHopper);
-    }
-
     public static void setHopperUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgUseStacksHopper, isUsing);
         saveConfig();
-    }
-
-    public static boolean isDropperUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksDropper);
     }
 
     public static void setDropperUsingStacks(boolean isUsing) {
@@ -255,21 +265,14 @@ public final class Config {
         saveConfig();
     }
 
-    public static boolean isDispenserUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksDispenser);
-    }
-
     public static void setDispenserUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgUseStacksDispenser, isUsing);
         saveConfig();
-    }
-
-    public static boolean isDebugging() {
-        return cfgOptions.getBoolean(cfgDebug);
     }
 
     public static void setDebugging(boolean isDebugging) {
         cfgOptions.set(cfgDebug, isDebugging);
         saveConfig();
     }
+     */
 }

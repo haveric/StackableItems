@@ -15,7 +15,7 @@ public final class FurnaceUtil {
 
     private static StackableItems plugin;
 
-    private static final int FUEL_LIST_VERSION = 1;
+    private static final int FUEL_LIST_VERSION = 2;
 
     private static List<Material> listOfFuels;
     private static List<Material> furnaceBurnables;
@@ -37,7 +37,9 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.BOOKSHELF);
         listOfFuels.add(Material.CHEST);
         listOfFuels.add(Material.COAL);
+        listOfFuels.add(Material.DAYLIGHT_DETECTOR);
         listOfFuels.add(Material.FENCE);
+        listOfFuels.add(Material.FENCE_GATE);
         listOfFuels.add(Material.HUGE_MUSHROOM_1);
         listOfFuels.add(Material.HUGE_MUSHROOM_2);
         listOfFuels.add(Material.NOTE_BLOCK);
@@ -46,9 +48,9 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.LOCKED_CHEST);
         listOfFuels.add(Material.LOG);
         listOfFuels.add(Material.SAPLING);
-        listOfFuels.add(Material.STEP);
         listOfFuels.add(Material.STICK);
         listOfFuels.add(Material.TRAP_DOOR);
+        listOfFuels.add(Material.TRAPPED_CHEST);
         listOfFuels.add(Material.WOOD);
         listOfFuels.add(Material.WOOD_AXE);
         listOfFuels.add(Material.WOOD_HOE);
@@ -56,8 +58,10 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.WOOD_PLATE);
         listOfFuels.add(Material.WOOD_SPADE);
         listOfFuels.add(Material.WOOD_STAIRS);
+        listOfFuels.add(Material.WOOD_STEP);
         listOfFuels.add(Material.WOOD_SWORD);
         listOfFuels.add(Material.WORKBENCH);
+
     }
 
     public static void reload() {

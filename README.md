@@ -15,6 +15,7 @@
 * All Options config "Use_Stack_Amounts" now default to true
 * Prevent item loss from Hoppers and Anvils (This means stacks are capped to 64 in each until bukkit fixes this bug)
 * Removed extra check for anvil slot as it is now a RESULT slot as it should have been. (Requires CraftBukkit #2723)
+* Updated fuel list for shift clicking in furnaces.
 
 #### Version 0.9.2 (3/22/2013) (Requires CraftBukkit build #2700+)
 * Added Dropper support 
