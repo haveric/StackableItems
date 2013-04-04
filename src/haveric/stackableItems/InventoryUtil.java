@@ -424,6 +424,8 @@ public final class InventoryUtil {
             maxAmount = mat.getMaxStackSize();
         } else if (inventoryType == InventoryType.DROPPER && !Config.isDropperUsingStacks()) {
             maxAmount = mat.getMaxStackSize();
+        } else if (inventoryType == InventoryType.DISPENSER && !Config.isDispenserUsingStacks()) {
+            maxAmount = mat.getMaxStackSize();
         }
 
         // Handle infinite items

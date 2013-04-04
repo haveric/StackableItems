@@ -25,6 +25,7 @@ public final class Config {
     private static String cfgUseStacksEnderChest = "Use_Stack_Amounts_In_EnderChest";
     private static String cfgUseStacksHopper = "Use_Stack_Amounts_In_Hopper";
     private static String cfgUseStacksDropper = "Use_Stack_Amounts_In_Dropper";
+    private static String cfgUseStacksDispenser = "Use_Stack_Amounts_In_Dispenser";
 
     private static String cfgDebug = "Debug";
 
@@ -80,13 +81,14 @@ public final class Config {
         cfgOptions.addDefault(cfgUseStacksEnderChest, USE_STACKS_DEFAULT);
         cfgOptions.addDefault(cfgUseStacksHopper, USE_STACKS_DEFAULT);
         cfgOptions.addDefault(cfgUseStacksDropper, USE_STACKS_DEFAULT);
+        cfgOptions.addDefault(cfgUseStacksDispenser, USE_STACKS_DEFAULT);
 
         cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
         cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
         if (!cfgOptions.isSet(cfgVirtualItems) || !cfgOptions.isSet(cfgUseStacksFurnace) || !cfgOptions.isSet(cfgUseStacksMerchant) || !cfgOptions.isSet(cfgUseStacksCrafting)
                 || !cfgOptions.isSet(cfgUseStacksBrewing) || !cfgOptions.isSet(cfgUseStacksAnvil) || !cfgOptions.isSet(cfgUseStacksBeacon) || !cfgOptions.isSet(cfgUseStacksEnderChest)
-                || !cfgOptions.isSet(cfgUseStacksHopper) || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)) {
+                || !cfgOptions.isSet(cfgUseStacksHopper) || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgUseStacksDispenser) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)) {
             cfgOptions.options().copyDefaults(true);
             saveConfig(cfgOptions, cfgOptionsFile);
         }
@@ -250,6 +252,15 @@ public final class Config {
 
     public static void setDropperUsingStacks(boolean isUsing) {
         cfgOptions.set(cfgUseStacksDropper, isUsing);
+        saveConfig();
+    }
+
+    public static boolean isDispenserUsingStacks() {
+        return cfgOptions.getBoolean(cfgUseStacksDispenser);
+    }
+
+    public static void setDispenserUsingStacks(boolean isUsing) {
+        cfgOptions.set(cfgUseStacksDispenser, isUsing);
         saveConfig();
     }
 

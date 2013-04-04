@@ -86,7 +86,7 @@ public class CustomFileWriter {
 
             listScanner.next();
             listScanner.nextInt();
-            while(listScanner.hasNextLine()) {
+            while (listScanner.hasNextLine()) {
                 matList.add(Material.getMaterial(listScanner.nextLine()));
             }
 
