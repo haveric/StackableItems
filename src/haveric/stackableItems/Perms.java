@@ -39,7 +39,9 @@ public final class Perms {
                 }
             } catch (Exception e) {
                 // No groups
-                if (Config.isDebugging()) plugin.log.warning("DEBUG: groupExists() - No group found.");
+                if (Config.isDebugging()) {
+                    plugin.log.warning("DEBUG: groupExists() - No group found.");
+                }
             }
         }
         return groupExists;
@@ -61,7 +63,9 @@ public final class Perms {
                 primaryGroup = perm.getPrimaryGroup(player);
             } catch (Exception e) {
                 // No groups
-                if (Config.isDebugging()) plugin.log.warning("DEBUG: getPrimaryGroup() - No group found.");
+                if (Config.isDebugging()) {
+                    plugin.log.warning("DEBUG: getPrimaryGroup() - No group found.");
+                }
             }
         }
         return primaryGroup;
@@ -75,7 +79,9 @@ public final class Perms {
                 groups = perm.getGroups();
             } catch (Exception e) {
                 // No groups
-                if (Config.isDebugging()) plugin.log.warning("DEBUG: getgroups() - No group found.");
+                if (Config.isDebugging()) {
+                    plugin.log.warning("DEBUG: getgroups() - No group found.");
+                }
             }
         }
         return groups;
