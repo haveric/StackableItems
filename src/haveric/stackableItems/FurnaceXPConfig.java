@@ -48,10 +48,9 @@ public class FurnaceXPConfig {
 
         cfgFurnaceXP.addDefault("INK_SACK 2", 0.2);
         cfgFurnaceXP.addDefault("INK_SACK 4", 0.2);
-        cfgFurnaceXP.addDefault("NETHER_QUARTZ", 0.2);
+        cfgFurnaceXP.addDefault("QUARTZ", 0.2);
 
         cfgFurnaceXP.addDefault("COAL 1", 0.15);
-
         cfgFurnaceXP.addDefault("COAL 0", 0.1);
         cfgFurnaceXP.addDefault("STONE", 0.1);
         cfgFurnaceXP.addDefault("NETHER_BRICK", 0.1);
@@ -59,7 +58,7 @@ public class FurnaceXPConfig {
 
         if (!cfgFurnaceXP.isSet("DIAMOND") || !cfgFurnaceXP.isSet("EMERALD") || !cfgFurnaceXP.isSet("GOLD_INGOT") || !cfgFurnaceXP.isSet("IRON_INGOT") || !cfgFurnaceXP.isSet("REDSTONE")
          || !cfgFurnaceXP.isSet("BAKED_POTATO") || !cfgFurnaceXP.isSet("COOKED_BEEF") || !cfgFurnaceXP.isSet("COOKED_CHICKEN") || !cfgFurnaceXP.isSet("COOKED_FISH") || !cfgFurnaceXP.isSet("GRILLED_PORK")
-         || !cfgFurnaceXP.isSet("CLAY_BRICK") || !cfgFurnaceXP.isSet("INK_SACK 2") || !cfgFurnaceXP.isSet("INK_SACK 4") || !cfgFurnaceXP.isSet("COAL 1")
+         || !cfgFurnaceXP.isSet("CLAY_BRICK") || !cfgFurnaceXP.isSet("INK_SACK 2") || !cfgFurnaceXP.isSet("INK_SACK 4") || !cfgFurnaceXP.isSet("QUARTZ") || !cfgFurnaceXP.isSet("COAL 1")
          || !cfgFurnaceXP.isSet("COAL 0") || !cfgFurnaceXP.isSet("STONE") || !cfgFurnaceXP.isSet("NETHER_BRICK") || !cfgFurnaceXP.isSet("GLASS")) {
 
             cfgFurnaceXP.options().copyDefaults(true);
