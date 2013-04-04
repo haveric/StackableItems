@@ -340,9 +340,9 @@ public class SIPlayerListener implements Listener {
             if (type == Material.MILK_BUCKET) {
                 InventoryUtil.addItems(player, new ItemStack(Material.BUCKET));
             } else if (type == Material.MUSHROOM_SOUP) {
-                PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
+                int heldSlot = player.getInventory().getHeldItemSlot();
 
-                InventoryUtil.replaceItem(player.getInventory(), clickData.getSlot(), new ItemStack(Material.MUSHROOM_SOUP, amt - 1));
+                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.MUSHROOM_SOUP, amt - 1));
                 InventoryUtil.addItems(player, new ItemStack(Material.BOWL));
             }
         }
