@@ -34,6 +34,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -350,20 +351,6 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void playerClick(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
-            ItemStack holding = event.getItem();
-            if (holding != null) {
-                Material holdingType = holding.getType();
-                Player player = event.getPlayer();
-
-                int amount = holding.getAmount();
-
-                PlayerClickData clickData = new PlayerClickData(player.getInventory().getHeldItemSlot(), holdingType, amount);
-                SIPlayers.setPlayerData(player.getName(), clickData);
-            }
-        }
-
-        // only prevent this after checking for consumption
         if (event.isCancelled()) {
             return;
         }
@@ -392,11 +379,6 @@ public class SIPlayerListener implements Listener {
                 }
             }
             Player player = event.getPlayer();
-            PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
-
-            Material blockType = block.getType();
-            clickData.setLastBlock(blockType);
-            clickData.setLastBlockLocation(block.getLocation());
 
             InventoryUtil.splitStack(player, true);
         }
@@ -437,16 +419,20 @@ public class SIPlayerListener implements Listener {
 
                 ItemStack clone = clicked.clone();
 
+                // TODO: Handle shift clicking of furnace stacks.
+                // TODO: Fix Result item temporarily showing up in crafting slot
                 int maxFurnaceSize = Config.getMaxFurnaceAmount(clickedType);
                 if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
+                    InventoryHolder inventoryHolder = event.getInventory().getHolder();
 
-                    PlayerClickData clickData = SIPlayers.getPlayerData(player.getName());
-                    Material lastClicked = clickData.getLastBlock();
-                    if (lastClicked == Material.FURNACE || lastClicked == Material.BURNING_FURNACE) {
-                        Location loc = clickData.getLastBlockLocation();
+                    if (inventoryHolder instanceof Furnace) {
+                        Furnace furnace = (Furnace) inventoryHolder;
 
-                        int amt = Config.getFurnaceAmount(loc);
+                        Location blockLocation = furnace.getBlock().getLocation();
+                        int amt = Config.getFurnaceAmount(blockLocation);
                         if (amt > -1) {
+                            Config.clearFurnace(blockLocation);
+
                             clone.setAmount(amt);
 
                             event.setCurrentItem(null);
@@ -457,7 +443,6 @@ public class SIPlayerListener implements Listener {
                                 Random random = new Random();
                                 player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                             }
-
 
                             event.setCursor(clone);
                             event.setResult(Result.ALLOW);

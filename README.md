@@ -19,6 +19,7 @@
 * Added Quartz to furnace xp config
 * Added CARROT_STICK to repairable list
 * Added GOLDEN_CARROT to Brewing Ingredients
+* Fixed furnace duplication bug with "Furnace_Amount" set above 64.
 
 #### Version 0.9.2 (3/22/2013) (Requires CraftBukkit build #2700+)
 * Added Dropper support 
