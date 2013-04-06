@@ -22,6 +22,7 @@
 * Fixed furnace duplication bug with "Furnace_Amount" set above 64.
 * Fixed all click handling with furnace stacks >64
 * Fixed Furnace Result item temporarily showing up in furnace crafting slot
+* Made filling buckets work like vanilla where you keep the empty buckets in the current slot so you can keep filling them.
 
 #### Version 0.9.2 (3/22/2013) (Requires CraftBukkit build #2700+)
 * Added Dropper support 

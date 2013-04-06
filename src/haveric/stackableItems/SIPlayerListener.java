@@ -59,9 +59,7 @@ public class SIPlayerListener implements Listener {
 
         Furnace furnace = (Furnace) event.getBlock().getState();
         ItemStack result = furnace.getInventory().getResult();
-        if (result == null) {
-            amt = 0;
-        } else {
+        if (result != null) {
             amt = result.getAmount() + 1;
 
             int maxFurnaceSize = Config.getMaxFurnaceAmount(result.getType());
@@ -131,9 +129,7 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 }
-            }
-
-            if (maxItems == 0) {
+            } else if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
                 event.setCancelled(true);
             } else {
@@ -180,11 +176,12 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 } else if (event.isLeftClick() || event.isRightClick()) {
-                    if (cursorAmount + recipeAmount > maxItems) {
+                    int total = cursorAmount + recipeAmount;
+                    if (total > maxItems) {
                         event.setCancelled(true);
                     } else {
                         // Only handle stacks that are above normal stack amounts.
-                        if (cursorAmount + recipeAmount > result.getMaxStackSize()) {
+                        if (total > result.getMaxStackSize()) {
                             int numCanHold = maxItems - cursorAmount;
                             int craftTimes = numCanHold / recipeAmount;
                             int canCraft = InventoryUtil.getCraftingAmount(event.getInventory(), event.getRecipe());
@@ -203,7 +200,7 @@ public class SIPlayerListener implements Listener {
                                 InventoryUtil.removeFromCrafting(player, event.getInventory(), 1);
 
                                 // Add one set of items to the cursor
-                                cursorClone.setAmount(cursorAmount + recipeAmount);
+                                cursorClone.setAmount(total);
                                 event.setCursor(cursorClone);
                                 event.setResult(Result.ALLOW);
                             }
@@ -230,7 +227,6 @@ public class SIPlayerListener implements Listener {
         } else {
             InventoryUtil.splitStack(player, false);
         }
-
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
@@ -248,11 +244,20 @@ public class SIPlayerListener implements Listener {
             if (maxItems == SIItems.ITEM_INFINITE) {
                 player.setItemInHand(clone);
                 InventoryUtil.updateInventory(player);
-
-                // TODO Handle infinite arrows
             } else {
                 InventoryUtil.splitStack(player, false);
             }
+
+            // TODO: Handle Infinite arrows
+            //  Arrows shouldn't be able to be picked up... similar to how the Infinite enchantment works
+            //  Perhaps setting the Infinite enchantment temporarily, although I don't like that option
+            /*
+            int maxArrows = SIItems.getItemMax(player, Material.ARROW, (short) 0, false);
+            if (maxArrows == SIItems.ITEM_INFINITE) {
+                InventoryUtil.addItems(player, new ItemStack(Material.ARROW));
+                InventoryUtil.updateInventory(player);
+            }
+            */
         }
     }
 
@@ -270,9 +275,8 @@ public class SIPlayerListener implements Listener {
 
                 // Handle infinite weapons
                 if (maxItems == SIItems.ITEM_INFINITE) {
-                    ItemStack clone = hold.clone();
                     PlayerInventory inventory = player.getInventory();
-                    InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
+                    InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), hold.clone());
                     InventoryUtil.updateInventory(player);
                 } else {
                     InventoryUtil.splitStack(player, true);
@@ -295,15 +299,16 @@ public class SIPlayerListener implements Listener {
         int slot = player.getInventory().getHeldItemSlot();
 
         if (amount > 1) {
-            ItemStack clone = event.getItemStack().clone();
+            ItemStack clone = holding.clone();
+            clone.setAmount(amount - 1);
 
             InventoryUtil.replaceItem(player.getInventory(), slot, clone);
-            InventoryUtil.updateInventory(player);
+            InventoryUtil.addItems(player, event.getItemStack());
 
             event.setCancelled(true);
             event.getBlockClicked().setType(Material.AIR);
 
-            InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, amount - 1));
+            InventoryUtil.updateInventory(player);
         }
     }
 
