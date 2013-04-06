@@ -20,6 +20,8 @@
 * Added CARROT_STICK to repairable list
 * Added GOLDEN_CARROT to Brewing Ingredients
 * Fixed furnace duplication bug with "Furnace_Amount" set above 64.
+* Fixed all click handling with furnace stacks >64
+* Fixed Furnace Result item temporarily showing up in furnace crafting slot
 
 #### Version 0.9.2 (3/22/2013) (Requires CraftBukkit build #2700+)
 * Added Dropper support 
