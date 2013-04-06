@@ -12,9 +12,6 @@ public final class Perms {
     private static String stack = "stackableitems.stack";
     private static String adjust = "stackableitems.adjust";
 
-    // Vanish nopickup
-    private static String vanishNoPickup = "vanish.nopickup";
-
     private Perms() { } // Private constructor for utility class
 
     public static void init(StackableItems si, Permission p) {
@@ -86,9 +83,4 @@ public final class Perms {
         }
         return groups;
     }
-
-    public static boolean canVanishPickup(Player player) {
-        return player.hasPermission(vanishNoPickup);
-    }
-
 }
