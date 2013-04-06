@@ -23,7 +23,7 @@ public class CustomFileWriter {
 
     private List<Material> matList;
 
-    String fileName;
+    private String fileName;
 
     public CustomFileWriter(StackableItems si, String name) {
         plugin = si;

@@ -20,7 +20,6 @@ public class Commands implements CommandExecutor {
     private ChatColor highlightColor = ChatColor.YELLOW;
     private ChatColor defaultColor = ChatColor.WHITE;
 
-    private String title;
     private String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
 
     public Commands(StackableItems si) {
@@ -29,7 +28,7 @@ public class Commands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
+        String title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
 
         boolean op = false;
         if (sender.isOp()) {

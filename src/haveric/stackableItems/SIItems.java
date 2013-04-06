@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,9 +17,9 @@ import org.bukkit.entity.Player;
 public final class SIItems {
 
     //                     player    item            num
-    private static HashMap<String, HashMap<String, Integer>> itemsMap;
+    private static Map<String, Map<String, Integer>> itemsMap;
     //                     item        groups
-    private static HashMap<String, ArrayList<String>> itemGroups;
+    private static Map<String, ArrayList<String>> itemGroups;
 
     private static StackableItems plugin;
 
@@ -85,7 +86,7 @@ public final class SIItems {
     }
 
     public static void reload() {
-        itemsMap = new HashMap<String, HashMap<String, Integer>>();
+        itemsMap = new HashMap<String, Map<String, Integer>>();
         itemGroups = new HashMap<String, ArrayList<String>>();
 
         try {
@@ -282,7 +283,7 @@ public final class SIItems {
         }
 
         if (itemsMap.containsKey(file)) {
-            HashMap<String, Integer> subMap = itemsMap.get(file);
+            Map<String, Integer> subMap = itemsMap.get(file);
             if (groups != null) {
                 for (int i = 0; i < groups.size(); i++) {
                     if (subMap.containsKey(groups.get(i).toUpperCase())) {
@@ -343,7 +344,7 @@ public final class SIItems {
         }
 
         if (itemsMap.containsKey(file)) {
-            HashMap<String, Integer> subMap = itemsMap.get(file);
+            Map<String, Integer> subMap = itemsMap.get(file);
             if (groups != null) {
                 for (int i = 0; i < groups.size(); i++) {
                     if (subMap.containsKey(groups.get(i).toUpperCase())) {

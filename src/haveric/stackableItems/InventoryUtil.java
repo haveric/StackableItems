@@ -375,10 +375,8 @@ public final class InventoryUtil {
     public static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int slot) {
         InventoryType inventoryType = inventory.getType();
         boolean isChestSlot = false;
-        if (inventoryType == InventoryType.CHEST) {
-            if (slot < inventory.getSize()) {
-                isChestSlot = true;
-            }
+        if (inventoryType == InventoryType.CHEST && slot < inventory.getSize()) {
+            isChestSlot = true;
         }
 
         int maxAmount = SIItems.getItemMax(player, mat, dur, isChestSlot);

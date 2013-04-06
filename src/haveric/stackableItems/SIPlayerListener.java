@@ -361,20 +361,18 @@ public class SIPlayerListener implements Listener {
             Block block = event.getClickedBlock();
 
             ItemStack holding = event.getItem();
-            if (holding != null) {
-                if (holding.getType() == Material.FLINT_AND_STEEL) {
-                    Material placedType = block.getRelative(event.getBlockFace()).getType();
+            if (holding != null && holding.getType() == Material.FLINT_AND_STEEL) {
+                Material placedType = block.getRelative(event.getBlockFace()).getType();
 
-                    switch(placedType) {
-                        case STATIONARY_WATER:
-                        case WATER:
-                        case STATIONARY_LAVA:
-                        case LAVA:
-                        case FIRE:
-                            event.setUseItemInHand(Result.DENY);
-                            event.setUseInteractedBlock(Result.DENY);
-                            break;
-                    }
+                switch(placedType) {
+                    case STATIONARY_WATER:
+                    case WATER:
+                    case STATIONARY_LAVA:
+                    case LAVA:
+                    case FIRE:
+                        event.setUseItemInHand(Result.DENY);
+                        event.setUseInteractedBlock(Result.DENY);
+                        break;
                 }
             }
 
