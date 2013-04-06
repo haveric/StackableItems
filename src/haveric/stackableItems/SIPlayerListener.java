@@ -318,19 +318,16 @@ public class SIPlayerListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-
-        ItemStack holding = player.getInventory().getItemInHand();
-        Material type = holding.getType();
-
         int slot = player.getInventory().getHeldItemSlot();
 
+        ItemStack holding = player.getInventory().getItemInHand();
         int amount = holding.getAmount();
-        if (amount > 1 && (type == Material.WATER_BUCKET || type == Material.LAVA_BUCKET || type == Material.MILK_BUCKET)) {
+        if (amount > 1) {
             ItemStack clone = holding.clone();
             clone.setAmount(amount - 1);
 
             InventoryUtil.replaceItem(player.getInventory(), slot, clone);
-            InventoryUtil.addItems(player, new ItemStack(Material.BUCKET, 1));
+            InventoryUtil.addItems(player, event.getItemStack());
         }
     }
 
@@ -360,7 +357,6 @@ public class SIPlayerListener implements Listener {
             return;
         }
 
-
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
 
@@ -378,14 +374,11 @@ public class SIPlayerListener implements Listener {
                             event.setUseItemInHand(Result.DENY);
                             event.setUseInteractedBlock(Result.DENY);
                             break;
-                        default:
-                            break;
                     }
                 }
             }
-            Player player = event.getPlayer();
 
-            InventoryUtil.splitStack(player, true);
+            InventoryUtil.splitStack(event.getPlayer(), true);
         }
     }
 
@@ -416,7 +409,6 @@ public class SIPlayerListener implements Listener {
             int clickedAmount = clicked.getAmount();
 
             boolean cursorEmpty = cursorType == Material.AIR;
-            boolean slotEmpty = clickedType == Material.AIR;
 
             int maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
 
@@ -1005,16 +997,14 @@ public class SIPlayerListener implements Listener {
                                 if (ItemUtil.isSameItem(cursor, clicked)) {
                                     int total = clickedAmount + cursorAmount;
 
-                                    if (total <= maxItems) {
-                                        if (total > clicked.getMaxStackSize()) {
-                                            //player.sendMessage("Combine two stacks fully");
-                                            ItemStack clone = cursor.clone();
-                                            clone.setAmount(total);
-                                            event.setCurrentItem(clone);
+                                    if (total <= maxItems && total > clicked.getMaxStackSize()) {
+                                        //player.sendMessage("Combine two stacks fully");
+                                        ItemStack clone = cursor.clone();
+                                        clone.setAmount(total);
+                                        event.setCurrentItem(clone);
 
-                                            event.setCursor(null);
-                                            event.setResult(Result.ALLOW);
-                                        }
+                                        event.setCursor(null);
+                                        event.setResult(Result.ALLOW);
                                     } else {
                                         //player.sendMessage("Combine two stacks partially");
                                         ItemStack clone = cursor.clone();
@@ -1053,7 +1043,6 @@ public class SIPlayerListener implements Listener {
                                 }
                             } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
                                 //player.sendMessage("Swap two items");
-
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(clicked.clone());
 
@@ -1177,7 +1166,6 @@ public class SIPlayerListener implements Listener {
                                 }
                             } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
                                 //player.sendMessage("RC:Swap two items");
-
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(clicked.clone());
 
@@ -1310,6 +1298,7 @@ public class SIPlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
+
         if (event.getCause() == IgniteCause.FLINT_AND_STEEL) {
             Player player = event.getPlayer();
 
