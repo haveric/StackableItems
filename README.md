@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon: (Requires CraftBukkit #2723+)
+#### Version 0.9.3 (4/6/2013) (Requires CraftBukkit #2723+)
 * Prevent item flashing from top inventory to player inventory by letting vanilla handle it if it can.
 * Prevent item flashing when possible from player inventory to chests, dispensers, ender chests, hoppers, droppers, and enchantment tables.
 * Prevent item flashing when possible from crafting.
