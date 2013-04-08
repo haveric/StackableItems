@@ -68,7 +68,7 @@ public class Commands implements CommandExecutor {
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You do not have permission to reload the config.");
                 }
-            } else if (args.length == 1 && args[0].equalsIgnoreCase(cmdPerms) || args[0].equalsIgnoreCase(cmdPermsAlt)) {
+            } else if (args.length == 1 && (args[0].equalsIgnoreCase(cmdPerms) || args[0].equalsIgnoreCase(cmdPermsAlt))) {
                 if (op || hasAdminPerm) {
                     sender.sendMessage(title + "Permission nodes:");
                     sender.sendMessage(Perms.getPermStack() + " - " + msgColor + "Allows a permission group to stack items.");
