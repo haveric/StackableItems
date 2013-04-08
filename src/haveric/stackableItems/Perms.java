@@ -10,7 +10,7 @@ public final class Perms {
     private static StackableItems plugin = null;
 
     private static String stack = "stackableitems.stack";
-    private static String adjust = "stackableitems.adjust";
+    private static String admin = "stackableitems.admin";
 
     private Perms() { } // Private constructor for utility class
 
@@ -48,8 +48,8 @@ public final class Perms {
         return player.hasPermission(stack);
     }
 
-    public static boolean canAdjust(Player player) {
-        return player.hasPermission(adjust);
+    public static boolean hasAdmin(Player player) {
+        return player.hasPermission(admin);
     }
 
     public static String getPrimaryGroup(Player player) {
@@ -82,5 +82,13 @@ public final class Perms {
             }
         }
         return groups;
+    }
+
+    public static String getPermStack() {
+        return stack;
+    }
+
+    public static String getPermAdmin() {
+        return admin;
     }
 }

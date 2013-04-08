@@ -15,10 +15,10 @@ permissions:
         description: Gives access to all StackableItems Commands
         children:
             stackableitems.stack: true
-            stackableitems.adjust: true
+            stackableitems.admin: true
     stackableitems.stack:
         description: Allows a permission group to stack items.
         default: false
-    stackableitems.adjust:
-        description: Allows you to adjust stack configs.
+    stackableitems.admin:
+        description: Allows use of admin commands.
         default: false

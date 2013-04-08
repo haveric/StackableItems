@@ -12,9 +12,11 @@ public class Commands implements CommandExecutor {
     private StackableItems plugin;
 
     private static String cmdMain = "stackableitems";
-    private static String cmdMainAlt = "si";
-    private static String cmdHelp = "help";
-    private static String cmdReload = "reload";
+    private String cmdMainAlt = "si";
+    private String cmdHelp = "help";
+    private String cmdReload = "reload";
+    private String cmdPerms = "perms";
+    private String cmdPermsAlt = "perm";
 
     private ChatColor msgColor = ChatColor.DARK_AQUA;
     private ChatColor highlightColor = ChatColor.YELLOW;
@@ -35,17 +37,17 @@ public class Commands implements CommandExecutor {
             op = true;
         }
 
-        boolean canAdjust = false;
+        boolean hasAdminPerm = false;
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            canAdjust = Perms.canAdjust(player);
+            hasAdminPerm = Perms.hasAdmin(player);
         }
 
         if (commandLabel.equalsIgnoreCase(cmdMain) || commandLabel.equalsIgnoreCase(cmdMainAlt)) {
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase(cmdHelp))) {
                 sender.sendMessage(title + "github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
 
-                if (op || canAdjust) {
+                if (op || hasAdminPerm) {
                     sender.sendMessage("/" + cmdMain + " " + cmdReload + " - " + msgColor + "Reloads the config files");
                     sender.sendMessage("/" + cmdMain + highlightColor + " playerName" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set a player's max items");
                     sender.sendMessage("/" + cmdMain + highlightColor + " permissionGroupName" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set a group's max items");
@@ -57,7 +59,7 @@ public class Commands implements CommandExecutor {
                 }
 
             } else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)) {
-                if (op || canAdjust) {
+                if (op || hasAdminPerm) {
                     Config.reload();
                     SIItems.reload();
                     FurnaceUtil.reload();
@@ -65,6 +67,14 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage(title + "Configuration files reloaded.");
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You do not have permission to reload the config.");
+                }
+            } else if (args.length == 1 && args[0].equalsIgnoreCase(cmdPerms) || args[0].equalsIgnoreCase(cmdPermsAlt)) {
+                if (op || hasAdminPerm) {
+                    sender.sendMessage(title + "Permission nodes:");
+                    sender.sendMessage(Perms.getPermStack() + " - " + msgColor + "Allows a permission group to stack items.");
+                    sender.sendMessage(Perms.getPermAdmin() + " - " + msgColor + "Allows use of admin commands.");
+                } else {
+                    sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to see permission nodes.");
                 }
             } else if (args.length == 2 || args.length == 3) {
                 String type;
@@ -102,7 +112,7 @@ public class Commands implements CommandExecutor {
                     // set value
                     if (args.length == 3) {
 
-                        if (op || canAdjust) {
+                        if (op || hasAdminPerm) {
                             int numToSet = Integer.parseInt(args[2]);
                             String displayName;
                             if (dur == SIItems.ITEM_DEFAULT) {
@@ -204,17 +214,5 @@ public class Commands implements CommandExecutor {
 
     public static String getMain() {
         return cmdMain;
-    }
-
-    public static void setMain(String cmd) {
-        cmdMain = cmd;
-    }
-
-    public static String getHelp() {
-        return cmdHelp;
-    }
-
-    public static void setHelp(String cmd) {
-        cmdHelp = cmd;
     }
 }
