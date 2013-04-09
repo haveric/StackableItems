@@ -995,14 +995,16 @@ public class SIPlayerListener implements Listener {
                                 if (ItemUtil.isSameItem(cursor, clicked)) {
                                     int total = clickedAmount + cursorAmount;
 
-                                    if (total <= maxItems && total > clicked.getMaxStackSize()) {
-                                        //player.sendMessage("Combine two stacks fully");
-                                        ItemStack clone = cursor.clone();
-                                        clone.setAmount(total);
-                                        event.setCurrentItem(clone);
+                                    if (total <= maxItems) {
+                                        if (total > clicked.getMaxStackSize()) {
+                                            //player.sendMessage("Combine two stacks fully");
+                                            ItemStack clone = cursor.clone();
+                                            clone.setAmount(total);
+                                            event.setCurrentItem(clone);
 
-                                        event.setCursor(null);
-                                        event.setResult(Result.ALLOW);
+                                            event.setCursor(null);
+                                            event.setResult(Result.ALLOW);
+                                        }
                                     } else {
                                         //player.sendMessage("Combine two stacks partially");
                                         ItemStack clone = cursor.clone();
