@@ -600,24 +600,6 @@ public class SIPlayerListener implements Listener {
             boolean cursorEmpty = cursorType == Material.AIR;
             boolean slotEmpty = clickedType == Material.AIR;
 
-            boolean virtualClicked = false;
-            boolean virtualCursor = false;
-
-            VirtualItemStack clickedStack = null, cursorStack = null;
-
-
-            if (Config.isVirtualItemsEnabled()) {
-                clickedStack = VirtualItemConfig.getVirtualItemStack(player, slot);
-                if (!clickedStack.isEmpty()) {
-                    virtualClicked = true;
-                }
-
-                cursorStack = VirtualItemConfig.getVirtualItemStack(player, -1);
-                if (!cursorStack.isEmpty()) {
-                    virtualCursor = true;
-                }
-            }
-
             // we want to ignore creative players (for now) as there are a lot of bugs TODO: handle creative players
             if (player.getGameMode() == GameMode.CREATIVE) {
 
@@ -843,214 +825,88 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 } else if (event.isLeftClick()) {
-                    if (cursorEmpty && !slotEmpty && clickedAmount <= clickedType.getMaxStackSize() && maxItems < clickedAmount) {
-                        if (!virtualClicked) {
-                            //player.sendMessage("Pick up stack with empty hand. Less than max.");
-                            if (clickedAmount <= maxItems) {
-                                event.setCursor(clicked.clone());
-                                event.setCurrentItem(null);
-                                event.setResult(Result.ALLOW);
-                            } else {
-                                ItemStack clone = clicked.clone();
-                                clone.setAmount(maxItems);
-                                event.setCursor(clone);
-
-                                ItemStack clone2 = clicked.clone();
-                                clone2.setAmount(clickedAmount - maxItems);
-                                event.setCurrentItem(clone2);
-                                event.setResult(Result.ALLOW);
-                            }
-                        }
                     // Pick up a stack with an empty hand
-                    } else if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()) {
-                        if (virtualClicked) {
-                            //player.sendMessage("Pick up stack with empty hand. (Virtual item)");
-                            VirtualItemConfig.setVirtualItemStack(player, slot, null);
-                            // Set cursor to the clicked stack
-                            VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
+                    if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()) {
+                        //player.sendMessage("Pick up stack with empty hand. Greater than max.");
+                        if (clickedAmount <= maxItems) {
+                            event.setCursor(clicked.clone());
+                            event.setCurrentItem(null);
+                            event.setResult(Result.ALLOW);
                         } else {
-                            //player.sendMessage("Pick up stack with empty hand. Greater than max.");
-                            if (clickedAmount <= maxItems) {
-                                event.setCursor(clicked.clone());
-                                event.setCurrentItem(null);
-                                event.setResult(Result.ALLOW);
-                            } else {
-                                ItemStack clone = clicked.clone();
-                                clone.setAmount(maxItems);
-                                event.setCursor(clone);
+                            ItemStack clone = clicked.clone();
+                            clone.setAmount(maxItems);
+                            event.setCursor(clone);
 
-                                ItemStack clone2 = clicked.clone();
-                                clone2.setAmount(clickedAmount - maxItems);
-                                event.setCurrentItem(clone2);
-                                event.setResult(Result.ALLOW);
-                                InventoryUtil.updateInventory(player);
-                            }
+                            ItemStack clone2 = clicked.clone();
+                            clone2.setAmount(clickedAmount - maxItems);
+                            event.setCurrentItem(clone2);
+                            event.setResult(Result.ALLOW);
+                            InventoryUtil.updateInventory(player);
                         }
+
                     // Drop a stack into an empty slot
                     } else if (!cursorEmpty && slotEmpty) {
-                        if (virtualCursor) {
-                            //player.sendMessage("Drop a stack into an empty slot (virtual cursor)");
-                            VirtualItemConfig.setVirtualItemStack(player, -1, null);
-                            // Set slot to the cursor stack
-                            VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
-                            if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
-                                event.setCursor(null);
+                        //player.sendMessage("Drop a stack into an empty slot: " + rawSlot + "," + slotType);
+                        // Ignore armor slots when dropping items, let default Minecraft handle them.
+                        if (event.getSlotType() != SlotType.ARMOR) {
+                            if (cursorAmount <= maxItems) {
                                 event.setCurrentItem(cursor.clone());
+                                event.setCursor(null);
                                 event.setResult(Result.ALLOW);
-                            }
-                        } else {
-                            //player.sendMessage("Drop a stack into an empty slot: " + rawSlot + "," + slotType);
-                            // Ignore armor slots when dropping items, let default Minecraft handle them.
-                            if (event.getSlotType() != SlotType.ARMOR) {
-                                if (cursorAmount <= maxItems) {
-                                    event.setCurrentItem(cursor.clone());
-                                    event.setCursor(null);
-                                    event.setResult(Result.ALLOW);
 
-                                    // These inventories need a 2 tick update for RecipeManager
-                                    if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                        InventoryUtil.updateInventoryLater(player, 2);
-                                    } else {
-                                        InventoryUtil.updateInventory(player);
-                                    }
-                                // More items than can fit in this slot
+                                // These inventories need a 2 tick update for RecipeManager
+                                if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                    InventoryUtil.updateInventoryLater(player, 2);
                                 } else {
-                                    ItemStack toDrop = cursor.clone();
-                                    toDrop.setAmount(maxItems);
-                                    event.setCurrentItem(toDrop);
-
-                                    ItemStack toHold = cursor.clone();
-                                    toHold.setAmount(cursorAmount - maxItems);
-                                    event.setCursor(toHold);
-
-                                    event.setResult(Result.ALLOW);
                                     InventoryUtil.updateInventory(player);
                                 }
+                            // More items than can fit in this slot
+                            } else {
+                                ItemStack toDrop = cursor.clone();
+                                toDrop.setAmount(maxItems);
+                                event.setCurrentItem(toDrop);
+
+                                ItemStack toHold = cursor.clone();
+                                toHold.setAmount(cursorAmount - maxItems);
+                                event.setCursor(toHold);
+
+                                event.setResult(Result.ALLOW);
+                                InventoryUtil.updateInventory(player);
                             }
                         }
                     // Combine two items
                     } else if (!cursorEmpty && !slotEmpty) {
                         boolean sameType = clickedType.equals(cursorType);
 
-                        // Combine two virtual stacks
-                        if (virtualCursor && virtualClicked) {
-                            if (sameType) {
-                                //player.sendMessage("Combine two virtual stacks");
-                                while (clickedAmount < maxItems && cursorAmount > 0) {
-                                    clickedStack.addToFront(cursorStack.removeLast());
-                                    clickedAmount++;
-                                    cursorAmount--;
-                                }
-                                VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
-                                if (cursorAmount > 0) {
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, cursorStack);
-                                } else {
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, null);
-                                }
-                            // swap stacks when not the same
-                            } else {
-                                //player.sendMessage("Swap two virtual stacks");
-                                VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
-                                VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
-                            }
-                        // Add virtual stack to single item
-                        } else if (virtualCursor) {
-                            if (sameType) {
-                                if (cursorAmount < maxItems) {
-                                    //player.sendMessage("Add virtual cursor to item");
-                                    cursorStack.addItemStack(clicked.clone());
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, null);
-                                    VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
 
-                                    cursor.setAmount(clickedAmount + cursorAmount);
-                                    event.setCurrentItem(cursor.clone());
-                                    event.setCursor(null);
+                        if (sameType) {
+                            if (ItemUtil.isSameItem(cursor, clicked)) {
+                                int total = clickedAmount + cursorAmount;
 
-                                    event.setResult(Result.ALLOW);
-                                }
-                            } else {
-                                //player.sendMessage("Swap virtual cursor and item");
-                                VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
-                                VirtualItemConfig.setVirtualItemStack(player, -1, null);
-                            }
-                        // Add cursor to virtual stack
-                        } else if (virtualClicked) {
-                            if (sameType) {
-                                if (clickedAmount < maxItems) {
-                                    //player.sendMessage("Add cursor to virtual slot stack");
-                                    clickedStack.addToFront(cursor.clone());
-                                    VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, null);
-
-                                    event.setCursor(null);
-
-                                    cursor.setAmount(clickedAmount + cursorAmount);
-
-                                    event.setCurrentItem(cursor.clone());
-
-                                    event.setResult(Result.ALLOW);
-                                }
-                            } else {
-                                //player.sendMessage("Swap cursor and virtual slot stack");
-                                VirtualItemConfig.setVirtualItemStack(player, slot, null);
-                                VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
-                            }
-                        // Add two normal items
-                        } else {
-                            if (sameType) {
-                                if (ItemUtil.isSameItem(cursor, clicked)) {
-                                    int total = clickedAmount + cursorAmount;
-
-                                    if (total <= maxItems) {
-                                        if (total > clicked.getMaxStackSize()) {
-                                            //player.sendMessage("Combine two stacks fully");
-                                            ItemStack clone = cursor.clone();
-                                            clone.setAmount(total);
-                                            event.setCurrentItem(clone);
-
-                                            event.setCursor(null);
-                                            event.setResult(Result.ALLOW);
-
-                                            // These inventories need a 2 tick update for RecipeManager
-                                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                                InventoryUtil.updateInventoryLater(player, 2);
-                                            }
-                                        }
-                                    } else {
-                                        //player.sendMessage("Combine two stacks partially");
+                                if (total <= maxItems) {
+                                    if (total > clicked.getMaxStackSize()) {
+                                        //player.sendMessage("Combine two stacks fully");
                                         ItemStack clone = cursor.clone();
-                                        clone.setAmount(maxItems);
+                                        clone.setAmount(total);
                                         event.setCurrentItem(clone);
 
-                                        ItemStack clone2 = cursor.clone();
-                                        clone2.setAmount(total - maxItems);
-                                        event.setCursor(clone2);
-
+                                        event.setCursor(null);
                                         event.setResult(Result.ALLOW);
+
                                         // These inventories need a 2 tick update for RecipeManager
                                         if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                             InventoryUtil.updateInventoryLater(player, 2);
                                         }
                                     }
-                                // Create a virtual stack out of two different items
-                                } else if (Config.isVirtualItemsEnabled()) {
-                                    //player.sendMessage("Combine two items into a virtual stack.");
-                                    VirtualItemStack vis = new VirtualItemStack();
-                                    vis.addItemStack(cursor.clone());
-                                    vis.addItemStack(clicked.clone());
-                                    VirtualItemConfig.setVirtualItemStack(player, slot, vis);
-                                    event.setCursor(null);
-
-                                    cursor.setAmount(clickedAmount + cursorAmount);
-
-                                    event.setCurrentItem(cursor.clone());
-
-                                    event.setResult(Result.ALLOW);
-                                // no virtual items so just swap them
                                 } else {
-                                    //player.sendMessage("Swap two unstackable items");
-                                    event.setCurrentItem(cursor.clone());
-                                    event.setCursor(clicked.clone());
+                                    //player.sendMessage("Combine two stacks partially");
+                                    ItemStack clone = cursor.clone();
+                                    clone.setAmount(maxItems);
+                                    event.setCurrentItem(clone);
+
+                                    ItemStack clone2 = cursor.clone();
+                                    clone2.setAmount(total - maxItems);
+                                    event.setCursor(clone2);
 
                                     event.setResult(Result.ALLOW);
                                     // These inventories need a 2 tick update for RecipeManager
@@ -1058,8 +914,9 @@ public class SIPlayerListener implements Listener {
                                         InventoryUtil.updateInventoryLater(player, 2);
                                     }
                                 }
-                            } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
-                                //player.sendMessage("Swap two items");
+                            } else {
+                                // Swap two unstackable items
+                                //player.sendMessage("Swap two unstackable items");
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(clicked.clone());
 
@@ -1068,6 +925,16 @@ public class SIPlayerListener implements Listener {
                                 if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                     InventoryUtil.updateInventoryLater(player, 2);
                                 }
+                            }
+                        } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
+                            //player.sendMessage("Swap two items");
+                            event.setCurrentItem(cursor.clone());
+                            event.setCursor(clicked.clone());
+
+                            event.setResult(Result.ALLOW);
+                            // These inventories need a 2 tick update for RecipeManager
+                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                InventoryUtil.updateInventoryLater(player, 2);
                             }
                         }
                     }
@@ -1075,126 +942,38 @@ public class SIPlayerListener implements Listener {
                     if (!slotEmpty && !cursorEmpty) {
                         boolean sameType = clickedType.equals(cursorType);
 
-                        // Combine two virtual stacks
-                        if (virtualCursor && virtualClicked) {
-                            if (sameType) {
-                                //player.sendMessage("RC:Combine two virtual stacks");
-                                while (clickedAmount < maxItems && cursorAmount > 0) {
-                                    clickedStack.addToFront(cursorStack.removeLast());
-                                    clickedAmount++;
-                                    cursorAmount--;
-                                }
-                                VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
-                                if (cursorAmount > 0) {
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, cursorStack);
-                                } else {
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, null);
-                                }
-                            // swap stacks when not the same
-                            } else {
-                                //player.sendMessage("RC:Swap two virtual stacks");
-                                VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
-                                VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
-                            }
-                        // Add virtual stack to single item
-                        } else if (virtualCursor) {
-                            if (sameType) {
-                                if (cursorAmount < maxItems) {
-                                    //player.sendMessage("RC:Add virtual cursor to item");
-                                    cursorStack.addItemStack(clicked.clone());
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, null);
-                                    VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
 
-                                    cursor.setAmount(clickedAmount + cursorAmount);
-                                    event.setCurrentItem(cursor.clone());
-                                    event.setCursor(null);
 
-                                    event.setResult(Result.ALLOW);
-                                }
-                            } else {
-                                //player.sendMessage("RC:Swap virtual cursor and item");
-                                VirtualItemConfig.setVirtualItemStack(player, slot, cursorStack);
-                                VirtualItemConfig.setVirtualItemStack(player, -1, null);
-                            }
-                        // Add cursor to virtual stack
-                        } else if (virtualClicked) {
-                            if (sameType) {
-                                if (clickedAmount < maxItems) {
-                                    //player.sendMessage("RC:Add cursor to virtual slot stack");
-                                    clickedStack.addToFront(cursor.clone());
-                                    VirtualItemConfig.setVirtualItemStack(player, slot, clickedStack);
-                                    VirtualItemConfig.setVirtualItemStack(player, -1, null);
-
-                                    event.setCursor(null);
-
-                                    cursor.setAmount(clickedAmount + cursorAmount);
-
-                                    event.setCurrentItem(cursor.clone());
-
-                                    event.setResult(Result.ALLOW);
-                                }
-                            } else {
-                                //player.sendMessage("RC:Swap cursor and virtual slot stack");
-                                VirtualItemConfig.setVirtualItemStack(player, slot, null);
-                                VirtualItemConfig.setVirtualItemStack(player, -1, clickedStack);
-                            }
                         // Add two normal items
-                        } else {
-                            if (sameType) {
-                                if (ItemUtil.isSameItem(cursor, clicked)) {
+                        if (sameType) {
+                            if (ItemUtil.isSameItem(cursor, clicked)) {
 
-                                    int total = clickedAmount + 1;
-                                    if (total <= maxItems) {
-                                        if (total > clicked.getMaxStackSize()) {
-                                            //player.sendMessage("RC:Drop single item");
+                                int total = clickedAmount + 1;
+                                if (total <= maxItems) {
+                                    if (total > clicked.getMaxStackSize()) {
+                                        //player.sendMessage("RC:Drop single item");
 
-                                            ItemStack clone = cursor.clone();
-                                            clone.setAmount(total);
+                                        ItemStack clone = cursor.clone();
+                                        clone.setAmount(total);
 
-                                            event.setCurrentItem(clone);
-                                            if (cursorAmount == 1) {
-                                                event.setCursor(null);
-                                            } else {
-                                                cursor.setAmount(cursorAmount - 1);
-                                            }
-                                            event.setResult(Result.ALLOW);
-                                            // These inventories need a 2 tick update for RecipeManager
-                                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                                InventoryUtil.updateInventoryLater(player, 2);
-                                            }
+                                        event.setCurrentItem(clone);
+                                        if (cursorAmount == 1) {
+                                            event.setCursor(null);
+                                        } else {
+                                            cursor.setAmount(cursorAmount - 1);
                                         }
-                                    } else {
-                                        event.setCancelled(true);
+                                        event.setResult(Result.ALLOW);
+                                        // These inventories need a 2 tick update for RecipeManager
+                                        if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                            InventoryUtil.updateInventoryLater(player, 2);
+                                        }
                                     }
-
-                                // Create a virtual stack out of two different items
-                                } else if (Config.isVirtualItemsEnabled()) {
-                                    //player.sendMessage("RC:Combine two items into a virtual stack.");
-                                    VirtualItemStack vis = new VirtualItemStack();
-                                    vis.addItemStack(cursor.clone());
-                                    vis.addItemStack(clicked.clone());
-                                    VirtualItemConfig.setVirtualItemStack(player, slot, vis);
-                                    event.setCursor(null);
-
-                                    cursor.setAmount(clickedAmount + cursorAmount);
-
-                                    event.setCurrentItem(cursor.clone());
-
-                                    event.setResult(Result.ALLOW);
-                                // no virtual items so just swap them
                                 } else {
-                                    //player.sendMessage("RC:Swap two unstackable items");
-                                    event.setCurrentItem(cursor.clone());
-                                    event.setCursor(clicked.clone());
-
-                                    event.setResult(Result.ALLOW);
-                                    // These inventories need a 2 tick update for RecipeManager
-                                    if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                        InventoryUtil.updateInventoryLater(player, 2);
-                                    }
+                                    event.setCancelled(true);
                                 }
-                            } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
-                                //player.sendMessage("RC:Swap two items");
+                            } else {
+                                // Swap two unstackable Items
+                                //player.sendMessage("RC:Swap two unstackable items");
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(clicked.clone());
 
@@ -1204,25 +983,17 @@ public class SIPlayerListener implements Listener {
                                     InventoryUtil.updateInventoryLater(player, 2);
                                 }
                             }
-                        }
-                    //
-                    } else if (slotEmpty && !cursorEmpty) {
-                        // Remove the last virtual itemstack
-                        if (virtualCursor) {
-                            ItemStack removed = cursorStack.removeLast();
-                            event.setCurrentItem(removed);
-                            cursor.setAmount(cursorAmount - removed.getAmount());
-                            event.setCursor(cursor);
-
-                            VirtualItemConfig.setVirtualItemStack(player, -1, cursorStack);
+                        } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
+                            //player.sendMessage("RC:Swap two items");
+                            event.setCurrentItem(cursor.clone());
+                            event.setCursor(clicked.clone());
 
                             event.setResult(Result.ALLOW);
+                            // These inventories need a 2 tick update for RecipeManager
+                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                InventoryUtil.updateInventoryLater(player, 2);
+                            }
                         }
-                        /* TOOD: Finish handling Virtual stacks
-                        else {
-
-                        }
-                        */
                     // pick up half a stack
                     } else if (!slotEmpty && cursorEmpty && maxItems > -1) {
                         if (clickedAmount > maxItems) {
@@ -1245,16 +1016,8 @@ public class SIPlayerListener implements Listener {
                             event.setResult(Result.ALLOW);
                         }
                     }
-                //
                 }
-            // Throwing out a stack
             }
-            // TODO: handle throwing out a virtual stack
-            /*
-            else {
-
-            }
-            */
         }
     }
 

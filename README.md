@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon:
+* Removed virtual items.  They never worked properly and until bukkit supports all inventory movement api, they wouldn't anyway.
+
 #### Version 0.9.3.1.t1
 * Compatibility fix for RecipeManager: Delay two ticks for updating the player inventory in crafting/workbench
 

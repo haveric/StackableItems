@@ -447,12 +447,10 @@ public final class InventoryUtil {
             int amount = holding.getAmount();
 
             if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
-                if (!Config.isVirtualItemsEnabled()) {
-                    ItemStack move = holding.clone();
-                    move.setAmount(amount - 1);
-                    addItems(player, move);
-                    holding.setAmount(1);
-                }
+                ItemStack move = holding.clone();
+                move.setAmount(amount - 1);
+                addItems(player, move);
+                holding.setAmount(1);
             }
         }
     }

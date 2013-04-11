@@ -30,7 +30,6 @@ public class StackableItems extends JavaPlugin {
 
         Config.init(this);
         FurnaceXPConfig.init(this);
-        VirtualItemConfig.init(this);
 
         // Vault
         setupVault(pm);

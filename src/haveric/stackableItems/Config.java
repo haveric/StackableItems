@@ -13,7 +13,6 @@ public final class Config {
 
     private static StackableItems plugin;
 
-    private static String cfgVirtualItems = "Virtual_Items";
     private static String cfgFurnaceAmount = "Furnace_Amount";
 
     private static String cfgUseStacksFurnace = "Use_Stack_Amounts_In_Furnace";
@@ -37,7 +36,6 @@ public final class Config {
 
     private static final boolean USE_STACKS_DEFAULT = true;
 
-    private static final boolean VIRTUAL_ITEMS_DEFAULT = false;
     private static final boolean DEBUG_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
 
@@ -71,7 +69,6 @@ public final class Config {
      * Sets up the default variables if they don't exist yet.
      */
     public static void setup() {
-        cfgOptions.addDefault(cfgVirtualItems, VIRTUAL_ITEMS_DEFAULT);
         cfgOptions.addDefault(cfgUseStacksFurnace, USE_STACKS_DEFAULT);
         cfgOptions.addDefault(cfgUseStacksMerchant, USE_STACKS_DEFAULT);
         cfgOptions.addDefault(cfgUseStacksCrafting, USE_STACKS_DEFAULT);
@@ -86,7 +83,7 @@ public final class Config {
         cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
         cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
 
-        if (!cfgOptions.isSet(cfgVirtualItems) || !cfgOptions.isSet(cfgUseStacksFurnace) || !cfgOptions.isSet(cfgUseStacksMerchant) || !cfgOptions.isSet(cfgUseStacksCrafting)
+        if (!cfgOptions.isSet(cfgUseStacksFurnace) || !cfgOptions.isSet(cfgUseStacksMerchant) || !cfgOptions.isSet(cfgUseStacksCrafting)
                 || !cfgOptions.isSet(cfgUseStacksBrewing) || !cfgOptions.isSet(cfgUseStacksAnvil) || !cfgOptions.isSet(cfgUseStacksBeacon) || !cfgOptions.isSet(cfgUseStacksEnderChest)
                 || !cfgOptions.isSet(cfgUseStacksHopper) || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgUseStacksDispenser) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)) {
             cfgOptions.options().copyDefaults(true);
@@ -113,10 +110,6 @@ public final class Config {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static boolean isVirtualItemsEnabled() {
-        return cfgOptions.getBoolean(cfgVirtualItems);
     }
 
     public static int getFurnaceAmount(Furnace furnace) {
