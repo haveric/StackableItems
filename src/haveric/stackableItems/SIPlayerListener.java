@@ -906,7 +906,13 @@ public class SIPlayerListener implements Listener {
                                     event.setCurrentItem(cursor.clone());
                                     event.setCursor(null);
                                     event.setResult(Result.ALLOW);
-                                    InventoryUtil.updateInventory(player);
+
+                                    // These inventories need a 2 tick update for RecipeManager
+                                    if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                        InventoryUtil.updateInventoryLater(player, 2);
+                                    } else {
+                                        InventoryUtil.updateInventory(player);
+                                    }
                                 // More items than can fit in this slot
                                 } else {
                                     ItemStack toDrop = cursor.clone();
@@ -1004,6 +1010,11 @@ public class SIPlayerListener implements Listener {
 
                                             event.setCursor(null);
                                             event.setResult(Result.ALLOW);
+
+                                            // These inventories need a 2 tick update for RecipeManager
+                                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                                InventoryUtil.updateInventoryLater(player, 2);
+                                            }
                                         }
                                     } else {
                                         //player.sendMessage("Combine two stacks partially");
@@ -1016,9 +1027,11 @@ public class SIPlayerListener implements Listener {
                                         event.setCursor(clone2);
 
                                         event.setResult(Result.ALLOW);
-                                        InventoryUtil.updateInventory(player);
+                                        // These inventories need a 2 tick update for RecipeManager
+                                        if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                            InventoryUtil.updateInventoryLater(player, 2);
+                                        }
                                     }
-
                                 // Create a virtual stack out of two different items
                                 } else if (Config.isVirtualItemsEnabled()) {
                                     //player.sendMessage("Combine two items into a virtual stack.");
@@ -1040,6 +1053,10 @@ public class SIPlayerListener implements Listener {
                                     event.setCursor(clicked.clone());
 
                                     event.setResult(Result.ALLOW);
+                                    // These inventories need a 2 tick update for RecipeManager
+                                    if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                        InventoryUtil.updateInventoryLater(player, 2);
+                                    }
                                 }
                             } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
                                 //player.sendMessage("Swap two items");
@@ -1047,6 +1064,10 @@ public class SIPlayerListener implements Listener {
                                 event.setCursor(clicked.clone());
 
                                 event.setResult(Result.ALLOW);
+                                // These inventories need a 2 tick update for RecipeManager
+                                if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                    InventoryUtil.updateInventoryLater(player, 2);
+                                }
                             }
                         }
                     }
@@ -1137,6 +1158,10 @@ public class SIPlayerListener implements Listener {
                                                 cursor.setAmount(cursorAmount - 1);
                                             }
                                             event.setResult(Result.ALLOW);
+                                            // These inventories need a 2 tick update for RecipeManager
+                                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                                InventoryUtil.updateInventoryLater(player, 2);
+                                            }
                                         }
                                     } else {
                                         event.setCancelled(true);
@@ -1163,6 +1188,10 @@ public class SIPlayerListener implements Listener {
                                     event.setCursor(clicked.clone());
 
                                     event.setResult(Result.ALLOW);
+                                    // These inventories need a 2 tick update for RecipeManager
+                                    if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                        InventoryUtil.updateInventoryLater(player, 2);
+                                    }
                                 }
                             } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
                                 //player.sendMessage("RC:Swap two items");
@@ -1170,6 +1199,10 @@ public class SIPlayerListener implements Listener {
                                 event.setCursor(clicked.clone());
 
                                 event.setResult(Result.ALLOW);
+                                // These inventories need a 2 tick update for RecipeManager
+                                if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                    InventoryUtil.updateInventoryLater(player, 2);
+                                }
                             }
                         }
                     //

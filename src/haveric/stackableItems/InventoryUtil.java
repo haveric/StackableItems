@@ -372,6 +372,15 @@ public final class InventoryUtil {
         });
     }
 
+    public static void updateInventoryLater(final Player player, final int ticks) {
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @SuppressWarnings("deprecation")
+            @Override public void run() {
+                player.updateInventory();
+            }
+        }, ticks);
+    }
+
     public static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int slot) {
         InventoryType inventoryType = inventory.getType();
         boolean isChestSlot = false;

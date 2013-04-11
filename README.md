@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Version 0.9.3.1.t1
+* Compatibility fix for RecipeManager: Delay two ticks for updating the player inventory in crafting/workbench
+
 #### Version 0.9.3.1 (4/8/2013):
 * Changed Permission node stackableitems.adjust to stackableitems.admin
 * Added  "/stackableitems perms" command. Op's and Admin's can use these to see the plugin's permissions.
