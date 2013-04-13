@@ -16,9 +16,9 @@ import org.bukkit.entity.Player;
 
 public final class SIItems {
 
-    //                     player    item            num
+    //                 player    item        num
     private static Map<String, Map<String, Integer>> itemsMap;
-    //                     item        groups
+    //                 item        groups
     private static Map<String, ArrayList<String>> itemGroups;
 
     private static StackableItems plugin;
@@ -134,11 +134,14 @@ public final class SIItems {
         if (groupOrPlayer != null) {
             configItemsFile = new File(plugin.getDataFolder() + "/" + groupOrPlayer + ".yml");
             configItems = YamlConfiguration.loadConfiguration(configItemsFile);
+
             if (!itemsMap.containsKey(groupOrPlayer)) {
                 itemsMap.put(groupOrPlayer, new HashMap<String, Integer>());
             }
+
             for (String key : configItems.getKeys(false)) {
                 Object temp = configItems.get(key);
+
                 if (temp instanceof String) {
                     if (temp.equals("unlimited") || temp.equals("infinite") || temp.equals("infinity")) {
                         itemsMap.get(groupOrPlayer).put(key.toUpperCase(), ITEM_INFINITE);
@@ -146,8 +149,6 @@ public final class SIItems {
                 } else if (temp instanceof Integer) {
                     itemsMap.get(groupOrPlayer).put(key.toUpperCase(), configItems.getInt(key));
                 }
-
-
             }
         }
     }
@@ -173,7 +174,7 @@ public final class SIItems {
             } else {
                 saveList.add(key);
 
-                for (int i = 0; i < items.size(); i++) {
+                for (int i = 0; i < size; i++) {
                     String item = items.get(i).toUpperCase();
                     if (!itemGroups.containsKey(item)) {
                         itemGroups.put(item, new ArrayList<String>());
@@ -238,6 +239,7 @@ public final class SIItems {
 
         return getMaxFromMap("chestItems", mat, dur);
     }
+
     public static void setDefaultMax(Material mat, short dur, int newAmount) {
         setMax("defaultItems", mat, dur, newAmount);
     }
@@ -284,10 +286,13 @@ public final class SIItems {
 
         if (itemsMap.containsKey(file)) {
             Map<String, Integer> subMap = itemsMap.get(file);
+
             if (groups != null) {
-                for (int i = 0; i < groups.size(); i++) {
-                    if (subMap.containsKey(groups.get(i).toUpperCase())) {
-                        max = subMap.get(groups.get(i).toUpperCase());
+                int groupSize = groups.size();
+                for (int i = 0; i < groupSize; i++) {
+                    String key = groups.get(i).toUpperCase();
+                    if (subMap.containsKey(key)) {
+                        max = subMap.get(key);
                     }
                 }
             }
@@ -337,29 +342,34 @@ public final class SIItems {
 
         List<String> groups = null;
 
-        if (itemGroups.containsKey(mat.name())) {
-            groups = itemGroups.get(mat.name());
-        } else if (itemGroups.containsKey("" + mat.getId())) {
-            groups = itemGroups.get("" + mat.getId());
+        String matName = mat.name().toUpperCase();
+        int matId = mat.getId();
+        if (itemGroups.containsKey(matName)) {
+            groups = itemGroups.get(matName);
+        } else if (itemGroups.containsKey("" + matId)) {
+            groups = itemGroups.get("" + matId);
         }
 
         if (itemsMap.containsKey(file)) {
             Map<String, Integer> subMap = itemsMap.get(file);
+
             if (groups != null) {
-                for (int i = 0; i < groups.size(); i++) {
-                    if (subMap.containsKey(groups.get(i).toUpperCase())) {
-                        max = subMap.get(groups.get(i).toUpperCase());
+                int groupSize = groups.size();
+                for (int i = 0; i < groupSize; i++) {
+                    String key = groups.get(i).toUpperCase();
+                    if (subMap.containsKey(key)) {
+                        max = subMap.get(key);
                     }
                 }
             }
 
             if (max == ITEM_DEFAULT) {
                 // material name with no durability
-                if (subMap.containsKey(mat.name())) {
-                    max = subMap.get(mat.name());
+                if (subMap.containsKey(matName)) {
+                    max = subMap.get(matName);
                 // item id with no durability
-                } else if (subMap.containsKey("" + mat.getId())) {
-                    max = subMap.get("" + mat.getId());
+                } else if (subMap.containsKey("" + matId)) {
+                    max = subMap.get("" + matId);
                  // no individual item set, use the max and min values
                 } else {
                     int defaultMax = mat.getMaxStackSize();
