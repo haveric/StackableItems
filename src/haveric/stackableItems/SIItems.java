@@ -192,10 +192,6 @@ public final class SIItems {
         if (mat != Material.AIR) {
             if (isAChest) {
                 max = getChestMax(mat, dur);
-
-                if (max == ITEM_DEFAULT) {
-                    max = mat.getMaxStackSize();
-                }
             } else {
                 max = getMax(player.getName(), mat, dur);
 
@@ -205,12 +201,14 @@ public final class SIItems {
                         max = getMax(group, mat, dur);
                     }
                 }
+
                 if (max == ITEM_DEFAULT) {
                     max = getDefaultMax(mat, dur);
                 }
 
                 if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
-                    max = mat.getMaxStackSize();
+                    // Invalid max, count as default
+                    max = ITEM_DEFAULT;
                 }
             }
         }
@@ -272,14 +270,16 @@ public final class SIItems {
         int max = ITEM_DEFAULT;
 
         List<String> groups = null;
-        if (itemGroups.containsKey(mat.name() + " " + dur)) {
-            groups = itemGroups.get(mat.name() + " " + dur);
-        } else if (itemGroups.containsKey(mat.getId() + " " + dur)) {
-            groups = itemGroups.get(mat.getId() + " " + dur);
-        } else if (itemGroups.containsKey(mat.name())) {
-            groups = itemGroups.get(mat.name());
-        } else if (itemGroups.containsKey("" + mat.getId())) {
-            groups = itemGroups.get("" + mat.getId());
+        String matName = mat.name().toUpperCase();
+        int matId = mat.getId();
+        if (itemGroups.containsKey(matName + " " + dur)) {
+            groups = itemGroups.get(matName + " " + dur);
+        } else if (itemGroups.containsKey(matId + " " + dur)) {
+            groups = itemGroups.get(matId + " " + dur);
+        } else if (itemGroups.containsKey(matName)) {
+            groups = itemGroups.get(matName);
+        } else if (itemGroups.containsKey("" + matId)) {
+            groups = itemGroups.get("" + matId);
         }
 
         if (itemsMap.containsKey(file)) {
@@ -294,17 +294,17 @@ public final class SIItems {
 
             if (max == ITEM_DEFAULT) {
                 // check for material and durability
-                if (subMap.containsKey(mat.name() + " " + dur)) {
-                    max = subMap.get(mat.name() + " " + dur);
+                if (subMap.containsKey(matName + " " + dur)) {
+                    max = subMap.get(matName + " " + dur);
                 // check for item id and durability
-                } else if (subMap.containsKey(mat.getId() + " " + dur)) {
-                    max = subMap.get(mat.getId() + " " + dur);
+                } else if (subMap.containsKey(matId + " " + dur)) {
+                    max = subMap.get(matId + " " + dur);
                 // material name with no durability
-                } else if (subMap.containsKey(mat.name())) {
-                    max = subMap.get(mat.name());
+                } else if (subMap.containsKey(matName)) {
+                    max = subMap.get(matName);
                 // item id with no durability
-                } else if (subMap.containsKey("" + mat.getId())) {
-                    max = subMap.get("" + mat.getId());
+                } else if (subMap.containsKey("" + matId)) {
+                    max = subMap.get("" + matId);
                 // no individual item set, use the max and min values
                 } else {
                     int defaultMax = mat.getMaxStackSize();

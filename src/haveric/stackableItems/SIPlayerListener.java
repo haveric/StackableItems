@@ -110,6 +110,12 @@ public class SIPlayerListener implements Listener {
             Material type = craftedItem.getType();
 
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), false);
+
+            // Don't touch default items.
+            if (maxItems == SIItems.ITEM_DEFAULT) {
+                return;
+            }
+
             // Handle infinite items for the crafted item
             if (maxItems == SIItems.ITEM_INFINITE) {
                 maxItems = type.getMaxStackSize();
@@ -221,6 +227,12 @@ public class SIPlayerListener implements Listener {
         ItemStack clone = player.getItemInHand().clone();
 
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
+
+        // Don't touch default items.
+        if (maxItems == SIItems.ITEM_DEFAULT) {
+            return;
+        }
+
         // Handle infinite fishing rods
         if (maxItems == SIItems.ITEM_INFINITE) {
             player.setItemInHand(clone);
@@ -239,6 +251,11 @@ public class SIPlayerListener implements Listener {
 
             ItemStack clone = event.getBow().clone();
             int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
+
+            // Don't touch default items.
+            if (maxItems == SIItems.ITEM_DEFAULT) {
+                return;
+            }
 
             // Handle infinite bows
             if (maxItems == SIItems.ITEM_INFINITE) {
@@ -272,6 +289,11 @@ public class SIPlayerListener implements Listener {
             ItemStack hold = player.getItemInHand();
             if (hold != null) {
                 int maxItems = SIItems.getItemMax(player, hold.getType(), hold.getDurability(), false);
+
+                // Don't touch default items.
+                if (maxItems == SIItems.ITEM_DEFAULT) {
+                    return;
+                }
 
                 // Handle infinite weapons
                 if (maxItems == SIItems.ITEM_INFINITE) {
@@ -431,6 +453,10 @@ public class SIPlayerListener implements Listener {
                         int amt = Config.getFurnaceAmount(blockLocation);
                         if (amt > -1) {
                             int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, false);
+                            // Don't touch default items
+                            if (maxPlayerInventory == SIItems.ITEM_DEFAULT) {
+                                return;
+                            }
                             if (maxPlayerInventory == SIItems.ITEM_INFINITE) {
                                 maxPlayerInventory = clickedType.getMaxStackSize();
                             }
@@ -488,12 +514,7 @@ public class SIPlayerListener implements Listener {
                             }
                             ItemStack xpClone = clicked.clone();
                             xpClone.setAmount(xpItems);
-                            int xp = FurnaceXPConfig.getXP(xpClone);
-                            if (xp > 0) {
-                                player.giveExp(xp);
-                                Random random = new Random();
-                                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            }
+                            FurnaceXPConfig.giveFurnaceXP(player, xpClone);
                         }
                     }
                     InventoryUtil.updateInventory(player);
@@ -505,12 +526,7 @@ public class SIPlayerListener implements Listener {
 
                             event.setCurrentItem(null);
 
-                            int xp = FurnaceXPConfig.getXP(clone);
-                            if (xp > 0) {
-                                player.giveExp(xp);
-                                Random random = new Random();
-                                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            }
+                            FurnaceXPConfig.giveFurnaceXP(player, clone);
 
                             InventoryUtil.addItems(player, clone);
                         } else {
@@ -521,13 +537,7 @@ public class SIPlayerListener implements Listener {
                             event.setCurrentItem(clone);
 
                             clone2.setAmount(freeSpaces);
-
-                            int xp = FurnaceXPConfig.getXP(clone2);
-                            if (xp > 0) {
-                                player.giveExp(xp);
-                                Random random = new Random();
-                                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            }
+                            FurnaceXPConfig.giveFurnaceXP(player, clone2);
 
                             InventoryUtil.addItems(player, clone2);
                         }
@@ -541,13 +551,7 @@ public class SIPlayerListener implements Listener {
                                     event.setCurrentItem(clone);
 
                                     clone2.setAmount(maxItems);
-
-                                    int xp = FurnaceXPConfig.getXP(clone2);
-                                    if (xp > 0) {
-                                        player.giveExp(xp);
-                                        Random random = new Random();
-                                        player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                                    }
+                                    FurnaceXPConfig.giveFurnaceXP(player, clone2);
 
                                     event.setCursor(clone2);
                                 }
@@ -594,8 +598,6 @@ public class SIPlayerListener implements Listener {
                     }
                 }
             }
-
-            int slot = event.getSlot();
 
             boolean cursorEmpty = cursorType == Material.AIR;
             boolean slotEmpty = clickedType == Material.AIR;
@@ -878,7 +880,6 @@ public class SIPlayerListener implements Listener {
                     } else if (!cursorEmpty && !slotEmpty) {
                         boolean sameType = clickedType.equals(cursorType);
 
-
                         if (sameType) {
                             if (ItemUtil.isSameItem(cursor, clicked)) {
                                 int total = clickedAmount + cursorAmount;
@@ -942,12 +943,9 @@ public class SIPlayerListener implements Listener {
                     if (!slotEmpty && !cursorEmpty) {
                         boolean sameType = clickedType.equals(cursorType);
 
-
-
                         // Add two normal items
                         if (sameType) {
                             if (ItemUtil.isSameItem(cursor, clicked)) {
-
                                 int total = clickedAmount + 1;
                                 if (total <= maxItems) {
                                     if (total > clicked.getMaxStackSize()) {
@@ -1033,24 +1031,25 @@ public class SIPlayerListener implements Listener {
 
         int freeSpaces = InventoryUtil.getFreeSpaces(player, stack);
 
-        if (freeSpaces == 0) {
+        int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability(), false);
+        // Don't touch default items
+        if (maxItems == SIItems.ITEM_DEFAULT) {
+            return;
+        }
+
+        if (freeSpaces == 0 || maxItems == 0) {
             event.setCancelled(true);
         } else {
-            int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability(), false);
-            if (maxItems == 0) {
+            // We only want to override if moving more than a vanilla stack will hold
+            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory());
+            if (defaultStack > -1 && stack.getAmount() > defaultStack) {
+                InventoryUtil.addItems(player, stack);
+                Random random = new Random();
+                player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+
+                item.remove();
+
                 event.setCancelled(true);
-            } else {
-             // We only want to override if moving more than a vanilla stack will hold
-                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory());
-                if (defaultStack > -1 && stack.getAmount() > defaultStack) {
-                    InventoryUtil.addItems(player, stack);
-                    Random random = new Random();
-                    player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-
-                    item.remove();
-
-                    event.setCancelled(true);
-                }
             }
         }
     }
@@ -1065,6 +1064,10 @@ public class SIPlayerListener implements Listener {
         Player player = event.getPlayer();
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
 
+        // Don't touch default items.
+        if (maxItems == SIItems.ITEM_DEFAULT) {
+            return;
+        }
         // Restore unlimited items
         if (maxItems == SIItems.ITEM_INFINITE) {
             player.setItemInHand(clone);
@@ -1080,6 +1083,10 @@ public class SIPlayerListener implements Listener {
 
         ItemStack clone = player.getItemInHand().clone();
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), false);
+        // Don't touch default items.
+        if (maxItems == SIItems.ITEM_DEFAULT) {
+            return;
+        }
 
         // Handle unlimited shears
         if (maxItems == SIItems.ITEM_INFINITE) {
@@ -1104,6 +1111,10 @@ public class SIPlayerListener implements Listener {
             newStack.setDurability((short) 0);
             int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), false);
 
+            // Don't touch default items.
+            if (maxItems == SIItems.ITEM_DEFAULT) {
+                return;
+            }
             // Handle unlimited flint and steel
             if (maxItems == SIItems.ITEM_INFINITE) {
                 player.setItemInHand(newStack);

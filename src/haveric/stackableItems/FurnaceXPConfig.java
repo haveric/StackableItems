@@ -1,10 +1,13 @@
 package haveric.stackableItems;
 
 import java.io.File;
+import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class FurnaceXPConfig {
@@ -13,6 +16,7 @@ public class FurnaceXPConfig {
 
     private static FileConfiguration cfgFurnaceXP;
     private static File cfgFurnaceXPFile;
+    private static Random random;
 
     private FurnaceXPConfig() { } // Private constructor for utility class
 
@@ -20,6 +24,8 @@ public class FurnaceXPConfig {
         plugin = si;
         cfgFurnaceXPFile = new File(plugin.getDataFolder() + "/furnaceXP.yml");
         cfgFurnaceXP = YamlConfiguration.loadConfiguration(cfgFurnaceXPFile);
+
+        random = new Random();
     }
 
     public static void reload() {
@@ -66,7 +72,7 @@ public class FurnaceXPConfig {
         }
     }
 
-    public static int getXP(ItemStack item) {
+    private static int getXP(ItemStack item) {
         double xp = 0.0;
         Material mat = item.getType();
         xp = cfgFurnaceXP.getDouble(mat + " " + item.getDurability(), 0.0);
@@ -82,5 +88,13 @@ public class FurnaceXPConfig {
         }
 
         return intPart;
+    }
+
+    public static void giveFurnaceXP(Player player, ItemStack item) {
+        int xp = getXP(item);
+        if (xp > 0) {
+            player.giveExp(xp);
+            player.playSound(player.getLocation(), Sound.ORB_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+        }
     }
 }

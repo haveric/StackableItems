@@ -65,63 +65,87 @@ public final class InventoryUtil {
         short durability = itemToCheck.getDurability();
         int defaultMax = type.getMaxStackSize();
 
+        if (canVanillaStackCorrectly(itemToCheck, inventory)) {
+            Iterator<ItemStack> iter = inventory.iterator();
+            int i = 0;
+            while (iter.hasNext() && free == 0) {
+                ItemStack slot = iter.next();
 
-        Iterator<ItemStack> iter = inventory.iterator();
-        int i = 0;
-        while (iter.hasNext() && free == 0) {
-            ItemStack slot = iter.next();
+                if (ItemUtil.isSameItem(slot, itemToCheck)) {
+                    int amt = slot.getAmount();
+                    int slotMax = getInventoryMax(player, inventory, type, durability, i);
 
-            if (ItemUtil.isSameItem(slot, itemToCheck)) {
-                int amt = slot.getAmount();
-                int slotMax = getInventoryMax(player, inventory, type, durability, i);
-
-                if (slotMax == defaultMax) {
-                    // Let vanilla always handle this
-                    free = -1;
-                } else if (slotMax > defaultMax) {
-                    if (amt == slotMax) {
-                        // Continue, slot is full and vanilla should ignore this
-                        free = 0;
-                    } else if (amt >= defaultMax && amt < slotMax) {
-                        // Vanilla can't handle this
-                        free = -2;
-                    } else { // amt < defaultMax
-                        // Let Vanilla handle this
-                        free = defaultMax - amt;
+                    if (slotMax == defaultMax) {
+                        // Let vanilla always handle this
+                        free = -1;
+                    } else if (slotMax > defaultMax) {
+                        if (amt == slotMax) {
+                            // Continue, slot is full and vanilla should ignore this
+                            free = 0;
+                        } else if (amt >= defaultMax && amt < slotMax) {
+                            // Vanilla can't handle this
+                            free = -2;
+                        } else { // amt < defaultMax
+                            // Let Vanilla handle this
+                            free = defaultMax - amt;
+                        }
+                    } else if (slotMax < defaultMax) { // slotMax < defaultMax
+                        if (amt < slotMax) {
+                            // Vanilla can only add up to slotMax
+                            free = slotMax - amt;
+                        } else {
+                            // Don't let Vanilla handle this
+                            free = -2;
+                        }
                     }
-                } else if (slotMax < defaultMax) { // slotMax < defaultMax
-                    if (amt < slotMax) {
-                        // Vanilla can only add up to slotMax
-                        free = slotMax - amt;
-                    } else {
-                        // Don't let Vanilla handle this
-                        free = -2;
+                }
+
+                i++;
+            }
+
+            // Check for an empty slot
+            if (free == 0) {
+                int emptySlot = inventory.firstEmpty();
+                if (emptySlot > -1) {
+                    free = getInventoryMax(player, inventory, type, durability, emptySlot);
+
+                    if (free > defaultMax) {
+                        free = defaultMax;
+                    } else if (free == defaultMax) {
+                        free = -1;
                     }
                 }
             }
-
-            i++;
-        }
-
-        // Check for an empty slot
-        if (free == 0) {
-            int emptySlot = inventory.firstEmpty();
-            if (emptySlot > -1) {
-                free = getInventoryMax(player, inventory, type, durability, emptySlot);
-
-                if (free > defaultMax) {
-                    free = defaultMax;
-                } else if (free == defaultMax) {
-                    free = -1;
-                }
+            // Handle situations where vanilla won't be able to help us.
+            if (free == -2) {
+                free = 0;
             }
-        }
-        // Handle situations where vanilla won't be able to help us.
-        if (free == -2) {
-            free = 0;
         }
 
         return free;
+    }
+
+    public static boolean canVanillaStackCorrectly(ItemStack item, Inventory inventory) {
+        boolean canStack = true;
+        Material type = item.getType();
+        short dur = item.getDurability();
+
+        int typeMaxDur = type.getMaxDurability();
+        // if picking up an item above vanilla durability, we don't want vanilla to handle it
+        if (dur > typeMaxDur) {
+            canStack = false;
+        } else {
+            // If any items in the inventory have durability above vanilla durability, we don't want vanilla to handle them.
+            Iterator<ItemStack> iter = inventory.iterator();
+            while (iter.hasNext() && canStack) {
+                ItemStack slot = iter.next();
+                if (type == slot.getType() && slot.getDurability() > typeMaxDur) {
+                    canStack = false;
+                }
+            }
+        }
+
+        return canStack;
     }
 
     public static void addItems(Player player, ItemStack itemToAdd) {
@@ -424,8 +448,8 @@ public final class InventoryUtil {
             maxAmount = mat.getMaxStackSize();
         }
 
-        // Handle infinite items
-        if (maxAmount == SIItems.ITEM_INFINITE) {
+        // Handle infinite and default items
+        if (maxAmount == SIItems.ITEM_INFINITE || maxAmount == SIItems.ITEM_DEFAULT) {
             maxAmount = mat.getMaxStackSize();
         }
 

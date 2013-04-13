@@ -45,6 +45,11 @@ public class SIBlockBreak implements Listener {
             Material type = hand.getType();
             int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), false);
 
+            // Don't touch default items.
+            if (maxItems == SIItems.ITEM_DEFAULT) {
+                return;
+            }
+
             if (maxItems == SIItems.ITEM_INFINITE) {
                 ItemStack clone = hand.clone();
                 PlayerInventory inventory = player.getInventory();
