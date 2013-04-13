@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Version 0.9.3.1.t3
+* Fixed the forgotten null check error.
+
 #### Version 0.9.3.1.t2
 * Removed virtual items.  They never worked properly and until bukkit supports all inventory movement api, they wouldn't anyway.
 * Items should use default stacking if set to default (-1) in a config. This means that most items should not be affected by StackableItems unless set in a config now.

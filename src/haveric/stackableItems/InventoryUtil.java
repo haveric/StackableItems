@@ -139,7 +139,7 @@ public final class InventoryUtil {
             Iterator<ItemStack> iter = inventory.iterator();
             while (iter.hasNext() && canStack) {
                 ItemStack slot = iter.next();
-                if (type == slot.getType() && slot.getDurability() > typeMaxDur) {
+                if (slot != null && type == slot.getType() && slot.getDurability() > typeMaxDur) {
                     canStack = false;
                 }
             }
