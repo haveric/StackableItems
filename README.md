@@ -6,6 +6,12 @@
 
 ### Changelog:
 
+#### Version 0.9.3.2 (4/14/2013)
+* Compatibility fix for RecipeManager: Delay two ticks for updating the player inventory in crafting/workbench
+* Removed virtual items.  They never worked properly and until bukkit supports all inventory movement api, they wouldn't anyway.
+* Items should use default stacking if set to default (-1) in a config. This means that most items should not be affected by StackableItems unless set in a config now.
+* Fixed stacking of items with non-vanilla durability
+
 #### Version 0.9.3.1.t3
 * Fixed the forgotten null check error.
 
