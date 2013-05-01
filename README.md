@@ -6,6 +6,10 @@
 
 ### Changelog:
 
+#### Coming soon
+* Fixed furnaces.yml data file not being created with a clean install
+* Deleted config files are recreated on reload
+
 #### Version 0.9.3.2 (4/14/2013)
 * Compatibility fix for RecipeManager: Delay two ticks for updating the player inventory in crafting/workbench
 * Removed virtual items.  They never worked properly and until bukkit supports all inventory movement api, they wouldn't anyway.

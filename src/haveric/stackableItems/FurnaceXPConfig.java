@@ -1,10 +1,13 @@
 package haveric.stackableItems;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -31,7 +34,14 @@ public class FurnaceXPConfig {
     public static void reload() {
         try {
             cfgFurnaceXP.load(cfgFurnaceXPFile);
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            plugin.log.warning("furnaceXP.yml not found. Creating a new one");
+            Config.saveConfig(cfgFurnaceXP, cfgFurnaceXPFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

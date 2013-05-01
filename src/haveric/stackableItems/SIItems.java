@@ -91,15 +91,40 @@ public final class SIItems {
 
         try {
             configGroups.load(configGroupsFile);
-
-            defaultItems.load(defaultItemsFile);
-
-            chestItems.load(chestItemsFile);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            plugin.log.warning("groups.yml missing. Creating a new one");
+            Config.saveConfig(configGroups, configGroupsFile);
         } catch (IOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            defaultItems.load(defaultItemsFile);
+        } catch (FileNotFoundException e) {
+            plugin.log.warning("defaultItems.yml missing. Creating a new one");
+            Config.saveConfig(defaultItems, defaultItemsFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            chestItems.load(chestItemsFile);
+        } catch (FileNotFoundException e) {
+            plugin.log.warning("chestItems.yml missing. Creating a new one");
+            Config.saveConfig(chestItems, chestItemsFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

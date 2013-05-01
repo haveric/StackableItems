@@ -1,11 +1,13 @@
 package haveric.stackableItems;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Furnace;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -50,19 +52,43 @@ public final class Config {
         cfgOptionsFile = new File(plugin.getDataFolder() + "/options.yml");
         cfgOptions = YamlConfiguration.loadConfiguration(cfgOptionsFile);
 
+        // Create the data folder if it doesn't exist yet.
+        File dataFolder = new File(plugin.getDataFolder() + "/data");
+        if (!dataFolder.exists()) {
+            dataFolder.mkdir();
+        }
 
         cfgFurnacesFile = new File(plugin.getDataFolder() + "/data/furnaces.yml");
         cfgFurnaces = YamlConfiguration.loadConfiguration(cfgFurnacesFile);
+        saveConfig(cfgFurnaces, cfgFurnacesFile);
     }
 
     public static void reload() {
-        try {
-            cfgOptions.load(cfgOptionsFile);
+            try {
+                cfgOptions.load(cfgOptionsFile);
+            } catch (FileNotFoundException e) {
+                plugin.log.warning("options.yml not found. Creating a new one");
+                saveConfig(cfgOptions, cfgOptionsFile);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InvalidConfigurationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
-            cfgFurnaces.load(cfgFurnacesFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                cfgFurnaces.load(cfgFurnacesFile);
+            } catch (FileNotFoundException e) {
+                plugin.log.warning("data/furnaces.yml not found. Creating a new one");
+                saveConfig(cfgFurnaces, cfgFurnacesFile);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InvalidConfigurationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
     }
 
     /**

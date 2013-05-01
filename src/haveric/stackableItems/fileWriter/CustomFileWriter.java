@@ -43,6 +43,12 @@ public class CustomFileWriter {
     }
 
     public void reloadFiles(int version, List<Material> list) {
+     // Create the data folder if it doesn't exist yet.
+        File dataFolder = new File(getDataFolder() + "/lists");
+        if (!dataFolder.exists()) {
+            dataFolder.mkdir();
+        }
+
         defaultFile = new File(getDataFolder() + "/lists/default" + fileName + ".txt");
         customFile = new File(getDataFolder() + "/lists/custom" + fileName + ".txt");
 
@@ -87,7 +93,10 @@ public class CustomFileWriter {
             listScanner.next();
             listScanner.nextInt();
             while (listScanner.hasNextLine()) {
-                matList.add(Material.getMaterial(listScanner.nextLine()));
+                String nextLine = listScanner.nextLine();
+                if (!nextLine.trim().equals("")) {
+                    matList.add(Material.getMaterial(nextLine));
+                }
             }
 
             listScanner.close();
@@ -102,7 +111,10 @@ public class CustomFileWriter {
             if (customFile.length() > 0) {
                 matList = new ArrayList<Material>();
                 while (customScanner.hasNextLine()) {
-                    matList.add(Material.getMaterial(customScanner.nextLine()));
+                    String nextLine = customScanner.nextLine();
+                    if (!nextLine.trim().equals("")) {
+                        matList.add(Material.getMaterial(nextLine));
+                    }
                 }
             }
 
