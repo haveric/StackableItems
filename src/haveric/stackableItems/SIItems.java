@@ -95,6 +95,7 @@ public final class SIItems {
             e.printStackTrace();
         }
 
+        itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
         loadItemsFile();
 
         loadItemGroups();

@@ -10,6 +10,7 @@
 * Fixed furnaces.yml data file not being created with a clean install
 * Deleted config files are recreated on reload
 * Added world support
+* Fixed stacking for 1.5.2R1.0
 
 #### Version 0.9.3.2 (4/14/2013)
 * Compatibility fix for RecipeManager: Delay two ticks for updating the player inventory in crafting/workbench
