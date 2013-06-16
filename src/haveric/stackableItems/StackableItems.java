@@ -26,7 +26,6 @@ public class StackableItems extends JavaPlugin {
         // Register the plugin events
         pm.registerEvents(new SIPlayerListener(this), this);
         pm.registerEvents(new SIBlockBreak(), this);
-        pm.registerEvents(new PlayerJoinQuit(), this);
 
         Config.init(this);
         FurnaceXPConfig.init(this);

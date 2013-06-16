@@ -1,7 +1,6 @@
 package haveric.stackableItems;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -77,6 +76,7 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to see permission nodes.");
                 }
             } else if (args.length == 2 || args.length == 3) {
+                /*
                 String type;
                 String permType = args[0];
 
@@ -207,6 +207,7 @@ public class Commands implements CommandExecutor {
                         }
                     }
                 }
+                */
             }
         }
         return false;

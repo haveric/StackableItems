@@ -43,7 +43,7 @@ public class SIBlockBreak implements Listener {
         // Handle splitting tool stacks when used to break blocks
         if (hand != null) {
             Material type = hand.getType();
-            int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), false);
+            int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), player.getInventory().getName());
 
             // Don't touch default items.
             if (maxItems == SIItems.ITEM_DEFAULT) {

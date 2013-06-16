@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public final class SIItems {
 
-    //                 player    item        num
+    //           world.player/group  item    num
     private static Map<String, Map<String, Integer>> itemsMap;
     //                 item        groups
     private static Map<String, ArrayList<String>> itemGroups;
@@ -29,14 +31,12 @@ public final class SIItems {
     private static FileConfiguration configGroups;
     private static File configGroupsFile;
 
-    private static FileConfiguration defaultItems;
-    private static File defaultItemsFile;
-
-    private static FileConfiguration chestItems;
-    private static File chestItemsFile;
+    private static FileConfiguration itemsConfig;
+    private static File itemsFile;
 
     private static String cfgMin = "MIN";
     private static String cfgMax = "MAX";
+    private static String allWorlds = "allWorlds";
 
     public static final int ITEM_DEFAULT = -1;
     public static final int ITEM_INFINITE = -2;
@@ -54,35 +54,28 @@ public final class SIItems {
             Config.saveConfig(configGroups, configGroupsFile);
         }
 
-        defaultItemsFile = new File(plugin.getDataFolder() + "/defaultItems.yml");
-        defaultItems = YamlConfiguration.loadConfiguration(defaultItemsFile);
-        setupDefaultItemsFile();
-
-        chestItemsFile = new File(plugin.getDataFolder() + "/chestItems.yml");
-        chestItems = YamlConfiguration.loadConfiguration(chestItemsFile);
-        setupChestItemsFile();
+        itemsFile = new File(plugin.getDataFolder() + "/items.yml");
+        itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
+        setupItemsFile();
 
         reload();
     }
 
-    private static void setupDefaultItemsFile() {
-        defaultItems.addDefault(cfgMin, ITEM_DEFAULT);
-        defaultItems.addDefault(cfgMax, ITEM_DEFAULT);
+    private static void setupItemsFile() {
+        itemsConfig.addDefault("allWorlds.default." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.default." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.testPlayer." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.testPlayer." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.testGroup." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.testGroup." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.chest." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.chest." + cfgMax, ITEM_DEFAULT);
 
-        if (!defaultItems.isSet(cfgMin) || !defaultItems.isSet(cfgMax)) {
-            defaultItems.options().copyDefaults(true);
-            Config.saveConfig(defaultItems, defaultItemsFile);
-        }
-    }
+        itemsConfig.addDefault("testWorld.default." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("testWorld.default." + cfgMax, ITEM_DEFAULT);
 
-    private static void setupChestItemsFile() {
-        chestItems.addDefault(cfgMin, ITEM_DEFAULT);
-        chestItems.addDefault(cfgMax, ITEM_DEFAULT);
-
-        if (!chestItems.isSet(cfgMin) || !chestItems.isSet(cfgMax)) {
-            chestItems.options().copyDefaults(true);
-            Config.saveConfig(chestItems, chestItemsFile);
-        }
+        itemsConfig.options().copyDefaults(true);
+        Config.saveConfig(itemsConfig, itemsFile);
     }
 
     public static void reload() {
@@ -102,91 +95,39 @@ public final class SIItems {
             e.printStackTrace();
         }
 
-        try {
-            defaultItems.load(defaultItemsFile);
-        } catch (FileNotFoundException e) {
-            plugin.log.warning("defaultItems.yml missing. Creating a new one");
-            Config.saveConfig(defaultItems, defaultItemsFile);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        loadItemsFile();
 
-        try {
-            chestItems.load(chestItemsFile);
-        } catch (FileNotFoundException e) {
-            plugin.log.warning("chestItems.yml missing. Creating a new one");
-            Config.saveConfig(chestItems, chestItemsFile);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        addItemFiles("defaultItems");
-        addItemFiles("chestItems");
-
-        loadGroupItemFiles();
-
-        loadPlayerItemFiles();
         loadItemGroups();
     }
 
-    private static void loadGroupItemFiles() {
-        String[] groups = Perms.getGroups();
+    private static void loadItemsFile() {
+        for (String key : itemsConfig.getKeys(false)) {
+            Set<String> categories = itemsConfig.getConfigurationSection(key).getKeys(false);
 
-        if (groups != null) {
-            for (String group : groups) {
-                addItemFiles(group);
-            }
-        }
-    }
+            for (String category : categories) {
+                String catEntry = key + "." + category;
+                ConfigurationSection catSection = itemsConfig.getConfigurationSection(catEntry);
+                Set<String> items = catSection.getKeys(false);
 
-    private static void loadPlayerItemFiles() {
-        Player[] players = plugin.getServer().getOnlinePlayers();
+                if (!itemsMap.containsKey(catEntry)) {
+                    itemsMap.put(catEntry, new HashMap<String, Integer>());
+                }
+                Map<String, Integer> itemsCat = itemsMap.get(catEntry);
 
-        for (Player player : players) {
-            addItemFiles(player.getName());
-        }
-    }
+                for (String item : items) {
+                    Object temp = catSection.get(item);
 
-    public static void addItemFiles(String groupOrPlayer) {
-        if (groupOrPlayer != null) {
-            configItemsFile = new File(plugin.getDataFolder() + "/" + groupOrPlayer + ".yml");
-            configItems = YamlConfiguration.loadConfiguration(configItemsFile);
-
-            if (!itemsMap.containsKey(groupOrPlayer)) {
-                itemsMap.put(groupOrPlayer, new HashMap<String, Integer>());
-            }
-
-            for (String key : configItems.getKeys(false)) {
-                Object temp = configItems.get(key);
-
-                if (temp instanceof String) {
-                    if (temp.equals("unlimited") || temp.equals("infinite") || temp.equals("infinity")) {
-                        itemsMap.get(groupOrPlayer).put(key.toUpperCase(), ITEM_INFINITE);
+                    if (temp instanceof String) {
+                        if (temp.equals("unlimited") || temp.equals("infinite") || temp.equals("infinity")) {
+                            itemsCat.put(item.toUpperCase(), ITEM_INFINITE);
+                        }
+                    } else if (temp instanceof Integer) {
+                        itemsCat.put(item.toUpperCase(), (Integer) temp);
                     }
-                } else if (temp instanceof Integer) {
-                    itemsMap.get(groupOrPlayer).put(key.toUpperCase(), configItems.getInt(key));
                 }
             }
         }
     }
-
-    public static void removeItemFiles(String groupOrPlayer) {
-        if (groupOrPlayer != null && itemsMap != null) {
-            if (!itemsMap.get(groupOrPlayer).isEmpty()) {
-                itemsMap.get(groupOrPlayer).clear();
-            }
-            itemsMap.remove(groupOrPlayer);
-        }
-    }
-
 
     private static void loadItemGroups() {
         List<String> saveList = new ArrayList<String>();
@@ -211,60 +152,65 @@ public final class SIItems {
         }
     }
 
-    public static int getItemMax(Player player, Material mat, short dur, boolean isAChest) {
+    public static int getItemMax(Player player, Material mat, short dur, String inventoryType) {
+        String world = player.getWorld().getName();
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
         if (mat != Material.AIR) {
-            if (isAChest) {
-                max = getChestMax(mat, dur);
-            } else {
-                max = getMax(player.getName(), mat, dur);
 
-                if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
-                    String group = Perms.getPrimaryGroup(player);
-                    if (group != null) {
-                        max = getMax(group, mat, dur);
+            // Check player
+            String playerName = player.getName();
+            max = getMax(world + "." + playerName, mat, dur);
+
+            if (max == ITEM_DEFAULT) {
+                max = getMax(allWorlds + "." + playerName, mat, dur);
+            }
+
+            // Check groups
+            if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
+                String group = Perms.getPrimaryGroup(player);
+                if (group != null) {
+                    max = getMax(world + "." + group, mat, dur);
+                    if (max == ITEM_DEFAULT) {
+                        max = getMax(allWorlds + "." + group, mat, dur);
                     }
                 }
+            }
 
-                if (max == ITEM_DEFAULT) {
-                    max = getDefaultMax(mat, dur);
-                }
+            // Check inventory types
+            if (max == ITEM_DEFAULT) {
+                max = getMax(world + "." + inventoryType, mat, dur);
+            }
+            if (max == ITEM_DEFAULT) {
+                max = getMax(allWorlds + "." + inventoryType, mat, dur);
+            }
 
-                if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
-                    // Invalid max, count as default
-                    max = ITEM_DEFAULT;
-                }
+            // Check default
+            if (max == ITEM_DEFAULT) {
+                max = getMax(world + "." + "default", mat, dur);
+            }
+            if (max == ITEM_DEFAULT) {
+                max = getMax(allWorlds + "." + "default", mat, dur);
+            }
+
+            // Handle invalid max
+            if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
+                // Invalid max, count as default
+                max = ITEM_DEFAULT;
             }
         }
         return max;
     }
 
-    public static int getMax(String playerOrGroup, Material mat, short dur) {
+    public static int getMax(String itemString, Material mat, short dur) {
         if (dur == ITEM_DEFAULT) {
-            return getMaxFromMap(playerOrGroup, mat);
+            return getMaxFromMap(itemString, mat);
         }
 
-        return getMaxFromMap(playerOrGroup, mat, dur);
+        return getMaxFromMap(itemString, mat, dur);
     }
-
-    public static int getDefaultMax(Material mat, short dur) {
-        if (dur == ITEM_DEFAULT) {
-            return getMaxFromMap("defaultItems", mat);
-        }
-
-        return getMaxFromMap("defaultItems", mat, dur);
-    }
-
-    public static int getChestMax(Material mat, short dur) {
-        if (dur == ITEM_DEFAULT) {
-            return getMaxFromMap("chestItems", mat);
-        }
-
-        return getMaxFromMap("chestItems", mat, dur);
-    }
-
+/*
     public static void setDefaultMax(Material mat, short dur, int newAmount) {
         setMax("defaultItems", mat, dur, newAmount);
     }
@@ -292,8 +238,9 @@ public final class SIItems {
             e.printStackTrace();
         }
     }
-
-    private static int getMaxFromMap(String file, Material mat, short dur) {
+*/
+    private static int getMaxFromMap(String itemString, Material mat, short dur) {
+        //plugin.log.info("Get Max 1: " + itemString + ", " + mat.name() + ", " + dur);
         int max = ITEM_DEFAULT;
 
         List<String> groups = null;
@@ -309,8 +256,8 @@ public final class SIItems {
             groups = itemGroups.get("" + matId);
         }
 
-        if (itemsMap.containsKey(file)) {
-            Map<String, Integer> subMap = itemsMap.get(file);
+        if (itemsMap.containsKey(itemString)) {
+            Map<String, Integer> subMap = itemsMap.get(itemString);
 
             if (groups != null) {
                 int groupSize = groups.size();
@@ -363,6 +310,7 @@ public final class SIItems {
     }
 
     private static int getMaxFromMap(String file, Material mat) {
+        plugin.log.info("Get Max 2");
         int max = ITEM_DEFAULT;
 
         List<String> groups = null;
