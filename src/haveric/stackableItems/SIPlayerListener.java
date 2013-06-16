@@ -209,7 +209,7 @@ public class SIPlayerListener implements Listener {
                                 // Add one set of items to the cursor
                                 cursorClone.setAmount(total);
                                 event.setCursor(cursorClone);
-                                event.setResult(Result.ALLOW);
+                                event.setResult(Result.DENY);
                             }
                         }
                     }
@@ -465,7 +465,7 @@ public class SIPlayerListener implements Listener {
                                 clone.setAmount(amt);
                                 InventoryUtil.addItems(player, clone);
                                 event.setCurrentItem(null);
-                                event.setResult(Result.ALLOW);
+                                event.setResult(Result.DENY);
                                 Config.clearFurnace(blockLocation);
                                 xpItems = amt;
                             } else if (cursorEmpty && event.isRightClick()) {
@@ -490,7 +490,7 @@ public class SIPlayerListener implements Listener {
                                         clone.setAmount(total);
                                         event.setCurrentItem(null);
                                         event.setCursor(clone);
-                                        event.setResult(Result.ALLOW);
+                                        event.setResult(Result.DENY);
                                         Config.clearFurnace(blockLocation);
                                         xpItems = amt;
                                     } else {
@@ -508,7 +508,7 @@ public class SIPlayerListener implements Listener {
                                         }
                                         event.setCurrentItem(clone2);
 
-                                        event.setResult(Result.ALLOW);
+                                        event.setResult(Result.DENY);
                                         xpItems = maxPlayerInventory - cursorAmount;
                                     }
                                 }
@@ -830,11 +830,11 @@ public class SIPlayerListener implements Listener {
                 } else if (event.isLeftClick()) {
                     // Pick up a stack with an empty hand
                     if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()) {
-                        player.sendMessage("Pick up stack with empty hand. Greater than max.");
+                        //player.sendMessage("Pick up stack with empty hand. Greater than max.");
                         if (clickedAmount <= maxItems) {
                             event.setCursor(clicked.clone());
                             event.setCurrentItem(null);
-                            event.setResult(Result.ALLOW);
+                            event.setResult(Result.DENY);
                         } else {
                             ItemStack clone = clicked.clone();
                             clone.setAmount(maxItems);
@@ -843,7 +843,7 @@ public class SIPlayerListener implements Listener {
                             ItemStack clone2 = clicked.clone();
                             clone2.setAmount(clickedAmount - maxItems);
                             event.setCurrentItem(clone2);
-                            event.setResult(Result.ALLOW);
+                            event.setResult(Result.DENY);
                             InventoryUtil.updateInventory(player);
                         }
 
@@ -857,7 +857,7 @@ public class SIPlayerListener implements Listener {
                                 //player.sendMessage("Cursor < Max");
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(null);
-                                event.setResult(Result.ALLOW);
+                                event.setResult(Result.DENY);
 
                                 // These inventories need a 2 tick update for RecipeManager
                                 if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
@@ -878,7 +878,7 @@ public class SIPlayerListener implements Listener {
                                 //plugin.log.info("toHold: " + toHold.getAmount());
                                 event.setCursor(toHold);
 
-                                event.setResult(Result.ALLOW);
+                                event.setResult(Result.DENY);
                                 InventoryUtil.updateInventory(player);
                             }
                         }
@@ -898,7 +898,7 @@ public class SIPlayerListener implements Listener {
                                         event.setCurrentItem(clone);
 
                                         event.setCursor(null);
-                                        event.setResult(Result.ALLOW);
+                                        event.setResult(Result.DENY);
 
                                         // These inventories need a 2 tick update for RecipeManager
                                         if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
@@ -915,7 +915,7 @@ public class SIPlayerListener implements Listener {
                                     clone2.setAmount(total - maxItems);
                                     event.setCursor(clone2);
 
-                                    event.setResult(Result.ALLOW);
+                                    event.setResult(Result.DENY);
                                     // These inventories need a 2 tick update for RecipeManager
                                     if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                         InventoryUtil.updateInventoryLater(player, 2);
@@ -927,7 +927,7 @@ public class SIPlayerListener implements Listener {
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(clicked.clone());
 
-                                event.setResult(Result.ALLOW);
+                                event.setResult(Result.DENY);
                                 // These inventories need a 2 tick update for RecipeManager
                                 if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                     InventoryUtil.updateInventoryLater(player, 2);
@@ -938,7 +938,7 @@ public class SIPlayerListener implements Listener {
                             event.setCurrentItem(cursor.clone());
                             event.setCursor(clicked.clone());
 
-                            event.setResult(Result.ALLOW);
+                            event.setResult(Result.DENY);
                             // These inventories need a 2 tick update for RecipeManager
                             if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                 InventoryUtil.updateInventoryLater(player, 2);
@@ -966,7 +966,7 @@ public class SIPlayerListener implements Listener {
                                         } else {
                                             cursor.setAmount(cursorAmount - 1);
                                         }
-                                        event.setResult(Result.ALLOW);
+                                        event.setResult(Result.DENY);
                                         // These inventories need a 2 tick update for RecipeManager
                                         if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                             InventoryUtil.updateInventoryLater(player, 2);
@@ -981,7 +981,7 @@ public class SIPlayerListener implements Listener {
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(clicked.clone());
 
-                                event.setResult(Result.ALLOW);
+                                event.setResult(Result.DENY);
                                 // These inventories need a 2 tick update for RecipeManager
                                 if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                     InventoryUtil.updateInventoryLater(player, 2);
@@ -992,7 +992,7 @@ public class SIPlayerListener implements Listener {
                             event.setCurrentItem(cursor.clone());
                             event.setCursor(clicked.clone());
 
-                            event.setResult(Result.ALLOW);
+                            event.setResult(Result.DENY);
                             // These inventories need a 2 tick update for RecipeManager
                             if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                 InventoryUtil.updateInventoryLater(player, 2);
@@ -1017,7 +1017,7 @@ public class SIPlayerListener implements Listener {
                                 clone2.setAmount(clickedAmount - maxItems);
                             }
                             event.setCurrentItem(clone2);
-                            event.setResult(Result.ALLOW);
+                            event.setResult(Result.DENY);
                         }
                     }
                 }
