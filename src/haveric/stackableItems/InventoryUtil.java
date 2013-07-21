@@ -407,13 +407,14 @@ public final class InventoryUtil {
 
     public static int getInventoryMax(Player player, Inventory inventory, Material mat, short dur, int slot) {
         InventoryType inventoryType = inventory.getType();
-        /*
-        boolean isChestSlot = false;
-        if (inventoryType == InventoryType.CHEST && slot < inventory.getSize()) {
-            isChestSlot = true;
-        }
-        */
+
         int maxAmount = SIItems.getItemMax(player, mat, dur, inventoryType.name());
+        int maxPlayerAmount = SIItems.getItemMax(player, mat, dur, player.getInventory().getName());
+
+        // Handle player section of inventory separately from the container above it.
+        if (slot >= inventory.getSize()) {
+            maxAmount = maxPlayerAmount;
+        }
 
         if (inventoryType == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
             if (slot >= 0 && slot < 3) {

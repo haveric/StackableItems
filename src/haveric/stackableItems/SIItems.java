@@ -110,6 +110,7 @@ public final class SIItems {
                 ConfigurationSection catSection = itemsConfig.getConfigurationSection(catEntry);
                 Set<String> items = catSection.getKeys(false);
 
+                catEntry = catEntry.toUpperCase();
                 if (!itemsMap.containsKey(catEntry)) {
                     itemsMap.put(catEntry, new HashMap<String, Integer>());
                 }
@@ -155,6 +156,7 @@ public final class SIItems {
 
     public static int getItemMax(Player player, Material mat, short dur, String inventoryType) {
         String world = player.getWorld().getName();
+
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
@@ -162,6 +164,7 @@ public final class SIItems {
 
             // Check player
             String playerName = player.getName();
+
             max = getMax(world + "." + playerName, mat, dur);
 
             if (max == ITEM_DEFAULT) {
@@ -170,7 +173,8 @@ public final class SIItems {
 
             // Check groups
             if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
-                String group = Perms.getPrimaryGroup(player);
+                String group = Perms.getPrimaryGroup(player).toUpperCase();
+
                 if (group != null) {
                     max = getMax(world + "." + group, mat, dur);
                     if (max == ITEM_DEFAULT) {
@@ -178,7 +182,7 @@ public final class SIItems {
                     }
                 }
             }
-
+            plugin.log.info("Max before inventory: " + max);
             // Check inventory types
             if (max == ITEM_DEFAULT) {
                 max = getMax(world + "." + inventoryType, mat, dur);
@@ -186,7 +190,7 @@ public final class SIItems {
             if (max == ITEM_DEFAULT) {
                 max = getMax(allWorlds + "." + inventoryType, mat, dur);
             }
-
+            plugin.log.info("Max after inventory: " + max);
             // Check default
             if (max == ITEM_DEFAULT) {
                 max = getMax(world + "." + "default", mat, dur);
@@ -241,7 +245,7 @@ public final class SIItems {
     }
 */
     private static int getMaxFromMap(String itemString, Material mat, short dur) {
-        //plugin.log.info("Get Max 1: " + itemString + ", " + mat.name() + ", " + dur);
+        itemString = itemString.toUpperCase();
         int max = ITEM_DEFAULT;
 
         List<String> groups = null;
@@ -310,8 +314,11 @@ public final class SIItems {
         return max;
     }
 
+    // TODO: Figure out what this is used for
     private static int getMaxFromMap(String file, Material mat) {
         plugin.log.info("Get Max 2");
+        file = file.toUpperCase();
+
         int max = ITEM_DEFAULT;
 
         List<String> groups = null;

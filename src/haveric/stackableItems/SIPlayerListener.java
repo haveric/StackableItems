@@ -852,7 +852,7 @@ public class SIPlayerListener implements Listener {
                         //player.sendMessage("Drop a stack into an empty slot: " + rawSlot + "," + slotType);
                         // Ignore armor slots when dropping items, let default Minecraft handle them.
                         if (event.getSlotType() != SlotType.ARMOR) {
-                            //player.sendMessage("Cursor: " + cursorAmount + ", maxItems: " + maxItems);
+                            player.sendMessage("Cursor: " + cursorAmount + ", maxItems: " + maxItems);
                             if (cursorAmount <= maxItems) {
                                 //player.sendMessage("Cursor < Max");
                                 event.setCurrentItem(cursor.clone());
@@ -867,7 +867,7 @@ public class SIPlayerListener implements Listener {
                                 }
                             // More items than can fit in this slot
                             } else {
-                                //player.sendMessage("Cursor >= Max");
+                                player.sendMessage("Cursor >= Max");
                                 ItemStack toDrop = cursor.clone();
                                 toDrop.setAmount(maxItems);
                                 //plugin.log.info("toDrop: " + toDrop.getAmount());
