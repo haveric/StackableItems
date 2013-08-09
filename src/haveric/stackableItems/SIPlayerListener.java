@@ -20,6 +20,7 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -419,7 +420,65 @@ public class SIPlayerListener implements Listener {
         Inventory top = event.getView().getTopInventory();
         InventoryType topType = top.getType();
 
-        if (cursor != null && clicked != null && slotType == SlotType.RESULT && topType == InventoryType.FURNACE) {
+        ClickType clickType = event.getClick();
+        plugin.log.info("Click: " + clickType);
+
+        if (clickType == ClickType.NUMBER_KEY) {
+            Player player = (Player) event.getWhoClicked();
+            int hotbarButton = event.getHotbarButton();
+            ItemStack hotbarItem = player.getInventory().getItem(hotbarButton);
+
+            if (clicked != null) {
+                Material clickedType = clicked.getType();
+                short clickedDur = clicked.getDurability();
+                int clickedAmount = clicked.getAmount();
+                //maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
+
+                boolean clickedEmpty = clickedType == Material.AIR;
+                Material hotbarType;
+                short hotbarDur;
+                int hotbarAmount;
+                if (hotbarItem != null) {
+                    hotbarType = hotbarItem.getType();
+                    hotbarDur = hotbarItem.getDurability();
+                    hotbarAmount = hotbarItem.getAmount();
+                    //maxHotbarItems = InventoryUtil.getInventoryMax(player, player.getInventory(), hotbarType, hotbarDur, hotbarButton);
+                }
+
+                if (!clickedEmpty && hotbarItem == null) {
+                    plugin.log.info("Move clicked to hotbar");
+                    int maxItems = InventoryUtil.getInventoryMax(player, player.getInventory(), clickedType, clickedDur, hotbarButton);
+
+                    if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
+                        plugin.log.info("One");
+                        event.setCurrentItem(null);
+
+                        InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton);
+                        event.setResult(Result.ALLOW);
+                    } else if (clickedAmount > maxItems) {
+                        plugin.log.info("Two");
+                        event.setCurrentItem(null);
+
+                        ItemStack clone = clicked.clone();
+                        clone.setAmount(maxItems);
+                        InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton);
+
+                        ItemStack clone2 = clicked.clone();
+                        clone2.setAmount(clickedAmount - maxItems);
+                        InventoryUtil.addItems(player, clone2);
+
+                        event.setResult(Result.ALLOW);
+                    } else {
+                        plugin.log.info("Three");
+                    }
+                } else if (clickedEmpty && hotbarItem != null) {
+                    plugin.log.info("Move hotbar to clicked");
+                } else if (!clickedEmpty && hotbarItem != null) {
+                    plugin.log.info("Move clicked to hotbar. Move hotbar elsewhere");
+                }
+            }
+
+        } else if (cursor != null && clicked != null && slotType == SlotType.RESULT && topType == InventoryType.FURNACE) {
             Player player = (Player) event.getWhoClicked();
 
             int cursorAmount = cursor.getAmount();
@@ -829,13 +888,12 @@ public class SIPlayerListener implements Listener {
                     }
                 } else if (event.isLeftClick()) {
                     // Pick up a stack with an empty hand
-                    if (cursorEmpty && !slotEmpty && clickedAmount > clickedType.getMaxStackSize()) {
-                        //player.sendMessage("Pick up stack with empty hand. Greater than max.");
-                        if (clickedAmount <= maxItems) {
+                    if (cursorEmpty && !slotEmpty) {
+                        if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                             event.setCursor(clicked.clone());
                             event.setCurrentItem(null);
                             event.setResult(Result.DENY);
-                        } else {
+                        } else if (clickedAmount > maxItems) {
                             ItemStack clone = clicked.clone();
                             clone.setAmount(maxItems);
                             event.setCursor(clone);
@@ -849,12 +907,9 @@ public class SIPlayerListener implements Listener {
 
                     // Drop a stack into an empty slot
                     } else if (!cursorEmpty && slotEmpty) {
-                        //player.sendMessage("Drop a stack into an empty slot: " + rawSlot + "," + slotType);
                         // Ignore armor slots when dropping items, let default Minecraft handle them.
                         if (event.getSlotType() != SlotType.ARMOR) {
-                            player.sendMessage("Cursor: " + cursorAmount + ", maxItems: " + maxItems);
                             if (cursorAmount <= maxItems) {
-                                //player.sendMessage("Cursor < Max");
                                 event.setCurrentItem(cursor.clone());
                                 event.setCursor(null);
                                 event.setResult(Result.DENY);
@@ -867,15 +922,12 @@ public class SIPlayerListener implements Listener {
                                 }
                             // More items than can fit in this slot
                             } else {
-                                player.sendMessage("Cursor >= Max");
                                 ItemStack toDrop = cursor.clone();
                                 toDrop.setAmount(maxItems);
-                                //plugin.log.info("toDrop: " + toDrop.getAmount());
                                 event.setCurrentItem(toDrop);
 
                                 ItemStack toHold = cursor.clone();
                                 toHold.setAmount(cursorAmount - maxItems);
-                                //plugin.log.info("toHold: " + toHold.getAmount());
                                 event.setCursor(toHold);
 
                                 event.setResult(Result.DENY);
