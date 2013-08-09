@@ -25,9 +25,6 @@ public final class SIItems {
 
     private static StackableItems plugin;
 
-    private static FileConfiguration configItems;
-    private static File configItemsFile;
-
     private static FileConfiguration configGroups;
     private static File configGroupsFile;
 
@@ -182,7 +179,7 @@ public final class SIItems {
                     }
                 }
             }
-            plugin.log.info("Max before inventory: " + max);
+
             // Check inventory types
             if (max == ITEM_DEFAULT) {
                 max = getMax(world + "." + inventoryType, mat, dur);
@@ -190,7 +187,7 @@ public final class SIItems {
             if (max == ITEM_DEFAULT) {
                 max = getMax(allWorlds + "." + inventoryType, mat, dur);
             }
-            plugin.log.info("Max after inventory: " + max);
+
             // Check default
             if (max == ITEM_DEFAULT) {
                 max = getMax(world + "." + "default", mat, dur);
@@ -215,35 +212,26 @@ public final class SIItems {
 
         return getMaxFromMap(itemString, mat, dur);
     }
-/*
-    public static void setDefaultMax(Material mat, short dur, int newAmount) {
-        setMax("defaultItems", mat, dur, newAmount);
-    }
 
-    public static void setMax(String playerOrGroup, Material mat, short dur, int newAmount) {
-        configItemsFile = new File(plugin.getDataFolder() + "/" + playerOrGroup + ".yml");
-        configItems = YamlConfiguration.loadConfiguration(configItemsFile);
-
+    public static void setMax(String catEntry, Material mat, short dur, int newAmount) {
         String name;
+        String matName = mat.name().toUpperCase();
         if (dur == ITEM_DEFAULT) {
-            name = mat.name();
+            name = matName;
         } else {
-            name = mat.name() + " " + dur;
+            name = matName + " " + dur;
         }
 
-        configItems.set(name, newAmount);
-        if (!itemsMap.containsKey(playerOrGroup)) {
-            itemsMap.put(playerOrGroup, new HashMap<String, Integer>());
+        itemsConfig.set(catEntry + "." + name, newAmount);
+        Config.saveConfig(itemsConfig, itemsFile);
+        catEntry = catEntry.toUpperCase();
+        if (!itemsMap.containsKey(catEntry)) {
+            itemsMap.put(catEntry, new HashMap<String, Integer>());
         }
-        itemsMap.get(playerOrGroup).put(name, newAmount);
-
-        try {
-            configItems.save(configItemsFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Map<String, Integer> itemsCat = itemsMap.get(catEntry);
+        itemsCat.put(name.toUpperCase(), newAmount);
     }
-*/
+
     private static int getMaxFromMap(String itemString, Material mat, short dur) {
         itemString = itemString.toUpperCase();
         int max = ITEM_DEFAULT;
@@ -314,11 +302,8 @@ public final class SIItems {
         return max;
     }
 
-    // TODO: Figure out what this is used for
-    private static int getMaxFromMap(String file, Material mat) {
-        plugin.log.info("Get Max 2");
-        file = file.toUpperCase();
-
+    private static int getMaxFromMap(String itemString, Material mat) {
+        itemString = itemString.toUpperCase();
         int max = ITEM_DEFAULT;
 
         List<String> groups = null;
@@ -331,8 +316,8 @@ public final class SIItems {
             groups = itemGroups.get("" + matId);
         }
 
-        if (itemsMap.containsKey(file)) {
-            Map<String, Integer> subMap = itemsMap.get(file);
+        if (itemsMap.containsKey(itemString)) {
+            Map<String, Integer> subMap = itemsMap.get(itemString);
 
             if (groups != null) {
                 int groupSize = groups.size();
