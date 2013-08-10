@@ -1,5 +1,6 @@
 package haveric.stackableItems;
 
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.GameMode;
@@ -24,6 +25,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -122,8 +124,6 @@ public class SIPlayerListener implements Listener {
             // Handle infinite items for the crafted item
             if (maxItems == SIItems.ITEM_INFINITE) {
                 maxItems = type.getMaxStackSize();
-
-
 
                 // Handle infinite recipe items
                 int inventSize = inventory.getSize();
@@ -405,6 +405,68 @@ public class SIPlayerListener implements Listener {
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
+    public void inventoryDrag(InventoryDragEvent event) {
+        ItemStack cursor = event.getOldCursor();
+        ItemStack newCursor = event.getCursor();
+
+        Player player = (Player) event.getWhoClicked();
+        player.sendMessage("Drag event");
+
+        int newCursorAmount = 0;
+        if (newCursor != null) {
+            newCursorAmount = newCursor.getAmount();
+        }
+
+        Material cursorType = cursor.getType();
+        short cursorDur = cursor.getDurability();
+
+        Inventory inventory = event.getInventory();
+
+        //Set<Integer> slots = event.getRawSlots();
+        Map<Integer, ItemStack> items = event.getNewItems();
+
+        int inventorySize = inventory.getSize();
+
+        boolean deny = false;
+        for (Map.Entry<Integer, ItemStack> entry : items.entrySet()) {
+            int slot = entry.getKey();
+            ItemStack added = entry.getValue();
+            int newAmount = added.getAmount();
+
+            int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
+
+            if (newAmount > maxSlot) {
+                deny = true;
+                int numToPutBack = newAmount - maxSlot;
+                newCursorAmount += numToPutBack;
+                ItemStack clone = cursor.clone();
+                clone.setAmount(maxSlot);
+
+                if (slot >= inventorySize) {
+                    int rawPlayerSlot = slot - inventorySize;
+                    int actualPlayerSlot = rawPlayerSlot + 9;
+                    // Offset for hotbar
+                    if (actualPlayerSlot >= 36) {
+                        actualPlayerSlot -= 36;
+                    }
+
+                    InventoryUtil.replaceItem(player.getInventory(), actualPlayerSlot, clone);
+                } else {
+                    InventoryUtil.replaceItem(inventory, slot, clone);
+                }
+            }
+        }
+
+        if (deny) {
+            event.setResult(Result.ALLOW);
+            ItemStack cursorClone = cursor.clone();
+            cursorClone.setAmount(newCursorAmount);
+            InventoryUtil.updateCursor(player, cursorClone);
+            InventoryUtil.updateInventory(player);
+        }
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void inventoryClick(InventoryClickEvent event) {
         if (event.isCancelled()) {
             return;
@@ -445,32 +507,29 @@ public class SIPlayerListener implements Listener {
                     //maxHotbarItems = InventoryUtil.getInventoryMax(player, player.getInventory(), hotbarType, hotbarDur, hotbarButton);
                 }
 
+                // Moving to an empty hotbar slot
                 if (!clickedEmpty && hotbarItem == null) {
                     plugin.log.info("Move clicked to hotbar");
                     int maxItems = InventoryUtil.getInventoryMax(player, player.getInventory(), clickedType, clickedDur, hotbarButton);
 
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
-                        plugin.log.info("One");
                         event.setCurrentItem(null);
 
-                        InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton);
+                        InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton+1);
                         event.setResult(Result.ALLOW);
                     } else if (clickedAmount > maxItems) {
-                        plugin.log.info("Two");
                         event.setCurrentItem(null);
 
                         ItemStack clone = clicked.clone();
                         clone.setAmount(maxItems);
-                        InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton);
+                        InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton+1);
 
                         ItemStack clone2 = clicked.clone();
                         clone2.setAmount(clickedAmount - maxItems);
                         InventoryUtil.addItems(player, clone2);
 
                         event.setResult(Result.ALLOW);
-                    } else {
-                        plugin.log.info("Three");
-                    }
+                    }// else let vanilla handle it
                 } else if (clickedEmpty && hotbarItem != null) {
                     plugin.log.info("Move hotbar to clicked");
                 } else if (!clickedEmpty && hotbarItem != null) {

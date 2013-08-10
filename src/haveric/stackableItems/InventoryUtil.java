@@ -387,6 +387,14 @@ public final class InventoryUtil {
         });
     }
 
+    public static void updateCursor(final Player player, final ItemStack newCursor) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                player.setItemOnCursor(newCursor);
+            }
+        });
+    }
     public static void updateInventory(final Player player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @SuppressWarnings("deprecation")
