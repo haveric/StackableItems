@@ -410,7 +410,6 @@ public class SIPlayerListener implements Listener {
         ItemStack newCursor = event.getCursor();
 
         Player player = (Player) event.getWhoClicked();
-        player.sendMessage("Drag event");
 
         int newCursorAmount = 0;
         if (newCursor != null) {
@@ -483,7 +482,7 @@ public class SIPlayerListener implements Listener {
         InventoryType topType = top.getType();
 
         ClickType clickType = event.getClick();
-        plugin.log.info("Click: " + clickType);
+        //plugin.log.info("Click: " + clickType);
 
         if (clickType == ClickType.NUMBER_KEY) {
             Player player = (Player) event.getWhoClicked();
@@ -497,19 +496,15 @@ public class SIPlayerListener implements Listener {
                 //maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
 
                 boolean clickedEmpty = clickedType == Material.AIR;
-                Material hotbarType;
-                short hotbarDur;
-                int hotbarAmount;
+
+                int hotbarAmount = 0;
                 if (hotbarItem != null) {
-                    hotbarType = hotbarItem.getType();
-                    hotbarDur = hotbarItem.getDurability();
                     hotbarAmount = hotbarItem.getAmount();
                     //maxHotbarItems = InventoryUtil.getInventoryMax(player, player.getInventory(), hotbarType, hotbarDur, hotbarButton);
                 }
 
-                // Moving to an empty hotbar slot
+                // Moving clicked to an empty hotbar slot
                 if (!clickedEmpty && hotbarItem == null) {
-                    plugin.log.info("Move clicked to hotbar");
                     int maxItems = InventoryUtil.getInventoryMax(player, player.getInventory(), clickedType, clickedDur, hotbarButton);
 
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
@@ -529,11 +524,97 @@ public class SIPlayerListener implements Listener {
                         InventoryUtil.addItems(player, clone2);
 
                         event.setResult(Result.ALLOW);
-                    }// else let vanilla handle it
+                    } // else let vanilla handle it
+                // Moving hotbar to an empty clicked slot
                 } else if (clickedEmpty && hotbarItem != null) {
-                    plugin.log.info("Move hotbar to clicked");
+                    int rawSlot = event.getRawSlot();
+                    int maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, rawSlot);
+                    int inventorySize = top.getSize();
+
+                    if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
+                        event.setCurrentItem(null);
+
+                        if (rawSlot >= inventorySize) {
+                            int rawPlayerSlot = rawSlot - inventorySize;
+                            int actualPlayerSlot = rawPlayerSlot + 9;
+                            // Offset for hotbar
+                            if (actualPlayerSlot >= 36) {
+                                actualPlayerSlot -= 36;
+                            }
+                            InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), rawSlot, rawSlot+1);
+                        } else {
+                            InventoryUtil.addItems(player, clicked.clone(), top, rawSlot, rawSlot+1);
+                        }
+
+                        event.setResult(Result.ALLOW);
+                    } else if (clickedAmount > maxItems) {
+                        ItemStack clone = clicked.clone();
+                        clone.setAmount(clickedAmount - maxItems);
+                        event.setCurrentItem(clone);
+
+                        ItemStack clone2 = clicked.clone();
+                        clone2.setAmount(maxItems);
+
+                        if (rawSlot >= inventorySize) {
+                            int rawPlayerSlot = rawSlot - inventorySize;
+                            int actualPlayerSlot = rawPlayerSlot + 9;
+                            // Offset for hotbar
+                            if (actualPlayerSlot >= 36) {
+                                actualPlayerSlot -= 36;
+                            }
+                            InventoryUtil.addItems(player, clone2, player.getInventory(), rawSlot, rawSlot+1);
+                        } else {
+                            InventoryUtil.addItems(player, clone2, top, rawSlot, rawSlot+1);
+                        }
+                    } // else let vanilla handle it
+                // Move clicked to hotbar. Move hotbar elsewhere
                 } else if (!clickedEmpty && hotbarItem != null) {
-                    plugin.log.info("Move clicked to hotbar. Move hotbar elsewhere");
+                    int rawSlot = event.getRawSlot();
+                    int maxItems = InventoryUtil.getInventoryMax(player, player.getInventory(), clickedType, clickedDur, hotbarButton);
+                    int inventorySize = top.getSize();
+                    int totalItems = clickedAmount + hotbarAmount;
+
+                    if (rawSlot < inventorySize) {
+                        if (ItemUtil.isSameItem(hotbarItem, clicked)) {
+                            if (totalItems <= maxItems && totalItems > clickedType.getMaxStackSize()) {
+                                event.setCurrentItem(null);
+                                InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton+1);
+                                event.setResult(Result.DENY);
+                            } else if (totalItems > maxItems) {
+                                event.setCurrentItem(null);
+                                int extra = totalItems - maxItems;
+                                int toAdd = maxItems - hotbarAmount;
+                                ItemStack clone = clicked.clone();
+                                clone.setAmount(toAdd);
+                                InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton+1);
+
+                                ItemStack clone2 = clicked.clone();
+                                clone2.setAmount(extra);
+                                InventoryUtil.addItems(player, clone2);
+                                event.setResult(Result.DENY);
+                            } // Else vanilla can handle it.
+                        // Different Items
+                        } else {
+                            event.setCurrentItem(null);
+
+                            ItemStack cloneHotbar = hotbarItem.clone();
+                            if (clickedAmount > maxItems) {
+                                ItemStack clone = clicked.clone();
+                                clone.setAmount(maxItems);
+                                InventoryUtil.replaceItem(player.getInventory(), hotbarButton, clone);
+
+                                ItemStack clone2 = clicked.clone();
+                                clone2.setAmount(clickedAmount - maxItems);
+                                InventoryUtil.addItems(player, clone2);
+                            } else {
+                                ItemStack cloneClicked = clicked.clone();
+                                InventoryUtil.replaceItem(player.getInventory(), hotbarButton, cloneClicked);
+                            }
+                            InventoryUtil.addItems(player, cloneHotbar);
+
+                            event.setResult(Result.DENY);
+                        }
+                    } // Else let vanilla move items between player slots
                 }
             }
 

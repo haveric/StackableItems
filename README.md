@@ -11,6 +11,9 @@
 * Deleted config files are recreated on reload
 * Added world support
 * Fixed stacking for 1.5.2R1.0
+* Updated commands
+* Added Inventory Dragging support
+* Added Hotkeys support
 
 #### Version 0.9.3.2 (4/14/2013)
 * Compatibility fix for RecipeManager: Delay two ticks for updating the player inventory in crafting/workbench
