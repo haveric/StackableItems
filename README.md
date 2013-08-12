@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Version 0.9.4.1
+* Fixed crafting with number keys
+
 #### Version 0.9.4 (8/12/2013)
 * Fixed furnaces.yml data file not being created with a clean install
 * Deleted config files are recreated on reload

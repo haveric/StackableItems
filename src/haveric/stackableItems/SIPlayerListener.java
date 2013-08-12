@@ -147,8 +147,36 @@ public class SIPlayerListener implements Listener {
                 ItemStack result = event.getRecipe().getResult();
                 int recipeAmount = result.getAmount();
 
-                if (event.isShiftClick()) {
+                if (event.getClick() == ClickType.NUMBER_KEY) {
+                    int hotbarButton = event.getHotbarButton();
 
+                    int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
+                    int actualCraft = amtCanCraft * recipeAmount;
+
+                    if (actualCraft > 0) {
+                        ItemStack hotbarItem = player.getInventory().getItem(hotbarButton);
+                        int hotbarAmount = 0;
+                        if (hotbarItem != null) {
+                            hotbarAmount = hotbarItem.getAmount();
+                        }
+                        int total = hotbarAmount + recipeAmount;
+
+                        event.setResult(Result.DENY);
+                        InventoryUtil.removeFromCrafting(player, inventory, 1);
+                        if (total <= maxItems) {
+                            ItemStack toAdd = result.clone();
+                            InventoryUtil.addItems(player, toAdd, player.getInventory(), hotbarButton, hotbarButton + 1);
+                        } else {
+                            ItemStack toAdd = result.clone();
+                            toAdd.setAmount(maxItems - hotbarAmount);
+                            InventoryUtil.addItems(player, toAdd, player.getInventory(), hotbarButton, hotbarButton + 1);
+
+                            ItemStack rest = result.clone();
+                            rest.setAmount(total - maxItems);
+                            InventoryUtil.addItems(player, rest);
+                        }
+                    }
+                } else if (event.isShiftClick()) {
                     int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
                     int actualCraft = amtCanCraft * recipeAmount;
 
@@ -484,7 +512,7 @@ public class SIPlayerListener implements Listener {
         ClickType clickType = event.getClick();
         //plugin.log.info("Click: " + clickType);
 
-        if (clickType == ClickType.NUMBER_KEY) {
+        if (clickType == ClickType.NUMBER_KEY && slotType != SlotType.RESULT) {
             Player player = (Player) event.getWhoClicked();
             int hotbarButton = event.getHotbarButton();
             ItemStack hotbarItem = player.getInventory().getItem(hotbarButton);
