@@ -53,7 +53,7 @@ public class Commands implements CommandExecutor {
                 } else {
                     sender.sendMessage("/" + cmdMainAlt + highlightColor + " world type" + defaultColor + " item:dur - " + msgColor + "Get a player's max items");
                 }
-                sender.sendMessage("Types: " + highlightColor + "playerName" + defaultColor+", " + highlightColor + "inventoryName" + defaultColor + ", " + highlightColor + "permissionGroup" + defaultColor + ", " + highlightColor + "default");
+                sender.sendMessage("Types: " + highlightColor + "playerName" + defaultColor + ", " + highlightColor + "inventoryName" + defaultColor + ", " + highlightColor + "permissionGroup" + defaultColor + ", " + highlightColor + "default");
 
             } else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)) {
                 if (op || hasAdminPerm) {
@@ -119,12 +119,12 @@ public class Commands implements CommandExecutor {
                             msg += displayName + msgColor;
 
 
-                            max = SIItems.getMax(world+"."+permType,mat, dur);
+                            max = SIItems.getMax(world + "." + permType, mat, dur);
                             msg += " for " + highlightColor + world + defaultColor + "-" + highlightColor + permType + msgColor;
                             if (numToSet == max) {
                                 msg += " is already set to ";
                             } else {
-                                SIItems.setMax(world+"."+permType, mat, dur, numToSet);
+                                SIItems.setMax(world + "." + permType, mat, dur, numToSet);
                                 msg += " set to ";
                             }
                             sender.sendMessage(msg + highlightColor + numToSet);

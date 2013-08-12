@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming soon
+#### Version 0.9.4 (8/12/2013)
 * Fixed furnaces.yml data file not being created with a clean install
 * Deleted config files are recreated on reload
 * Added world support

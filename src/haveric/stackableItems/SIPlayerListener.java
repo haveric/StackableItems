@@ -510,14 +510,14 @@ public class SIPlayerListener implements Listener {
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                         event.setCurrentItem(null);
 
-                        InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton+1);
+                        InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton + 1);
                         event.setResult(Result.ALLOW);
                     } else if (clickedAmount > maxItems) {
                         event.setCurrentItem(null);
 
                         ItemStack clone = clicked.clone();
                         clone.setAmount(maxItems);
-                        InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton+1);
+                        InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton + 1);
 
                         ItemStack clone2 = clicked.clone();
                         clone2.setAmount(clickedAmount - maxItems);
@@ -541,9 +541,9 @@ public class SIPlayerListener implements Listener {
                             if (actualPlayerSlot >= 36) {
                                 actualPlayerSlot -= 36;
                             }
-                            InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), rawSlot, rawSlot+1);
+                            InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), rawSlot, rawSlot + 1);
                         } else {
-                            InventoryUtil.addItems(player, clicked.clone(), top, rawSlot, rawSlot+1);
+                            InventoryUtil.addItems(player, clicked.clone(), top, rawSlot, rawSlot + 1);
                         }
 
                         event.setResult(Result.ALLOW);
@@ -562,9 +562,9 @@ public class SIPlayerListener implements Listener {
                             if (actualPlayerSlot >= 36) {
                                 actualPlayerSlot -= 36;
                             }
-                            InventoryUtil.addItems(player, clone2, player.getInventory(), rawSlot, rawSlot+1);
+                            InventoryUtil.addItems(player, clone2, player.getInventory(), rawSlot, rawSlot + 1);
                         } else {
-                            InventoryUtil.addItems(player, clone2, top, rawSlot, rawSlot+1);
+                            InventoryUtil.addItems(player, clone2, top, rawSlot, rawSlot + 1);
                         }
                     } // else let vanilla handle it
                 // Move clicked to hotbar. Move hotbar elsewhere
@@ -578,7 +578,7 @@ public class SIPlayerListener implements Listener {
                         if (ItemUtil.isSameItem(hotbarItem, clicked)) {
                             if (totalItems <= maxItems && totalItems > clickedType.getMaxStackSize()) {
                                 event.setCurrentItem(null);
-                                InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton+1);
+                                InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton + 1);
                                 event.setResult(Result.DENY);
                             } else if (totalItems > maxItems) {
                                 event.setCurrentItem(null);
@@ -586,7 +586,7 @@ public class SIPlayerListener implements Listener {
                                 int toAdd = maxItems - hotbarAmount;
                                 ItemStack clone = clicked.clone();
                                 clone.setAmount(toAdd);
-                                InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton+1);
+                                InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton + 1);
 
                                 ItemStack clone2 = clicked.clone();
                                 clone2.setAmount(extra);
