@@ -10,6 +10,7 @@
 * Fixed crafting with number keys
 * Updated Metrics to R7
 * Added coal block to list of fuels.
+* Added HARD_CLAY to furnace xp list
 
 #### Version 0.9.4 (8/12/2013)
 * Fixed furnaces.yml data file not being created with a clean install
