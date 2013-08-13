@@ -15,7 +15,7 @@ public final class FurnaceUtil {
 
     private static StackableItems plugin;
 
-    private static final int FUEL_LIST_VERSION = 2;
+    private static final int FUEL_LIST_VERSION = 3;
 
     private static List<Material> listOfFuels;
     private static List<Material> furnaceBurnables;
@@ -37,6 +37,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.BOOKSHELF);
         listOfFuels.add(Material.CHEST);
         listOfFuels.add(Material.COAL);
+        listOfFuels.add(Material.COAL_BLOCK);
         listOfFuels.add(Material.DAYLIGHT_DETECTOR);
         listOfFuels.add(Material.FENCE);
         listOfFuels.add(Material.FENCE_GATE);
