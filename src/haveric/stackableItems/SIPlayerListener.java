@@ -493,6 +493,21 @@ public class SIPlayerListener implements Listener {
         }
     }
 
+    // TODO: Handle Creative inventory
+    /*
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void creativeClick(InventoryCreativeEvent event) {
+        ItemStack current = event.getCurrentItem();
+        ItemStack cursor = event.getCursor();
+
+        SlotType slotType = event.getSlotType();
+        ClickType clickType = event.getClick();
+        int slot = event.getSlot();
+        int rawSlot = event.getRawSlot();
+        plugin.log.info("Current: " + current + ", cursor: " + cursor + ", slot: " + slot + ", rawSlot: " + rawSlot + ", SlotType: " + slotType);
+    }
+    */
+
     @EventHandler (priority = EventPriority.HIGHEST)
     public void inventoryClick(InventoryClickEvent event) {
         if (event.isCancelled()) {
