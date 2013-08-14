@@ -170,8 +170,15 @@ public final class SIItems {
 
             // Check groups
             if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
-                String group = Perms.getPrimaryGroup(player).toUpperCase();
-
+                String group = null;
+                try {
+                    group = Perms.getPrimaryGroup(player).toUpperCase();
+                } catch (Exception e) {
+                    // No Groups
+                    if (Config.isDebugging()) {
+                        plugin.log.warning("DEBUG: getItemMax() - No group found.");
+                    }
+                }
                 if (group != null) {
                     max = getMax(world + "." + group, mat, dur);
                     if (max == ITEM_DEFAULT) {
