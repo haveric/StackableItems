@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Version 0.9.4.1
+#### Version 0.9.4.1 (8/14/2013)
 * Fixed crafting with number keys
 * Updated Metrics to R7
 * Added coal block to list of fuels.
