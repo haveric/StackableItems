@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Version 0.9.4.2
+* Fixed duplication issues with dragging.
+
 #### Version 0.9.4.1 (8/14/2013)
 * Fixed crafting with number keys
 * Updated Metrics to R7

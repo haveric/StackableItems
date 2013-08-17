@@ -449,7 +449,6 @@ public class SIPlayerListener implements Listener {
 
         Inventory inventory = event.getInventory();
 
-        //Set<Integer> slots = event.getRawSlots();
         Map<Integer, ItemStack> items = event.getNewItems();
 
         int inventorySize = inventory.getSize();
@@ -461,31 +460,44 @@ public class SIPlayerListener implements Listener {
             int newAmount = added.getAmount();
 
             int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
-
-            if (newAmount > maxSlot) {
+            if (newAmount > maxSlot && maxSlot > SIItems.ITEM_DEFAULT) {
                 deny = true;
+            }
+        }
+        if (deny) {
+            event.setResult(Result.DENY);
+
+            for (Map.Entry<Integer, ItemStack> entry : items.entrySet()) {
+                int slot = entry.getKey();
+                ItemStack added = entry.getValue();
+                int newAmount = added.getAmount();
+
+                int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
+                if (maxSlot <= SIItems.ITEM_DEFAULT) {
+                    maxSlot = added.getMaxStackSize();
+                }
                 int numToPutBack = newAmount - maxSlot;
                 newCursorAmount += numToPutBack;
+
                 ItemStack clone = cursor.clone();
                 clone.setAmount(maxSlot);
 
                 if (slot >= inventorySize) {
                     int rawPlayerSlot = slot - inventorySize;
+                    if (inventory.getType() == InventoryType.CRAFTING) {
+                        rawPlayerSlot -= 4; // Handle armor slots
+                    }
                     int actualPlayerSlot = rawPlayerSlot + 9;
                     // Offset for hotbar
                     if (actualPlayerSlot >= 36) {
                         actualPlayerSlot -= 36;
                     }
-
                     InventoryUtil.replaceItem(player.getInventory(), actualPlayerSlot, clone);
                 } else {
                     InventoryUtil.replaceItem(inventory, slot, clone);
                 }
             }
-        }
 
-        if (deny) {
-            event.setResult(Result.ALLOW);
             ItemStack cursorClone = cursor.clone();
             cursorClone.setAmount(newCursorAmount);
             InventoryUtil.updateCursor(player, cursorClone);
@@ -578,12 +590,6 @@ public class SIPlayerListener implements Listener {
                         event.setCurrentItem(null);
 
                         if (rawSlot >= inventorySize) {
-                            int rawPlayerSlot = rawSlot - inventorySize;
-                            int actualPlayerSlot = rawPlayerSlot + 9;
-                            // Offset for hotbar
-                            if (actualPlayerSlot >= 36) {
-                                actualPlayerSlot -= 36;
-                            }
                             InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), rawSlot, rawSlot + 1);
                         } else {
                             InventoryUtil.addItems(player, clicked.clone(), top, rawSlot, rawSlot + 1);
@@ -599,12 +605,6 @@ public class SIPlayerListener implements Listener {
                         clone2.setAmount(maxItems);
 
                         if (rawSlot >= inventorySize) {
-                            int rawPlayerSlot = rawSlot - inventorySize;
-                            int actualPlayerSlot = rawPlayerSlot + 9;
-                            // Offset for hotbar
-                            if (actualPlayerSlot >= 36) {
-                                actualPlayerSlot -= 36;
-                            }
                             InventoryUtil.addItems(player, clone2, player.getInventory(), rawSlot, rawSlot + 1);
                         } else {
                             InventoryUtil.addItems(player, clone2, top, rawSlot, rawSlot + 1);
