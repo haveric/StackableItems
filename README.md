@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Version 0.9.4.2
+#### Version 0.9.4.2 (8/18/2013)
 * Fixed duplication issues with dragging.
 
 #### Version 0.9.4.1 (8/14/2013)
