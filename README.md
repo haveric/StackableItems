@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Version 0.9.5
+* Added hopper pickup/movement support
+
 #### Version 0.9.4.2 (8/18/2013)
 * Fixed duplication issues with dragging.
 

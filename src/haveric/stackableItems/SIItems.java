@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -150,6 +151,38 @@ public final class SIItems {
             }
         }
     }
+
+    public static int getInventoryMax(World world, Material mat, short dur, String inventoryType) {
+        int max = ITEM_DEFAULT;
+
+        // Force air to keep default value
+        if (mat != Material.AIR) {
+         // Check inventory types
+            if (max == ITEM_DEFAULT) {
+                max = getMax(world + "." + inventoryType, mat, dur);
+            }
+            if (max == ITEM_DEFAULT) {
+                max = getMax(allWorlds + "." + inventoryType, mat, dur);
+            }
+
+            // Check default
+            if (max == ITEM_DEFAULT) {
+                max = getMax(world + "." + "default", mat, dur);
+            }
+            if (max == ITEM_DEFAULT) {
+                max = getMax(allWorlds + "." + "default", mat, dur);
+            }
+
+            // Handle invalid max
+            if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
+                // Invalid max, count as default
+                max = ITEM_DEFAULT;
+            }
+        }
+
+        return max;
+    }
+
 
     public static int getItemMax(Player player, Material mat, short dur, String inventoryType) {
         String world = player.getWorld().getName();

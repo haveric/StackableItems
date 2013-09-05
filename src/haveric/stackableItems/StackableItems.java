@@ -25,6 +25,7 @@ public class StackableItems extends JavaPlugin {
 
         // Register the plugin events
         pm.registerEvents(new SIPlayerListener(this), this);
+        pm.registerEvents(new HopperListener(), this);
         pm.registerEvents(new SIBlockBreak(), this);
 
         Config.init(this);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -224,6 +225,79 @@ public final class InventoryUtil {
                         player.getWorld().dropItemNaturally(player.getLocation(), clone);
                     }
                 }
+            }
+        });
+    }
+
+    // This should not be called on a player inventory
+    public static void addItems(final Location location, final ItemStack itemToAdd, final Inventory inventory, final int maxAmount) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override public void run() {
+                int addAmount = itemToAdd.getAmount();
+
+                // Add to existing stacks
+                Iterator<ItemStack> iter = inventory.iterator();
+                int i = 0;
+                while (iter.hasNext()) {
+                    ItemStack slot = iter.next();
+
+                    if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
+                        int slotAmount = slot.getAmount();
+
+                        int canAdd = maxAmount - slotAmount;
+                        if (canAdd > 0) {
+                            // Add less than a full slot
+                            if (addAmount <= canAdd) {
+                                slot.setAmount(slotAmount + addAmount);
+                                inventory.setItem(i, slot);
+                                addAmount = 0;
+                            // Fill the slot and leave the rest
+                            } else {
+                                slot.setAmount(maxAmount);
+                                inventory.setItem(i, slot);
+                                addAmount -= canAdd;
+                            }
+                        }
+                    }
+                    i++;
+                }
+
+                // Reset the iterator to start
+                iter = inventory.iterator();
+                i = 0;
+                // Add to empty slots
+                while (iter.hasNext()) {
+                    ItemStack slot = iter.next();
+
+                    if (slot == null) {
+                        if (addAmount >= maxAmount) {
+                            itemToAdd.setAmount(maxAmount);
+                            inventory.setItem(i, itemToAdd.clone());
+                            addAmount -= maxAmount;
+                        } else if (addAmount > 0) {
+                            itemToAdd.setAmount(addAmount);
+                            inventory.setItem(i, itemToAdd.clone());
+                            addAmount = 0;
+                        }
+                    }
+                    i++;
+                }
+
+                if (addAmount > 0) {
+                    ItemStack clone = itemToAdd.clone();
+                    clone.setAmount(addAmount);
+
+                    location.getWorld().dropItemNaturally(location, clone);
+                }
+            }
+        });
+    }
+
+    public static void moveItems(final Location location, final ItemStack stack, final Inventory fromInventory, final Inventory toInventory, final int max) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override public void run() {
+                fromInventory.removeItem(stack);
+                addItems(location, stack, toInventory, max);
             }
         });
     }
