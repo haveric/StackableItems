@@ -8,6 +8,7 @@
 
 #### Version 0.9.5
 * Added hopper pickup/movement support
+* Removed Metrics as the service has been discontinued.
 
 #### Version 0.9.4.2 (8/18/2013)
 * Fixed duplication issues with dragging.
