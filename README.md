@@ -6,8 +6,9 @@
 
 ### Changelog:
 
-#### Version 0.9.5
+#### Version 0.9.4.2.t1
 * Added hopper pickup/movement support
+* Fixed flint and steel error with dispensers.
 
 #### Version 0.9.4.2 (8/18/2013)
 * Fixed duplication issues with dragging.

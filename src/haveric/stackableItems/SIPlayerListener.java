@@ -1345,23 +1345,25 @@ public class SIPlayerListener implements Listener {
 
         if (event.getCause() == IgniteCause.FLINT_AND_STEEL) {
             Player player = event.getPlayer();
+            // Only deal with players.
+            if (player != null) {
+                ItemStack holding = player.getItemInHand();
+                // Since repeatedly using flint and steel causes durability loss, reset durability on a new hit.
+                ItemStack newStack = holding.clone();
+                newStack.setDurability((short) 0);
+                int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), player.getInventory().getName());
 
-            ItemStack holding = player.getItemInHand();
-            // Since repeatedly using flint and steel causes durability loss, reset durability on a new hit.
-            ItemStack newStack = holding.clone();
-            newStack.setDurability((short) 0);
-            int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), player.getInventory().getName());
-
-            // Don't touch default items.
-            if (maxItems == SIItems.ITEM_DEFAULT) {
-                return;
-            }
-            // Handle unlimited flint and steel
-            if (maxItems == SIItems.ITEM_INFINITE) {
-                player.setItemInHand(newStack);
-                InventoryUtil.updateInventory(player);
-            } else {
-                InventoryUtil.splitStack(player, false);
+                // Don't touch default items.
+                if (maxItems == SIItems.ITEM_DEFAULT) {
+                    return;
+                }
+                // Handle unlimited flint and steel
+                if (maxItems == SIItems.ITEM_INFINITE) {
+                    player.setItemInHand(newStack);
+                    InventoryUtil.updateInventory(player);
+                } else {
+                    InventoryUtil.splitStack(player, false);
+                }
             }
         }
     }
