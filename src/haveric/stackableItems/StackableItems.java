@@ -1,5 +1,8 @@
 package haveric.stackableItems;
 
+import haveric.stackableItems.mcstats.Metrics;
+
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.permission.Permission;
@@ -13,6 +16,8 @@ public class StackableItems extends JavaPlugin {
     public Logger log;
 
     private Commands commands = new Commands(this);
+
+    private Metrics metrics;
 
     public void onEnable() {
         log = getLogger();
@@ -37,6 +42,8 @@ public class StackableItems extends JavaPlugin {
         FurnaceXPConfig.setup();
 
         getCommand(Commands.getMain()).setExecutor(commands);
+
+        setupMetrics();
     }
 
     public void onDisable() {
@@ -49,6 +56,15 @@ public class StackableItems extends JavaPlugin {
             if (permProvider != null) {
                 Perms.init(this, permProvider.getProvider());
             }
+        }
+    }
+
+    private void setupMetrics() {
+        try {
+            metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
