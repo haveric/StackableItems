@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Version 0.9.4.2.t2
+* Temporary solution for letting vanilla handle horse(donkey,mule,etc) inventories
+
 #### Version 0.9.4.2.t1
 * Added hopper pickup/movement support
 * Fixed flint and steel error with dispensers.

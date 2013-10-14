@@ -504,22 +504,48 @@ public class SIPlayerListener implements Listener {
             InventoryUtil.updateInventory(player);
         }
     }
-
+/*
     // TODO: Handle Creative inventory
-    /*
     @EventHandler (priority = EventPriority.HIGHEST)
     public void creativeClick(InventoryCreativeEvent event) {
-        ItemStack current = event.getCurrentItem();
+        if (event.isCancelled()) {
+            return;
+        }
+
+        Inventory inventory = event.getInventory();
+        inventory.setMaxStackSize(SIItems.ITEM_NEW_MAX);
+
+        ItemStack clicked = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
 
-        SlotType slotType = event.getSlotType();
-        ClickType clickType = event.getClick();
-        int slot = event.getSlot();
-        int rawSlot = event.getRawSlot();
-        plugin.log.info("Current: " + current + ", cursor: " + cursor + ", slot: " + slot + ", rawSlot: " + rawSlot + ", SlotType: " + slotType);
-    }
-    */
+        if (cursor != null && clicked != null) {
+            Player player = (Player) event.getWhoClicked();
 
+            Material clickedType = clicked.getType();
+            short clickedDur = clicked.getDurability();
+
+            Material cursorType = cursor.getType();
+            short cursorDur = cursor.getDurability();
+
+            int maxItems = 0;
+            if (clickedType == Material.AIR) {
+                maxItems = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, event.getRawSlot());
+            } else {
+                maxItems = InventoryUtil.getInventoryMax(player, inventory, clickedType, clickedDur, event.getRawSlot());
+            }
+            plugin.log.info("ClickType: " + event.getClick());
+            plugin.log.info("Shift?: " + event.isShiftClick());
+
+            SlotType slotType = event.getSlotType();
+            plugin.log.info("SlotType: " + slotType);
+            plugin.log.info("Inv size: " + inventory.getSize());
+            int rawSlot = event.getRawSlot();
+
+            boolean cursorEmpty = cursorType == Material.AIR;
+            boolean slotEmpty = clickedType == Material.AIR;
+        }
+    }
+*/
     @EventHandler (priority = EventPriority.HIGHEST)
     public void inventoryClick(InventoryClickEvent event) {
         if (event.isCancelled()) {
@@ -535,6 +561,13 @@ public class SIPlayerListener implements Listener {
 
         Inventory top = event.getView().getTopInventory();
         InventoryType topType = top.getType();
+
+        String topName = top.getName();
+        // TODO: temporary solution to let vanilla handle horse (and similar) inventories.
+        if (top.getType() == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
+                                                  || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse"))) {
+            return;
+        }
 
         ClickType clickType = event.getClick();
         //plugin.log.info("Click: " + clickType);
@@ -845,10 +878,8 @@ public class SIPlayerListener implements Listener {
             boolean cursorEmpty = cursorType == Material.AIR;
             boolean slotEmpty = clickedType == Material.AIR;
 
-            // we want to ignore creative players (for now) as there are a lot of bugs TODO: handle creative players
-            if (player.getGameMode() == GameMode.CREATIVE) {
-
-            } else {
+            // Creative is handled elsewhere
+            if (player.getGameMode() != GameMode.CREATIVE) {
                 if (event.isShiftClick()) {
                     if (rawSlot < top.getSize()) {
                         // We only want to override if moving more than a vanilla stack will hold
