@@ -15,7 +15,7 @@ public final class FurnaceUtil {
 
     private static StackableItems plugin;
 
-    private static final int FUEL_LIST_VERSION = 3;
+    private static final int FUEL_LIST_VERSION = 4;
 
     private static List<Material> listOfFuels;
     private static List<Material> furnaceBurnables;
@@ -33,11 +33,13 @@ public final class FurnaceUtil {
 
     private static void loadDefaultList() {
         listOfFuels = new ArrayList<Material>();
+        listOfFuels.add(Material.ACACIA_STAIRS);
         listOfFuels.add(Material.BLAZE_ROD);
         listOfFuels.add(Material.BOOKSHELF);
         listOfFuels.add(Material.CHEST);
         listOfFuels.add(Material.COAL);
         listOfFuels.add(Material.COAL_BLOCK);
+        listOfFuels.add(Material.DARK_OAK_STAIRS);
         listOfFuels.add(Material.DAYLIGHT_DETECTOR);
         listOfFuels.add(Material.FENCE);
         listOfFuels.add(Material.FENCE_GATE);
@@ -46,8 +48,8 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.NOTE_BLOCK);
         listOfFuels.add(Material.JUKEBOX);
         listOfFuels.add(Material.LAVA_BUCKET);
-        listOfFuels.add(Material.LOCKED_CHEST);
         listOfFuels.add(Material.LOG);
+        listOfFuels.add(Material.LOG_2);
         listOfFuels.add(Material.SAPLING);
         listOfFuels.add(Material.STICK);
         listOfFuels.add(Material.TRAP_DOOR);
@@ -84,6 +86,7 @@ public final class FurnaceUtil {
             Recipe recipe = iter.next();
             if (recipe instanceof FurnaceRecipe) {
                 FurnaceRecipe furnaceRecipe = (FurnaceRecipe) recipe;
+
                 ItemStack item = furnaceRecipe.getInput();
                 Material mat = item.getType();
 
