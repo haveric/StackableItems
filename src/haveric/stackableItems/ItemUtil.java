@@ -198,6 +198,7 @@ public final class ItemUtil {
         } else {
             switch(mat) {
                 case BOOK:
+                case FISHING_ROD:
                     enchantable = true;
                     break;
             }
