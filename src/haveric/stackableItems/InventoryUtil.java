@@ -220,9 +220,12 @@ public final class InventoryUtil {
                         i++;
                     }
                     if (addAmount > 0) {
-                        ItemStack clone = itemToAdd.clone();
-                        clone.setAmount(addAmount);
-                        player.getWorld().dropItemNaturally(player.getLocation(), clone);
+                        // For some reason it is becoming air at this point in certain situations.
+                        if (itemToAdd.getType() != Material.AIR) {
+                            ItemStack clone = itemToAdd.clone();
+                            clone.setAmount(addAmount);
+                            player.getWorld().dropItemNaturally(player.getLocation(), clone);
+                        }
                     }
                 }
             }
@@ -497,8 +500,18 @@ public final class InventoryUtil {
         if (slot >= inventory.getSize()) {
             maxAmount = maxPlayerAmount;
         }
-
-        if (inventoryType == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
+        String invName = inventory.getName();
+        if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {
+            if (slot <= 2) {
+                maxAmount = 1;
+            }
+        } else if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Donkey") || invName.equalsIgnoreCase("Mule"))) {
+            if (slot == 0) {
+                maxAmount = 1;
+            } else if (slot == 1) {
+                maxAmount = 0;
+            }
+        } else if (inventoryType == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
             if (slot >= 0 && slot < 3) {
                 maxAmount = Config.getMaxFurnaceAmount(mat);
             }
