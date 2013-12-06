@@ -33,13 +33,10 @@ public final class FurnaceUtil {
 
     private static void loadDefaultList() {
         listOfFuels = new ArrayList<Material>();
-        listOfFuels.add(Material.ACACIA_STAIRS);
         listOfFuels.add(Material.BLAZE_ROD);
         listOfFuels.add(Material.BOOKSHELF);
         listOfFuels.add(Material.CHEST);
         listOfFuels.add(Material.COAL);
-        listOfFuels.add(Material.COAL_BLOCK);
-        listOfFuels.add(Material.DARK_OAK_STAIRS);
         listOfFuels.add(Material.DAYLIGHT_DETECTOR);
         listOfFuels.add(Material.FENCE);
         listOfFuels.add(Material.FENCE_GATE);
@@ -49,7 +46,6 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.JUKEBOX);
         listOfFuels.add(Material.LAVA_BUCKET);
         listOfFuels.add(Material.LOG);
-        listOfFuels.add(Material.LOG_2);
         listOfFuels.add(Material.SAPLING);
         listOfFuels.add(Material.STICK);
         listOfFuels.add(Material.TRAP_DOOR);
@@ -64,6 +60,14 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.WOOD_STEP);
         listOfFuels.add(Material.WOOD_SWORD);
         listOfFuels.add(Material.WORKBENCH);
+
+        try {
+            listOfFuels.add(Material.ACACIA_STAIRS);
+            listOfFuels.add(Material.DARK_OAK_STAIRS);
+            listOfFuels.add(Material.LOG_2);
+        } catch (NoSuchFieldError e) {
+            plugin.log.warning("1.7 fuel items not found.");
+        }
     }
 
     public static void reload() {

@@ -564,7 +564,7 @@ public class SIPlayerListener implements Listener {
 
         String topName = top.getName();
         // Let Vanilla handle the saddle and armor slots for horses
-        if (event.getRawSlot() <= 2 && topType == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
+        if (event.getRawSlot() < 2 && topType == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
                                                   || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse"))) {
             return;
         }
@@ -987,6 +987,19 @@ public class SIPlayerListener implements Listener {
                             }
                             if (!moved) {
                                 InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
+                            }
+                        } else if (topType == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
+                                || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse"))) {
+                            // No chest
+                            if (top.getSize() < 2) {
+                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
+                            // Has chest
+                            } else {
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, top.getSize(), true);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
                             }
                         } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST
                                 || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER) {

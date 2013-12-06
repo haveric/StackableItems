@@ -8,9 +8,10 @@
 
 #### Coming Soon
 * Removed Locked Chest from fuel list
-* Added 1.7 items to fuel list
+* Added 1.7 items to fuel list (Backwards support for 1.6)
 * Added fishing rods to enchantable items
 * Fixed a bug with AIR getting dropped.
+* Fixed horse stacking
 
 #### Version 0.9.4.2.t2
 * Temporary solution for letting vanilla handle horse(donkey,mule,etc) inventories

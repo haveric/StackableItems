@@ -95,7 +95,10 @@ public class CustomFileWriter {
             while (listScanner.hasNextLine()) {
                 String nextLine = listScanner.nextLine();
                 if (!nextLine.trim().equals("")) {
-                    matList.add(Material.getMaterial(nextLine));
+                    Material mat = Material.getMaterial(nextLine);
+                    if (mat != null) {
+                        matList.add(mat);
+                    }
                 }
             }
 
