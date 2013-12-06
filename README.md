@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon
+#### Version 0.9.4.2.t3
 * Removed Locked Chest from fuel list
 * Added 1.7 items to fuel list (Backwards support for 1.6)
 * Added fishing rods to enchantable items
