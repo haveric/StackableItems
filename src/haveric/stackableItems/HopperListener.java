@@ -23,12 +23,8 @@ import org.bukkit.util.Vector;
 
 public class HopperListener implements Listener{
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void hopperMove(InventoryMoveItemEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
         Inventory toInventory = event.getDestination();
         InventoryHolder holder = toInventory.getHolder();
         if (holder != null) {
@@ -85,12 +81,8 @@ public class HopperListener implements Listener{
         //
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void hopperPickup(InventoryPickupItemEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
         Item item = event.getItem();
         ItemStack stack = item.getItemStack();
         Inventory inventory = event.getInventory();

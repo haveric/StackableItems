@@ -13,11 +13,8 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class SIBlockBreak implements Listener {
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
         Block block = event.getBlock();
 
         Player player = event.getPlayer();
