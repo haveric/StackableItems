@@ -5,6 +5,14 @@
 #### For more info, visit [http://dev.bukkit.org/server-mods/stackableitems](http://dev.bukkit.org/server-mods/stackableitems) 
 
 ### Changelog:
+#### Version 0.9.4.3 (1/1/2014)
+* Fixed flint and steel error with dispensers.
+* Added hopper pickup/movement support
+* Removed Locked Chest from fuel list
+* Added 1.7 items to fuel list (Backwards support for 1.6)
+* Added fishing rods to enchantable items
+* Fixed a bug with AIR getting dropped.
+* Fixed horse stacking
 
 #### Version 0.9.4.2.t3
 * Removed Locked Chest from fuel list
