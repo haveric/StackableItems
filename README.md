@@ -5,6 +5,10 @@
 #### For more info, visit [http://dev.bukkit.org/server-mods/stackableitems](http://dev.bukkit.org/server-mods/stackableitems) 
 
 ### Changelog:
+
+#### Coming Soon:
+* Fixed milk buckets removing blocks
+
 #### Version 0.9.4.3 (1/1/2014)
 * Fixed flint and steel error with dispensers.
 * Added hopper pickup/movement support

@@ -336,10 +336,15 @@ public class SIPlayerListener implements Listener {
             clone.setAmount(amount - 1);
 
             InventoryUtil.replaceItem(player.getInventory(), slot, clone);
-            InventoryUtil.addItems(player, event.getItemStack());
+            ItemStack toAdd = event.getItemStack();
+            InventoryUtil.addItems(player, toAdd);
 
             event.setCancelled(true);
-            event.getBlockClicked().setType(Material.AIR);
+
+            Material bucketType = toAdd.getType();
+            if (bucketType != Material.MILK_BUCKET) {
+                event.getBlockClicked().setType(Material.AIR);
+            }
 
             InventoryUtil.updateInventory(player);
         }
