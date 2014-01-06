@@ -8,6 +8,7 @@
 
 #### Coming Soon:
 * Fixed milk buckets removing blocks
+* Handle vanilla adding to the hotbar in reverse order
 
 #### Version 0.9.4.3 (1/1/2014)
 * Fixed flint and steel error with dispensers.

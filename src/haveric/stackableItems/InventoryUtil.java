@@ -59,6 +59,46 @@ public final class InventoryUtil {
         return free;
     }
 
+    private static int getAmountDefaultHelper(Player player, Inventory inventory, ItemStack itemToCheck, ItemStack slot, int i) {
+        Material type = itemToCheck.getType();
+        short durability = itemToCheck.getDurability();
+        int defaultMax = type.getMaxStackSize();
+
+        int free = 0;
+
+        if (ItemUtil.isSameItem(slot, itemToCheck)) {
+            int amt = slot.getAmount();
+            int slotMax = getInventoryMax(player, inventory, type, durability, i);
+
+            if (slotMax == defaultMax) {
+                // Let vanilla always handle this
+                free = -1;
+            } else if (slotMax > defaultMax) {
+                if (amt == slotMax) {
+                    // Continue, slot is full and vanilla should ignore this
+                    free = 0;
+                } else if (amt >= defaultMax && amt < slotMax) {
+                    // Vanilla can't handle this
+                    free = -2;
+                } else { // amt < defaultMax
+                    // Let Vanilla handle this
+                    free = defaultMax - amt;
+                }
+            } else if (slotMax < defaultMax) { // slotMax < defaultMax
+                if (amt < slotMax) {
+                    // Vanilla can only add up to slotMax
+                    free = slotMax - amt;
+                } else {
+                    // Don't let Vanilla handle this
+                    free = -2;
+                }
+            }
+        }
+
+        return free;
+    }
+
+
     public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory) {
         int free = 0;
 
@@ -67,41 +107,32 @@ public final class InventoryUtil {
         int defaultMax = type.getMaxStackSize();
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
-            Iterator<ItemStack> iter = inventory.iterator();
-            int i = 0;
-            while (iter.hasNext() && free == 0) {
-                ItemStack slot = iter.next();
 
-                if (ItemUtil.isSameItem(slot, itemToCheck)) {
-                    int amt = slot.getAmount();
-                    int slotMax = getInventoryMax(player, inventory, type, durability, i);
+            // Handle vanilla adding to the hotbar in reverse order
+            if (inventory.getType() == InventoryType.PLAYER){
+                int i = 8;
+                while (i > -1 && free == 0) {
+                    ItemStack slot = inventory.getItem(i);
+                    free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
 
-                    if (slotMax == defaultMax) {
-                        // Let vanilla always handle this
-                        free = -1;
-                    } else if (slotMax > defaultMax) {
-                        if (amt == slotMax) {
-                            // Continue, slot is full and vanilla should ignore this
-                            free = 0;
-                        } else if (amt >= defaultMax && amt < slotMax) {
-                            // Vanilla can't handle this
-                            free = -2;
-                        } else { // amt < defaultMax
-                            // Let Vanilla handle this
-                            free = defaultMax - amt;
-                        }
-                    } else if (slotMax < defaultMax) { // slotMax < defaultMax
-                        if (amt < slotMax) {
-                            // Vanilla can only add up to slotMax
-                            free = slotMax - amt;
-                        } else {
-                            // Don't let Vanilla handle this
-                            free = -2;
-                        }
+                    if (i == 0) {
+                        i = 9;
+                    } else if (i <= 8) {
+                        i --;
+                    } else if (i == 35) {
+                        i = -1;
+                    } else if (i > 8) {
+                        i ++;
                     }
                 }
-
-                i++;
+            } else {
+                Iterator<ItemStack> iter = inventory.iterator();
+                int i = 0;
+                while (iter.hasNext() && free == 0) {
+                    ItemStack slot = iter.next();
+                    free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                    i++;
+                }
             }
 
             // Check for an empty slot
