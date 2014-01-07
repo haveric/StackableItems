@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon:
+#### Version 0.9.4.4
 * Fixed milk buckets removing blocks
 * Handle vanilla adding to the hotbar in reverse order
 
