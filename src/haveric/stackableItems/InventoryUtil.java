@@ -104,7 +104,6 @@ public final class InventoryUtil {
 
         Material type = itemToCheck.getType();
         short durability = itemToCheck.getDurability();
-        int defaultMax = type.getMaxStackSize();
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
             // Handle vanilla adding to the hotbar in reverse order
