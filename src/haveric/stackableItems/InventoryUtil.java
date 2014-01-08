@@ -107,7 +107,6 @@ public final class InventoryUtil {
         int defaultMax = type.getMaxStackSize();
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
-
             // Handle vanilla adding to the hotbar in reverse order
             if (inventory.getType() == InventoryType.PLAYER){
                 int i = 8;
@@ -135,19 +134,46 @@ public final class InventoryUtil {
                 }
             }
 
+
             // Check for an empty slot
             if (free == 0) {
-                int emptySlot = inventory.firstEmpty();
-                if (emptySlot > -1) {
-                    free = getInventoryMax(player, inventory, type, durability, emptySlot);
 
-                    if (free > defaultMax) {
-                        free = defaultMax;
-                    } else if (free == defaultMax) {
-                        free = -1;
+                // Handle vanilla adding to the hotbar in reverse order
+                if (inventory.getType() == InventoryType.PLAYER){
+                    int i = 8;
+                    while (i > -1 && free == 0) {
+                        ItemStack slot = inventory.getItem(i);
+
+                        if (slot == null || slot.getType() == Material.AIR) {
+                            int slotMax = getInventoryMax(player, inventory, type, durability, i);
+                            free = slotMax;
+                        }
+
+                        if (i == 0) {
+                            i = 9;
+                        } else if (i <= 8) {
+                            i --;
+                        } else if (i == 35) {
+                            i = -1;
+                        } else if (i > 8) {
+                            i ++;
+                        }
+                    }
+                } else {
+                    Iterator<ItemStack> iter = inventory.iterator();
+                    int i = 0;
+                    while (iter.hasNext() && free == 0) {
+                        ItemStack slot = iter.next();
+
+                        if (slot == null || slot.getType() == Material.AIR) {
+                            int slotMax = getInventoryMax(player, inventory, type, durability, i);
+                            free = slotMax;
+                        }
+                        i++;
                     }
                 }
             }
+
             // Handle situations where vanilla won't be able to help us.
             if (free == -2) {
                 free = 0;

@@ -180,6 +180,7 @@ public class SIPlayerListener implements Listener {
                         if (clone.getType() != Material.AIR) {
                             // custom repairing
                             int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory());
+
                             if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
                                 // TODO: handle custom repairing to allow stacking
                                 // TODO: don't let people repair two fully repaired items.. that's just stupid
