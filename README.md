@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon
+* Made shift clicking replicate vanilla in (hopefully) all cases.
+
 #### Version 0.9.4.4 (1/7/2014)
 * Fixed milk buckets removing blocks
 * Handle vanilla adding to the hotbar in reverse order

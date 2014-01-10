@@ -99,7 +99,7 @@ public final class InventoryUtil {
     }
 
 
-    public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory) {
+    public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory, Inventory fromInventory) {
         int free = 0;
 
         Material type = itemToCheck.getType();
@@ -107,7 +107,7 @@ public final class InventoryUtil {
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
             // Handle vanilla adding to the hotbar in reverse order
-            if (inventory.getType() == InventoryType.PLAYER){
+            if (fromInventory == null && inventory.getType() == InventoryType.PLAYER){
                 int i = 8;
                 while (i > -1 && free == 0) {
                     ItemStack slot = inventory.getItem(i);
@@ -124,11 +124,29 @@ public final class InventoryUtil {
                     }
                 }
             } else {
-                Iterator<ItemStack> iter = inventory.iterator();
+                // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
+                boolean addTopBottom = false;
+                if (fromInventory != null) {
+                    InventoryType fromType = fromInventory.getType();
+                    if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE) {
+                        addTopBottom = true;
+                    }
+                }
+
                 int i = 0;
-                while (iter.hasNext() && free == 0) {
-                    ItemStack slot = iter.next();
+                if (addTopBottom) {
+                    i = 9;
+                }
+                while (((addTopBottom && i != -1) || i != 36) && free == 0) {
+                    ItemStack slot = inventory.getItem(i);
                     free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                    if (addTopBottom) {
+                        if (i == 8) {
+                            i = -2;
+                        } else if (i == 35) {
+                            i = -1;
+                        }
+                    }
                     i++;
                 }
             }
@@ -138,7 +156,7 @@ public final class InventoryUtil {
             if (free == 0) {
 
                 // Handle vanilla adding to the hotbar in reverse order
-                if (inventory.getType() == InventoryType.PLAYER){
+                if (fromInventory == null && inventory.getType() == InventoryType.PLAYER){
                     int i = 8;
                     while (i > -1 && free == 0) {
                         ItemStack slot = inventory.getItem(i);
@@ -159,14 +177,33 @@ public final class InventoryUtil {
                         }
                     }
                 } else {
-                    Iterator<ItemStack> iter = inventory.iterator();
+                    // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
+                    boolean addTopBottom = false;
+                    if (fromInventory != null) {
+                        InventoryType fromType = fromInventory.getType();
+                        if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE) {
+                            addTopBottom = true;
+                        }
+                    }
+
                     int i = 0;
-                    while (iter.hasNext() && free == 0) {
-                        ItemStack slot = iter.next();
+                    if (addTopBottom) {
+                        i = 9;
+                    }
+                    while (((addTopBottom && i != -1) || i != 36) && free == 0) {
+                        ItemStack slot = inventory.getItem(i);
 
                         if (slot == null || slot.getType() == Material.AIR) {
                             int slotMax = getInventoryMax(player, inventory, type, durability, i);
                             free = slotMax;
+                        }
+
+                        if (addTopBottom) {
+                            if (i == 8) {
+                                i = -2;
+                            } else if (i == 35) {
+                                i = -1;
+                            }
                         }
                         i++;
                     }
@@ -205,24 +242,80 @@ public final class InventoryUtil {
         return canStack;
     }
 
-    public static void addItems(Player player, ItemStack itemToAdd) {
-        addItems(player, itemToAdd, player.getInventory(), 0, 36);
+    public static void addItems(Player player, ItemStack itemToAdd, boolean reverseHotbar, Inventory fromInventory) {
+        addItems(player, itemToAdd, player.getInventory(), 0, 36, reverseHotbar, fromInventory);
     }
 
-    public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end) {
+    public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end, final boolean reverseHotbar, final Inventory fromInventory) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
+
                 if (start < end && end <= inventory.getSize()) {
                     Material type = itemToAdd.getType();
                     short durability = itemToAdd.getDurability();
 
                     int addAmount = itemToAdd.getAmount();
 
-                    // Add to existing stacks
-                    Iterator<ItemStack> iter = inventory.iterator(start);
+                    // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
+                    boolean addTopBottom = false;
+                    if (fromInventory != null) {
+                        InventoryType fromType = fromInventory.getType();
+                        if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE) {
+                            addTopBottom = true;
+                        }
+                    }
+
                     int i = start;
-                    while (iter.hasNext() && i < end && addAmount > 0) {
-                        ItemStack slot = iter.next();
+
+                    // Flip hotbar adding to match vanilla
+                    if (fromInventory == null && reverseHotbar && inventory.getType() == InventoryType.PLAYER && start <= 8) {
+                        if (end >= 9) {
+                            i = 9;
+                        }
+                        int hotbarEnd = 8;
+                        if (end < hotbarEnd) {
+                            hotbarEnd = end;
+                        }
+
+                        int j = hotbarEnd;
+                        while (j >= start && addAmount > 0) {
+                            ItemStack slot = inventory.getItem(j);
+
+                            // TODO: Create method to reduce copypasta
+                            if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
+                                int slotAmount = slot.getAmount();
+
+                                int maxAmount = getInventoryMax(player, inventory, type, durability, j);
+                                // Handle infinite items
+                                if (maxAmount == SIItems.ITEM_INFINITE) {
+                                    maxAmount = type.getMaxStackSize();
+                                }
+
+                                int canAdd = maxAmount - slotAmount;
+                                if (canAdd > 0) {
+                                    // Add less than a full slot
+                                    if (addAmount <= canAdd) {
+                                        slot.setAmount(slotAmount + addAmount);
+                                        inventory.setItem(j, slot);
+                                        addAmount = 0;
+                                    // Fill the slot and leave the rest
+                                    } else {
+                                        slot.setAmount(maxAmount);
+                                        inventory.setItem(j, slot);
+                                        addAmount -= canAdd;
+                                    }
+                                }
+                            }
+                            j--;
+                        }
+                    }
+
+                    // Add to existing stacks
+                    if (addTopBottom) {
+                        i = 9;
+                    }
+                    while (((addTopBottom && i != -1) || (!addTopBottom && i < end)) && addAmount > 0) {
+                        ItemStack slot = inventory.getItem(i);
 
                         if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
                             int slotAmount = slot.getAmount();
@@ -248,14 +341,59 @@ public final class InventoryUtil {
                                 }
                             }
                         }
+                        if (addTopBottom) {
+                            if (i == 8) {
+                                i = -2;
+                            } else if (i == 35) {
+                                i = -1;
+                            }
+                        }
                         i++;
                     }
-                    // Reset the iterator to start
-                    iter = inventory.iterator(start);
+
                     i = start;
+
+                    // Flip hotbar adding to match vanilla
+                    if (fromInventory == null && reverseHotbar && inventory.getType() == InventoryType.PLAYER && start <= 8) {
+                        if (end >= 9) {
+                            i = 9;
+                        }
+                        int hotbarEnd = 8;
+                        if (end < hotbarEnd) {
+                            hotbarEnd = end;
+                        }
+
+                        int j = hotbarEnd;
+                        while (j >= start && addAmount > 0) {
+                            ItemStack slot = inventory.getItem(j);
+                            // TODO: Create function to reduce copypasta
+                            if (slot == null) {
+                                int maxAmount = getInventoryMax(player, inventory, type, durability, j);
+                                // Handle infinite items
+                                if (maxAmount == SIItems.ITEM_INFINITE) {
+                                    maxAmount = type.getMaxStackSize();
+                                }
+                                if (addAmount >= maxAmount) {
+                                    itemToAdd.setAmount(maxAmount);
+                                    inventory.setItem(j, itemToAdd.clone());
+                                    addAmount -= maxAmount;
+                                } else if (addAmount > 0) {
+                                    itemToAdd.setAmount(addAmount);
+                                    inventory.setItem(j, itemToAdd.clone());
+                                    addAmount = 0;
+                                }
+                            }
+
+                            j--;
+                        }
+                    }
+
+                    if (addTopBottom) {
+                        i = 9;
+                    }
                     // Add to empty slots
-                    while (iter.hasNext() && i < end && addAmount > 0) {
-                        ItemStack slot = iter.next();
+                    while (((addTopBottom && i != -1) || (!addTopBottom && i < end)) && addAmount > 0) {
+                        ItemStack slot = inventory.getItem(i);
 
                         if (slot == null) {
                             int maxAmount = getInventoryMax(player, inventory, type, durability, i);
@@ -271,6 +409,13 @@ public final class InventoryUtil {
                                 itemToAdd.setAmount(addAmount);
                                 inventory.setItem(i, itemToAdd.clone());
                                 addAmount = 0;
+                            }
+                        }
+                        if (addTopBottom) {
+                            if (i == 8) {
+                                i = -2;
+                            } else if (i == 35) {
+                                i = -1;
                             }
                         }
                         i++;
@@ -361,15 +506,15 @@ public final class InventoryUtil {
         });
     }
 
-    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft) {
-        return moveItems(player, clicked, event, player.getInventory(), start, end, setLeft);
+    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft, boolean reverseHotbar, Inventory fromInventory) {
+        return moveItems(player, clicked, event, player.getInventory(), start, end, setLeft, reverseHotbar, fromInventory);
     }
 
-    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft) {
-        return moveItems(player, clicked, event, inventory, 0, inventory.getSize(), setLeft);
+    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft, boolean reverseHotbar, Inventory fromInventory) {
+        return moveItems(player, clicked, event, inventory, 0, inventory.getSize(), setLeft, reverseHotbar, fromInventory);
     }
 
-    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft) {
+    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft, boolean reverseHotbar, Inventory fromInventory) {
         event.setCancelled(true);
         ItemStack clone = clicked.clone();
         int free = getFreeSpaces(player, clone, inventory, start, end);
@@ -378,13 +523,13 @@ public final class InventoryUtil {
 
         int left = 0;
         if (free >= clickedAmount) {
-            addItems(player, clone, inventory, start, end);
+            addItems(player, clone, inventory, start, end, reverseHotbar, fromInventory);
             event.setCurrentItem(null);
         } else {
             left = clickedAmount - free;
             if (left > 0) {
                 clone.setAmount(free);
-                addItems(player, clone, inventory, start, end);
+                addItems(player, clone, inventory, start, end, reverseHotbar, fromInventory);
 
                 if (setLeft) {
                     ItemStack clone2 = clicked.clone();
@@ -508,10 +653,10 @@ public final class InventoryUtil {
                         Material itemType = item.getType();
                         // Give back buckets when used in a recipe
                         if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET) {
-                            addItems(player, new ItemStack(Material.BUCKET, removeAmount));
+                            addItems(player, new ItemStack(Material.BUCKET, removeAmount), false, null);
                         // Give back bowls if mushroom soup is ever used in a recipe
                         } else if (itemType == Material.MUSHROOM_SOUP) {
-                            addItems(player, new ItemStack(Material.BOWL, removeAmount));
+                            addItems(player, new ItemStack(Material.BOWL, removeAmount), false, null);
                         }
                     }
                     i++;
@@ -626,7 +771,7 @@ public final class InventoryUtil {
             if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
                 ItemStack move = holding.clone();
                 move.setAmount(amount - 1);
-                addItems(player, move);
+                addItems(player, move, false, null);
                 holding.setAmount(1);
             }
         }
@@ -643,10 +788,10 @@ public final class InventoryUtil {
     public static void swapInventory(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
         // move from main inventory to hotbar
         if (rawSlot >= startSlot && rawSlot <= startSlot + 26) {
-            InventoryUtil.moveItems(player, toMove, event, 0, 9, true);
+            InventoryUtil.moveItems(player, toMove, event, 0, 9, true, false, null);
         // move from hotbar to main inventory
         } else if (rawSlot >= startSlot + 27 && rawSlot <= startSlot + 35) {
-            InventoryUtil.moveItems(player, toMove, event, 9, 36, true);
+            InventoryUtil.moveItems(player, toMove, event, 9, 36, true, false, null);
         }
     }
 

@@ -115,8 +115,6 @@ public class SIPlayerListener implements Listener {
 
             // Handle infinite items for the crafted item
             if (maxItems == SIItems.ITEM_INFINITE) {
-                // TODO: Review why this variable isn't being used
-                //maxItems = type.getMaxStackSize();
 
                 // Handle infinite recipe items
                 int inventSize = inventory.getSize();
@@ -158,15 +156,15 @@ public class SIPlayerListener implements Listener {
                         InventoryUtil.removeFromCrafting(player, inventory, 1);
                         if (total <= maxItems) {
                             ItemStack toAdd = result.clone();
-                            InventoryUtil.addItems(player, toAdd, player.getInventory(), hotbarButton, hotbarButton + 1);
+                            InventoryUtil.addItems(player, toAdd, player.getInventory(), hotbarButton, hotbarButton + 1, false, null);
                         } else {
                             ItemStack toAdd = result.clone();
                             toAdd.setAmount(maxItems - hotbarAmount);
-                            InventoryUtil.addItems(player, toAdd, player.getInventory(), hotbarButton, hotbarButton + 1);
+                            InventoryUtil.addItems(player, toAdd, player.getInventory(), hotbarButton, hotbarButton + 1, false, null);
 
                             ItemStack rest = result.clone();
                             rest.setAmount(total - maxItems);
-                            InventoryUtil.addItems(player, rest);
+                            InventoryUtil.addItems(player, rest, false, null);
                         }
                     }
                 } else if (event.isShiftClick()) {
@@ -179,7 +177,7 @@ public class SIPlayerListener implements Listener {
                         // Avoid crafting when there is nothing being crafted
                         if (clone.getType() != Material.AIR) {
                             // custom repairing
-                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory());
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), null);
 
                             if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
                                 // TODO: handle custom repairing to allow stacking
@@ -191,7 +189,7 @@ public class SIPlayerListener implements Listener {
 
                                     InventoryUtil.removeFromCrafting(player, inventory, amtCanCraft);
                                     clone.setAmount(actualCraft);
-                                    InventoryUtil.addItems(player, clone);
+                                    InventoryUtil.addItems(player, clone, true, null);
                                 }
                             } else {
                                 // We only want to override if moving more than a vanilla stack will hold
@@ -200,7 +198,7 @@ public class SIPlayerListener implements Listener {
 
                                     InventoryUtil.removeFromCrafting(player, inventory, freeSpaces);
                                     clone.setAmount(freeSpaces);
-                                    InventoryUtil.addItems(player, clone);
+                                    InventoryUtil.addItems(player, clone, true, null);
                                 }
                             }
                         }
@@ -338,7 +336,7 @@ public class SIPlayerListener implements Listener {
 
             InventoryUtil.replaceItem(player.getInventory(), slot, clone);
             ItemStack toAdd = event.getItemStack();
-            InventoryUtil.addItems(player, toAdd);
+            InventoryUtil.addItems(player, toAdd, false, null);
 
             event.setCancelled(true);
 
@@ -363,7 +361,7 @@ public class SIPlayerListener implements Listener {
             clone.setAmount(amount - 1);
 
             InventoryUtil.replaceItem(player.getInventory(), slot, clone);
-            InventoryUtil.addItems(player, event.getItemStack());
+            InventoryUtil.addItems(player, event.getItemStack(), false, null);
         }
     }
 
@@ -377,12 +375,12 @@ public class SIPlayerListener implements Listener {
 
         if (amt > 1) {
             if (type == Material.MILK_BUCKET) {
-                InventoryUtil.addItems(player, new ItemStack(Material.BUCKET));
+                InventoryUtil.addItems(player, new ItemStack(Material.BUCKET), false, null);
             } else if (type == Material.MUSHROOM_SOUP) {
                 int heldSlot = player.getInventory().getHeldItemSlot();
 
                 InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.MUSHROOM_SOUP, amt - 1));
-                InventoryUtil.addItems(player, new ItemStack(Material.BOWL));
+                InventoryUtil.addItems(player, new ItemStack(Material.BOWL), false, null);
             }
         }
     }
@@ -571,18 +569,18 @@ public class SIPlayerListener implements Listener {
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                         event.setCurrentItem(null);
 
-                        InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton + 1);
+                        InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton + 1, false, null);
                         event.setResult(Result.ALLOW);
                     } else if (clickedAmount > maxItems) {
                         event.setCurrentItem(null);
 
                         ItemStack clone = clicked.clone();
                         clone.setAmount(maxItems);
-                        InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton + 1);
+                        InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton + 1, false, null);
 
                         ItemStack clone2 = clicked.clone();
                         clone2.setAmount(clickedAmount - maxItems);
-                        InventoryUtil.addItems(player, clone2);
+                        InventoryUtil.addItems(player, clone2, false, null);
 
                         event.setResult(Result.ALLOW);
                     } // else let vanilla handle it
@@ -596,9 +594,9 @@ public class SIPlayerListener implements Listener {
                         event.setCurrentItem(null);
 
                         if (rawSlot >= inventorySize) {
-                            InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), rawSlot, rawSlot + 1);
+                            InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), rawSlot, rawSlot + 1, false, null);
                         } else {
-                            InventoryUtil.addItems(player, clicked.clone(), top, rawSlot, rawSlot + 1);
+                            InventoryUtil.addItems(player, clicked.clone(), top, rawSlot, rawSlot + 1, false, null);
                         }
 
                         event.setResult(Result.ALLOW);
@@ -611,9 +609,9 @@ public class SIPlayerListener implements Listener {
                         clone2.setAmount(maxItems);
 
                         if (rawSlot >= inventorySize) {
-                            InventoryUtil.addItems(player, clone2, player.getInventory(), rawSlot, rawSlot + 1);
+                            InventoryUtil.addItems(player, clone2, player.getInventory(), rawSlot, rawSlot + 1, false, null);
                         } else {
-                            InventoryUtil.addItems(player, clone2, top, rawSlot, rawSlot + 1);
+                            InventoryUtil.addItems(player, clone2, top, rawSlot, rawSlot + 1, false, null);
                         }
                     } // else let vanilla handle it
                 // Move clicked to hotbar. Move hotbar elsewhere
@@ -627,7 +625,7 @@ public class SIPlayerListener implements Listener {
                         if (ItemUtil.isSameItem(hotbarItem, clicked)) {
                             if (totalItems <= maxItems && totalItems > clickedType.getMaxStackSize()) {
                                 event.setCurrentItem(null);
-                                InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton + 1);
+                                InventoryUtil.addItems(player, clicked.clone(), player.getInventory(), hotbarButton, hotbarButton + 1, false, null);
                                 event.setResult(Result.DENY);
                             } else if (totalItems > maxItems) {
                                 event.setCurrentItem(null);
@@ -635,11 +633,11 @@ public class SIPlayerListener implements Listener {
                                 int toAdd = maxItems - hotbarAmount;
                                 ItemStack clone = clicked.clone();
                                 clone.setAmount(toAdd);
-                                InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton + 1);
+                                InventoryUtil.addItems(player, clone, player.getInventory(), hotbarButton, hotbarButton + 1, false, null);
 
                                 ItemStack clone2 = clicked.clone();
                                 clone2.setAmount(extra);
-                                InventoryUtil.addItems(player, clone2);
+                                InventoryUtil.addItems(player, clone2, false, null);
                                 event.setResult(Result.DENY);
                             } // Else vanilla can handle it.
                         // Different Items
@@ -654,12 +652,12 @@ public class SIPlayerListener implements Listener {
 
                                 ItemStack clone2 = clicked.clone();
                                 clone2.setAmount(clickedAmount - maxItems);
-                                InventoryUtil.addItems(player, clone2);
+                                InventoryUtil.addItems(player, clone2, false, null);
                             } else {
                                 ItemStack cloneClicked = clicked.clone();
                                 InventoryUtil.replaceItem(player.getInventory(), hotbarButton, cloneClicked);
                             }
-                            InventoryUtil.addItems(player, cloneHotbar);
+                            InventoryUtil.addItems(player, cloneHotbar, false, null);
 
                             event.setResult(Result.DENY);
                         }
@@ -711,7 +709,7 @@ public class SIPlayerListener implements Listener {
                             }
                             if (event.isShiftClick()) {
                                 clone.setAmount(amt);
-                                InventoryUtil.addItems(player, clone);
+                                InventoryUtil.addItems(player, clone, true, null);
                                 event.setCurrentItem(null);
                                 event.setResult(Result.DENY);
                                 Config.clearFurnace(blockLocation);
@@ -777,7 +775,7 @@ public class SIPlayerListener implements Listener {
 
                             FurnaceXPConfig.giveFurnaceXP(player, clone);
 
-                            InventoryUtil.addItems(player, clone);
+                            InventoryUtil.addItems(player, clone, true, null);
                         } else {
                             event.setCancelled(true);
 
@@ -788,7 +786,7 @@ public class SIPlayerListener implements Listener {
                             clone2.setAmount(freeSpaces);
                             FurnaceXPConfig.giveFurnaceXP(player, clone2);
 
-                            InventoryUtil.addItems(player, clone2);
+                            InventoryUtil.addItems(player, clone2, true, null);
                         }
                     } else if (event.isLeftClick() || event.isRightClick()) {
                         if (cursorAmount + clickedAmount > maxItems) {
@@ -856,9 +854,9 @@ public class SIPlayerListener implements Listener {
                 if (event.isShiftClick()) {
                     if (rawSlot < top.getSize()) {
                         // We only want to override if moving more than a vanilla stack will hold
-                        int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, player.getInventory());
+                        int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, player.getInventory(), top);
                         if (defaultStack > -1 && clickedAmount > defaultStack) {
-                            InventoryUtil.moveItems(player, clicked.clone(), event, 0, 36, true);
+                            InventoryUtil.moveItems(player, clicked.clone(), event, 0, 36, true, true, top);
                         }
                     } else {
                         if (topType == InventoryType.CRAFTING) {
@@ -915,7 +913,7 @@ public class SIPlayerListener implements Listener {
                                 ItemStack brewingSlot = top.getItem(3);
 
                                 if (brewingSlot == null || ItemUtil.isSameItem(brewingSlot, clicked)) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 3, 4, false);
+                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 3, 4, false, false, null);
 
                                     if (left > 0) {
                                         clicked.setAmount(left);
@@ -929,7 +927,7 @@ public class SIPlayerListener implements Listener {
 
                                 boolean movedAll = false;
                                 if (potionSlot1 == null) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false);
+                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
 
                                     if (left > 0) {
                                         clicked.setAmount(left);
@@ -939,7 +937,7 @@ public class SIPlayerListener implements Listener {
                                     moved = true;
                                 }
                                 if (potionSlot2 == null && !movedAll) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false);
+                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
 
                                     if (left > 0) {
                                         clicked.setAmount(left);
@@ -949,7 +947,7 @@ public class SIPlayerListener implements Listener {
                                     moved = true;
                                 }
                                 if (potionSlot3 == null && !movedAll) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, 3, false);
+                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, 3, false, false, null);
 
                                     if (left > 0) {
                                         clicked.setAmount(left);
@@ -968,7 +966,7 @@ public class SIPlayerListener implements Listener {
                                 InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
                             // Has chest
                             } else {
-                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, top.getSize(), true);
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, top.getSize(), true, false, null);
 
                                 if (left > 0) {
                                     clicked.setAmount(left);
@@ -978,13 +976,13 @@ public class SIPlayerListener implements Listener {
                                 || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER) {
 
                             // We only want to override if moving more than a vanilla stack will hold
-                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top);
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
                             if (defaultStack > -1 && clickedAmount > defaultStack) {
-                                InventoryUtil.moveItems(player, clicked.clone(), event, top, true);
+                                InventoryUtil.moveItems(player, clicked.clone(), event, top, true, false, null);
                             }
                         // This adds shift clicking from the player inventory to the workbench.
                         } else if (topType == InventoryType.WORKBENCH) {
-                            int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 10, false);
+                            int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 10, false, false, null);
                             if (left > 0) {
                                 clicked.setAmount(left);
                             }
@@ -998,7 +996,7 @@ public class SIPlayerListener implements Listener {
                         } else if (topType == InventoryType.BEACON) {
                             ItemStack beaconSlot = top.getItem(0);
                             if (ItemUtil.isBeaconFuel(clickedType) && beaconSlot == null) {
-                                InventoryUtil.moveItems(player, clicked.clone(), event, top, true);
+                                InventoryUtil.moveItems(player, clicked.clone(), event, top, true, false, null);
                             } else {
                                 InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 1);
                             }
@@ -1008,7 +1006,7 @@ public class SIPlayerListener implements Listener {
 
                             boolean movedAll = false;
                             if (renameSlot == null || ItemUtil.isSameItem(clicked, renameSlot)) {
-                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false);
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
                                 if (left > 0) {
                                     clicked.setAmount(left);
                                 } else {
@@ -1017,7 +1015,7 @@ public class SIPlayerListener implements Listener {
                             }
 
                             if (!movedAll && (repairSlot == null || ItemUtil.isSameItem(clicked, repairSlot))) {
-                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false);
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
                                 if (left > 0) {
                                     clicked.setAmount(left);
                                 } else {
@@ -1030,9 +1028,9 @@ public class SIPlayerListener implements Listener {
                         } else if (topType == InventoryType.ENCHANTING) {
                             if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
                                 // We only want to override if moving more than a vanilla stack will hold
-                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top);
+                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
                                 if (defaultStack > -1 && clickedAmount > defaultStack) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false);
+                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
 
                                     if (left > 0) {
                                         clicked.setAmount(left);
@@ -1057,7 +1055,7 @@ public class SIPlayerListener implements Listener {
                                 if (rawSlot >= 3 && rawSlot <= 38) {
                                     if (fuel == null || ItemUtil.isSameItem(fuel,  clicked)) {
                                         fuelMoved = true;
-                                        int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false);
+                                        int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
                                         if (left > 0) {
                                             clicked.setAmount(left);
                                             fuelMoved = false;
@@ -1071,7 +1069,7 @@ public class SIPlayerListener implements Listener {
                                 if (rawSlot >= 3 && rawSlot <= 38) {
                                     if (burnable == null || ItemUtil.isSameItem(burnable, clicked)) {
                                         burnableMoved = true;
-                                        int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false);
+                                        int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
                                         if (left > 0) {
                                             clicked.setAmount(left);
                                             burnableMoved = false;
@@ -1295,9 +1293,9 @@ public class SIPlayerListener implements Listener {
             event.setCancelled(true);
         } else {
             // We only want to override if moving more than a vanilla stack will hold
-            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory());
+            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory(), null);
             if (defaultStack > -1 && stack.getAmount() > defaultStack) {
-                InventoryUtil.addItems(player, stack.clone());
+                InventoryUtil.addItems(player, stack.clone(), false, null);
                 Random random = new Random();
                 player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
