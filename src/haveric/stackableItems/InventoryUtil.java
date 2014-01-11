@@ -137,7 +137,8 @@ public final class InventoryUtil {
                 if (addTopBottom) {
                     i = 9;
                 }
-                while (((addTopBottom && i != -1) || i != 36) && free == 0) {
+                int inventorySize = inventory.getSize();
+                while (((addTopBottom && i != -1) || i != inventorySize) && free == 0) {
                     ItemStack slot = inventory.getItem(i);
                     free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
                     if (addTopBottom) {
@@ -190,7 +191,8 @@ public final class InventoryUtil {
                     if (addTopBottom) {
                         i = 9;
                     }
-                    while (((addTopBottom && i != -1) || i != 36) && free == 0) {
+                    int inventorySize = inventory.getSize();
+                    while (((addTopBottom && i != -1) || i != inventorySize) && free == 0) {
                         ItemStack slot = inventory.getItem(i);
 
                         if (slot == null || slot.getType() == Material.AIR) {
