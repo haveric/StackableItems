@@ -977,8 +977,6 @@ public class SIPlayerListener implements Listener {
 
                             // We only want to override if moving more than a vanilla stack will hold
                             int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
-                            plugin.log.info("Default Can Move: " + defaultStack);
-                            plugin.log.info("Clicked: " + clickedAmount);
                             if (defaultStack > -1 && clickedAmount > defaultStack) {
                                 InventoryUtil.moveItems(player, clicked.clone(), event, top, true, false, null);
                             }
