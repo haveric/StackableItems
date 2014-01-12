@@ -106,8 +106,17 @@ public final class InventoryUtil {
         short durability = itemToCheck.getDurability();
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
+            // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
+            boolean addTopBottom = false;
+            if (fromInventory != null) {
+                InventoryType fromType = fromInventory.getType();
+                if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE) {
+                    addTopBottom = true;
+                }
+            }
+
             // Handle vanilla adding to the hotbar in reverse order
-            if (fromInventory == null && inventory.getType() == InventoryType.PLAYER){
+            if ((fromInventory == null || !addTopBottom) && inventory.getType() == InventoryType.PLAYER){
                 int i = 8;
                 while (i > -1 && free == 0) {
                     ItemStack slot = inventory.getItem(i);
@@ -124,21 +133,12 @@ public final class InventoryUtil {
                     }
                 }
             } else {
-                // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
-                boolean addTopBottom = false;
-                if (fromInventory != null) {
-                    InventoryType fromType = fromInventory.getType();
-                    if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE) {
-                        addTopBottom = true;
-                    }
-                }
-
                 int i = 0;
                 if (addTopBottom) {
                     i = 9;
                 }
                 int inventorySize = inventory.getSize();
-                while (((addTopBottom && i != -1) || i != inventorySize) && free == 0) {
+                while (((addTopBottom && i != -1) || (!addTopBottom && i != inventorySize)) && free == 0) {
                     ItemStack slot = inventory.getItem(i);
                     free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
                     if (addTopBottom) {
@@ -157,7 +157,7 @@ public final class InventoryUtil {
             if (free == 0) {
 
                 // Handle vanilla adding to the hotbar in reverse order
-                if (fromInventory == null && inventory.getType() == InventoryType.PLAYER){
+                if ((fromInventory == null || !addTopBottom) && inventory.getType() == InventoryType.PLAYER){
                     int i = 8;
                     while (i > -1 && free == 0) {
                         ItemStack slot = inventory.getItem(i);
@@ -178,21 +178,12 @@ public final class InventoryUtil {
                         }
                     }
                 } else {
-                    // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
-                    boolean addTopBottom = false;
-                    if (fromInventory != null) {
-                        InventoryType fromType = fromInventory.getType();
-                        if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE) {
-                            addTopBottom = true;
-                        }
-                    }
-
                     int i = 0;
                     if (addTopBottom) {
                         i = 9;
                     }
                     int inventorySize = inventory.getSize();
-                    while (((addTopBottom && i != -1) || i != inventorySize) && free == 0) {
+                    while (((addTopBottom && i != -1) || (!addTopBottom && i != inventorySize)) && free == 0) {
                         ItemStack slot = inventory.getItem(i);
 
                         if (slot == null || slot.getType() == Material.AIR) {
@@ -270,7 +261,7 @@ public final class InventoryUtil {
                     int i = start;
 
                     // Flip hotbar adding to match vanilla
-                    if (fromInventory == null && reverseHotbar && inventory.getType() == InventoryType.PLAYER && start <= 8) {
+                    if ((fromInventory == null || !addTopBottom) && reverseHotbar && inventory.getType() == InventoryType.PLAYER && start <= 8) {
                         if (end >= 9) {
                             i = 9;
                         }
@@ -356,7 +347,7 @@ public final class InventoryUtil {
                     i = start;
 
                     // Flip hotbar adding to match vanilla
-                    if (fromInventory == null && reverseHotbar && inventory.getType() == InventoryType.PLAYER && start <= 8) {
+                    if ((fromInventory == null || !addTopBottom) && reverseHotbar && inventory.getType() == InventoryType.PLAYER && start <= 8) {
                         if (end >= 9) {
                             i = 9;
                         }
