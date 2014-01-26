@@ -482,7 +482,8 @@ public class SIPlayerListener implements Listener {
             InventoryUtil.updateInventory(player);
         }
     }
-/*
+
+    /*
     // TODO: Handle Creative inventory
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void creativeClick(InventoryCreativeEvent event) {
@@ -507,6 +508,7 @@ public class SIPlayerListener implements Listener {
             } else {
                 maxItems = InventoryUtil.getInventoryMax(player, inventory, clickedType, clickedDur, event.getRawSlot());
             }
+            plugin.log.info("Max items: " + maxItems);
             plugin.log.info("ClickType: " + event.getClick());
             plugin.log.info("Shift?: " + event.isShiftClick());
 
@@ -519,7 +521,8 @@ public class SIPlayerListener implements Listener {
             boolean slotEmpty = clickedType == Material.AIR;
         }
     }
-*/
+    */
+
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void inventoryClick(InventoryClickEvent event) {
         event.getInventory().setMaxStackSize(SIItems.ITEM_NEW_MAX);
@@ -849,322 +852,376 @@ public class SIPlayerListener implements Listener {
             boolean cursorEmpty = cursorType == Material.AIR;
             boolean slotEmpty = clickedType == Material.AIR;
 
-            // Creative is handled elsewhere
-            if (player.getGameMode() != GameMode.CREATIVE) {
-                if (event.isShiftClick()) {
-                    if (rawSlot < top.getSize()) {
-                        // We only want to override if moving more than a vanilla stack will hold
-                        int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, player.getInventory(), top);
-                        if (defaultStack > -1 && clickedAmount > defaultStack) {
-                            InventoryUtil.moveItems(player, clicked.clone(), event, 0, 36, true, true, top);
-                        }
-                    } else {
-                        if (topType == InventoryType.CRAFTING) {
-                            PlayerInventory inventory = player.getInventory();
+            // Creative Player Inventory is handled elsewhere
+            if (player.getGameMode() == GameMode.CREATIVE && topType == InventoryType.PLAYER) {
+                return;
+            }
 
-                            if (ItemUtil.isArmor(clickedType)) {
-                                ItemStack armorSlot = null;
-                                boolean moved = false;
+            if (event.isShiftClick()) {
+                if (rawSlot < top.getSize()) {
+                    // We only want to override if moving more than a vanilla stack will hold
+                    int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, player.getInventory(), top);
+                    if (defaultStack > -1 && clickedAmount > defaultStack) {
+                        InventoryUtil.moveItems(player, clicked.clone(), event, 0, 36, true, true, top);
+                    }
+                } else {
+                    if (topType == InventoryType.CRAFTING) {
+                        PlayerInventory inventory = player.getInventory();
 
-                                ItemStack cloneArmor = clicked.clone();
-                                cloneArmor.setAmount(1);
-                                if (ItemUtil.isHelmet(clickedType)) {
-                                    armorSlot = inventory.getHelmet();
-                                    if (armorSlot == null) {
-                                        inventory.setHelmet(cloneArmor);
-                                        moved = true;
-                                    }
-                                } else if (ItemUtil.isChestplate(clickedType)) {
-                                    armorSlot = inventory.getChestplate();
-                                    if (armorSlot == null) {
-                                        inventory.setChestplate(cloneArmor);
-                                        moved = true;
-                                    }
-                                } else if (ItemUtil.isLeggings(clickedType)) {
-                                    armorSlot = inventory.getLeggings();
-                                    if (armorSlot == null) {
-                                        inventory.setLeggings(cloneArmor);
-                                        moved = true;
-                                    }
-                                } else if (ItemUtil.isBoots(clickedType)) {
-                                    armorSlot = inventory.getBoots();
-                                    if (armorSlot == null) {
-                                        inventory.setBoots(cloneArmor);
-                                        moved = true;
-                                    }
+                        if (ItemUtil.isArmor(clickedType)) {
+                            ItemStack armorSlot = null;
+                            boolean moved = false;
+
+                            ItemStack cloneArmor = clicked.clone();
+                            cloneArmor.setAmount(1);
+                            if (ItemUtil.isHelmet(clickedType)) {
+                                armorSlot = inventory.getHelmet();
+                                if (armorSlot == null) {
+                                    inventory.setHelmet(cloneArmor);
+                                    moved = true;
                                 }
-
-                                if (armorSlot == null && moved) {
-                                    event.setCurrentItem(InventoryUtil.decrementStack(clicked));
-                                    event.setCancelled(true);
-                                } else {
-                                    InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 9);
+                            } else if (ItemUtil.isChestplate(clickedType)) {
+                                armorSlot = inventory.getChestplate();
+                                if (armorSlot == null) {
+                                    inventory.setChestplate(cloneArmor);
+                                    moved = true;
                                 }
+                            } else if (ItemUtil.isLeggings(clickedType)) {
+                                armorSlot = inventory.getLeggings();
+                                if (armorSlot == null) {
+                                    inventory.setLeggings(cloneArmor);
+                                    moved = true;
+                                }
+                            } else if (ItemUtil.isBoots(clickedType)) {
+                                armorSlot = inventory.getBoots();
+                                if (armorSlot == null) {
+                                    inventory.setBoots(cloneArmor);
+                                    moved = true;
+                                }
+                            }
+
+                            if (armorSlot == null && moved) {
+                                event.setCurrentItem(InventoryUtil.decrementStack(clicked));
+                                event.setCancelled(true);
                             } else {
                                 InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 9);
                             }
-                        } else if (topType == InventoryType.BREWING) {
-                            // TODO Prevent stacks from going into potion slots when shift clicking
-                            boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
-                            boolean isPotion = clickedType == Material.POTION;
+                        } else {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 9);
+                        }
+                    } else if (topType == InventoryType.BREWING) {
+                        // TODO Prevent stacks from going into potion slots when shift clicking
+                        boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
+                        boolean isPotion = clickedType == Material.POTION;
 
-                            boolean moved = false;
-                            if (isBrewingIngredient) {
-                                ItemStack brewingSlot = top.getItem(3);
+                        boolean moved = false;
+                        if (isBrewingIngredient) {
+                            ItemStack brewingSlot = top.getItem(3);
 
-                                if (brewingSlot == null || ItemUtil.isSameItem(brewingSlot, clicked)) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 3, 4, false, false, null);
-
-                                    if (left > 0) {
-                                        clicked.setAmount(left);
-                                    }
-                                    moved = true;
-                                }
-                            } else if (isPotion) {
-                                ItemStack potionSlot1 = top.getItem(0);
-                                ItemStack potionSlot2 = top.getItem(1);
-                                ItemStack potionSlot3 = top.getItem(2);
-
-                                boolean movedAll = false;
-                                if (potionSlot1 == null) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
-
-                                    if (left > 0) {
-                                        clicked.setAmount(left);
-                                    } else {
-                                        movedAll = true;
-                                    }
-                                    moved = true;
-                                }
-                                if (potionSlot2 == null && !movedAll) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
-
-                                    if (left > 0) {
-                                        clicked.setAmount(left);
-                                    } else {
-                                        movedAll = true;
-                                    }
-                                    moved = true;
-                                }
-                                if (potionSlot3 == null && !movedAll) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, 3, false, false, null);
-
-                                    if (left > 0) {
-                                        clicked.setAmount(left);
-                                    }
-                                    moved = true;
-                                }
-
-                            }
-                            if (!moved) {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
-                            }
-                        } else if (topType == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
-                                || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse"))) {
-                            // No chest
-                            if (top.getSize() < 2) {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
-                            // Has chest
-                            } else {
-                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, top.getSize(), true, false, null);
+                            if (brewingSlot == null || ItemUtil.isSameItem(brewingSlot, clicked)) {
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 3, 4, false, false, null);
 
                                 if (left > 0) {
                                     clicked.setAmount(left);
                                 }
+                                moved = true;
                             }
-                        } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST
-                                || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER) {
+                        } else if (isPotion) {
+                            ItemStack potionSlot1 = top.getItem(0);
+                            ItemStack potionSlot2 = top.getItem(1);
+                            ItemStack potionSlot3 = top.getItem(2);
 
-                            // We only want to override if moving more than a vanilla stack will hold
-                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
-                            if (defaultStack > -1 && clickedAmount > defaultStack) {
-                                InventoryUtil.moveItems(player, clicked.clone(), event, top, true, false, null);
+                            boolean movedAll = false;
+                            if (potionSlot1 == null) {
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                } else {
+                                    movedAll = true;
+                                }
+                                moved = true;
                             }
-                        // This adds shift clicking from the player inventory to the workbench.
-                        } else if (topType == InventoryType.WORKBENCH) {
-                            int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 10, false, false, null);
+                            if (potionSlot2 == null && !movedAll) {
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                } else {
+                                    movedAll = true;
+                                }
+                                moved = true;
+                            }
+                            if (potionSlot3 == null && !movedAll) {
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, 3, false, false, null);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                                moved = true;
+                            }
+
+                        }
+                        if (!moved) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
+                        }
+                    } else if (topType == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
+                            || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse"))) {
+                        // No chest
+                        if (top.getSize() < 2) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
+                        // Has chest
+                        } else {
+                            int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 2, top.getSize(), true, false, null);
+
                             if (left > 0) {
                                 clicked.setAmount(left);
                             }
+                        }
+                    } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST
+                            || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER) {
 
-                            if (left == clickedAmount) {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 10);
-                            }
-                        // TODO Improve merchant shift click handling (Based on current recipe)
-                        } else if (topType == InventoryType.MERCHANT) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
-                        } else if (topType == InventoryType.BEACON) {
-                            ItemStack beaconSlot = top.getItem(0);
-                            if (ItemUtil.isBeaconFuel(clickedType) && beaconSlot == null) {
-                                InventoryUtil.moveItems(player, clicked.clone(), event, top, true, false, null);
+                        // We only want to override if moving more than a vanilla stack will hold
+                        int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
+                        if (defaultStack > -1 && clickedAmount > defaultStack) {
+                            InventoryUtil.moveItems(player, clicked.clone(), event, top, true, false, null);
+                        }
+                    // This adds shift clicking from the player inventory to the workbench.
+                    } else if (topType == InventoryType.WORKBENCH) {
+                        int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 10, false, false, null);
+                        if (left > 0) {
+                            clicked.setAmount(left);
+                        }
+
+                        if (left == clickedAmount) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 10);
+                        }
+                    // TODO Improve merchant shift click handling (Based on current recipe)
+                    } else if (topType == InventoryType.MERCHANT) {
+                        InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                    } else if (topType == InventoryType.BEACON) {
+                        ItemStack beaconSlot = top.getItem(0);
+                        if (ItemUtil.isBeaconFuel(clickedType) && beaconSlot == null) {
+                            InventoryUtil.moveItems(player, clicked.clone(), event, top, true, false, null);
+                        } else {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 1);
+                        }
+                    } else if (topType == InventoryType.ANVIL) {
+                        ItemStack renameSlot = top.getItem(0);
+                        ItemStack repairSlot = top.getItem(1);
+
+                        boolean movedAll = false;
+                        if (renameSlot == null || ItemUtil.isSameItem(clicked, renameSlot)) {
+                            int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
+                            if (left > 0) {
+                                clicked.setAmount(left);
                             } else {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 1);
-                            }
-                        } else if (topType == InventoryType.ANVIL) {
-                            ItemStack renameSlot = top.getItem(0);
-                            ItemStack repairSlot = top.getItem(1);
-
-                            boolean movedAll = false;
-                            if (renameSlot == null || ItemUtil.isSameItem(clicked, renameSlot)) {
-                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
-                                if (left > 0) {
-                                    clicked.setAmount(left);
-                                } else {
-                                    movedAll = true;
-                                }
-                            }
-
-                            if (!movedAll && (repairSlot == null || ItemUtil.isSameItem(clicked, repairSlot))) {
-                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
-                                if (left > 0) {
-                                    clicked.setAmount(left);
-                                } else {
-                                    movedAll = true;
-                                }
-                            }
-                            if (!movedAll) {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
-                            }
-                        } else if (topType == InventoryType.ENCHANTING) {
-                            if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
-                                // We only want to override if moving more than a vanilla stack will hold
-                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
-                                if (defaultStack > -1 && clickedAmount > defaultStack) {
-                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
-
-                                    if (left > 0) {
-                                        clicked.setAmount(left);
-                                    }
-                                }
-                            } else {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 1);
-                            }
-                        } else if (topType == InventoryType.FURNACE) {
-                            boolean isFuel = FurnaceUtil.isFuel(clickedType);
-                            boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
-
-                            // Furnace slots:
-                            // 0 - Burnable
-                            // 1 - Fuel
-                            // 2 - Result
-                            ItemStack burnable = top.getItem(0);
-                            ItemStack fuel = top.getItem(1);
-
-                            boolean fuelMoved = false;
-                            if (isFuel) {
-                                if (rawSlot >= 3 && rawSlot <= 38) {
-                                    if (fuel == null || ItemUtil.isSameItem(fuel,  clicked)) {
-                                        fuelMoved = true;
-                                        int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
-                                        if (left > 0) {
-                                            clicked.setAmount(left);
-                                            fuelMoved = false;
-                                        }
-                                    }
-                                }
-                            }
-
-                            boolean burnableMoved = false;
-                            if (!fuelMoved && isBurnable) {
-                                if (rawSlot >= 3 && rawSlot <= 38) {
-                                    if (burnable == null || ItemUtil.isSameItem(burnable, clicked)) {
-                                        burnableMoved = true;
-                                        int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
-                                        if (left > 0) {
-                                            clicked.setAmount(left);
-                                            burnableMoved = false;
-                                        }
-                                    }
-                                }
-
-                            }
-                            // normal item;
-                            if ((!fuelMoved && !burnableMoved) || (!isFuel && !isBurnable)) {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                                movedAll = true;
                             }
                         }
-                    }
-                } else if (event.isLeftClick()) {
-                    // Pick up a stack with an empty hand
-                    if (cursorEmpty && !slotEmpty) {
-                        if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
-                            event.setCursor(clicked.clone());
-                            event.setCurrentItem(null);
-                            event.setResult(Result.DENY);
-                        } else if (clickedAmount > maxItems) {
-                            ItemStack clone = clicked.clone();
-                            clone.setAmount(maxItems);
-                            event.setCursor(clone);
 
-                            ItemStack clone2 = clicked.clone();
-                            clone2.setAmount(clickedAmount - maxItems);
-                            event.setCurrentItem(clone2);
+                        if (!movedAll && (repairSlot == null || ItemUtil.isSameItem(clicked, repairSlot))) {
+                            int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+                        if (!movedAll) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                        }
+                    } else if (topType == InventoryType.ENCHANTING) {
+                        if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
+                            // We only want to override if moving more than a vanilla stack will hold
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
+                            if (defaultStack > -1 && clickedAmount > defaultStack) {
+                                int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
+
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                }
+                            }
+                        } else {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 1);
+                        }
+                    } else if (topType == InventoryType.FURNACE) {
+                        boolean isFuel = FurnaceUtil.isFuel(clickedType);
+                        boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
+
+                        // Furnace slots:
+                        // 0 - Burnable
+                        // 1 - Fuel
+                        // 2 - Result
+                        ItemStack burnable = top.getItem(0);
+                        ItemStack fuel = top.getItem(1);
+
+                        boolean fuelMoved = false;
+                        if (isFuel) {
+                            if (rawSlot >= 3 && rawSlot <= 38) {
+                                if (fuel == null || ItemUtil.isSameItem(fuel,  clicked)) {
+                                    fuelMoved = true;
+                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 1, 2, false, false, null);
+                                    if (left > 0) {
+                                        clicked.setAmount(left);
+                                        fuelMoved = false;
+                                    }
+                                }
+                            }
+                        }
+
+                        boolean burnableMoved = false;
+                        if (!fuelMoved && isBurnable) {
+                            if (rawSlot >= 3 && rawSlot <= 38) {
+                                if (burnable == null || ItemUtil.isSameItem(burnable, clicked)) {
+                                    burnableMoved = true;
+                                    int left = InventoryUtil.moveItems(player, clicked.clone(), event, top, 0, 1, false, false, null);
+                                    if (left > 0) {
+                                        clicked.setAmount(left);
+                                        burnableMoved = false;
+                                    }
+                                }
+                            }
+
+                        }
+                        // normal item;
+                        if ((!fuelMoved && !burnableMoved) || (!isFuel && !isBurnable)) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                        }
+                    }
+                }
+            } else if (event.isLeftClick()) {
+                // Pick up a stack with an empty hand
+                if (cursorEmpty && !slotEmpty) {
+                    if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
+                        event.setCursor(clicked.clone());
+                        event.setCurrentItem(null);
+                        event.setResult(Result.DENY);
+                    } else if (clickedAmount > maxItems) {
+                        ItemStack clone = clicked.clone();
+                        clone.setAmount(maxItems);
+                        event.setCursor(clone);
+
+                        ItemStack clone2 = clicked.clone();
+                        clone2.setAmount(clickedAmount - maxItems);
+                        event.setCurrentItem(clone2);
+                        event.setResult(Result.DENY);
+                        InventoryUtil.updateInventory(player);
+                    }
+
+                // Drop a stack into an empty slot
+                } else if (!cursorEmpty && slotEmpty) {
+                    // Ignore armor slots when dropping items, let default Minecraft handle them.
+                    if (event.getSlotType() != SlotType.ARMOR) {
+                        if (cursorAmount <= maxItems) {
+                            event.setCurrentItem(cursor.clone());
+                            event.setCursor(null);
+                            event.setResult(Result.DENY);
+
+                            // These inventories need a 2 tick update for RecipeManager
+                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                InventoryUtil.updateInventoryLater(player, 2);
+                            } else {
+                                InventoryUtil.updateInventory(player);
+                            }
+                        // More items than can fit in this slot
+                        } else {
+                            ItemStack toDrop = cursor.clone();
+                            toDrop.setAmount(maxItems);
+                            event.setCurrentItem(toDrop);
+
+                            ItemStack toHold = cursor.clone();
+                            toHold.setAmount(cursorAmount - maxItems);
+                            event.setCursor(toHold);
+
                             event.setResult(Result.DENY);
                             InventoryUtil.updateInventory(player);
                         }
+                    }
+                // Combine two items
+                } else if (!cursorEmpty && !slotEmpty) {
+                    boolean sameType = clickedType.equals(cursorType);
 
-                    // Drop a stack into an empty slot
-                    } else if (!cursorEmpty && slotEmpty) {
-                        // Ignore armor slots when dropping items, let default Minecraft handle them.
-                        if (event.getSlotType() != SlotType.ARMOR) {
-                            if (cursorAmount <= maxItems) {
-                                event.setCurrentItem(cursor.clone());
-                                event.setCursor(null);
+                    if (sameType) {
+                        if (ItemUtil.isSameItem(cursor, clicked)) {
+                            int total = clickedAmount + cursorAmount;
+
+                            if (total <= maxItems) {
+                                if (total > clicked.getMaxStackSize()) {
+                                    //player.sendMessage("Combine two stacks fully");
+                                    ItemStack clone = cursor.clone();
+                                    clone.setAmount(total);
+                                    event.setCurrentItem(clone);
+
+                                    event.setCursor(null);
+                                    event.setResult(Result.DENY);
+
+                                    // These inventories need a 2 tick update for RecipeManager
+                                    if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                        InventoryUtil.updateInventoryLater(player, 2);
+                                    }
+                                }
+                            } else {
+                                //player.sendMessage("Combine two stacks partially");
+                                ItemStack clone = cursor.clone();
+                                clone.setAmount(maxItems);
+                                event.setCurrentItem(clone);
+
+                                ItemStack clone2 = cursor.clone();
+                                clone2.setAmount(total - maxItems);
+                                event.setCursor(clone2);
+
                                 event.setResult(Result.DENY);
-
                                 // These inventories need a 2 tick update for RecipeManager
                                 if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                     InventoryUtil.updateInventoryLater(player, 2);
-                                } else {
-                                    InventoryUtil.updateInventory(player);
                                 }
-                            // More items than can fit in this slot
-                            } else {
-                                ItemStack toDrop = cursor.clone();
-                                toDrop.setAmount(maxItems);
-                                event.setCurrentItem(toDrop);
+                            }
+                        } else {
+                            // Swap two unstackable items
+                            //player.sendMessage("Swap two unstackable items");
+                            event.setCurrentItem(cursor.clone());
+                            event.setCursor(clicked.clone());
 
-                                ItemStack toHold = cursor.clone();
-                                toHold.setAmount(cursorAmount - maxItems);
-                                event.setCursor(toHold);
-
-                                event.setResult(Result.DENY);
-                                InventoryUtil.updateInventory(player);
+                            event.setResult(Result.DENY);
+                            // These inventories need a 2 tick update for RecipeManager
+                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                                InventoryUtil.updateInventoryLater(player, 2);
                             }
                         }
-                    // Combine two items
-                    } else if (!cursorEmpty && !slotEmpty) {
-                        boolean sameType = clickedType.equals(cursorType);
+                    } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
+                        //player.sendMessage("Swap two items");
+                        event.setCurrentItem(cursor.clone());
+                        event.setCursor(clicked.clone());
 
-                        if (sameType) {
-                            if (ItemUtil.isSameItem(cursor, clicked)) {
-                                int total = clickedAmount + cursorAmount;
+                        event.setResult(Result.DENY);
+                        // These inventories need a 2 tick update for RecipeManager
+                        if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                            InventoryUtil.updateInventoryLater(player, 2);
+                        }
+                    }
+                }
+            } else if (event.isRightClick()) {
+                if (!slotEmpty && !cursorEmpty) {
+                    boolean sameType = clickedType.equals(cursorType);
 
-                                if (total <= maxItems) {
-                                    if (total > clicked.getMaxStackSize()) {
-                                        //player.sendMessage("Combine two stacks fully");
-                                        ItemStack clone = cursor.clone();
-                                        clone.setAmount(total);
-                                        event.setCurrentItem(clone);
+                    // Add two normal items
+                    if (sameType) {
+                        if (ItemUtil.isSameItem(cursor, clicked)) {
+                            int total = clickedAmount + 1;
+                            if (total <= maxItems) {
+                                if (total > clicked.getMaxStackSize()) {
+                                    //player.sendMessage("RC:Drop single item");
 
-                                        event.setCursor(null);
-                                        event.setResult(Result.DENY);
-
-                                        // These inventories need a 2 tick update for RecipeManager
-                                        if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                            InventoryUtil.updateInventoryLater(player, 2);
-                                        }
-                                    }
-                                } else {
-                                    //player.sendMessage("Combine two stacks partially");
                                     ItemStack clone = cursor.clone();
-                                    clone.setAmount(maxItems);
+                                    clone.setAmount(total);
+
                                     event.setCurrentItem(clone);
-
-                                    ItemStack clone2 = cursor.clone();
-                                    clone2.setAmount(total - maxItems);
-                                    event.setCursor(clone2);
-
+                                    if (cursorAmount == 1) {
+                                        event.setCursor(null);
+                                    } else {
+                                        cursor.setAmount(cursorAmount - 1);
+                                    }
                                     event.setResult(Result.DENY);
                                     // These inventories need a 2 tick update for RecipeManager
                                     if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
@@ -1172,19 +1229,11 @@ public class SIPlayerListener implements Listener {
                                     }
                                 }
                             } else {
-                                // Swap two unstackable items
-                                //player.sendMessage("Swap two unstackable items");
-                                event.setCurrentItem(cursor.clone());
-                                event.setCursor(clicked.clone());
-
-                                event.setResult(Result.DENY);
-                                // These inventories need a 2 tick update for RecipeManager
-                                if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                    InventoryUtil.updateInventoryLater(player, 2);
-                                }
+                                event.setCancelled(true);
                             }
-                        } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
-                            //player.sendMessage("Swap two items");
+                        } else {
+                            // Swap two unstackable Items
+                            //player.sendMessage("RC:Swap two unstackable items");
                             event.setCurrentItem(cursor.clone());
                             event.setCursor(clicked.clone());
 
@@ -1193,82 +1242,38 @@ public class SIPlayerListener implements Listener {
                             if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
                                 InventoryUtil.updateInventoryLater(player, 2);
                             }
+                        }
+                    } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
+                        //player.sendMessage("RC:Swap two items");
+                        event.setCurrentItem(cursor.clone());
+                        event.setCursor(clicked.clone());
+
+                        event.setResult(Result.DENY);
+                        // These inventories need a 2 tick update for RecipeManager
+                        if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
+                            InventoryUtil.updateInventoryLater(player, 2);
                         }
                     }
-                } else if (event.isRightClick()) {
-                    if (!slotEmpty && !cursorEmpty) {
-                        boolean sameType = clickedType.equals(cursorType);
+                // pick up half a stack
+                } else if (!slotEmpty && cursorEmpty && maxItems > -1) {
+                    if (clickedAmount > maxItems) {
+                        int maxPickup = (int) Math.round((clickedAmount + 0.5) / 2);
 
-                        // Add two normal items
-                        if (sameType) {
-                            if (ItemUtil.isSameItem(cursor, clicked)) {
-                                int total = clickedAmount + 1;
-                                if (total <= maxItems) {
-                                    if (total > clicked.getMaxStackSize()) {
-                                        //player.sendMessage("RC:Drop single item");
+                        ItemStack clone = clicked.clone();
+                        ItemStack clone2 = clicked.clone();
 
-                                        ItemStack clone = cursor.clone();
-                                        clone.setAmount(total);
+                        if (maxPickup < maxItems) {
+                            clone.setAmount(maxPickup);
+                            event.setCursor(clone);
+                            clone2.setAmount(clickedAmount - maxPickup);
 
-                                        event.setCurrentItem(clone);
-                                        if (cursorAmount == 1) {
-                                            event.setCursor(null);
-                                        } else {
-                                            cursor.setAmount(cursorAmount - 1);
-                                        }
-                                        event.setResult(Result.DENY);
-                                        // These inventories need a 2 tick update for RecipeManager
-                                        if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                            InventoryUtil.updateInventoryLater(player, 2);
-                                        }
-                                    }
-                                } else {
-                                    event.setCancelled(true);
-                                }
-                            } else {
-                                // Swap two unstackable Items
-                                //player.sendMessage("RC:Swap two unstackable items");
-                                event.setCurrentItem(cursor.clone());
-                                event.setCursor(clicked.clone());
-
-                                event.setResult(Result.DENY);
-                                // These inventories need a 2 tick update for RecipeManager
-                                if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                    InventoryUtil.updateInventoryLater(player, 2);
-                                }
-                            }
-                        } else if (cursorAmount > SIItems.ITEM_DEFAULT_MAX) {
-                            //player.sendMessage("RC:Swap two items");
-                            event.setCurrentItem(cursor.clone());
-                            event.setCursor(clicked.clone());
-
-                            event.setResult(Result.DENY);
-                            // These inventories need a 2 tick update for RecipeManager
-                            if (topType == InventoryType.CRAFTING || topType == InventoryType.WORKBENCH) {
-                                InventoryUtil.updateInventoryLater(player, 2);
-                            }
+                        } else {
+                            clone.setAmount(maxItems);
+                            event.setCursor(clone);
+                            clone2.setAmount(clickedAmount - maxItems);
                         }
-                    // pick up half a stack
-                    } else if (!slotEmpty && cursorEmpty && maxItems > -1) {
-                        if (clickedAmount > maxItems) {
-                            int maxPickup = (int) Math.round((clickedAmount + 0.5) / 2);
-
-                            ItemStack clone = clicked.clone();
-                            ItemStack clone2 = clicked.clone();
-
-                            if (maxPickup < maxItems) {
-                                clone.setAmount(maxPickup);
-                                event.setCursor(clone);
-                                clone2.setAmount(clickedAmount - maxPickup);
-
-                            } else {
-                                clone.setAmount(maxItems);
-                                event.setCursor(clone);
-                                clone2.setAmount(clickedAmount - maxItems);
-                            }
-                            event.setCurrentItem(clone2);
-                            event.setResult(Result.DENY);
-                        }
+                        event.setCurrentItem(clone2);
+                        event.setResult(Result.DENY);
                     }
                 }
             }
