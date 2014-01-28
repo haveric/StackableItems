@@ -483,7 +483,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    /*
+/*
     // TODO: Handle Creative inventory
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void creativeClick(InventoryCreativeEvent event) {
@@ -492,6 +492,7 @@ public class SIPlayerListener implements Listener {
 
         ItemStack clicked = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
+
 
         if (cursor != null && clicked != null) {
             Player player = (Player) event.getWhoClicked();
@@ -504,9 +505,9 @@ public class SIPlayerListener implements Listener {
 
             int maxItems = 0;
             if (clickedType == Material.AIR) {
-                maxItems = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, event.getSlot());
             } else {
-                maxItems = InventoryUtil.getInventoryMax(player, inventory, clickedType, clickedDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, inventory, clickedType, clickedDur, event.getSlot());
             }
             plugin.log.info("Max items: " + maxItems);
             plugin.log.info("ClickType: " + event.getClick());
@@ -521,7 +522,7 @@ public class SIPlayerListener implements Listener {
             boolean slotEmpty = clickedType == Material.AIR;
         }
     }
-    */
+*/
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void inventoryClick(InventoryClickEvent event) {
@@ -852,10 +853,12 @@ public class SIPlayerListener implements Listener {
             boolean cursorEmpty = cursorType == Material.AIR;
             boolean slotEmpty = clickedType == Material.AIR;
 
+
             // Creative Player Inventory is handled elsewhere
             if (player.getGameMode() == GameMode.CREATIVE && topType == InventoryType.PLAYER) {
                 return;
             }
+
 
             if (event.isShiftClick()) {
                 if (rawSlot < top.getSize()) {

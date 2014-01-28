@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -694,7 +695,11 @@ public final class InventoryUtil {
         if (slot >= inventory.getSize()) {
             maxAmount = maxPlayerAmount;
         }
+
+
         String invName = inventory.getName();
+        GameMode gamemode = player.getGameMode();
+
         if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {
             if (slot <= 2) {
                 maxAmount = 1;
@@ -713,7 +718,7 @@ public final class InventoryUtil {
             if (slot == 0) {
                 maxAmount = 1;
             }
-        } else if ((inventoryType == InventoryType.PLAYER && slot >= 36 && slot < 40) || (inventoryType == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
+        } else if ((inventoryType == InventoryType.PLAYER && slot >= 36 && slot < 40 && gamemode != GameMode.CREATIVE) || (inventoryType == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
             maxAmount = 1;
         } else if (inventoryType == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
             if (slot >= 0 && slot < 2) {
@@ -753,6 +758,7 @@ public final class InventoryUtil {
             }
             maxAmount = inventoryMax;
         }
+
         return maxAmount;
     }
 
