@@ -663,7 +663,7 @@ public final class InventoryUtil {
         ItemStack oldCursor = player.getItemOnCursor();
 
         // Sanity check to make sure the new item is different;
-        if (newCursor.getAmount() != oldCursor.getAmount() || !ItemUtil.isSameItem(newCursor, oldCursor)) {
+        if ((newCursor != null && oldCursor != null && newCursor.getAmount() != oldCursor.getAmount()) || !ItemUtil.isSameItem(newCursor, oldCursor)) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override public void run() {
                     player.setItemOnCursor(newCursor);
@@ -784,7 +784,7 @@ public final class InventoryUtil {
         ItemStack slotItem = inventory.getItem(slot);
 
         // Sanity check to make sure the new item is different;
-        if (stack.getAmount() != slotItem.getAmount() || !ItemUtil.isSameItem(stack, slotItem)) {
+        if ((stack != null && slotItem != null && stack.getAmount() != slotItem.getAmount()) || !ItemUtil.isSameItem(stack, slotItem)) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override public void run() {
                     inventory.setItem(slot, stack);
