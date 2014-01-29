@@ -660,12 +660,16 @@ public final class InventoryUtil {
     }
 
     public static void updateCursor(final Player player, final ItemStack newCursor) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                player.setItemOnCursor(newCursor);
-            }
-        });
+        ItemStack oldCursor = player.getItemOnCursor();
+
+        // Sanity check to make sure the new item is different;
+        if (newCursor.getAmount() != oldCursor.getAmount() || !ItemUtil.isSameItem(newCursor, oldCursor)) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                @Override public void run() {
+                    player.setItemOnCursor(newCursor);
+                }
+            });
+        }
     }
     public static void updateInventory(final Player player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -777,11 +781,16 @@ public final class InventoryUtil {
     }
 
     public static void replaceItem(final Inventory inventory, final int slot, final ItemStack stack) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override public void run() {
-                inventory.setItem(slot, stack);
-            }
-        });
+        ItemStack slotItem = inventory.getItem(slot);
+
+        // Sanity check to make sure the new item is different;
+        if (stack.getAmount() != slotItem.getAmount() || !ItemUtil.isSameItem(stack, slotItem)) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                @Override public void run() {
+                    inventory.setItem(slot, stack);
+                }
+            });
+        }
     }
 
     public static void swapInventory(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
