@@ -423,6 +423,7 @@ public class SIPlayerListener implements Listener {
         }
 
         Material cursorType = cursor.getType();
+        int defaultStackAmount = cursorType.getMaxStackSize();
         short cursorDur = cursor.getDurability();
 
         Inventory inventory = event.getInventory();
@@ -441,14 +442,40 @@ public class SIPlayerListener implements Listener {
             int newAmount = added.getAmount();
 
             int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
-            //plugin.log.info("Max: " + maxSlot + ", New: " + newAmount);
+            plugin.log.info("Max: " + maxSlot + ", New: " + newAmount);
             if (newAmount > maxSlot && maxSlot > SIItems.ITEM_DEFAULT) {
                 int extra = newAmount - maxSlot;
                 numToSplit += extra;
                 numStacksToSplit--;
                 deny = true;
+            } else if (newAmount >= defaultStackAmount && newAmount < maxSlot) {
+                deny = true;
+
+                int oldAmount = 0;
+                ItemStack oldStack = null;
+                if (slot >= inventorySize) {
+                    int rawPlayerSlot = slot - inventorySize;
+                    if (inventory.getType() == InventoryType.CRAFTING) {
+                        rawPlayerSlot -= 4; // Handle armor slots
+                    }
+                    int actualPlayerSlot = rawPlayerSlot + 9;
+                    // Offset for hotbar
+                    if (actualPlayerSlot >= 36) {
+                        actualPlayerSlot -= 36;
+                    }
+                    oldStack = player.getInventory().getItem(actualPlayerSlot);
+                } else {
+                    oldStack = inventory.getItem(slot);
+                }
+                if (oldStack != null) {
+                    oldAmount = oldStack.getAmount();
+                }
+                numToSplit += newAmount - oldAmount;
+            } else if (newAmount < defaultStackAmount && defaultStackAmount < maxSlot) {
+                numToSplit += newAmount;
             }
         }
+
         if (deny) {
             event.setResult(Result.DENY);
 
@@ -472,16 +499,59 @@ public class SIPlayerListener implements Listener {
 
 
                 int cloneAmount = 0;
-
-                if (newAmount > maxSlot) {
-                    cloneAmount = maxSlot;
-                } else if (newAmount <= maxSlot) {
-                    newAmount += toAdd;
+                if (defaultStackAmount >= maxSlot) {
                     if (newAmount > maxSlot) {
-                        left += newAmount - maxSlot;
-                        newAmount = maxSlot;
+                        cloneAmount = maxSlot;
+                    } else if (newAmount <= maxSlot) {
+                        newAmount += toAdd;
+                        if (newAmount > maxSlot) {
+                            left += newAmount - maxSlot;
+                            newAmount = maxSlot;
+                        }
+                        cloneAmount = newAmount;
                     }
-                    cloneAmount = newAmount;
+                } else {
+                    int oldAmount = 0;
+                    ItemStack oldStack = null;
+                    if (slot >= inventorySize) {
+                        int rawPlayerSlot = slot - inventorySize;
+                        if (inventory.getType() == InventoryType.CRAFTING) {
+                            rawPlayerSlot -= 4; // Handle armor slots
+                        }
+                        int actualPlayerSlot = rawPlayerSlot + 9;
+                        // Offset for hotbar
+                        if (actualPlayerSlot >= 36) {
+                            actualPlayerSlot -= 36;
+                        }
+                        oldStack = player.getInventory().getItem(actualPlayerSlot);
+                    } else {
+                        oldStack = inventory.getItem(slot);
+                    }
+                    if (oldStack != null) {
+                        oldAmount = oldStack.getAmount();
+                    }
+
+                    //plugin.log.info("old: " + oldAmount + ", new: " + newAmount + ", ToAdd: " + toAdd + ", default: " + defaultStackAmount + ", max: " + maxSlot);
+
+                    cloneAmount = oldAmount + toAdd;
+                    if (cloneAmount > maxSlot) {
+                        left += cloneAmount - maxSlot;
+                        cloneAmount = maxSlot;
+                    }
+                    /*
+                    if (newAmount + toAdd > defaultStackAmount) {
+                        plugin.log.info("Full Stack");
+                        newAmount += toAdd;
+                        if (newAmount > maxSlot) {
+                            left += newAmount - maxSlot;
+                            newAmount = maxSlot;
+                        }
+                        cloneAmount = newAmount;
+                    } else {
+                        plugin.log.info("Replace");
+                        cloneAmount = toAdd;
+                    }
+                    */
                 }
 
                 clone.setAmount(cloneAmount);
