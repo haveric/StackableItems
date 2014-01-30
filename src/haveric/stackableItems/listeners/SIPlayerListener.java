@@ -450,7 +450,7 @@ public class SIPlayerListener implements Listener {
             int newAmount = added.getAmount();
 
             int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
-            plugin.log.info("Max: " + maxSlot + ", New: " + newAmount);
+            //plugin.log.info("Max: " + maxSlot + ", New: " + newAmount);
             if (newAmount > maxSlot && maxSlot > SIItems.ITEM_DEFAULT) {
                 int extra = newAmount - maxSlot;
                 numToSplit += extra;
@@ -963,8 +963,14 @@ public class SIPlayerListener implements Listener {
                 return;
             }
 
-
-            if (event.isShiftClick()) {
+            if (clickType == ClickType.DOUBLE_CLICK) {
+                if (maxItems != cursor.getMaxStackSize()) {
+                    if (!InventoryUtil.canVanillaGatherItemsToCursor(player, top, cursor, maxItems)) {
+                        event.setCancelled(true);
+                        InventoryUtil.gatherItemsToCursor(player, top, cursor, maxItems);
+                    }
+                }
+            } else if (event.isShiftClick()) {
                 if (rawSlot < top.getSize()) {
                     // We only want to override if moving more than a vanilla stack will hold
                     int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, player.getInventory(), top);

@@ -11,6 +11,7 @@
 * Handle stacking in creative mode (except for player inventory)
 * Fixed inventory dragging.
 * Check for isHopperUsingStacks config before handling any hopper events.
+* Fixed double click to gather items at cursor
 
 #### Version 0.9.4.4 (1/7/2014)
 * Fixed milk buckets removing blocks

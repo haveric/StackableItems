@@ -806,6 +806,118 @@ public final class InventoryUtil {
         }
     }
 
+    public static boolean canVanillaGatherItemsToCursor(Player player, Inventory topInventory, ItemStack cursorStack, int max) {
+        boolean canGather = false;
+
+        int cursorAmount = cursorStack.getAmount();
+        int maxVanillaStack = cursorStack.getMaxStackSize();
+        if (cursorAmount < maxVanillaStack && cursorAmount < max) {
+            int canStack = 0;
+
+            if (max < maxVanillaStack) {
+                canStack = max - cursorAmount;
+            } else {
+                canStack = maxVanillaStack - cursorAmount;
+            }
+
+            Inventory playerInventory = player.getInventory();
+
+            Iterator<ItemStack> iterTop = topInventory.iterator();
+            while(iterTop.hasNext() && canStack > -1) {
+                ItemStack stack = iterTop.next();
+                if (ItemUtil.isSameItem(stack, cursorStack)) {
+                    int stackAmount = stack.getAmount();
+                    if (stackAmount > maxVanillaStack) {
+                        canStack = -1;
+                    } else {
+                        canStack -= stackAmount;
+                    }
+                }
+            }
+
+            Iterator<ItemStack> iterBot = playerInventory.iterator();
+            while (iterBot.hasNext() && canStack > -1) {
+                ItemStack stack = iterBot.next();
+                if (ItemUtil.isSameItem(stack, cursorStack)) {
+                    int stackAmount = stack.getAmount();
+                    if (stackAmount > maxVanillaStack) {
+                        canStack = -1;
+                    } else {
+                        canStack -= stackAmount;
+                    }
+                }
+            }
+
+            if (canStack >= 0) {
+                canGather = true;
+            }
+        }
+
+        return canGather;
+    }
+
+    public static void gatherItemsToCursor(Player player, Inventory topInventory, ItemStack cursorStack, int max) {
+        int cursorAmount = cursorStack.getAmount();
+
+        int canStack = max - cursorAmount;
+
+        Inventory playerInventory = player.getInventory();
+
+        Iterator<ItemStack> iterTop = topInventory.iterator();
+        int i = 0;
+        while(iterTop.hasNext() && canStack > 0) {
+            ItemStack stack = iterTop.next();
+            if (ItemUtil.isSameItem(stack, cursorStack)) {
+                int stackAmount = stack.getAmount();
+
+                if (stackAmount >= canStack) {
+                    int left = stackAmount - canStack;
+                    canStack = 0;
+
+                    if (left == 0) {
+                        topInventory.setItem(i, null);
+                    } else {
+                       stack.setAmount(left);
+                    }
+                } else {
+                    canStack -= stackAmount;
+                    topInventory.setItem(i, null);
+                }
+            }
+            i ++;
+        }
+
+        i = 0;
+        Iterator<ItemStack> iterBot = playerInventory.iterator();
+        while (iterBot.hasNext() && canStack > 0) {
+            ItemStack stack = iterBot.next();
+
+            if (ItemUtil.isSameItem(stack, cursorStack)) {
+                int stackAmount = stack.getAmount();
+
+                if (stackAmount >= canStack) {
+                    int left = stackAmount - canStack;
+                    canStack = 0;
+
+                    if (left == 0) {
+                        playerInventory.setItem(i, null);
+                    } else {
+                       stack.setAmount(left);
+                    }
+                } else {
+                    canStack -= stackAmount;
+                    playerInventory.setItem(i, null);
+                }
+            }
+            i ++;
+        }
+
+        int newCursorAmount = max - canStack;
+        if (newCursorAmount > 0 && newCursorAmount <= max) {
+            cursorStack.setAmount(newCursorAmount);
+        }
+    }
+
     public static ItemStack decrementStack(ItemStack stack) {
         ItemStack clone = stack.clone();
         int amount = stack.getAmount();
