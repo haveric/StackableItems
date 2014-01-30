@@ -1,5 +1,6 @@
-package haveric.stackableItems;
+package haveric.stackableItems.util;
 
+import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.fileWriter.CustomFileWriter;
 
 import java.util.ArrayList;

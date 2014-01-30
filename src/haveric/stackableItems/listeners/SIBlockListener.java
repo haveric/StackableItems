@@ -1,4 +1,8 @@
-package haveric.stackableItems;
+package haveric.stackableItems.listeners;
+
+import haveric.stackableItems.config.Config;
+import haveric.stackableItems.util.InventoryUtil;
+import haveric.stackableItems.util.SIItems;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,7 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class SIBlockBreak implements Listener {
+public class SIBlockListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void onBlockBreak(BlockBreakEvent event) {

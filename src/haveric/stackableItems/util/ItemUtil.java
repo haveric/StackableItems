@@ -1,4 +1,4 @@
-package haveric.stackableItems;
+package haveric.stackableItems.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

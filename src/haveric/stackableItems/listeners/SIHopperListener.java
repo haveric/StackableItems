@@ -1,4 +1,8 @@
-package haveric.stackableItems;
+package haveric.stackableItems.listeners;
+
+import haveric.stackableItems.config.Config;
+import haveric.stackableItems.util.InventoryUtil;
+import haveric.stackableItems.util.SIItems;
 
 import org.bukkit.Location;
 import org.bukkit.block.Beacon;
@@ -21,7 +25,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class HopperListener implements Listener{
+public class SIHopperListener implements Listener{
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void hopperMove(InventoryMoveItemEvent event) {

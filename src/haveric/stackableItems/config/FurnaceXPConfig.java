@@ -1,4 +1,6 @@
-package haveric.stackableItems;
+package haveric.stackableItems.config;
+
+import haveric.stackableItems.StackableItems;
 
 import java.io.File;
 import java.io.FileNotFoundException;

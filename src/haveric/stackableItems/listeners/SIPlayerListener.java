@@ -1,4 +1,12 @@
-package haveric.stackableItems;
+package haveric.stackableItems.listeners;
+
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.config.Config;
+import haveric.stackableItems.config.FurnaceXPConfig;
+import haveric.stackableItems.util.FurnaceUtil;
+import haveric.stackableItems.util.InventoryUtil;
+import haveric.stackableItems.util.ItemUtil;
+import haveric.stackableItems.util.SIItems;
 
 import java.util.Map;
 import java.util.Random;

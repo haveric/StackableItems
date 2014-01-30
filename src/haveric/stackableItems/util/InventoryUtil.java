@@ -1,4 +1,7 @@
-package haveric.stackableItems;
+package haveric.stackableItems.util;
+
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.config.Config;
 
 import java.util.Iterator;
 import java.util.List;

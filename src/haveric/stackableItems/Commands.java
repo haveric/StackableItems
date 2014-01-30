@@ -1,5 +1,10 @@
 package haveric.stackableItems;
 
+import haveric.stackableItems.config.Config;
+import haveric.stackableItems.config.FurnaceXPConfig;
+import haveric.stackableItems.util.FurnaceUtil;
+import haveric.stackableItems.util.SIItems;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

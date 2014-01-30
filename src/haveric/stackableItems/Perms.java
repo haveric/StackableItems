@@ -1,5 +1,6 @@
 package haveric.stackableItems;
 
+import haveric.stackableItems.config.Config;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.entity.Player;
