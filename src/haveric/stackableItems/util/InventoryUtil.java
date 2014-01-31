@@ -823,7 +823,7 @@ public final class InventoryUtil {
             Inventory playerInventory = player.getInventory();
 
             Iterator<ItemStack> iterTop = topInventory.iterator();
-            while(iterTop.hasNext() && canStack > -1) {
+            while (iterTop.hasNext() && canStack > -1) {
                 ItemStack stack = iterTop.next();
                 if (ItemUtil.isSameItem(stack, cursorStack)) {
                     int stackAmount = stack.getAmount();
@@ -865,7 +865,7 @@ public final class InventoryUtil {
 
         Iterator<ItemStack> iterTop = topInventory.iterator();
         int i = 0;
-        while(iterTop.hasNext() && canStack > 0) {
+        while (iterTop.hasNext() && canStack > 0) {
             ItemStack stack = iterTop.next();
             if (ItemUtil.isSameItem(stack, cursorStack)) {
                 int stackAmount = stack.getAmount();
@@ -884,7 +884,7 @@ public final class InventoryUtil {
                     topInventory.setItem(i, null);
                 }
             }
-            i ++;
+            i++;
         }
 
         i = 0;
@@ -909,7 +909,7 @@ public final class InventoryUtil {
                     playerInventory.setItem(i, null);
                 }
             }
-            i ++;
+            i++;
         }
 
         int newCursorAmount = max - canStack;
