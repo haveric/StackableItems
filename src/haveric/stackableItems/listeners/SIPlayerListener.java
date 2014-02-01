@@ -333,27 +333,31 @@ public class SIPlayerListener implements Listener {
         Player player = event.getPlayer();
 
         ItemStack holding = player.getInventory().getItemInHand();
-
         int amount = holding.getAmount();
 
-        int slot = player.getInventory().getHeldItemSlot();
-
         if (amount > 1) {
-            ItemStack clone = holding.clone();
-            clone.setAmount(amount - 1);
-
-            InventoryUtil.replaceItem(player.getInventory(), slot, clone);
             ItemStack toAdd = event.getItemStack();
-            InventoryUtil.addItems(player, toAdd, false, null);
+            int maxItems = SIItems.getItemMax(player, toAdd.getType(), toAdd.getDurability(), player.getInventory().getName());
 
-            event.setCancelled(true);
+            // Let Vanilla handle filling buckets for default value
+            if (maxItems != SIItems.ITEM_DEFAULT) {
+                int slot = player.getInventory().getHeldItemSlot();
 
-            Material bucketType = toAdd.getType();
-            if (bucketType != Material.MILK_BUCKET) {
-                event.getBlockClicked().setType(Material.AIR);
+                ItemStack clone = holding.clone();
+                clone.setAmount(amount - 1);
+
+                InventoryUtil.replaceItem(player.getInventory(), slot, clone);
+                InventoryUtil.addItems(player, toAdd, false, null);
+
+                event.setCancelled(true);
+
+                Material bucketType = toAdd.getType();
+                if (bucketType != Material.MILK_BUCKET) {
+                    event.getBlockClicked().setType(Material.AIR);
+                }
+
+                InventoryUtil.updateInventory(player);
             }
-
-            InventoryUtil.updateInventory(player);
         }
     }
 
