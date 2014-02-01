@@ -65,12 +65,12 @@ public final class InventoryUtil {
 
     private static int getAmountDefaultHelper(Player player, Inventory inventory, ItemStack itemToCheck, ItemStack slot, int i) {
         Material type = itemToCheck.getType();
-        short durability = itemToCheck.getDurability();
-        int defaultMax = type.getMaxStackSize();
 
         int free = 0;
 
         if (ItemUtil.isSameItem(slot, itemToCheck)) {
+            short durability = itemToCheck.getDurability();
+            int defaultMax = type.getMaxStackSize();
             int amt = slot.getAmount();
             int slotMax = getInventoryMax(player, inventory, type, durability, i);
 
@@ -106,10 +106,10 @@ public final class InventoryUtil {
     public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory, Inventory fromInventory) {
         int free = 0;
 
-        Material type = itemToCheck.getType();
-        short durability = itemToCheck.getDurability();
-
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
+            Material type = itemToCheck.getType();
+            short durability = itemToCheck.getDurability();
+
             // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
             boolean addTopBottom = false;
             if (fromInventory != null) {
