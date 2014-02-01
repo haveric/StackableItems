@@ -364,13 +364,14 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void emptyBucket(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
-        int slot = player.getInventory().getHeldItemSlot();
 
         ItemStack holding = player.getInventory().getItemInHand();
         int amount = holding.getAmount();
         if (amount > 1) {
             ItemStack clone = holding.clone();
             clone.setAmount(amount - 1);
+
+            int slot = player.getInventory().getHeldItemSlot();
 
             InventoryUtil.replaceItem(player.getInventory(), slot, clone);
             InventoryUtil.addItems(player, event.getItemStack(), false, null);
@@ -380,12 +381,13 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST)
     public void consumeItem(PlayerItemConsumeEvent event) {
         ItemStack consumedItem = event.getItem();
-        Material type = consumedItem.getType();
 
         int amt = consumedItem.getAmount();
-        Player player = event.getPlayer();
 
         if (amt > 1) {
+            Player player = event.getPlayer();
+            Material type = consumedItem.getType();
+
             if (type == Material.MILK_BUCKET) {
                 InventoryUtil.addItems(player, new ItemStack(Material.BUCKET), false, null);
             } else if (type == Material.MUSHROOM_SOUP) {
@@ -400,10 +402,10 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void playerClick(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block block = event.getClickedBlock();
-
             ItemStack holding = event.getItem();
+
             if (holding != null && holding.getType() == Material.FLINT_AND_STEEL) {
+                Block block = event.getClickedBlock();
                 Material placedType = block.getRelative(event.getBlockFace()).getType();
 
                 switch(placedType) {
@@ -454,7 +456,7 @@ public class SIPlayerListener implements Listener {
             int newAmount = added.getAmount();
 
             int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
-            //plugin.log.info("Max: " + maxSlot + ", New: " + newAmount);
+
             if (newAmount > maxSlot && maxSlot > SIItems.ITEM_DEFAULT) {
                 int extra = newAmount - maxSlot;
                 numToSplit += extra;
@@ -496,7 +498,7 @@ public class SIPlayerListener implements Listener {
                 toAdd = (int) Math.floor(numToSplit / numStacksToSplit);
             }
             int left = numToSplit - (toAdd * numStacksToSplit);
-            //plugin.log.info("Num To Split: " + numToSplit + ", Stacks to split: " + numStacksToSplit + ", Left: " + left);
+
             for (Map.Entry<Integer, ItemStack> entry : items.entrySet()) {
                 int slot = entry.getKey();
                 ItemStack added = entry.getValue();
@@ -543,31 +545,15 @@ public class SIPlayerListener implements Listener {
                         oldAmount = oldStack.getAmount();
                     }
 
-                    //plugin.log.info("old: " + oldAmount + ", new: " + newAmount + ", ToAdd: " + toAdd + ", default: " + defaultStackAmount + ", max: " + maxSlot);
-
                     cloneAmount = oldAmount + toAdd;
                     if (cloneAmount > maxSlot) {
                         left += cloneAmount - maxSlot;
                         cloneAmount = maxSlot;
                     }
-                    /*
-                    if (newAmount + toAdd > defaultStackAmount) {
-                        plugin.log.info("Full Stack");
-                        newAmount += toAdd;
-                        if (newAmount > maxSlot) {
-                            left += newAmount - maxSlot;
-                            newAmount = maxSlot;
-                        }
-                        cloneAmount = newAmount;
-                    } else {
-                        plugin.log.info("Replace");
-                        cloneAmount = toAdd;
-                    }
-                    */
                 }
 
                 clone.setAmount(cloneAmount);
-                //plugin.log.info("Clone: " + clone + ", Amt: " + cloneAmount);
+
                 if (slot >= inventorySize) {
                     int rawPlayerSlot = slot - inventorySize;
                     if (inventory.getType() == InventoryType.CRAFTING) {
@@ -1403,13 +1389,13 @@ public class SIPlayerListener implements Listener {
         Item item = event.getItem();
         ItemStack stack = item.getItemStack();
 
-        int freeSpaces = InventoryUtil.getFreeSpaces(player, stack);
-
-        int maxItems = SIItems.getItemMax(event.getPlayer(), stack.getType(), stack.getDurability(), player.getInventory().getName());
+        int maxItems = SIItems.getItemMax(player, stack.getType(), stack.getDurability(), player.getInventory().getName());
         // Don't touch default items
         if (maxItems == SIItems.ITEM_DEFAULT) {
             return;
         }
+
+        int freeSpaces = InventoryUtil.getFreeSpaces(player, stack);
 
         if (freeSpaces == 0 || maxItems == 0) {
             event.setCancelled(true);
