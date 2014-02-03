@@ -419,8 +419,10 @@ public class SIPlayerListener implements Listener {
                         break;
                 }
             }
+            Player player = event.getPlayer();
+            InventoryUtil.splitStack(player, true);
 
-            InventoryUtil.splitStack(event.getPlayer(), true);
+            InventoryUtil.updateInventory(player);
         }
     }
 

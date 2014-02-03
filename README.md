@@ -13,6 +13,7 @@
 * Check for isHopperUsingStacks config before handling any hopper events.
 * Fixed double click to gather items at cursor
 * Let Vanilla handle filling buckets for default value
+* Update inventory when preventing flint and steel durability use
 
 #### Version 0.9.4.4 (1/7/2014)
 * Fixed milk buckets removing blocks

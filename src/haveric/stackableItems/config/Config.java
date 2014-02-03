@@ -67,31 +67,31 @@ public final class Config {
     }
 
     public static void reload() {
-            try {
-                cfgOptions.load(cfgOptionsFile);
-            } catch (FileNotFoundException e) {
-                plugin.log.warning("options.yml not found. Creating a new one");
-                saveConfig(cfgOptions, cfgOptionsFile);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (InvalidConfigurationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        try {
+            cfgOptions.load(cfgOptionsFile);
+        } catch (FileNotFoundException e) {
+            plugin.log.warning("options.yml not found. Creating a new one");
+            saveConfig(cfgOptions, cfgOptionsFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-            try {
-                cfgFurnaces.load(cfgFurnacesFile);
-            } catch (FileNotFoundException e) {
-                plugin.log.warning("data/furnaces.yml not found. Creating a new one");
-                saveConfig(cfgFurnaces, cfgFurnacesFile);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (InvalidConfigurationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        try {
+            cfgFurnaces.load(cfgFurnacesFile);
+        } catch (FileNotFoundException e) {
+            plugin.log.warning("data/furnaces.yml not found. Creating a new one");
+            saveConfig(cfgFurnaces, cfgFurnacesFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
