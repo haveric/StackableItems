@@ -14,6 +14,7 @@
 * Fixed double click to gather items at cursor
 * Let Vanilla handle filling buckets for default value
 * Update inventory when preventing flint and steel durability use
+* Added Prevent_Wasted_Flint_and_Steel config for toggling the wasted use of flint and steel in water, lava, and fire
 
 #### Version 0.9.4.4 (1/7/2014)
 * Fixed milk buckets removing blocks

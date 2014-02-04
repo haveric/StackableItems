@@ -31,6 +31,8 @@ public final class Config {
     private static String cfgUseStacksDropper = "Use_Stack_Amounts_In_Dropper";
     private static String cfgUseStacksDispenser = "Use_Stack_Amounts_In_Dispenser";
 
+    private static String cfgPreventWastedFlintSteel = "Prevent_Wasted_Flint_and_Steel";
+
     private static String cfgDebug = "Debug";
 
     private static FileConfiguration cfgOptions;
@@ -43,6 +45,8 @@ public final class Config {
 
     private static final boolean DEBUG_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
+
+    private static final boolean PREVENT_WASTED_FAS_DEFAULT = true;
 
     private Config() { } // Private constructor for utility class
 
@@ -111,10 +115,11 @@ public final class Config {
 
         cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
         cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
+        cfgOptions.addDefault(cfgPreventWastedFlintSteel, PREVENT_WASTED_FAS_DEFAULT);
 
-        if (!cfgOptions.isSet(cfgUseStacksFurnace) || !cfgOptions.isSet(cfgUseStacksMerchant) || !cfgOptions.isSet(cfgUseStacksCrafting)
-                || !cfgOptions.isSet(cfgUseStacksBrewing) || !cfgOptions.isSet(cfgUseStacksAnvil) || !cfgOptions.isSet(cfgUseStacksBeacon) || !cfgOptions.isSet(cfgUseStacksEnderChest)
-                || !cfgOptions.isSet(cfgUseStacksHopper) || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgUseStacksDispenser) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)) {
+        if (!cfgOptions.isSet(cfgUseStacksFurnace) || !cfgOptions.isSet(cfgUseStacksMerchant) || !cfgOptions.isSet(cfgUseStacksCrafting) || !cfgOptions.isSet(cfgUseStacksBrewing)
+                || !cfgOptions.isSet(cfgUseStacksAnvil) || !cfgOptions.isSet(cfgUseStacksBeacon) || !cfgOptions.isSet(cfgUseStacksEnderChest) || !cfgOptions.isSet(cfgUseStacksHopper)
+                || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgUseStacksDispenser) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount) || !cfgOptions.isSet(cfgPreventWastedFlintSteel)) {
             cfgOptions.options().copyDefaults(true);
             saveConfig(cfgOptions, cfgOptionsFile);
         }
@@ -230,6 +235,10 @@ public final class Config {
 
     public static boolean isDispenserUsingStacks() {
         return cfgOptions.getBoolean(cfgUseStacksDispenser);
+    }
+
+    public static boolean isPreventWastedFASEnabled() {
+        return cfgOptions.getBoolean(cfgPreventWastedFlintSteel);
     }
 
     public static boolean isDebugging() {

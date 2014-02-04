@@ -403,8 +403,9 @@ public class SIPlayerListener implements Listener {
     public void playerClick(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack holding = event.getItem();
+            Player player = event.getPlayer();
 
-            if (holding != null && holding.getType() == Material.FLINT_AND_STEEL) {
+            if (holding != null && holding.getType() == Material.FLINT_AND_STEEL && Config.isPreventWastedFASEnabled()) {
                 Block block = event.getClickedBlock();
                 Material placedType = block.getRelative(event.getBlockFace()).getType();
 
@@ -418,11 +419,11 @@ public class SIPlayerListener implements Listener {
                         event.setUseInteractedBlock(Result.DENY);
                         break;
                 }
-            }
-            Player player = event.getPlayer();
-            InventoryUtil.splitStack(player, true);
 
-            InventoryUtil.updateInventory(player);
+                InventoryUtil.updateInventory(player);
+            }
+
+            InventoryUtil.splitStack(player, true);
         }
     }
 
