@@ -76,7 +76,7 @@ public class SIHopperListener implements Listener{
                         event.setCancelled(true);
                     } else if (defaultMax > 0){
                         Inventory fromInventory = event.getSource();
-                        InventoryUtil.moveItems(location, stack.clone(), fromInventory, toInventory, defaultMax);
+                        InventoryUtil.moveItemsFromHopper(location, stack.clone(), fromInventory, toInventory, defaultMax);
 
                         event.setCancelled(true);
                     }

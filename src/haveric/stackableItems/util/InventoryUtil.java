@@ -31,7 +31,7 @@ public final class InventoryUtil {
         plugin = si;
     }
 
-    public static int getFreeSpaces(Player player, ItemStack itemToCheck) {
+    public static int getPlayerFreeSpaces(Player player, ItemStack itemToCheck) {
         return getFreeSpaces(player, itemToCheck, player.getInventory(), 0, 36);
     }
 
@@ -239,10 +239,17 @@ public final class InventoryUtil {
         return canStack;
     }
 
-    public static void addItems(Player player, ItemStack itemToAdd, boolean reverseHotbar, Inventory fromInventory) {
-        addItems(player, itemToAdd, player.getInventory(), 0, 36, reverseHotbar, fromInventory);
+    public static void addItemsToPlayer(Player player, ItemStack itemToAdd) {
+        addItems(player, itemToAdd, player.getInventory(), 0, 36, false, null);
     }
 
+    public static void addItemToPlayerReverse(Player player, ItemStack itemToAdd) {
+        addItems(player, itemToAdd, player.getInventory(), 0, 36, true, null);
+    }
+
+    public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end) {
+        addItems(player, itemToAdd, inventory, start, end, false, null);
+    }
     public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end, final boolean reverseHotbar, final Inventory fromInventory) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
@@ -494,7 +501,7 @@ public final class InventoryUtil {
         });
     }
 
-    public static void moveItems(final Location location, final ItemStack stack, final Inventory fromInventory, final Inventory toInventory, final int max) {
+    public static void moveItemsFromHopper(final Location location, final ItemStack stack, final Inventory fromInventory, final Inventory toInventory, final int max) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
                 fromInventory.removeItem(stack);
@@ -503,14 +510,17 @@ public final class InventoryUtil {
         });
     }
 
-    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft, boolean reverseHotbar, Inventory fromInventory) {
+    public static int moveItemsToPlayer(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft, boolean reverseHotbar, Inventory fromInventory) {
         return moveItems(player, clicked, event, player.getInventory(), start, end, setLeft, reverseHotbar, fromInventory);
     }
 
-    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft, boolean reverseHotbar, Inventory fromInventory) {
-        return moveItems(player, clicked, event, inventory, 0, inventory.getSize(), setLeft, reverseHotbar, fromInventory);
+    public static int moveItemsToFullInventory(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft) {
+        return moveItems(player, clicked, event, inventory, 0, inventory.getSize(), setLeft, false, null);
     }
 
+    public static int moveItemsToInventory(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft) {
+        return moveItems(player, clicked, event, inventory, start, end, setLeft, false, null);
+    }
     public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft, boolean reverseHotbar, Inventory fromInventory) {
         event.setCancelled(true);
         ItemStack clone = clicked.clone();
@@ -650,10 +660,10 @@ public final class InventoryUtil {
                         Material itemType = item.getType();
                         // Give back buckets when used in a recipe
                         if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET) {
-                            addItems(player, new ItemStack(Material.BUCKET, removeAmount), false, null);
+                            addItemsToPlayer(player, new ItemStack(Material.BUCKET, removeAmount));
                         // Give back bowls if mushroom soup is ever used in a recipe
                         } else if (itemType == Material.MUSHROOM_SOUP) {
-                            addItems(player, new ItemStack(Material.BOWL, removeAmount), false, null);
+                            addItemsToPlayer(player, new ItemStack(Material.BOWL, removeAmount));
                         }
                     }
                     i++;
@@ -777,7 +787,7 @@ public final class InventoryUtil {
             if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
                 ItemStack move = holding.clone();
                 move.setAmount(amount - 1);
-                addItems(player, move, false, null);
+                addItemsToPlayer(player, move);
                 holding.setAmount(1);
             }
         }
@@ -799,10 +809,10 @@ public final class InventoryUtil {
     public static void swapInventory(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
         // move from main inventory to hotbar
         if (rawSlot >= startSlot && rawSlot <= startSlot + 26) {
-            InventoryUtil.moveItems(player, toMove, event, 0, 9, true, false, null);
+            InventoryUtil.moveItemsToPlayer(player, toMove, event, 0, 9, true, false, null);
         // move from hotbar to main inventory
         } else if (rawSlot >= startSlot + 27 && rawSlot <= startSlot + 35) {
-            InventoryUtil.moveItems(player, toMove, event, 9, 36, true, false, null);
+            InventoryUtil.moveItemsToPlayer(player, toMove, event, 9, 36, true, false, null);
         }
     }
 
