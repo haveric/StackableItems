@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon
+#### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.
 * Handle stacking in creative mode (except for player inventory)
 * Fixed inventory dragging.
