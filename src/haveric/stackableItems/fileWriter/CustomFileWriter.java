@@ -36,7 +36,7 @@ public class CustomFileWriter {
             getDataFolder().mkdir();
         }
 
-        File lists = new File(getDataFolder() + "/lists");
+        File lists = new File(getDataFolder() + File.separator + "lists");
         if (!lists.exists()) {
             lists.mkdir();
         }
@@ -44,13 +44,13 @@ public class CustomFileWriter {
 
     public void reloadFiles(int version, List<Material> list) {
      // Create the data folder if it doesn't exist yet.
-        File dataFolder = new File(getDataFolder() + "/lists");
+        File dataFolder = new File(getDataFolder() + File.separator + "lists");
         if (!dataFolder.exists()) {
             dataFolder.mkdir();
         }
 
-        defaultFile = new File(getDataFolder() + "/lists/default" + fileName + ".txt");
-        customFile = new File(getDataFolder() + "/lists/custom" + fileName + ".txt");
+        defaultFile = new File(getDataFolder() + File.separator + "lists" + File.separator + "default" + fileName + ".txt");
+        customFile = new File(getDataFolder() + File.separator + "lists" + File.separator + "custom" + fileName + ".txt");
 
         createFiles(version, list);
     }
@@ -79,7 +79,7 @@ public class CustomFileWriter {
                 int fileVersion = defaultScanner.nextInt();
                 if (fileVersion < version) {
                     defaultFile.delete();
-                    defaultFile = new File(getDataFolder() + "/lists/default" + fileName + ".txt");
+                    defaultFile = new File(getDataFolder() + File.separator + "lists" + File.separator + "default" + fileName + ".txt");
                     writeList(list, defaultFile, version);
                 }
             } else {

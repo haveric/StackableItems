@@ -27,7 +27,7 @@ public class FurnaceXPConfig {
 
     public static void init(StackableItems si) {
         plugin = si;
-        cfgFurnaceXPFile = new File(plugin.getDataFolder() + "/furnaceXP.yml");
+        cfgFurnaceXPFile = new File(plugin.getDataFolder() + File.separator + "furnaceXP.yml");
         cfgFurnaceXP = YamlConfiguration.loadConfiguration(cfgFurnaceXPFile);
 
         random = new Random();

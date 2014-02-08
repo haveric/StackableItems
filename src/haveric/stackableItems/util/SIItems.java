@@ -50,13 +50,13 @@ public final class SIItems {
     public static void init(StackableItems si) {
         plugin = si;
 
-        configGroupsFile = new File(plugin.getDataFolder() + "/groups.yml");
+        configGroupsFile = new File(plugin.getDataFolder() + File.separator + "groups.yml");
         configGroups = YamlConfiguration.loadConfiguration(configGroupsFile);
         if (configGroupsFile.length() == 0) {
             Config.saveConfig(configGroups, configGroupsFile);
         }
 
-        itemsFile = new File(plugin.getDataFolder() + "/items.yml");
+        itemsFile = new File(plugin.getDataFolder() + File.separator + "items.yml");
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
         setupItemsFile();
 

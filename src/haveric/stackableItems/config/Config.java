@@ -56,16 +56,16 @@ public final class Config {
      */
     public static void init(StackableItems si) {
         plugin = si;
-        cfgOptionsFile = new File(plugin.getDataFolder() + "/options.yml");
+        cfgOptionsFile = new File(plugin.getDataFolder() + File.separator + "options.yml");
         cfgOptions = YamlConfiguration.loadConfiguration(cfgOptionsFile);
 
         // Create the data folder if it doesn't exist yet.
-        File dataFolder = new File(plugin.getDataFolder() + "/data");
+        File dataFolder = new File(plugin.getDataFolder() + File.separator + "data");
         if (!dataFolder.exists()) {
             dataFolder.mkdir();
         }
 
-        cfgFurnacesFile = new File(plugin.getDataFolder() + "/data/furnaces.yml");
+        cfgFurnacesFile = new File(plugin.getDataFolder() + File.separator + "data" + File.separator + "furnaces.yml");
         cfgFurnaces = YamlConfiguration.loadConfiguration(cfgFurnacesFile);
         saveConfig(cfgFurnaces, cfgFurnacesFile);
     }
