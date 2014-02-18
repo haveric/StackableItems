@@ -816,6 +816,12 @@ public final class InventoryUtil {
         }
     }
 
+    public static boolean canVanillaMoveHopper(Inventory inventory, ItemStack cursorStack) {
+        boolean canMove = false;
+
+        return canMove;
+    }
+
     public static boolean canVanillaGatherItemsToCursor(Player player, Inventory topInventory, ItemStack cursorStack, int max) {
         boolean canGather = false;
 
