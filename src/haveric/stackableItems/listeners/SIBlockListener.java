@@ -39,12 +39,12 @@ public class SIBlockListener implements Listener {
             }
         }
 
-        ItemStack hand = player.getItemInHand();
+        ItemStack holding = player.getItemInHand();
 
         // Handle splitting tool stacks when used to break blocks
-        if (hand != null) {
-            Material type = hand.getType();
-            int maxItems = SIItems.getItemMax(player, type, hand.getDurability(), player.getInventory().getName());
+        if (holding != null) {
+            Material type = holding.getType();
+            int maxItems = SIItems.getItemMax(player, type, holding.getDurability(), player.getInventory().getName());
 
             // Don't touch default items.
             if (maxItems == SIItems.ITEM_DEFAULT) {
@@ -52,7 +52,7 @@ public class SIBlockListener implements Listener {
             }
 
             if (maxItems == SIItems.ITEM_INFINITE) {
-                ItemStack clone = hand.clone();
+                ItemStack clone = holding.clone();
                 PlayerInventory inventory = player.getInventory();
                 InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
                 InventoryUtil.updateInventory(player);

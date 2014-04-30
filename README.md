@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon:
+* Handle null checks for getting player's item in hand.
+
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.
 * Handle stacking in creative mode (except for player inventory)

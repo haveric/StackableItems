@@ -251,20 +251,24 @@ public class SIPlayerListener implements Listener {
     public void playerFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
 
-        ItemStack clone = player.getItemInHand().clone();
+        ItemStack holding = player.getItemInHand();
 
-        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
+        if (holding != null) {
+            ItemStack clone = holding.clone();
 
-        // Don't touch default items.
-        if (maxItems == SIItems.ITEM_DEFAULT) {
-            return;
-        }
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
 
-        // Handle infinite fishing rods
-        if (maxItems == SIItems.ITEM_INFINITE) {
-            player.setItemInHand(clone);
-        } else {
-            InventoryUtil.splitStack(player, false);
+            // Don't touch default items.
+            if (maxItems == SIItems.ITEM_DEFAULT) {
+                return;
+            }
+
+            // Handle infinite fishing rods
+            if (maxItems == SIItems.ITEM_INFINITE) {
+                player.setItemInHand(clone);
+            } else {
+                InventoryUtil.splitStack(player, false);
+            }
         }
     }
 
@@ -307,9 +311,9 @@ public class SIPlayerListener implements Listener {
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
 
-            ItemStack hold = player.getItemInHand();
-            if (hold != null) {
-                int maxItems = SIItems.getItemMax(player, hold.getType(), hold.getDurability(), player.getInventory().getName());
+            ItemStack holding = player.getItemInHand();
+            if (holding != null) {
+                int maxItems = SIItems.getItemMax(player, holding.getType(), holding.getDurability(), player.getInventory().getName());
 
                 // Don't touch default items.
                 if (maxItems == SIItems.ITEM_DEFAULT) {
@@ -319,7 +323,7 @@ public class SIPlayerListener implements Listener {
                 // Handle infinite weapons
                 if (maxItems == SIItems.ITEM_INFINITE) {
                     PlayerInventory inventory = player.getInventory();
-                    InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), hold.clone());
+                    InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), holding.clone());
                     InventoryUtil.updateInventory(player);
                 } else {
                     InventoryUtil.splitStack(player, true);
@@ -333,30 +337,33 @@ public class SIPlayerListener implements Listener {
         Player player = event.getPlayer();
 
         ItemStack holding = player.getInventory().getItemInHand();
-        int amount = holding.getAmount();
 
-        if (amount > 1) {
-            ItemStack toAdd = event.getItemStack();
-            int maxItems = SIItems.getItemMax(player, toAdd.getType(), toAdd.getDurability(), player.getInventory().getName());
+        if (holding != null) {
+            int amount = holding.getAmount();
 
-            // Let Vanilla handle filling buckets for default value
-            if (maxItems != SIItems.ITEM_DEFAULT) {
-                int slot = player.getInventory().getHeldItemSlot();
+            if (amount > 1) {
+                ItemStack toAdd = event.getItemStack();
+                int maxItems = SIItems.getItemMax(player, toAdd.getType(), toAdd.getDurability(), player.getInventory().getName());
 
-                ItemStack clone = holding.clone();
-                clone.setAmount(amount - 1);
+                // Let Vanilla handle filling buckets for default value
+                if (maxItems != SIItems.ITEM_DEFAULT) {
+                    int slot = player.getInventory().getHeldItemSlot();
 
-                InventoryUtil.replaceItem(player.getInventory(), slot, clone);
-                InventoryUtil.addItemsToPlayer(player, toAdd);
+                    ItemStack clone = holding.clone();
+                    clone.setAmount(amount - 1);
 
-                event.setCancelled(true);
+                    InventoryUtil.replaceItem(player.getInventory(), slot, clone);
+                    InventoryUtil.addItemsToPlayer(player, toAdd);
 
-                Material bucketType = toAdd.getType();
-                if (bucketType != Material.MILK_BUCKET) {
-                    event.getBlockClicked().setType(Material.AIR);
+                    event.setCancelled(true);
+
+                    Material bucketType = toAdd.getType();
+                    if (bucketType != Material.MILK_BUCKET) {
+                        event.getBlockClicked().setType(Material.AIR);
+                    }
+
+                    InventoryUtil.updateInventory(player);
                 }
-
-                InventoryUtil.updateInventory(player);
             }
         }
     }
@@ -366,15 +373,18 @@ public class SIPlayerListener implements Listener {
         Player player = event.getPlayer();
 
         ItemStack holding = player.getInventory().getItemInHand();
-        int amount = holding.getAmount();
-        if (amount > 1) {
-            ItemStack clone = holding.clone();
-            clone.setAmount(amount - 1);
 
-            int slot = player.getInventory().getHeldItemSlot();
+        if (holding != null) {
+            int amount = holding.getAmount();
+            if (amount > 1) {
+                ItemStack clone = holding.clone();
+                clone.setAmount(amount - 1);
 
-            InventoryUtil.replaceItem(player.getInventory(), slot, clone);
-            InventoryUtil.addItemsToPlayer(player, event.getItemStack());
+                int slot = player.getInventory().getHeldItemSlot();
+
+                InventoryUtil.replaceItem(player.getInventory(), slot, clone);
+                InventoryUtil.addItemsToPlayer(player, event.getItemStack());
+            }
         }
     }
 
@@ -1419,18 +1429,21 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void playerPlaceBlock(BlockPlaceEvent event) {
-        ItemStack clone = event.getItemInHand().clone();
+        ItemStack holding = event.getItemInHand();
+        if (holding != null) {
+            ItemStack clone = holding.clone();
 
-        Player player = event.getPlayer();
-        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
+            Player player = event.getPlayer();
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
 
-        // Don't touch default items.
-        if (maxItems == SIItems.ITEM_DEFAULT) {
-            return;
-        }
-        // Restore unlimited items
-        if (maxItems == SIItems.ITEM_INFINITE) {
-            player.setItemInHand(clone);
+            // Don't touch default items.
+            if (maxItems == SIItems.ITEM_DEFAULT) {
+                return;
+            }
+            // Restore unlimited items
+            if (maxItems == SIItems.ITEM_INFINITE) {
+                player.setItemInHand(clone);
+            }
         }
     }
 
@@ -1438,18 +1451,21 @@ public class SIPlayerListener implements Listener {
     public void playerShearEntity(PlayerShearEntityEvent event) {
         Player player = event.getPlayer();
 
-        ItemStack clone = player.getItemInHand().clone();
-        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
-        // Don't touch default items.
-        if (maxItems == SIItems.ITEM_DEFAULT) {
-            return;
-        }
+        ItemStack holding = player.getItemInHand();
+        if (holding != null) {
+            ItemStack clone = holding.clone();
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
+            // Don't touch default items.
+            if (maxItems == SIItems.ITEM_DEFAULT) {
+                return;
+            }
 
-        // Handle unlimited shears
-        if (maxItems == SIItems.ITEM_INFINITE) {
-            player.setItemInHand(clone);
-        } else {
-            InventoryUtil.splitStack(player, false);
+            // Handle unlimited shears
+            if (maxItems == SIItems.ITEM_INFINITE) {
+                player.setItemInHand(clone);
+            } else {
+                InventoryUtil.splitStack(player, false);
+            }
         }
     }
 
@@ -1460,21 +1476,24 @@ public class SIPlayerListener implements Listener {
             // Only deal with players.
             if (player != null) {
                 ItemStack holding = player.getItemInHand();
-                // Since repeatedly using flint and steel causes durability loss, reset durability on a new hit.
-                ItemStack newStack = holding.clone();
-                newStack.setDurability((short) 0);
-                int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), player.getInventory().getName());
 
-                // Don't touch default items.
-                if (maxItems == SIItems.ITEM_DEFAULT) {
-                    return;
-                }
-                // Handle unlimited flint and steel
-                if (maxItems == SIItems.ITEM_INFINITE) {
-                    player.setItemInHand(newStack);
-                    InventoryUtil.updateInventory(player);
-                } else {
-                    InventoryUtil.splitStack(player, false);
+                if (holding != null) {
+                    // Since repeatedly using flint and steel causes durability loss, reset durability on a new hit.
+                    ItemStack newStack = holding.clone();
+                    newStack.setDurability((short) 0);
+                    int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), player.getInventory().getName());
+
+                    // Don't touch default items.
+                    if (maxItems == SIItems.ITEM_DEFAULT) {
+                        return;
+                    }
+                    // Handle unlimited flint and steel
+                    if (maxItems == SIItems.ITEM_INFINITE) {
+                        player.setItemInHand(newStack);
+                        InventoryUtil.updateInventory(player);
+                    } else {
+                        InventoryUtil.splitStack(player, false);
+                    }
                 }
             }
         }
