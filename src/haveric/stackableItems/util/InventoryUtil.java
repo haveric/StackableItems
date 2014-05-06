@@ -673,16 +673,16 @@ public final class InventoryUtil {
     }
 
     public static void updateCursor(final Player player, final ItemStack newCursor) {
-        ItemStack oldCursor = player.getItemOnCursor();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override public void run() {
+                // Sanity check to make sure the new item is different;
+                ItemStack oldCursor = player.getItemOnCursor();
 
-        // Sanity check to make sure the new item is different;
-        if ((newCursor != null && oldCursor != null && newCursor.getAmount() != oldCursor.getAmount()) || !ItemUtil.isSameItem(newCursor, oldCursor)) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                @Override public void run() {
+                if ((newCursor != null && oldCursor != null && newCursor.getAmount() != oldCursor.getAmount()) || !ItemUtil.isSameItem(newCursor, oldCursor)) {
                     player.setItemOnCursor(newCursor);
                 }
-            });
-        }
+            }
+        });
     }
     public static void updateInventory(final Player player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -794,16 +794,16 @@ public final class InventoryUtil {
     }
 
     public static void replaceItem(final Inventory inventory, final int slot, final ItemStack stack) {
-        ItemStack slotItem = inventory.getItem(slot);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override public void run() {
+                ItemStack slotItem = inventory.getItem(slot);
 
-        // Sanity check to make sure the new item is different;
-        if ((stack != null && slotItem != null && stack.getAmount() != slotItem.getAmount()) || !ItemUtil.isSameItem(stack, slotItem)) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                @Override public void run() {
+                // Sanity check to make sure the new item is different;
+                if ((stack != null && slotItem != null && stack.getAmount() != slotItem.getAmount()) || !ItemUtil.isSameItem(stack, slotItem)) {
                     inventory.setItem(slot, stack);
                 }
-            });
-        }
+            }
+        });
     }
 
     public static void swapInventory(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
