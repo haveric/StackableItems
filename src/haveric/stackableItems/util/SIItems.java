@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -66,16 +65,15 @@ public final class SIItems {
     private static void setupItemsFile() {
         itemsConfig.addDefault("allWorlds.default." + cfgMin, ITEM_DEFAULT);
         itemsConfig.addDefault("allWorlds.default." + cfgMax, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.testPlayer." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.testPlayer." + cfgMax, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.testGroup." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.testGroup." + cfgMax, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.chest." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.chest." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.player.testPlayer." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.player.testPlayer." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.group.testGroup." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.group.testGroup." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.inventory.chest." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.inventory.chest." + cfgMax, ITEM_DEFAULT);
 
         itemsConfig.addDefault("testWorld.default." + cfgMin, ITEM_DEFAULT);
         itemsConfig.addDefault("testWorld.default." + cfgMax, ITEM_DEFAULT);
-
         itemsConfig.options().copyDefaults(true);
         Config.saveConfig(itemsConfig, itemsFile);
     }
@@ -156,25 +154,25 @@ public final class SIItems {
         }
     }
 
-    public static int getInventoryMax(World world, Material mat, short dur, String inventoryType) {
+    public static int getInventoryMax(String world, Material mat, short dur, String inventoryType) {
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
         if (mat != Material.AIR) {
          // Check inventory types
             if (max == ITEM_DEFAULT) {
-                max = getMax(world + "." + inventoryType, mat, dur);
+                max = getMax(world, "inventory", inventoryType, mat, dur);
             }
             if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds + "." + inventoryType, mat, dur);
+                max = getMax(allWorlds, "inventory", inventoryType, mat, dur);
             }
 
             // Check default
             if (max == ITEM_DEFAULT) {
-                max = getMax(world + "." + "default", mat, dur);
+                max = getMax(world, "default", "", mat, dur);
             }
             if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds + "." + "default", mat, dur);
+                max = getMax(allWorlds, "default", "", mat, dur);
             }
 
             // Handle invalid max
@@ -198,11 +196,12 @@ public final class SIItems {
 
             // Check player
             String playerName = player.getName();
+            String uuid = player.getUniqueId().toString();
 
-            max = getMax(world + "." + playerName, mat, dur);
+            max = getMax(world, "player", uuid, mat, dur);
 
             if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds + "." + playerName, mat, dur);
+                max = getMax(allWorlds, "player", uuid, mat, dur);
             }
 
             // Check groups
@@ -217,27 +216,27 @@ public final class SIItems {
                     }
                 }
                 if (group != null) {
-                    max = getMax(world + "." + group, mat, dur);
+                    max = getMax(world, "group", group, mat, dur);
                     if (max == ITEM_DEFAULT) {
-                        max = getMax(allWorlds + "." + group, mat, dur);
+                        max = getMax(allWorlds, "group", group, mat, dur);
                     }
                 }
             }
 
             // Check inventory types
             if (max == ITEM_DEFAULT) {
-                max = getMax(world + "." + inventoryType, mat, dur);
+                max = getMax(world, "inventory", inventoryType, mat, dur);
             }
             if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds + "." + inventoryType, mat, dur);
+                max = getMax(allWorlds, "inventory", inventoryType, mat, dur);
             }
 
             // Check default
             if (max == ITEM_DEFAULT) {
-                max = getMax(world + "." + "default", mat, dur);
+                max = getMax(world, "default", "", mat, dur);
             }
             if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds + "." + "default", mat, dur);
+                max = getMax(allWorlds, "default", "", mat, dur);
             }
 
             // Handle invalid max
@@ -249,7 +248,12 @@ public final class SIItems {
         return max;
     }
 
-    public static int getMax(String itemString, Material mat, short dur) {
+    public static int getMax(String world, String type, String item, Material mat, short dur) {
+        String itemString = world + "." + type + "." + item;
+
+        if (itemString.endsWith(".")) {
+            itemString = itemString.substring(0, itemString.length()-1);
+        }
         if (dur == ITEM_DEFAULT) {
             return getMaxFromMap(itemString, mat);
         }
@@ -257,7 +261,7 @@ public final class SIItems {
         return getMaxFromMap(itemString, mat, dur);
     }
 
-    public static void setMax(String catEntry, Material mat, short dur, int newAmount) {
+    public static void setMax(String world, String type, String item, Material mat, short dur, int newAmount) {
         String name;
         String matName = mat.name().toUpperCase();
         if (dur == ITEM_DEFAULT) {
@@ -265,6 +269,8 @@ public final class SIItems {
         } else {
             name = matName + " " + dur;
         }
+        String catEntry = item.equals("") ? type : type + "." + item;
+        catEntry = world + "." + catEntry;
 
         itemsConfig.set(catEntry + "." + name, newAmount);
         Config.saveConfig(itemsConfig, itemsFile);

@@ -8,7 +8,9 @@
 
 #### Coming Soon:
 * Handle null checks for getting player's item in hand.
-* Fixed sanity checks which allowed duplication when inventory dragging.
+* Fixed sanity checks which allowed duplication when dragging items in the inventory.
+* Reworking item config file to handle future changes.
+** Please rename your items.yml before updating and copy over the items to the correct places in the newly created items.yml.
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.

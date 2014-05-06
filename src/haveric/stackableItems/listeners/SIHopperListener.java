@@ -65,7 +65,7 @@ public class SIHopperListener implements Listener{
 
                 if (location != null) {
                     ItemStack stack = event.getItem();
-                    int defaultMax = SIItems.getInventoryMax(location.getWorld(), stack.getType(), stack.getDurability(), toInventory.getName());
+                    int defaultMax = SIItems.getInventoryMax(location.getWorld().getName(), stack.getType(), stack.getDurability(), toInventory.getName());
 
                     // Don't touch default or infinite items.
                     if (defaultMax == SIItems.ITEM_DEFAULT || defaultMax == SIItems.ITEM_INFINITE) {
@@ -94,7 +94,7 @@ public class SIHopperListener implements Listener{
             ItemStack stack = item.getItemStack();
             Inventory inventory = event.getInventory();
 
-            int defaultMax = SIItems.getInventoryMax(item.getWorld(), stack.getType(), stack.getDurability(), inventory.getName());
+            int defaultMax = SIItems.getInventoryMax(item.getWorld().getName(), stack.getType(), stack.getDurability(), inventory.getName());
 
             // Don't touch default or infinite items.
             if (defaultMax == SIItems.ITEM_DEFAULT || defaultMax == SIItems.ITEM_INFINITE) {

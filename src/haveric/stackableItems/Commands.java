@@ -23,6 +23,11 @@ public class Commands implements CommandExecutor {
     private String cmdPerms = "perms";
     private String cmdPermsAlt = "perm";
 
+    private String cmdTypeDefault = "default";
+    private String cmdTypePlayer = "player";
+    private String cmdTypeGroup = "group";
+    private String cmdTypeInventory = "inventory";
+
     private ChatColor msgColor = ChatColor.DARK_AQUA;
     private ChatColor highlightColor = ChatColor.YELLOW;
     private ChatColor defaultColor = ChatColor.WHITE;
@@ -54,9 +59,16 @@ public class Commands implements CommandExecutor {
                 sender.sendMessage("Commands: " + highlightColor + "/" + cmdMain + defaultColor + " or " + highlightColor + "/" + cmdMainAlt);
                 if (op || hasAdminPerm) {
                     sender.sendMessage("/" + cmdMainAlt + " " + cmdReload + " - " + msgColor + "Reloads the config files");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world type" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set a player's max items");
+                    //sender.sendMessage("/" + cmdMainAlt + highlightColor + " world type" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set a player's max items");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:dur [amt]");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:dur [amt]");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:dur [amt]");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:dur [amt]");
                 } else {
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world type" + defaultColor + " item:dur - " + msgColor + "Get a player's max items");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:dur");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:dur");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:dur");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:dur");
                 }
                 sender.sendMessage("Types: " + highlightColor + "playerName" + defaultColor + ", " + highlightColor + "inventoryName" + defaultColor + ", " + highlightColor + "permissionGroup" + defaultColor + ", " + highlightColor + "default");
 
@@ -78,21 +90,29 @@ public class Commands implements CommandExecutor {
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to see permission nodes.");
                 }
-            } else if (args.length == 3 || args.length == 4) {
+            } else if (args.length >= 3) {
                 String world = args[0];
-                String permType = args[1];
+                String permType = args[1].toLowerCase();
+
+                int argsForSet;
+                String item;
+                String permItem;
+                if (permType.equals("default")) {
+                    item = args[2];
+                    permItem = "";
+                    argsForSet = 4;
+                } else {
+                    item = args[3];
+                    permItem = args[2];
+                    argsForSet = 5;
+                }
 
                 if (world.equalsIgnoreCase("all") || world.equalsIgnoreCase("allworlds") || world.equalsIgnoreCase("default")) {
                     world = "allWorlds";
                 }
 
-                if (permType.equalsIgnoreCase("default")) {
-                    permType = "default";
-                }
-
                 Material mat;
                 short dur = -1;
-                String item = args[2];
                 String matName;
 
                 if (item.contains(":")) {
@@ -111,9 +131,9 @@ public class Commands implements CommandExecutor {
                     int max = SIItems.ITEM_DEFAULT;
                     String msg = shortTitle + highlightColor;
                     // set value
-                    if (args.length == 4) {
+                    if (args.length == argsForSet) {
                         if (op || hasAdminPerm) {
-                            int numToSet = Integer.parseInt(args[3]);
+                            int numToSet = Integer.parseInt(args[argsForSet-1]);
                             String displayName;
                             if (dur == SIItems.ITEM_DEFAULT) {
                                 displayName = mat.name();
@@ -123,13 +143,12 @@ public class Commands implements CommandExecutor {
 
                             msg += displayName + msgColor;
 
-
-                            max = SIItems.getMax(world + "." + permType, mat, dur);
+                            max = SIItems.getMax(world, permType, permItem,  mat, dur);
                             msg += " for " + highlightColor + world + defaultColor + "-" + highlightColor + permType + msgColor;
                             if (numToSet == max) {
                                 msg += " is already set to ";
                             } else {
-                                SIItems.setMax(world + "." + permType, mat, dur, numToSet);
+                                SIItems.setMax(world, permType, permItem, mat, dur, numToSet);
                                 msg += " set to ";
                             }
                             sender.sendMessage(msg + highlightColor + numToSet);
@@ -138,17 +157,16 @@ public class Commands implements CommandExecutor {
                             sender.sendMessage(shortTitle + ChatColor.RED + "You do not have permission to set config values.");
                         }
                     // get value
-                    } else if (args.length == 3) {
+                    } else {
                         msg += mat.name() + msgColor;
 
-                        max = SIItems.getMax(world + "." + permType, mat, dur);
+                        max = SIItems.getMax(world, permType, permItem, mat, dur);
                         if (max == SIItems.ITEM_DEFAULT) {
                             msg += " not found for " + highlightColor + world + defaultColor + "-" + highlightColor + permType;
                         } else {
                             msg += " for " + world + "-" + permType + " is: " + highlightColor + max;
                         }
                         sender.sendMessage(msg);
-
                     }
                 }
             }
