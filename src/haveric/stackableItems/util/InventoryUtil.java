@@ -815,8 +815,8 @@ public final class InventoryUtil {
         int inventoryMax = inventory.getMaxStackSize();
         if (inventoryType != InventoryType.PLAYER && maxAmount > inventoryMax && slot < inventory.getSize()) {
             if (Config.isDebugging()) {
-                StackableItems.log.info("Bukkit isn't handling max stack size for: " + inventoryType);
-                StackableItems.log.info("  Max: " + maxAmount + ", inventoryMax: " + inventoryMax);
+                plugin.log.info("Bukkit isn't handling max stack size for: " + inventoryType);
+                plugin.log.info("  Max: " + maxAmount + ", inventoryMax: " + inventoryMax);
             }
             maxAmount = inventoryMax;
         }
