@@ -1,32 +1,9 @@
 package haveric.stackableItems.listeners;
 
-import haveric.stackableItems.config.Config;
-import haveric.stackableItems.util.InventoryUtil;
-import haveric.stackableItems.util.SIItems;
-
-import org.bukkit.Location;
-import org.bukkit.block.Beacon;
-import org.bukkit.block.BrewingStand;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Dropper;
-import org.bukkit.block.Furnace;
-import org.bukkit.block.Hopper;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.minecart.HopperMinecart;
-import org.bukkit.entity.minecart.StorageMinecart;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 public class SIHopperListener implements Listener{
-
+    /*
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void hopperMove(InventoryMoveItemEvent event) {
         if (Config.isHopperUsingStacks()) {
@@ -106,9 +83,11 @@ public class SIHopperListener implements Listener{
                 event.setCancelled(true);
             } else if (defaultMax > 0) {
                 item.remove();
-                InventoryUtil.addItems(item.getLocation(), stack, inventory, defaultMax);
+                StackableItems.log.info("Hopper Pickup");
+                InventoryUtil.addItems(item.getLocation(), stack, inventory, defaultMax, true);
                 event.setCancelled(true);
             }
         }
     }
+    */
 }

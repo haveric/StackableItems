@@ -21,7 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class StackableItems extends JavaPlugin {
 
-    public Logger log;
+    public static Logger log;
 
     private Commands commands = new Commands(this);
 

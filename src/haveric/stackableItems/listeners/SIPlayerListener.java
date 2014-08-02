@@ -468,7 +468,7 @@ public class SIPlayerListener implements Listener {
             ItemStack added = entry.getValue();
             int newAmount = added.getAmount();
 
-            int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
+            int maxSlot = InventoryUtil.getInventoryMax(player, null, inventory, cursorType, cursorDur, slot);
 
             if (newAmount > maxSlot && maxSlot > SIItems.ITEM_DEFAULT) {
                 int extra = newAmount - maxSlot;
@@ -517,7 +517,7 @@ public class SIPlayerListener implements Listener {
                 ItemStack added = entry.getValue();
                 int newAmount = added.getAmount();
 
-                int maxSlot = InventoryUtil.getInventoryMax(player, inventory, cursorType, cursorDur, slot);
+                int maxSlot = InventoryUtil.getInventoryMax(player, null, inventory, cursorType, cursorDur, slot);
                 if (maxSlot <= SIItems.ITEM_DEFAULT) {
                     maxSlot = added.getMaxStackSize();
                 }
@@ -675,7 +675,7 @@ public class SIPlayerListener implements Listener {
 
                 // Moving clicked to an empty hotbar slot
                 if (!clickedEmpty && hotbarItem == null) {
-                    int maxItems = InventoryUtil.getInventoryMax(player, player.getInventory(), clickedType, clickedDur, hotbarButton);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, hotbarButton);
 
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                         event.setCurrentItem(null);
@@ -698,7 +698,7 @@ public class SIPlayerListener implements Listener {
                 // Moving hotbar to an empty clicked slot
                 } else if (clickedEmpty && hotbarItem != null) {
                     int rawSlot = event.getRawSlot();
-                    int maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, rawSlot);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, rawSlot);
                     int inventorySize = top.getSize();
 
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
@@ -728,7 +728,7 @@ public class SIPlayerListener implements Listener {
                 // Move clicked to hotbar. Move hotbar elsewhere
                 } else if (!clickedEmpty && hotbarItem != null) {
                     int rawSlot = event.getRawSlot();
-                    int maxItems = InventoryUtil.getInventoryMax(player, player.getInventory(), clickedType, clickedDur, hotbarButton);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, hotbarButton);
                     int inventorySize = top.getSize();
                     int totalItems = clickedAmount + hotbarAmount;
 
@@ -788,7 +788,7 @@ public class SIPlayerListener implements Listener {
 
             boolean cursorEmpty = cursorType == Material.AIR;
 
-            int maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
+            int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
 
             if (maxItems == 0) {
                 player.sendMessage(itemDisabledMessage);
@@ -934,9 +934,9 @@ public class SIPlayerListener implements Listener {
 
             int maxItems = 0;
             if (clickedType == Material.AIR) {
-                maxItems = InventoryUtil.getInventoryMax(player, top, cursorType, cursorDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, null, top, cursorType, cursorDur, event.getRawSlot());
             } else {
-                maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
             }
 
             int rawSlot = event.getRawSlot();
