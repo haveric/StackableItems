@@ -7,6 +7,7 @@
 ### Changelog:
 
 #### Coming Soon:
+* Updated Metrics to work with updated getOnlinePlayers
 * Handle null checks for getting player's item in hand.
 * Fixed sanity checks which allowed duplication when dragging items in the inventory.
 * Reworking item config file to handle future changes.
