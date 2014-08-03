@@ -296,20 +296,27 @@ public final class SIItems {
             }
 
             // Check groups
-            if (max == ITEM_DEFAULT && Perms.canStackInGroup(player)) {
-                String group = null;
+            if (max == ITEM_DEFAULT) {
+                String groups[] = null;
                 try {
-                    group = Perms.getPrimaryGroup(player).toUpperCase();
+                    groups = Perms.getPlayerGroups(player);
+
+
                 } catch (Exception e) {
                     // No Groups
                     if (Config.isDebugging()) {
                         plugin.log.warning("DEBUG: getItemMax() - No group found.");
                     }
                 }
-                if (group != null) {
-                    max = getMax(world, "group", group, mat, dur);
-                    if (max == ITEM_DEFAULT) {
-                        max = getMax(allWorlds, "group", group, mat, dur);
+                if (groups != null) {
+                    for (String group: groups) {
+                        if (max == ITEM_DEFAULT) {
+                            max = getMax(world, "group", group, mat, dur);
+
+                            if (max == ITEM_DEFAULT) {
+                                max = getMax(allWorlds, "group", group, mat, dur);
+                            }
+                        }
                     }
                 }
             }

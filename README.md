@@ -14,6 +14,8 @@
 * Reworking item config file to handle future changes.
 ** Please rename your items.yml before updating and copy over the items to the correct places in the newly created items.yml.
 * Added UUID support. Items.yml will autoconvert worldName.player.playerName to worldName.player.uuid
+* Check all player groups, not just the primary (these may not work in any particular order)
+* Removed stackableitems.stack permission node, it isn't necessary
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.

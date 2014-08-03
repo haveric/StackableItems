@@ -10,7 +10,6 @@ public final class Perms {
     private static Permission perm = null;
     private static StackableItems plugin = null;
 
-    private static String stack = "stackableitems.stack";
     private static String admin = "stackableitems.admin";
 
     private Perms() { } // Private constructor for utility class
@@ -45,28 +44,25 @@ public final class Perms {
         return groupExists;
     }
 
-    public static boolean canStackInGroup(Player player) {
-        return player.hasPermission(stack);
-    }
-
     public static boolean hasAdmin(Player player) {
         return player.hasPermission(admin);
     }
 
-    public static String getPrimaryGroup(Player player) {
-        String primaryGroup = null;
+    public static String[] getPlayerGroups(Player player) {
+        String[] groups = null;
 
         if (permEnabled()) {
             try {
-                primaryGroup = perm.getPrimaryGroup(player);
+                groups = perm.getPlayerGroups(player);
             } catch (Exception e) {
                 // No groups
                 if (Config.isDebugging()) {
-                    plugin.log.warning("DEBUG: getPrimaryGroup() - No group found.");
+                    plugin.log.warning("DEBUG: getPlayerGroups() - No group found.");
                 }
             }
         }
-        return primaryGroup;
+
+        return groups;
     }
 
     public static String[] getGroups() {
@@ -83,10 +79,6 @@ public final class Perms {
             }
         }
         return groups;
-    }
-
-    public static String getPermStack() {
-        return stack;
     }
 
     public static String getPermAdmin() {

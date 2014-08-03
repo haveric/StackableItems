@@ -88,7 +88,6 @@ public class Commands implements CommandExecutor {
             } else if (args.length == 1 && (args[0].equalsIgnoreCase(cmdPerms) || args[0].equalsIgnoreCase(cmdPermsAlt))) {
                 if (op || hasAdminPerm) {
                     sender.sendMessage(title + "Permission nodes:");
-                    sender.sendMessage(Perms.getPermStack() + " - " + msgColor + "Allows a permission group to stack items.");
                     sender.sendMessage(Perms.getPermAdmin() + " - " + msgColor + "Allows use of admin commands.");
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to see permission nodes.");
