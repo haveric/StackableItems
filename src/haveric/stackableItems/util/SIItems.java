@@ -3,6 +3,7 @@ package haveric.stackableItems.util;
 import haveric.stackableItems.Perms;
 import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
+import haveric.stackableItems.uuidFetcher.UUIDFetcher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -102,29 +104,119 @@ public final class SIItems {
     }
 
     private static void loadItemsFile() {
-        for (String key : itemsConfig.getKeys(false)) {
-            Set<String> categories = itemsConfig.getConfigurationSection(key).getKeys(false);
+        for (String world : itemsConfig.getKeys(false)) {
+            Set<String> categories = itemsConfig.getConfigurationSection(world).getKeys(false);
 
             for (String category : categories) {
-                String catEntry = key + "." + category;
-                ConfigurationSection catSection = itemsConfig.getConfigurationSection(catEntry);
-                Set<String> items = catSection.getKeys(false);
+                if (category.equals("default")) {
+                    ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".default");
+                    Set<String> items = itemSection.getKeys(false);
+                    for (String item: items) {
+                        Object value = itemSection.get(item);
+                        setItemValue(world + ".default", item, value);
+                    }
 
-                catEntry = catEntry.toUpperCase();
-                if (!itemsMap.containsKey(catEntry)) {
-                    itemsMap.put(catEntry, new HashMap<String, Integer>());
-                }
-                Map<String, Integer> itemsCat = itemsMap.get(catEntry);
+                } else if (category.equals("player")) {
+                    ConfigurationSection playerSection = itemsConfig.getConfigurationSection(world + ".player");
+                    Set<String> players = playerSection.getKeys(false);
 
-                for (String item : items) {
-                    Object temp = catSection.get(item);
+                    for (String player : players) {
+                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".player." + player);
+                        Set<String> items = itemSection.getKeys(false);
+                        // UUID already set
+                        if (items.contains("original-name")) {
+                            for (String item: items) {
+                                if (item != "original-name" && item != "updated-name") {
+                                    Object value = itemSection.get(item);
+                                    setItemValue(world + ".player." + player, item, value);
+                                }
+                            }
+                        // UUID not set
+                        } else {
+                            UUID uuid;
 
-                    if (temp instanceof String) {
-                        if (temp.equals("unlimited") || temp.equals("infinite") || temp.equals("infinity")) {
-                            itemsCat.put(item.toUpperCase(), ITEM_INFINITE);
+                            try {
+                                uuid = UUIDFetcher.getUUIDOf(player);
+
+                                if (uuid == null) {
+                                    itemsConfig.set(world + ".player." + player, null);
+                                } else {
+                                    playerSection.createSection("" + uuid);
+
+                                    ConfigurationSection uuidSection = itemsConfig.getConfigurationSection(world + ".player." + uuid);
+                                    uuidSection.set("original-name", player);
+
+                                    for (String item: items) {
+                                        Object value = itemSection.get(item);
+                                        uuidSection.set(item, value);
+                                        setItemValue(world + ".player." + uuid, item, value);
+                                    }
+                                    itemsConfig.set(world + ".player." + player, null);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } else if (temp instanceof Integer) {
-                        itemsCat.put(item.toUpperCase(), (Integer) temp);
+                    }
+                } else if (category.equals("group")) {
+                    ConfigurationSection groupSection = itemsConfig.getConfigurationSection(world + ".group");
+                    Set<String> groups = groupSection.getKeys(false);
+
+                    for (String group : groups) {
+                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".group." + group);
+                        Set<String> items = itemSection.getKeys(false);
+                        for (String item: items) {
+                            Object value = itemSection.get(item);
+                            setItemValue(world + ".group." + group, item, value);
+                        }
+                    }
+
+                } else if (category.equals("inventory")) {
+                    ConfigurationSection inventorySection = itemsConfig.getConfigurationSection(world + ".inventory");
+                    Set<String> inventories = inventorySection.getKeys(false);
+
+                    for (String inventory : inventories) {
+                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".inventory." + inventory);
+                        Set<String> items = itemSection.getKeys(false);
+                        for (String item: items) {
+                            Object value = itemSection.get(item);
+                            setItemValue(world + ".inventory." + inventory, item, value);
+                        }
+                    }
+                }
+            }
+            Config.saveConfig(itemsConfig, itemsFile);
+        }
+    }
+
+    private static void setItemValue(String node, String item, Object value) {
+        node = node.toUpperCase();
+        if (!itemsMap.containsKey(node)) {
+            itemsMap.put(node, new HashMap<String, Integer>());
+        }
+        Map<String, Integer> itemsNode = itemsMap.get(node);
+
+        if (value instanceof String) {
+            if (value.equals("unlimited") || value.equals("infinite") || value.equals("infinity")) {
+                itemsNode.put(((String) value).toUpperCase(), ITEM_INFINITE);
+            }
+        } else if (value instanceof Integer) {
+            itemsNode.put(item.toUpperCase(), (Integer) value);
+        }
+    }
+
+    public static void updateUUIDName(String uuid, String name) {
+        String search = "player." + uuid;
+        for (Map.Entry<String, Map<String, Integer>> entry : itemsMap.entrySet()) {
+            String key = entry.getKey();
+            if (key.contains(search)) {
+                String originalName = (String) itemsConfig.get(search + ".original-name");
+                if (name != originalName) {
+                    String updatedName = (String) itemsConfig.get(search + ".updated-name");
+
+                    if (updatedName == null || name != updatedName) {
+                        itemsConfig.set(search + ".updated-name", name);
+                        Config.saveConfig(itemsConfig, itemsFile);
                     }
                 }
             }
@@ -195,7 +287,6 @@ public final class SIItems {
         if (mat != Material.AIR) {
 
             // Check player
-            String playerName = player.getName();
             String uuid = player.getUniqueId().toString();
 
             max = getMax(world, "player", uuid, mat, dur);
@@ -262,24 +353,30 @@ public final class SIItems {
     }
 
     public static void setMax(String world, String type, String item, Material mat, short dur, int newAmount) {
-        String name;
-        String matName = mat.name().toUpperCase();
-        if (dur == ITEM_DEFAULT) {
-            name = matName;
-        } else {
-            name = matName + " " + dur;
-        }
-        String catEntry = item.equals("") ? type : type + "." + item;
-        catEntry = world + "." + catEntry;
+        if (item != null) {
+            String name;
+            String matName = mat.name().toUpperCase();
+            if (dur == ITEM_DEFAULT) {
+                name = matName;
+            } else {
+                name = matName + " " + dur;
+            }
 
-        itemsConfig.set(catEntry + "." + name, newAmount);
-        Config.saveConfig(itemsConfig, itemsFile);
-        catEntry = catEntry.toUpperCase();
-        if (!itemsMap.containsKey(catEntry)) {
-            itemsMap.put(catEntry, new HashMap<String, Integer>());
+            String itemString = world + "." + type + "." + item;
+
+            if (itemString.endsWith(".")) {
+                itemString = itemString.substring(0, itemString.length()-1);
+            }
+
+            itemsConfig.set(itemString + "." + name, newAmount);
+            Config.saveConfig(itemsConfig, itemsFile);
+            itemString = itemString.toUpperCase();
+            if (!itemsMap.containsKey(itemString)) {
+                itemsMap.put(itemString, new HashMap<String, Integer>());
+            }
+            Map<String, Integer> itemsCat = itemsMap.get(itemString);
+            itemsCat.put(name.toUpperCase(), newAmount);
         }
-        Map<String, Integer> itemsCat = itemsMap.get(catEntry);
-        itemsCat.put(name.toUpperCase(), newAmount);
     }
 
     private static int getMaxFromMap(String itemString, Material mat, short dur) {

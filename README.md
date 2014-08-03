@@ -13,6 +13,7 @@
 * Fixed sanity checks which allowed duplication when dragging items in the inventory.
 * Reworking item config file to handle future changes.
 ** Please rename your items.yml before updating and copy over the items to the correct places in the newly created items.yml.
+* Added UUID support. Items.yml will autoconvert worldName.player.playerName to worldName.player.uuid
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.

@@ -4,6 +4,7 @@ import haveric.stackableItems.config.Config;
 import haveric.stackableItems.config.FurnaceXPConfig;
 import haveric.stackableItems.listeners.SIBlockListener;
 import haveric.stackableItems.listeners.SIHopperListener;
+import haveric.stackableItems.listeners.SIPlayerJoinListener;
 import haveric.stackableItems.listeners.SIPlayerListener;
 import haveric.stackableItems.mcstats.Metrics;
 import haveric.stackableItems.util.FurnaceUtil;
@@ -35,6 +36,7 @@ public class StackableItems extends JavaPlugin {
         pm.registerEvents(new SIPlayerListener(this), this);
         pm.registerEvents(new SIHopperListener(), this);
         pm.registerEvents(new SIBlockListener(), this);
+        pm.registerEvents(new SIPlayerJoinListener(), this);
 
         Config.init(this);
         FurnaceXPConfig.init(this);

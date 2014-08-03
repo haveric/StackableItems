@@ -4,6 +4,9 @@ import haveric.stackableItems.config.Config;
 import haveric.stackableItems.config.FurnaceXPConfig;
 import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.SIItems;
+import haveric.stackableItems.uuidFetcher.UUIDFetcher;
+
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -96,15 +99,27 @@ public class Commands implements CommandExecutor {
 
                 int argsForSet;
                 String item;
-                String permItem;
+                String permItem = null;
                 if (permType.equals("default")) {
+                    argsForSet = 4;
                     item = args[2];
                     permItem = "";
-                    argsForSet = 4;
                 } else {
-                    item = args[3];
-                    permItem = args[2];
                     argsForSet = 5;
+                    item = args[3];
+                    if (permType.equals("player")) {
+                        UUID uuid;
+                        try {
+                            uuid = UUIDFetcher.getUUIDOf(args[2]);
+                            if (uuid != null) {
+                                permItem = "" + uuid;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        permItem = args[2];
+                    }
                 }
 
                 if (world.equalsIgnoreCase("all") || world.equalsIgnoreCase("allworlds") || world.equalsIgnoreCase("default")) {
