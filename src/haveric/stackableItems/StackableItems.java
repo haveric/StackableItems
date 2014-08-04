@@ -30,6 +30,7 @@ public class StackableItems extends JavaPlugin {
 
     public void onEnable() {
         log = getLogger();
+
         PluginManager pm = getServer().getPluginManager();
 
         // Register the plugin events

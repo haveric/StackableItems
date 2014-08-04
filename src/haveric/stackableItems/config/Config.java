@@ -125,19 +125,6 @@ public final class Config {
         }
     }
 
-    /**
-     * Saves the configuration to the file.
-     */
-    /* TODO: Only used for setters, add back in when they are
-    private static void saveConfig() {
-        try {
-            cfgOptions.save(cfgOptionsFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
-
     public static void saveConfig(FileConfiguration fileConfig, File file) {
         try {
             fileConfig.save(file);

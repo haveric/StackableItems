@@ -21,6 +21,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 
 public final class SIItems {
 
@@ -174,7 +175,6 @@ public final class SIItems {
                 } else if (category.equals("inventory")) {
                     ConfigurationSection inventorySection = itemsConfig.getConfigurationSection(world + ".inventory");
                     Set<String> inventories = inventorySection.getKeys(false);
-
                     for (String inventory : inventories) {
                         ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".inventory." + inventory);
                         Set<String> items = itemSection.getKeys(false);
@@ -246,17 +246,17 @@ public final class SIItems {
         }
     }
 
-    public static int getInventoryMax(String world, Material mat, short dur, String inventoryType) {
+    public static int getInventoryMax(String world, Material mat, short dur, InventoryType inventoryType) {
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
         if (mat != Material.AIR) {
          // Check inventory types
             if (max == ITEM_DEFAULT) {
-                max = getMax(world, "inventory", inventoryType, mat, dur);
+                max = getMax(world, "inventory", inventoryType.name(), mat, dur);
             }
             if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds, "inventory", inventoryType, mat, dur);
+                max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
             }
 
             // Check default
@@ -278,14 +278,13 @@ public final class SIItems {
     }
 
 
-    public static int getItemMax(Player player, Material mat, short dur, String inventoryType) {
+    public static int getItemMax(Player player, Material mat, short dur, InventoryType inventoryType) {
         String world = player.getWorld().getName();
 
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
         if (mat != Material.AIR) {
-
             // Check player
             String uuid = player.getUniqueId().toString();
 
@@ -323,10 +322,10 @@ public final class SIItems {
 
             // Check inventory types
             if (max == ITEM_DEFAULT) {
-                max = getMax(world, "inventory", inventoryType, mat, dur);
+                max = getMax(world, "inventory", inventoryType.name(), mat, dur);
             }
             if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds, "inventory", inventoryType, mat, dur);
+                max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
             }
 
             // Check default

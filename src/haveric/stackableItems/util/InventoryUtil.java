@@ -747,10 +747,10 @@ public final class InventoryUtil {
         GameMode gamemode = null;
         int maxAmount = 0;
         if (player == null) {
-            maxAmount = SIItems.getInventoryMax(worldName, mat, dur, inventory.getName());
+            maxAmount = SIItems.getInventoryMax(worldName, mat, dur, inventory.getType());
         } else {
-            maxAmount = SIItems.getItemMax(player, mat, dur, inventoryType.name());
-            int maxPlayerAmount = SIItems.getItemMax(player, mat, dur, player.getInventory().getName());
+            maxAmount = SIItems.getItemMax(player, mat, dur, inventoryType);
+            int maxPlayerAmount = SIItems.getItemMax(player, mat, dur, player.getInventory().getType());
 
             // Handle player section of inventory separately from the container above it.
             if (slot >= inventory.getSize()) {

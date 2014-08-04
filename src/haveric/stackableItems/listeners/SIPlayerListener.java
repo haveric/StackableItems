@@ -114,7 +114,7 @@ public class SIPlayerListener implements Listener {
 
             CraftingInventory inventory = event.getInventory();
 
-            int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), inventory.getName());
+            int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), inventory.getType());
 
             // Don't touch default items.
             if (maxItems == SIItems.ITEM_DEFAULT) {
@@ -129,7 +129,7 @@ public class SIPlayerListener implements Listener {
                 for (int i = 1; i < inventSize; i++) {
                     ItemStack temp = inventory.getItem(i);
                     if (temp != null) {
-                        int maxSlot = SIItems.getItemMax(player, temp.getType(), temp.getDurability(), inventory.getName());
+                        int maxSlot = SIItems.getItemMax(player, temp.getType(), temp.getDurability(), inventory.getType());
 
                         if (maxSlot == SIItems.ITEM_INFINITE) {
                             ItemStack clone = temp.clone();
@@ -256,7 +256,7 @@ public class SIPlayerListener implements Listener {
         if (holding != null) {
             ItemStack clone = holding.clone();
 
-            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
 
             // Don't touch default items.
             if (maxItems == SIItems.ITEM_DEFAULT) {
@@ -278,7 +278,7 @@ public class SIPlayerListener implements Listener {
             Player player = (Player) event.getEntity();
 
             ItemStack clone = event.getBow().clone();
-            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
 
             // Don't touch default items.
             if (maxItems == SIItems.ITEM_DEFAULT) {
@@ -313,7 +313,7 @@ public class SIPlayerListener implements Listener {
 
             ItemStack holding = player.getItemInHand();
             if (holding != null) {
-                int maxItems = SIItems.getItemMax(player, holding.getType(), holding.getDurability(), player.getInventory().getName());
+                int maxItems = SIItems.getItemMax(player, holding.getType(), holding.getDurability(), player.getInventory().getType());
 
                 // Don't touch default items.
                 if (maxItems == SIItems.ITEM_DEFAULT) {
@@ -343,7 +343,7 @@ public class SIPlayerListener implements Listener {
 
             if (amount > 1) {
                 ItemStack toAdd = event.getItemStack();
-                int maxItems = SIItems.getItemMax(player, toAdd.getType(), toAdd.getDurability(), player.getInventory().getName());
+                int maxItems = SIItems.getItemMax(player, toAdd.getType(), toAdd.getDurability(), player.getInventory().getType());
 
                 // Let Vanilla handle filling buckets for default value
                 if (maxItems != SIItems.ITEM_DEFAULT) {
@@ -810,7 +810,7 @@ public class SIPlayerListener implements Listener {
                         Location blockLocation = furnace.getBlock().getLocation();
                         int amt = Config.getFurnaceAmount(blockLocation);
                         if (amt > -1) {
-                            int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, topType.name());
+                            int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, topType);
                             // Don't touch default items
                             if (maxPlayerInventory == SIItems.ITEM_DEFAULT) {
                                 return;
@@ -1402,7 +1402,7 @@ public class SIPlayerListener implements Listener {
         Item item = event.getItem();
         ItemStack stack = item.getItemStack();
 
-        int maxItems = SIItems.getItemMax(player, stack.getType(), stack.getDurability(), player.getInventory().getName());
+        int maxItems = SIItems.getItemMax(player, stack.getType(), stack.getDurability(), player.getInventory().getType());
         // Don't touch default items
         if (maxItems == SIItems.ITEM_DEFAULT) {
             return;
@@ -1434,7 +1434,7 @@ public class SIPlayerListener implements Listener {
             ItemStack clone = holding.clone();
 
             Player player = event.getPlayer();
-            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
 
             // Don't touch default items.
             if (maxItems == SIItems.ITEM_DEFAULT) {
@@ -1454,7 +1454,7 @@ public class SIPlayerListener implements Listener {
         ItemStack holding = player.getItemInHand();
         if (holding != null) {
             ItemStack clone = holding.clone();
-            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getName());
+            int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
             // Don't touch default items.
             if (maxItems == SIItems.ITEM_DEFAULT) {
                 return;
@@ -1481,7 +1481,7 @@ public class SIPlayerListener implements Listener {
                     // Since repeatedly using flint and steel causes durability loss, reset durability on a new hit.
                     ItemStack newStack = holding.clone();
                     newStack.setDurability((short) 0);
-                    int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), player.getInventory().getName());
+                    int maxItems = SIItems.getItemMax(player, newStack.getType(), newStack.getDurability(), player.getInventory().getType());
 
                     // Don't touch default items.
                     if (maxItems == SIItems.ITEM_DEFAULT) {
