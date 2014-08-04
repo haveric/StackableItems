@@ -129,7 +129,7 @@ public final class InventoryUtil {
     }
 
 
-    public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory, Inventory fromInventory) {
+    public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory, Inventory fromInventory, boolean pickup) {
         int free = 0;
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
@@ -146,7 +146,7 @@ public final class InventoryUtil {
             }
 
             // Handle vanilla adding to the hotbar in reverse order
-            if ((fromInventory == null || !addTopBottom) && inventory.getType() == InventoryType.PLAYER){
+            if ((fromInventory == null || !addTopBottom) && inventory.getType() == InventoryType.PLAYER && !pickup){
                 int i = 8;
                 while (i > -1 && free == 0) {
                     ItemStack slot = inventory.getItem(i);

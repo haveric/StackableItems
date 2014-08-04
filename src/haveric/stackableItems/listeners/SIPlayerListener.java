@@ -185,7 +185,7 @@ public class SIPlayerListener implements Listener {
                         // Avoid crafting when there is nothing being crafted
                         if (clone.getType() != Material.AIR) {
                             // custom repairing
-                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), null);
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), null, false);
 
                             if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
                                 // TODO: handle custom repairing to allow stacking
@@ -976,7 +976,7 @@ public class SIPlayerListener implements Listener {
             } else if (event.isShiftClick()) {
                 if (rawSlot < top.getSize()) {
                     // We only want to override if moving more than a vanilla stack will hold
-                    int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, player.getInventory(), top);
+                    int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, player.getInventory(), top, false);
                     if (defaultStack > -1 && clickedAmount > defaultStack) {
                         InventoryUtil.moveItemsToPlayer(player, clicked.clone(), event, 0, 36, true, true, top);
                     }
@@ -1098,7 +1098,7 @@ public class SIPlayerListener implements Listener {
                             || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER) {
 
                         // We only want to override if moving more than a vanilla stack will hold
-                        int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
+                        int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null, false);
                         if (defaultStack > -1 && clickedAmount > defaultStack) {
                             InventoryUtil.moveItemsToFullInventory(player, clicked.clone(), event, top, true);
                         }
@@ -1150,7 +1150,7 @@ public class SIPlayerListener implements Listener {
                     } else if (topType == InventoryType.ENCHANTING) {
                         if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
                             // We only want to override if moving more than a vanilla stack will hold
-                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null);
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null, false);
                             if (defaultStack > -1 && clickedAmount > defaultStack) {
                                 int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 0, 1, false);
 
@@ -1403,6 +1403,7 @@ public class SIPlayerListener implements Listener {
         ItemStack stack = item.getItemStack();
 
         int maxItems = SIItems.getItemMax(player, stack.getType(), stack.getDurability(), player.getInventory().getType());
+
         // Don't touch default items
         if (maxItems == SIItems.ITEM_DEFAULT) {
             return;
@@ -1414,7 +1415,8 @@ public class SIPlayerListener implements Listener {
             event.setCancelled(true);
         } else {
             // We only want to override if moving more than a vanilla stack will hold
-            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory(), null);
+            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory(), null, true);
+
             if (defaultStack > -1 && stack.getAmount() > defaultStack) {
                 InventoryUtil.addItemsToPlayer(player, stack.clone());
                 Random random = new Random();
