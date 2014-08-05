@@ -129,106 +129,204 @@ public final class InventoryUtil {
     }
 
 
-    public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory, Inventory fromInventory, boolean pickup) {
+    // TODO: Clean up to remove duplicate code
+    public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory, Inventory fromInventory, String extraType) {
         int free = 0;
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
             Material type = itemToCheck.getType();
             short durability = itemToCheck.getDurability();
 
-            // addTopBottom: Add from the top of the inventory to the bottom (top left -> bottom right) with the hotbar last
-            boolean addTopBottom = false;
-            if (fromInventory != null) {
-                InventoryType fromType = fromInventory.getType();
-                if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE) {
-                    addTopBottom = true;
-                }
-            }
-
-            // Handle vanilla adding to the hotbar in reverse order
-            if ((fromInventory == null || !addTopBottom) && inventory.getType() == InventoryType.PLAYER && !pickup){
-                int i = 8;
-                while (i > -1 && free == 0) {
-                    ItemStack slot = inventory.getItem(i);
-                    free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-
-                    if (i == 0) {
-                        i = 9;
-                    } else if (i <= 8) {
-                        i --;
-                    } else if (i == 35) {
-                        i = -1;
-                    } else if (i > 8) {
-                        i ++;
-                    }
-                }
-            } else {
-                int i = 0;
-                if (addTopBottom) {
-                    i = 9;
-                }
+            if (extraType.equals("inventory")) {
                 int inventorySize = inventory.getSize();
-                while (((addTopBottom && i != -1) || (!addTopBottom && i != inventorySize)) && free == 0) {
+                int i = 0;
+
+                while (i != inventorySize && free == 0) {
                     ItemStack slot = inventory.getItem(i);
                     free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                    if (addTopBottom) {
-                        if (i == 8) {
-                            i = -2;
-                        } else if (i == 35) {
-                            i = -1;
-                        }
-                    }
+
                     i++;
                 }
-            }
+            } else {
+                boolean hotbarFirst = true;
+                boolean leftToRight = false;
+                boolean topToBottom = false;
 
-
-            // Check for an empty slot
-            if (free == 0) {
-
-                // Handle vanilla adding to the hotbar in reverse order
-                if ((fromInventory == null || !addTopBottom) && inventory.getType() == InventoryType.PLAYER){
-                    int i = 8;
-                    while (i > -1 && free == 0) {
-                        ItemStack slot = inventory.getItem(i);
-
-                        if (slot == null || slot.getType() == Material.AIR) {
-                            int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                            free = slotMax;
+                if (extraType.equals("pickup")) {
+                    leftToRight = true;
+                    topToBottom = true;
+                } else {
+                    if (fromInventory != null) {
+                        InventoryType fromType = fromInventory.getType();
+                        if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE || fromType == InventoryType.CRAFTING || fromType == InventoryType.MERCHANT) {
+                            hotbarFirst = false;
+                            leftToRight = true;
+                            topToBottom = true;
                         }
+                    }
+                }
 
-                        if (i == 0) {
-                            i = 9;
-                        } else if (i <= 8) {
-                            i --;
-                        } else if (i == 35) {
-                            i = -1;
-                        } else if (i > 8) {
+                int i;
+                if (hotbarFirst) {
+                    if (leftToRight) {
+                        i = 0;
+                        while (i <= 8 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
                             i ++;
+                        }
+                    } else {
+                        i = 8;
+                        while (i >= 0 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                            i --;
+                        }
+                    }
+
+                    if (topToBottom) {
+                        i = 9;
+                        while (i <= 35 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                            i++;
+                        }
+                    } else {
+                        i = 35;
+                        while (i >= 9 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                            i--;
                         }
                     }
                 } else {
-                    int i = 0;
-                    if (addTopBottom) {
+                    if (topToBottom) {
                         i = 9;
+                        while (i <= 35 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                            i++;
+                        }
+                    } else {
+                        i = 35;
+                        while (i >= 9 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                            i--;
+                        }
                     }
-                    int inventorySize = inventory.getSize();
-                    while (((addTopBottom && i != -1) || (!addTopBottom && i != inventorySize)) && free == 0) {
-                        ItemStack slot = inventory.getItem(i);
 
-                        if (slot == null || slot.getType() == Material.AIR) {
-                            int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                            free = slotMax;
+                    if (leftToRight) {
+                        i = 0;
+
+                        while (i <= 8 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                            i ++;
                         }
 
-                        if (addTopBottom) {
-                            if (i == 8) {
-                                i = -2;
-                            } else if (i == 35) {
-                                i = -1;
+                    } else {
+                        i = 8;
+                        while (i >= 0 && free == 0) {
+                            ItemStack slot = inventory.getItem(i);
+                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+                            i --;
+                        }
+                    }
+                }
+
+                // Check for an empty slot
+                if (free == 0) {
+                    if (hotbarFirst) {
+                        if (leftToRight) {
+                            i = 0;
+                            while (i <= 8 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i ++;
+                            }
+                        } else {
+                            i = 8;
+                            while (i >= 0 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i --;
                             }
                         }
-                        i++;
+
+                        if (topToBottom) {
+                            i = 9;
+                            while (i <= 35 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i++;
+                            }
+                        } else {
+                            i = 35;
+                            while (i <= 9 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i--;
+                            }
+                        }
+                    } else {
+                        if (topToBottom) {
+                            i = 9;
+                            while (i <= 35 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i++;
+                            }
+                        } else {
+                            i = 35;
+                            while (i <= 9 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i--;
+                            }
+                        }
+
+                        if (leftToRight) {
+                            i = 0;
+
+                            while (i <= 8 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i ++;
+                            }
+
+                        } else {
+                            i = 8;
+                            while (i >= 0 && free == 0) {
+                                ItemStack slot = inventory.getItem(i);
+                                if (slot == null || slot.getType() == Material.AIR) {
+                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                                    free = slotMax;
+                                }
+                                i --;
+                            }
+                        }
                     }
                 }
             }
