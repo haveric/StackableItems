@@ -129,7 +129,6 @@ public final class InventoryUtil {
     }
 
 
-    // TODO: Clean up to remove duplicate code
     public static int getAmountDefaultCanMove(Player player, ItemStack itemToCheck, Inventory inventory, Inventory fromInventory, String extraType) {
         int free = 0;
 
@@ -166,72 +165,25 @@ public final class InventoryUtil {
                     }
                 }
 
-                int i;
                 if (hotbarFirst) {
                     if (leftToRight) {
-                        i = 0;
-                        while (i <= 8 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i ++;
-                        }
+                        free = checkAddHotbarLTR(player, inventory, itemToCheck);
                     } else {
-                        i = 8;
-                        while (i >= 0 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i --;
-                        }
+                        free = checkAddHotbarRTL(player, inventory, itemToCheck);
                     }
+                }
 
-                    if (topToBottom) {
-                        i = 9;
-                        while (i <= 35 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i++;
-                        }
-                    } else {
-                        i = 35;
-                        while (i >= 9 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i--;
-                        }
-                    }
+                if (topToBottom) {
+                    free = checkAddInventoryTTB(player, inventory, itemToCheck);
                 } else {
-                    if (topToBottom) {
-                        i = 9;
-                        while (i <= 35 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i++;
-                        }
-                    } else {
-                        i = 35;
-                        while (i >= 9 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i--;
-                        }
-                    }
+                    free = checkAddInventoryBTT(player, inventory, itemToCheck);
+                }
 
+                if (!hotbarFirst) {
                     if (leftToRight) {
-                        i = 0;
-
-                        while (i <= 8 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i ++;
-                        }
-
+                        free = checkAddHotbarLTR(player, inventory, itemToCheck);
                     } else {
-                        i = 8;
-                        while (i >= 0 && free == 0) {
-                            ItemStack slot = inventory.getItem(i);
-                            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-                            i --;
-                        }
+                        free = checkAddHotbarRTL(player, inventory, itemToCheck);
                     }
                 }
 
@@ -239,93 +191,23 @@ public final class InventoryUtil {
                 if (free == 0) {
                     if (hotbarFirst) {
                         if (leftToRight) {
-                            i = 0;
-                            while (i <= 8 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i ++;
-                            }
+                            free = checkEmptyHotbarLTR(player, inventory, type, durability);
                         } else {
-                            i = 8;
-                            while (i >= 0 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i --;
-                            }
+                            free = checkEmptyHotbarRTL(player, inventory, type, durability);
                         }
+                    }
 
-                        if (topToBottom) {
-                            i = 9;
-                            while (i <= 35 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i++;
-                            }
-                        } else {
-                            i = 35;
-                            while (i <= 9 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i--;
-                            }
-                        }
+                    if (topToBottom) {
+                        free = checkEmptyInventoryTTB(player, inventory, type, durability);
                     } else {
-                        if (topToBottom) {
-                            i = 9;
-                            while (i <= 35 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i++;
-                            }
-                        } else {
-                            i = 35;
-                            while (i <= 9 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i--;
-                            }
-                        }
+                        free = checkEmptyInventoryBTT(player, inventory, type, durability);
+                    }
 
+                    if (!hotbarFirst) {
                         if (leftToRight) {
-                            i = 0;
-
-                            while (i <= 8 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i ++;
-                            }
-
+                            free = checkEmptyHotbarLTR(player, inventory, type, durability);
                         } else {
-                            i = 8;
-                            while (i >= 0 && free == 0) {
-                                ItemStack slot = inventory.getItem(i);
-                                if (slot == null || slot.getType() == Material.AIR) {
-                                    int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
-                                    free = slotMax;
-                                }
-                                i --;
-                            }
+                            free = checkEmptyHotbarRTL(player, inventory, type, durability);
                         }
                     }
                 }
@@ -339,6 +221,123 @@ public final class InventoryUtil {
 
         return free;
     }
+
+    private static int checkAddHotbarLTR(Player player, Inventory inventory, ItemStack itemToCheck) {
+        int free = 0;
+
+        int i = 0;
+        while (i <= 8 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+            i ++;
+        }
+
+        return free;
+    }
+
+    private static int checkAddHotbarRTL(Player player, Inventory inventory, ItemStack itemToCheck) {
+        int free = 0;
+        int i = 8;
+
+        while (i >= 0 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+            i --;
+        }
+
+        return free;
+    }
+
+    private static int checkAddInventoryTTB(Player player, Inventory inventory, ItemStack itemToCheck) {
+        int free = 0;
+        int i = 9;
+
+        while (i <= 35 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+            i++;
+        }
+
+        return free;
+    }
+
+    private static int checkAddInventoryBTT(Player player, Inventory inventory, ItemStack itemToCheck) {
+        int free = 0;
+        int i = 35;
+
+        while (i >= 9 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
+            i--;
+        }
+
+        return free;
+    }
+
+    private static int checkEmptyHotbarLTR(Player player, Inventory inventory, Material type, short durability) {
+        int free = 0;
+        int i = 0;
+
+        while (i <= 8 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            if (slot == null || slot.getType() == Material.AIR) {
+                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                free = slotMax;
+            }
+            i ++;
+        }
+
+        return free;
+    }
+
+    private static int checkEmptyHotbarRTL(Player player, Inventory inventory, Material type, short durability) {
+        int free = 0;
+        int i = 8;
+
+        while (i >= 0 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            if (slot == null || slot.getType() == Material.AIR) {
+                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                free = slotMax;
+            }
+            i --;
+        }
+
+        return free;
+    }
+
+    private static int checkEmptyInventoryTTB(Player player, Inventory inventory, Material type, short durability) {
+        int free = 0;
+        int i = 9;
+
+        while (i <= 35 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            if (slot == null || slot.getType() == Material.AIR) {
+                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                free = slotMax;
+            }
+            i++;
+        }
+
+        return free;
+    }
+
+    private static int checkEmptyInventoryBTT(Player player, Inventory inventory, Material type, short durability) {
+        int free = 0;
+        int i = 35;
+
+        while (i <= 9 && free == 0) {
+            ItemStack slot = inventory.getItem(i);
+            if (slot == null || slot.getType() == Material.AIR) {
+                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                free = slotMax;
+            }
+            i--;
+        }
+
+        return free;
+    }
+
 
     public static boolean canVanillaStackCorrectly(ItemStack item, Inventory inventory) {
         boolean canStack = true;
