@@ -18,6 +18,8 @@ public final class ItemUtil {
             case DIAMOND_AXE:
                 isAxe = true;
                 break;
+            default:
+                break;
         }
         return isAxe;
     }
@@ -32,6 +34,8 @@ public final class ItemUtil {
             case GOLD_HOE:
             case DIAMOND_HOE:
                 isHoe = true;
+                break;
+            default:
                 break;
         }
         return isHoe;
@@ -48,6 +52,8 @@ public final class ItemUtil {
             case DIAMOND_PICKAXE:
                 isPickaxe = true;
                 break;
+            default:
+                break;
         }
         return isPickaxe;
     }
@@ -62,6 +68,8 @@ public final class ItemUtil {
             case GOLD_SPADE:
             case DIAMOND_SPADE:
                 isShovel = true;
+                break;
+            default:
                 break;
         }
         return isShovel;
@@ -78,6 +86,8 @@ public final class ItemUtil {
             case DIAMOND_SWORD:
                 isSword = true;
                 break;
+            default:
+                break;
         }
         return isSword;
     }
@@ -92,6 +102,8 @@ public final class ItemUtil {
             case GOLD_BOOTS:
             case DIAMOND_BOOTS:
                 isBoots = true;
+                break;
+            default:
                 break;
         }
         return isBoots;
@@ -108,6 +120,8 @@ public final class ItemUtil {
             case DIAMOND_CHESTPLATE:
                 isChestplate = true;
                 break;
+            default:
+                break;
         }
         return isChestplate;
     }
@@ -123,6 +137,7 @@ public final class ItemUtil {
             case DIAMOND_HELMET:
                 isHelmet = true;
                 break;
+            default: break;
         }
         return isHelmet;
     }
@@ -137,6 +152,8 @@ public final class ItemUtil {
             case GOLD_LEGGINGS:
             case DIAMOND_LEGGINGS:
                 isLeggings = true;
+                break;
+            default:
                 break;
         }
         return isLeggings;
@@ -179,12 +196,14 @@ public final class ItemUtil {
             repairable = true;
         } else {
             switch(mat) {
-            case FISHING_ROD:
-            case FLINT_AND_STEEL:
-            case SHEARS:
-            case CARROT_STICK:
-                repairable = true;
-                break;
+                case FISHING_ROD:
+                case FLINT_AND_STEEL:
+                case SHEARS:
+                case CARROT_STICK:
+                    repairable = true;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -200,6 +219,8 @@ public final class ItemUtil {
                 case BOOK:
                 case FISHING_ROD:
                     enchantable = true;
+                    break;
+                default:
                     break;
             }
         }
@@ -226,6 +247,8 @@ public final class ItemUtil {
             case GOLDEN_CARROT:
                 brewingIngredient = true;
                 break;
+            default:
+                break;
         }
         return brewingIngredient;
     }
@@ -239,6 +262,8 @@ public final class ItemUtil {
             case IRON_INGOT:
             case GOLD_INGOT:
                 beaconFuel = true;
+                break;
+            default:
                 break;
         }
         return beaconFuel;

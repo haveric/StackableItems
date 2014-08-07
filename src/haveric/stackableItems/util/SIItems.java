@@ -127,7 +127,7 @@ public final class SIItems {
                         // UUID already set
                         if (items.contains("original-name")) {
                             for (String item: items) {
-                                if (item != "original-name" && item != "updated-name") {
+                                if (!(item.equals("original-name")) && !(item.equals("updated-name"))) {
                                     Object value = itemSection.get(item);
                                     setItemValue(world + ".player." + player, item, value);
                                 }
@@ -211,10 +211,10 @@ public final class SIItems {
             String key = entry.getKey();
             if (key.contains(search)) {
                 String originalName = (String) itemsConfig.get(search + ".original-name");
-                if (name != originalName) {
+                if (!(name.equals(originalName))) {
                     String updatedName = (String) itemsConfig.get(search + ".updated-name");
 
-                    if (updatedName == null || name != updatedName) {
+                    if (updatedName == null || !name.equals(updatedName)) {
                         itemsConfig.set(search + ".updated-name", name);
                         Config.saveConfig(itemsConfig, itemsFile);
                     }
