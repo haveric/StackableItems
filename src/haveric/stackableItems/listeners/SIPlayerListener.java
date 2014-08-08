@@ -882,6 +882,10 @@ public class SIPlayerListener implements Listener {
                 } else {
                     if (event.isShiftClick()) {
                         if (freeSpaces > clickedAmount) {
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
+                            if (defaultStack > -1 && defaultStack > clone.getAmount()) {
+
+                            } else {
                             event.setCancelled(true);
 
                             event.setCurrentItem(null);
@@ -889,6 +893,7 @@ public class SIPlayerListener implements Listener {
                             FurnaceXPConfig.giveFurnaceXP(player, clone);
 
                             InventoryUtil.addItemsToPlayer(player, clone, "");
+                            }
                         } else {
                             event.setCancelled(true);
 

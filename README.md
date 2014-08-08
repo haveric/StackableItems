@@ -18,6 +18,7 @@
 * Removed stackableitems.stack permission node, it isn't necessary
 * Fixed picking up items in the wrong hotbar direction
 * Rewrote item adding to better handle all cases and prevent items being added incorrectly
+* Let vanilla handle adding items from shift clicking furnace results when it can.
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.
