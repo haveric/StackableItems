@@ -17,6 +17,7 @@
 * Check all player groups, not just the primary (these may not work in any particular order)
 * Removed stackableitems.stack permission node, it isn't necessary
 * Fixed picking up items in the wrong hotbar direction
+* Rewrote item adding to better handle all cases and prevent items being added incorrectly
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.
