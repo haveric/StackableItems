@@ -113,9 +113,7 @@ public class Commands implements CommandExecutor {
                             if (uuid != null) {
                                 permItem = "" + uuid;
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        } catch (Exception e) {}
                     } else {
                         permItem = args[2];
                     }

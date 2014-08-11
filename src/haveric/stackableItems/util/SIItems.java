@@ -154,9 +154,7 @@ public final class SIItems {
                                     }
                                     itemsConfig.set(world + ".player." + player, null);
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            } catch (Exception e) {}
                         }
                     }
                 } else if (category.equals("group")) {
