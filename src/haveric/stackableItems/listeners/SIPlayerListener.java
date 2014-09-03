@@ -883,28 +883,29 @@ public class SIPlayerListener implements Listener {
                     if (event.isShiftClick()) {
                         if (freeSpaces > clickedAmount) {
                             int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
-                            if (defaultStack > -1 && defaultStack > clone.getAmount()) {
+                            if (defaultStack > -1 && defaultStack < clone.getAmount()) {
+                                event.setCancelled(true);
 
-                            } else {
-                            event.setCancelled(true);
+                                event.setCurrentItem(null);
 
-                            event.setCurrentItem(null);
+                                FurnaceXPConfig.giveFurnaceXP(player, clone);
 
-                            FurnaceXPConfig.giveFurnaceXP(player, clone);
-
-                            InventoryUtil.addItemsToPlayer(player, clone, "");
+                                InventoryUtil.addItemsToPlayer(player, clone, "");
                             }
                         } else {
-                            event.setCancelled(true);
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
+                            if (defaultStack > -1 && defaultStack < clone2.getAmount()) {
+                                event.setCancelled(true);
 
-                            int newAmount = clickedAmount - freeSpaces;
-                            clone.setAmount(newAmount);
-                            event.setCurrentItem(clone);
+                                int newAmount = clickedAmount - freeSpaces;
+                                clone.setAmount(newAmount);
+                                event.setCurrentItem(clone);
 
-                            clone2.setAmount(freeSpaces);
-                            FurnaceXPConfig.giveFurnaceXP(player, clone2);
+                                clone2.setAmount(freeSpaces);
+                                FurnaceXPConfig.giveFurnaceXP(player, clone2);
 
-                            InventoryUtil.addItemsToPlayer(player, clone2, "");
+                                InventoryUtil.addItemsToPlayer(player, clone2, "");
+                            }
                         }
                     } else if (event.isLeftClick() || event.isRightClick()) {
                         if (cursorAmount + clickedAmount > maxItems) {
