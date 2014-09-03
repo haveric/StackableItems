@@ -249,8 +249,14 @@ public final class InventoryUtil {
     private static int checkAddInventoryTTB(Player player, Inventory inventory, ItemStack itemToCheck) {
         int free = 0;
         int i = 9;
+        int imax = 35;
 
-        while (i <= 35 && free == 0) {
+        if (inventory.getType() != InventoryType.PLAYER) {
+            i = 0;
+            imax = inventory.getSize() - 1;
+        }
+
+        while (i <= imax && free == 0) {
             ItemStack slot = inventory.getItem(i);
             free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
             i++;
@@ -262,8 +268,14 @@ public final class InventoryUtil {
     private static int checkAddInventoryBTT(Player player, Inventory inventory, ItemStack itemToCheck) {
         int free = 0;
         int i = 35;
+        int imin = 9;
 
-        while (i >= 9 && free == 0) {
+        if (inventory.getType() != InventoryType.PLAYER) {
+            i = inventory.getSize() - 1;
+            imin = 0;
+        }
+
+        while (i >= imin && free == 0) {
             ItemStack slot = inventory.getItem(i);
             free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
             i--;
@@ -307,8 +319,14 @@ public final class InventoryUtil {
     private static int checkEmptyInventoryTTB(Player player, Inventory inventory, Material type, short durability) {
         int free = 0;
         int i = 9;
+        int imax = 35;
 
-        while (i <= 35 && free == 0) {
+        if (inventory.getType() != InventoryType.PLAYER) {
+            i = 0;
+            imax = inventory.getSize() - 1;
+        }
+
+        while (i <= imax && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
                 int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
@@ -323,8 +341,14 @@ public final class InventoryUtil {
     private static int checkEmptyInventoryBTT(Player player, Inventory inventory, Material type, short durability) {
         int free = 0;
         int i = 35;
+        int imin = 9;
 
-        while (i <= 9 && free == 0) {
+        if (inventory.getType() != InventoryType.PLAYER) {
+            i = inventory.getSize() - 1;
+            imin = 0;
+        }
+
+        while (i <= imin && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
                 int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
@@ -374,7 +398,7 @@ public final class InventoryUtil {
                     if (extraType.equals("inventory")) {
                         addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, true);
 
-                        if (addAmount == 0) {
+                        if (addAmount > 0) {
                             addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, false);
                         }
                     } else {
@@ -507,12 +531,27 @@ public final class InventoryUtil {
     }
 
     public static int addInventoryTTB(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
-        if (end > 9) {
-            if (start < 9) {
-                start = 9;
-            }
-            end--;
+        boolean validAdd = false;
 
+        if (inventory.getType() == InventoryType.PLAYER) {
+            if (end > 9) {
+                if (start < 9) {
+                    start = 9;
+                }
+                end--;
+                validAdd = true;
+            }
+        } else {
+            if (end > 0) {
+                if (start < 0) {
+                    start = 0;
+                }
+                end --;
+                validAdd = true;
+            }
+        }
+
+        if (validAdd) {
             Material type = itemToAdd.getType();
             short durability = itemToAdd.getDurability();
 
@@ -531,12 +570,27 @@ public final class InventoryUtil {
     }
 
     public static int addInventoryBTT(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
-        if (end > 9) {
-            if (start < 9) {
-                start = 9;
-            }
-            end--;
+        boolean validAdd = false;
 
+        if (inventory.getType() == InventoryType.PLAYER) {
+            if (end > 9) {
+                if (start < 9) {
+                    start = 9;
+                }
+                end--;
+                validAdd = true;
+            }
+        } else {
+            if (end > 0) {
+                if (start < 0) {
+                    start = 0;
+                }
+                end --;
+                validAdd = true;
+            }
+        }
+
+        if (validAdd) {
             Material type = itemToAdd.getType();
             short durability = itemToAdd.getDurability();
 
