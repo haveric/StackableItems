@@ -8,7 +8,6 @@
 
 #### Coming Soon:
 * Remove Hopper Item Pickup/Moving for now as it is extremely buggy
-* Updated Metrics to work with updated getOnlinePlayers
 * Handle null checks for getting player's item in hand.
 * Fixed sanity checks which allowed duplication when dragging items in the inventory.
 * Reworking item config file to handle future changes.
@@ -19,6 +18,7 @@
 * Fixed picking up items in the wrong hotbar direction
 * Rewrote item adding to better handle all cases and prevent items being added incorrectly
 * Let vanilla handle adding items from shift clicking furnace results when it can.
+* Updated Metrics to handle both getOnlinePlayers (provides backward support for old versions of CraftBukkit)
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.
