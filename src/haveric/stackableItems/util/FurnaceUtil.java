@@ -69,6 +69,12 @@ public final class FurnaceUtil {
         } catch (NoSuchFieldError e) {
             plugin.log.warning("1.7 fuel items not found.");
         }
+
+        try {
+            listOfFuels.add(Material.BANNER);
+        } catch (NoSuchFieldError e) {
+            plugin.log.warning("1.8 fuel items not found.");
+        }
     }
 
     public static void reload() {
