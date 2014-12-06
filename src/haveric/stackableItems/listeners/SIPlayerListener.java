@@ -665,14 +665,12 @@ public class SIPlayerListener implements Listener {
                 Material clickedType = clicked.getType();
                 short clickedDur = clicked.getDurability();
                 int clickedAmount = clicked.getAmount();
-                //maxItems = InventoryUtil.getInventoryMax(player, top, clickedType, clickedDur, event.getRawSlot());
 
                 boolean clickedEmpty = clickedType == Material.AIR;
 
                 int hotbarAmount = 0;
                 if (hotbarItem != null) {
                     hotbarAmount = hotbarItem.getAmount();
-                    //maxHotbarItems = InventoryUtil.getInventoryMax(player, player.getInventory(), hotbarType, hotbarDur, hotbarButton);
                 }
 
                 // Moving clicked to an empty hotbar slot
@@ -1035,7 +1033,7 @@ public class SIPlayerListener implements Listener {
                         }
                     } else if (topType == InventoryType.BREWING) {
                         // TODO Prevent stacks from going into potion slots when shift clicking
-                        boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
+                        boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType, clickedDur);
                         boolean isPotion = clickedType == Material.POTION;
 
                         boolean moved = false;
@@ -1107,6 +1105,7 @@ public class SIPlayerListener implements Listener {
 
                         // We only want to override if moving more than a vanilla stack will hold
                         int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null, "inventory");
+
                         if (defaultStack > -1 && clickedAmount > defaultStack) {
                             InventoryUtil.moveItemsToFullInventory(player, clicked.clone(), event, top, true, "inventory");
                         }
@@ -1425,7 +1424,6 @@ public class SIPlayerListener implements Listener {
             // We only want to override if moving more than a vanilla stack will hold
             int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory(), null, "pickup");
 
-            plugin.log.info("Default Stack: " + defaultStack);
             if (defaultStack > -1 && stack.getAmount() > defaultStack) {
                 InventoryUtil.addItemsToPlayer(player, stack.clone(), "pickup");
                 Random random = new Random();

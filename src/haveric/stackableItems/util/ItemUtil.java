@@ -229,7 +229,7 @@ public final class ItemUtil {
     }
 
 
-    public static boolean isBrewingIngredient(Material mat) {
+    public static boolean isBrewingIngredient(Material mat, short data) {
         boolean brewingIngredient = false;
 
         switch(mat) {
@@ -250,6 +250,19 @@ public final class ItemUtil {
             default:
                 break;
         }
+
+        if (mat == Material.RAW_FISH && data == 3) {
+            brewingIngredient = true;
+        }
+        try {
+            if (mat == Material.RABBIT_FOOT) {
+                brewingIngredient = true;
+            }
+        } catch (NoSuchFieldError e) {
+            // Doesn't have 1.8 items
+        }
+
+
         return brewingIngredient;
     }
 
