@@ -64,7 +64,10 @@ public final class FurnaceUtil {
 
         try {
             listOfFuels.add(Material.ACACIA_STAIRS);
+            listOfFuels.add(Material.BIRCH_WOOD_STAIRS);
             listOfFuels.add(Material.DARK_OAK_STAIRS);
+            listOfFuels.add(Material.SPRUCE_WOOD_STAIRS);
+            listOfFuels.add(Material.JUNGLE_WOOD_STAIRS);
             listOfFuels.add(Material.LOG_2);
         } catch (NoSuchFieldError e) {
             plugin.log.warning("1.7 fuel items not found.");
@@ -72,6 +75,18 @@ public final class FurnaceUtil {
 
         try {
             listOfFuels.add(Material.BANNER);
+
+            listOfFuels.add(Material.SPRUCE_FENCE);
+            listOfFuels.add(Material.BIRCH_FENCE);
+            listOfFuels.add(Material.JUNGLE_FENCE);
+            listOfFuels.add(Material.DARK_OAK_FENCE);
+            listOfFuels.add(Material.ACACIA_FENCE);
+
+            listOfFuels.add(Material.SPRUCE_FENCE_GATE);
+            listOfFuels.add(Material.BIRCH_FENCE_GATE);
+            listOfFuels.add(Material.JUNGLE_FENCE_GATE);
+            listOfFuels.add(Material.DARK_OAK_FENCE_GATE);
+            listOfFuels.add(Material.ACACIA_FENCE_GATE);
         } catch (NoSuchFieldError e) {
             plugin.log.warning("1.8 fuel items not found.");
         }
