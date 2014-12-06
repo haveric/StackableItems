@@ -218,6 +218,8 @@ public final class ItemUtil {
             switch(mat) {
                 case BOOK:
                 case FISHING_ROD:
+                case SHEARS:
+                case CARROT_STICK:
                     enchantable = true;
                     break;
                 default:
@@ -254,6 +256,7 @@ public final class ItemUtil {
         if (mat == Material.RAW_FISH && data == 3) {
             brewingIngredient = true;
         }
+
         try {
             if (mat == Material.RABBIT_FOOT) {
                 brewingIngredient = true;
@@ -261,7 +264,6 @@ public final class ItemUtil {
         } catch (NoSuchFieldError e) {
             // Doesn't have 1.8 items
         }
-
 
         return brewingIngredient;
     }

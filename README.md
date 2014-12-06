@@ -20,6 +20,7 @@
 * Let vanilla handle adding items from shift clicking furnace results when it can.
 * Updated Metrics to handle both getOnlinePlayers (provides backward support for old versions of CraftBukkit)
 * Added missing/new fuel items
+* Add shears and carrots on a stick to enchantable items list (for shift clicking into enchantment table)
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.
