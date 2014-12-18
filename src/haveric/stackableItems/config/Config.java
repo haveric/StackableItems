@@ -35,6 +35,9 @@ public final class Config {
 
     private static String cfgDebug = "Debug";
 
+    private static String cfgUpdateCheck = "update-check.enabled";
+    private static String cfgUpdateFrequency = "update-check.frequency";
+
     private static FileConfiguration cfgOptions;
     private static File cfgOptionsFile;
 
@@ -47,6 +50,9 @@ public final class Config {
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
 
     private static final boolean PREVENT_WASTED_FAS_DEFAULT = true;
+
+    private static final boolean UPDATE_CHECK_ENABLED_DEFAULT = true;
+    private static final int UPDATE_CHECK_FREQUENCY_DEFAULT = 6;
 
     private Config() { } // Private constructor for utility class
 
@@ -116,10 +122,13 @@ public final class Config {
         cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
         cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
         cfgOptions.addDefault(cfgPreventWastedFlintSteel, PREVENT_WASTED_FAS_DEFAULT);
+        cfgOptions.addDefault(cfgUpdateCheck, UPDATE_CHECK_ENABLED_DEFAULT);
+        cfgOptions.addDefault(cfgUpdateFrequency, UPDATE_CHECK_FREQUENCY_DEFAULT);
 
         if (!cfgOptions.isSet(cfgUseStacksFurnace) || !cfgOptions.isSet(cfgUseStacksMerchant) || !cfgOptions.isSet(cfgUseStacksCrafting) || !cfgOptions.isSet(cfgUseStacksBrewing)
                 || !cfgOptions.isSet(cfgUseStacksAnvil) || !cfgOptions.isSet(cfgUseStacksBeacon) || !cfgOptions.isSet(cfgUseStacksEnderChest) || !cfgOptions.isSet(cfgUseStacksHopper)
-                || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgUseStacksDispenser) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount) || !cfgOptions.isSet(cfgPreventWastedFlintSteel)) {
+                || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgUseStacksDispenser) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)
+                || !cfgOptions.isSet(cfgPreventWastedFlintSteel) || !cfgOptions.isSet(cfgUpdateCheck) || !cfgOptions.isSet(cfgUpdateFrequency)) {
             cfgOptions.options().copyDefaults(true);
             saveConfig(cfgOptions, cfgOptionsFile);
         }
@@ -230,6 +239,14 @@ public final class Config {
 
     public static boolean isDebugging() {
         return cfgOptions.getBoolean(cfgDebug);
+    }
+
+    public static boolean getUpdateCheckEnabled() {
+        return cfgOptions.getBoolean(cfgUpdateCheck, UPDATE_CHECK_ENABLED_DEFAULT);
+    }
+
+    public static int getUpdateCheckFrequency() {
+        return Math.max(cfgOptions.getInt(cfgUpdateFrequency, UPDATE_CHECK_FREQUENCY_DEFAULT), 0);
     }
 
     /* TODO: Implement in game commands to use setters

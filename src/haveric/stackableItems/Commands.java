@@ -25,6 +25,7 @@ public class Commands implements CommandExecutor {
     private String cmdReload = "reload";
     private String cmdPerms = "perms";
     private String cmdPermsAlt = "perm";
+    private String cmdUpdate = "update";
 
     private String cmdTypeDefault = "default";
     private String cmdTypePlayer = "player";
@@ -62,7 +63,7 @@ public class Commands implements CommandExecutor {
                 sender.sendMessage("Commands: " + highlightColor + "/" + cmdMain + defaultColor + " or " + highlightColor + "/" + cmdMainAlt);
                 if (op || hasAdminPerm) {
                     sender.sendMessage("/" + cmdMainAlt + " " + cmdReload + " - " + msgColor + "Reloads the config files");
-                    //sender.sendMessage("/" + cmdMainAlt + highlightColor + " world type" + defaultColor + " item:dur [amt] - " + msgColor + "Get/set a player's max items");
+                    sender.sendMessage("/" + cmdMainAlt + " " + cmdUpdate + " - " + msgColor + "Checks if there's a new version available.");
                     sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:dur [amt]");
                     sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:dur [amt]");
                     sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:dur [amt]");
@@ -91,6 +92,12 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage(Perms.getPermAdmin() + " - " + msgColor + "Allows use of admin commands.");
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to see permission nodes.");
+                }
+            } else if (args.length == 1 && (args[0].equalsIgnoreCase(cmdUpdate))) {
+                if (op || hasAdminPerm) {
+                    Updater.query(sender);
+                } else {
+                    sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to check for updates.");
                 }
             } else if (args.length >= 3) {
                 String world = args[0];

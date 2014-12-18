@@ -55,6 +55,7 @@ public class StackableItems extends JavaPlugin {
         getCommand(Commands.getMain()).setExecutor(commands);
 
         setupMetrics();
+        Updater.init(this, 37175, null);
     }
 
     public void onDisable() {

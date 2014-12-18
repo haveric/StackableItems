@@ -21,6 +21,11 @@
 * Updated Metrics to handle both getOnlinePlayers (provides backward support for old versions of CraftBukkit)
 * Added missing/new fuel items
 * Add shears and carrots on a stick to enchantable items list (for shift clicking into enchantment table)
+* Added an update checker:
+** Use "/si update" to manually check for an update
+** To disable, set "update-check.enabled" in options.yml to false
+** Use "update-check.frequency" to change the number of hours between automatic checks. Defaults to 6 hours.
+** Only ops and Admins have access
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.
