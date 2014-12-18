@@ -64,15 +64,15 @@ public class Commands implements CommandExecutor {
                 if (op || hasAdminPerm) {
                     sender.sendMessage("/" + cmdMainAlt + " " + cmdReload + " - " + msgColor + "Reloads the config files");
                     sender.sendMessage("/" + cmdMainAlt + " " + cmdUpdate + " - " + msgColor + "Checks if there's a new version available.");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:dur [amt]");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:dur [amt]");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:dur [amt]");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:dur [amt]");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:data [amt]");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:data [amt]");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:data [amt]");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:data [amt]");
                 } else {
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:dur");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:dur");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:dur");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:dur");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:data");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:data");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:data");
+                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:data");
                 }
                 sender.sendMessage("Types: " + highlightColor + "playerName" + defaultColor + ", " + highlightColor + "inventoryName" + defaultColor + ", " + highlightColor + "permissionGroup" + defaultColor + ", " + highlightColor + "default");
 
