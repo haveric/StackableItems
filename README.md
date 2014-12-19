@@ -28,6 +28,15 @@
 ** Only ops and Admins have access
 * Removed useStacks options in favor of disabling inventories per world in items.yml
 ** use "disabled: true" under world.inventory.chest to disable stackableitems for all chests in 'world'
+** world:
+**   inventory:
+**     chest:
+**       disabled: true
+* Allow worlds, groups, and inventories to be grouped for easier configuration
+** world,world2:
+**   inventory:
+**     chest,ender_chest:
+**       snow_ball: 32
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.

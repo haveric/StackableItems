@@ -106,81 +106,92 @@ public final class SIItems {
     }
 
     private static void loadItemsFile() {
-        for (String world : itemsConfig.getKeys(false)) {
-            Set<String> categories = itemsConfig.getConfigurationSection(world).getKeys(false);
+        for (String worldToSplit : itemsConfig.getKeys(false)) {
+            String worlds[] = worldToSplit.split(",");
 
-            for (String category : categories) {
-                if (category.equals("default")) {
-                    ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".default");
-                    Set<String> items = itemSection.getKeys(false);
+            for (String world : worlds) {
+                Set<String> categories = itemsConfig.getConfigurationSection(worldToSplit).getKeys(false);
 
-                    for (String item: items) {
-                        Object value = itemSection.get(item);
-                        setItemValue(world + ".default", item, value);
-                    }
-                } else if (category.equals("player")) {
-                    ConfigurationSection playerSection = itemsConfig.getConfigurationSection(world + ".player");
-                    Set<String> players = playerSection.getKeys(false);
-
-                    for (String player : players) {
-                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".player." + player);
+                for (String category : categories) {
+                    if (category.equals("default")) {
+                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".default");
                         Set<String> items = itemSection.getKeys(false);
-                        // UUID already set
-                        if (items.contains("original-name")) {
-                            for (String item: items) {
-                                if (!(item.equals("original-name")) && !(item.equals("updated-name"))) {
+
+                        for (String item: items) {
+                            Object value = itemSection.get(item);
+                            setItemValue(world + ".default", item, value);
+                        }
+                    } else if (category.equals("player")) {
+                        ConfigurationSection playerSection = itemsConfig.getConfigurationSection(worldToSplit + ".player");
+                        Set<String> players = playerSection.getKeys(false);
+
+                        for (String player : players) {
+                            ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".player." + player);
+                            Set<String> items = itemSection.getKeys(false);
+                            // UUID already set
+                            if (items.contains("original-name")) {
+                                for (String item: items) {
+                                    if (!(item.equals("original-name")) && !(item.equals("updated-name"))) {
+                                        Object value = itemSection.get(item);
+                                        setItemValue(world + ".player." + player, item, value);
+                                    }
+                                }
+                            // UUID not set
+                            } else {
+                                UUID uuid;
+
+                                try {
+                                    uuid = UUIDFetcher.getUUIDOf(player);
+
+                                    if (uuid == null) {
+                                        itemsConfig.set(world + ".player." + player, null);
+                                    } else {
+                                        playerSection.createSection("" + uuid);
+
+                                        ConfigurationSection uuidSection = itemsConfig.getConfigurationSection(worldToSplit + ".player." + uuid);
+                                        uuidSection.set("original-name", player);
+
+                                        for (String item: items) {
+                                            Object value = itemSection.get(item);
+                                            uuidSection.set(item, value);
+                                            setItemValue(world + ".player." + uuid, item, value);
+                                        }
+                                        itemsConfig.set(world + ".player." + player, null);
+                                    }
+                                } catch (Exception e) {}
+                            }
+                        }
+                    } else if (category.equals("group")) {
+                        ConfigurationSection groupSection = itemsConfig.getConfigurationSection(worldToSplit + ".group");
+                        Set<String> groupsList = groupSection.getKeys(false);
+
+                        for (String groupToSplit : groupsList) {
+                            String groups[] = groupToSplit.split(",");
+
+                            for (String group : groups) {
+                                ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".group." + groupToSplit);
+                                Set<String> items = itemSection.getKeys(false);
+                                for (String item: items) {
                                     Object value = itemSection.get(item);
-                                    setItemValue(world + ".player." + player, item, value);
+                                    setItemValue(world + ".group." + group, item, value);
                                 }
                             }
-                        // UUID not set
-                        } else {
-                            UUID uuid;
+                        }
+                    } else if (category.equals("inventory")) {
+                        ConfigurationSection inventorySection = itemsConfig.getConfigurationSection(worldToSplit + ".inventory");
+                        Set<String> inventoryList = inventorySection.getKeys(false);
 
-                            try {
-                                uuid = UUIDFetcher.getUUIDOf(player);
+                        for (String inventoryToSplit : inventoryList) {
+                            String inventories[] = inventoryToSplit.split(",");
 
-                                if (uuid == null) {
-                                    itemsConfig.set(world + ".player." + player, null);
-                                } else {
-                                    playerSection.createSection("" + uuid);
-
-                                    ConfigurationSection uuidSection = itemsConfig.getConfigurationSection(world + ".player." + uuid);
-                                    uuidSection.set("original-name", player);
-
-                                    for (String item: items) {
-                                        Object value = itemSection.get(item);
-                                        uuidSection.set(item, value);
-                                        setItemValue(world + ".player." + uuid, item, value);
-                                    }
-                                    itemsConfig.set(world + ".player." + player, null);
+                            for (String inventory : inventories) {
+                                ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".inventory." + inventoryToSplit);
+                                Set<String> items = itemSection.getKeys(false);
+                                for (String item: items) {
+                                    Object value = itemSection.get(item);
+                                    setItemValue(world + ".inventory." + inventory, item, value);
                                 }
-                            } catch (Exception e) {}
-                        }
-                    }
-                } else if (category.equals("group")) {
-                    ConfigurationSection groupSection = itemsConfig.getConfigurationSection(world + ".group");
-                    Set<String> groups = groupSection.getKeys(false);
-
-                    for (String group : groups) {
-                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".group." + group);
-                        Set<String> items = itemSection.getKeys(false);
-                        for (String item: items) {
-                            Object value = itemSection.get(item);
-                            setItemValue(world + ".group." + group, item, value);
-                        }
-                    }
-
-                } else if (category.equals("inventory")) {
-                    ConfigurationSection inventorySection = itemsConfig.getConfigurationSection(world + ".inventory");
-                    Set<String> inventories = inventorySection.getKeys(false);
-
-                    for (String inventory : inventories) {
-                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".inventory." + inventory);
-                        Set<String> items = itemSection.getKeys(false);
-                        for (String item: items) {
-                            Object value = itemSection.get(item);
-                            setItemValue(world + ".inventory." + inventory, item, value);
+                            }
                         }
                     }
                 }
