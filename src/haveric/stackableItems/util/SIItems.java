@@ -266,26 +266,28 @@ public final class SIItems {
 
         // Force air to keep default value
         if (mat != Material.AIR) {
-         // Check inventory types
-            if (max == ITEM_DEFAULT) {
-                max = getMax(world, "inventory", inventoryType.name(), mat, dur);
-            }
-            if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
-            }
+            if (isInventoryEnabled(world, inventoryType)) {
+                // Check inventory types
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(world, "inventory", inventoryType.name(), mat, dur);
+                }
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
+                }
 
-            // Check default
-            if (max == ITEM_DEFAULT) {
-                max = getMax(world, "default", "", mat, dur);
-            }
-            if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds, "default", "", mat, dur);
-            }
+                // Check default
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(world, "default", "", mat, dur);
+                }
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(allWorlds, "default", "", mat, dur);
+                }
 
-            // Handle invalid max
-            if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
-                // Invalid max, count as default
-                max = ITEM_DEFAULT;
+                // Handle invalid max
+                if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
+                    // Invalid max, count as default
+                    max = ITEM_DEFAULT;
+                }
             }
         }
 
@@ -300,63 +302,65 @@ public final class SIItems {
 
         // Force air to keep default value
         if (mat != Material.AIR) {
-            // Check player
-            String uuid = player.getUniqueId().toString();
+            if (isInventoryEnabled(world, inventoryType)) {
+                // Check player
+                String uuid = player.getUniqueId().toString();
 
-            max = getMax(world, "player", uuid, mat, dur);
+                max = getMax(world, "player", uuid, mat, dur);
 
-            if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds, "player", uuid, mat, dur);
-            }
-
-            // Check groups
-            if (max == ITEM_DEFAULT) {
-                String groups[] = null;
-                try {
-                    groups = Perms.getPlayerGroups(player);
-
-
-                } catch (Exception e) {
-                    // No Groups
-                    if (Config.isDebugging()) {
-                        plugin.log.warning("DEBUG: getItemMax() - No group found.");
-                    }
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(allWorlds, "player", uuid, mat, dur);
                 }
-                if (groups != null) {
-                    for (String group: groups) {
-                        if (max == ITEM_DEFAULT) {
-                            max = getMax(world, "group", group, mat, dur);
 
+                // Check groups
+                if (max == ITEM_DEFAULT) {
+                    String groups[] = null;
+                    try {
+                        groups = Perms.getPlayerGroups(player);
+                    } catch (Exception e) {
+                        // No Groups
+                        if (Config.isDebugging()) {
+                            plugin.log.warning("DEBUG: getItemMax() - No group found.");
+                        }
+                    }
+
+                    if (groups != null) {
+                        for (String group: groups) {
                             if (max == ITEM_DEFAULT) {
-                                max = getMax(allWorlds, "group", group, mat, dur);
+                                max = getMax(world, "group", group, mat, dur);
+
+                                if (max == ITEM_DEFAULT) {
+                                    max = getMax(allWorlds, "group", group, mat, dur);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // Check inventory types
-            if (max == ITEM_DEFAULT) {
-                max = getMax(world, "inventory", inventoryType.name(), mat, dur);
-            }
-            if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
-            }
+                // Check inventory types
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(world, "inventory", inventoryType.name(), mat, dur);
+                }
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
+                }
 
-            // Check default
-            if (max == ITEM_DEFAULT) {
-                max = getMax(world, "default", "", mat, dur);
-            }
-            if (max == ITEM_DEFAULT) {
-                max = getMax(allWorlds, "default", "", mat, dur);
-            }
+                // Check default
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(world, "default", "", mat, dur);
+                }
+                if (max == ITEM_DEFAULT) {
+                    max = getMax(allWorlds, "default", "", mat, dur);
+                }
 
-            // Handle invalid max
-            if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
-                // Invalid max, count as default
-                max = ITEM_DEFAULT;
+                // Handle invalid max
+                if (max <= ITEM_DEFAULT && max != ITEM_INFINITE) {
+                    // Invalid max, count as default
+                    max = ITEM_DEFAULT;
+                }
             }
         }
+
         return max;
     }
 
@@ -532,14 +536,25 @@ public final class SIItems {
     }
 
     public static boolean isInventoryEnabled(String worldName, Inventory inventory) {
+        return isInventoryEnabled(worldName, inventory.getType());
+    }
+
+    public static boolean isInventoryEnabled(String worldName, InventoryType inventoryType) {
         boolean enabled = true;
 
-        String worldDisabled = worldName + ".inventory." + inventory.getType() + ".disabled";
-        String allWorldsDisabled = "allWorlds.inventory." + inventory.getType() + ".disabled";
-        if (itemsMap.containsKey(worldDisabled.toUpperCase())) {
-            enabled = false;
-        } else if (itemsMap.containsKey(allWorldsDisabled.toUpperCase())) {
-            enabled = false;
+        String worldDisabled = (worldName + ".inventory." + inventoryType).toUpperCase();
+        String allWorldsDisabled = ("allWorlds.inventory." + inventoryType).toUpperCase();
+
+        if (itemsMap.containsKey(worldDisabled)) {
+            Map<String, Integer> subMap = itemsMap.get(worldDisabled);
+            if (subMap.containsKey("DISABLED")) {
+                enabled = false;
+            }
+        } else if (itemsMap.containsKey(allWorldsDisabled)) {
+            Map<String, Integer> subMap = itemsMap.get(allWorldsDisabled);
+            if (subMap.containsKey("DISABLED")) {
+                enabled = false;
+            }
         }
 
         return enabled;
