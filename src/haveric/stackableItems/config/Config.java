@@ -20,17 +20,6 @@ public final class Config {
 
     private static String cfgFurnaceAmount = "Furnace_Amount";
 
-    private static String cfgUseStacksFurnace = "Use_Stack_Amounts_In_Furnace";
-    private static String cfgUseStacksMerchant = "Use_Stack_Amounts_In_Trading";
-    private static String cfgUseStacksCrafting = "Use_Stack_Amounts_In_Crafting";
-    private static String cfgUseStacksBrewing = "Use_Stack_Amounts_In_Brewing";
-    private static String cfgUseStacksAnvil = "Use_Stack_Amounts_In_Anvil";
-    private static String cfgUseStacksBeacon = "Use_Stack_Amounts_In_Beacon";
-    private static String cfgUseStacksEnderChest = "Use_Stack_Amounts_In_EnderChest";
-    private static String cfgUseStacksHopper = "Use_Stack_Amounts_In_Hopper";
-    private static String cfgUseStacksDropper = "Use_Stack_Amounts_In_Dropper";
-    private static String cfgUseStacksDispenser = "Use_Stack_Amounts_In_Dispenser";
-
     private static String cfgPreventWastedFlintSteel = "Prevent_Wasted_Flint_and_Steel";
 
     private static String cfgDebug = "Debug";
@@ -108,27 +97,17 @@ public final class Config {
      * Sets up the default variables if they don't exist yet.
      */
     public static void setup() {
-        cfgOptions.addDefault(cfgUseStacksFurnace, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksMerchant, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksCrafting, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksBrewing, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksAnvil, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksBeacon, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksEnderChest, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksHopper, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksDropper, USE_STACKS_DEFAULT);
-        cfgOptions.addDefault(cfgUseStacksDispenser, USE_STACKS_DEFAULT);
-
         cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
         cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
         cfgOptions.addDefault(cfgPreventWastedFlintSteel, PREVENT_WASTED_FAS_DEFAULT);
         cfgOptions.addDefault(cfgUpdateCheck, UPDATE_CHECK_ENABLED_DEFAULT);
         cfgOptions.addDefault(cfgUpdateFrequency, UPDATE_CHECK_FREQUENCY_DEFAULT);
 
-        if (!cfgOptions.isSet(cfgUseStacksFurnace) || !cfgOptions.isSet(cfgUseStacksMerchant) || !cfgOptions.isSet(cfgUseStacksCrafting) || !cfgOptions.isSet(cfgUseStacksBrewing)
-                || !cfgOptions.isSet(cfgUseStacksAnvil) || !cfgOptions.isSet(cfgUseStacksBeacon) || !cfgOptions.isSet(cfgUseStacksEnderChest) || !cfgOptions.isSet(cfgUseStacksHopper)
-                || !cfgOptions.isSet(cfgUseStacksDropper) || !cfgOptions.isSet(cfgUseStacksDispenser) || !cfgOptions.isSet(cfgDebug) || !cfgOptions.isSet(cfgFurnaceAmount)
-                || !cfgOptions.isSet(cfgPreventWastedFlintSteel) || !cfgOptions.isSet(cfgUpdateCheck) || !cfgOptions.isSet(cfgUpdateFrequency)) {
+        if (!cfgOptions.isSet(cfgDebug)
+         || !cfgOptions.isSet(cfgFurnaceAmount)
+         || !cfgOptions.isSet(cfgPreventWastedFlintSteel)
+         || !cfgOptions.isSet(cfgUpdateCheck)
+         || !cfgOptions.isSet(cfgUpdateFrequency)) {
             cfgOptions.options().copyDefaults(true);
             saveConfig(cfgOptions, cfgOptionsFile);
         }
@@ -193,46 +172,6 @@ public final class Config {
         return maxAmount;
     }
 
-    public static boolean isFurnaceUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksFurnace);
-    }
-
-    public static boolean isMerchantUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksMerchant);
-    }
-
-    public static boolean isCraftingUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksCrafting);
-    }
-
-    public static boolean isBrewingUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksBrewing);
-    }
-
-    public static boolean isAnvilUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksAnvil);
-    }
-
-    public static boolean isBeaconUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksBeacon);
-    }
-
-    public static boolean isEnderChestUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksEnderChest);
-    }
-
-    public static boolean isHopperUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksHopper);
-    }
-
-    public static boolean isDropperUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksDropper);
-    }
-
-    public static boolean isDispenserUsingStacks() {
-        return cfgOptions.getBoolean(cfgUseStacksDispenser);
-    }
-
     public static boolean isPreventWastedFASEnabled() {
         return cfgOptions.getBoolean(cfgPreventWastedFlintSteel);
     }
@@ -248,66 +187,4 @@ public final class Config {
     public static int getUpdateCheckFrequency() {
         return Math.max(cfgOptions.getInt(cfgUpdateFrequency, UPDATE_CHECK_FREQUENCY_DEFAULT), 0);
     }
-
-    /* TODO: Implement in game commands to use setters
-    public static void setMaxFurnaceAmount(int newAmt) {
-        cfgOptions.set(cfgFurnaceAmount, newAmt);
-        saveConfig();
-    }
-
-    public static void setFurnaceUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksFurnace, isUsing);
-        saveConfig();
-    }
-
-    public static void setMerchantUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksMerchant, isUsing);
-        saveConfig();
-    }
-
-    public static void setCraftingUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksCrafting, isUsing);
-        saveConfig();
-    }
-
-    public static void setBrewingUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksBrewing, isUsing);
-        saveConfig();
-    }
-
-    public static void setAnvilUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksAnvil, isUsing);
-        saveConfig();
-    }
-
-    public static void setBeaconUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksBeacon, isUsing);
-        saveConfig();
-    }
-
-    public static void setEnderChestUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksEnderChest, isUsing);
-        saveConfig();
-    }
-
-    public static void setHopperUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksHopper, isUsing);
-        saveConfig();
-    }
-
-    public static void setDropperUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksDropper, isUsing);
-        saveConfig();
-    }
-
-    public static void setDispenserUsingStacks(boolean isUsing) {
-        cfgOptions.set(cfgUseStacksDispenser, isUsing);
-        saveConfig();
-    }
-
-    public static void setDebugging(boolean isDebugging) {
-        cfgOptions.set(cfgDebug, isDebugging);
-        saveConfig();
-    }
-     */
 }

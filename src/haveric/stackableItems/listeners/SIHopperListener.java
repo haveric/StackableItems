@@ -1,9 +1,9 @@
 package haveric.stackableItems.listeners;
 
-import haveric.stackableItems.config.Config;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
 
+import org.bukkit.block.Hopper;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -77,10 +77,14 @@ public class SIHopperListener implements Listener{
      */
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void hopperPickup(InventoryPickupItemEvent event) {
-        if (Config.isHopperUsingStacks()) {
+        Inventory inventory = event.getInventory();
+        Hopper hopper = (Hopper) inventory.getHolder();
+        String worldName = hopper.getWorld().getName();
+
+        if (SIItems.isInventoryEnabled(worldName, inventory)) {
             Item item = event.getItem();
             ItemStack stack = item.getItemStack();
-            Inventory inventory = event.getInventory();
+
 
             int defaultMax = SIItems.getInventoryMax(item.getWorld().getName(), stack.getType(), stack.getDurability(), inventory.getType());
 

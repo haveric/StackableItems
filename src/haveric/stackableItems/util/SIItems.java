@@ -22,6 +22,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 
 public final class SIItems {
 
@@ -112,11 +113,11 @@ public final class SIItems {
                 if (category.equals("default")) {
                     ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".default");
                     Set<String> items = itemSection.getKeys(false);
+
                     for (String item: items) {
                         Object value = itemSection.get(item);
                         setItemValue(world + ".default", item, value);
                     }
-
                 } else if (category.equals("player")) {
                     ConfigurationSection playerSection = itemsConfig.getConfigurationSection(world + ".player");
                     Set<String> players = playerSection.getKeys(false);
@@ -173,6 +174,7 @@ public final class SIItems {
                 } else if (category.equals("inventory")) {
                     ConfigurationSection inventorySection = itemsConfig.getConfigurationSection(world + ".inventory");
                     Set<String> inventories = inventorySection.getKeys(false);
+
                     for (String inventory : inventories) {
                         ConfigurationSection itemSection = itemsConfig.getConfigurationSection(world + ".inventory." + inventory);
                         Set<String> items = itemSection.getKeys(false);
@@ -193,6 +195,10 @@ public final class SIItems {
             itemsMap.put(node, new HashMap<String, Integer>());
         }
         Map<String, Integer> itemsNode = itemsMap.get(node);
+
+        if (item.equalsIgnoreCase("disabled")) {
+            value = 1;
+        }
 
         if (value instanceof String) {
             if (value.equals("unlimited") || value.equals("infinite") || value.equals("infinity")) {
@@ -512,5 +518,20 @@ public final class SIItems {
         }
 
         return max;
+    }
+
+    public static boolean isInventoryEnabled(String worldName, Inventory inventory) {
+        boolean enabled = true;
+
+        String worldDisabled = worldName + ".inventory." + inventory.getType() + ".disabled";
+        String allWorldsDisabled = "allWorlds.inventory." + inventory.getType() + ".disabled";
+        if (itemsMap.containsKey(worldDisabled.toUpperCase())) {
+            enabled = false;
+        } else if (itemsMap.containsKey(allWorldsDisabled.toUpperCase())) {
+            enabled = false;
+        }
+
+        return enabled;
+
     }
 }

@@ -26,6 +26,8 @@
 ** To disable, set "update-check.enabled" in options.yml to false
 ** Use "update-check.frequency" to change the number of hours between automatic checks. Defaults to 6 hours.
 ** Only ops and Admins have access
+* Removed useStacks options in favor of disabling inventories per world in items.yml
+** use "disabled: true" under world.inventory.chest to disable stackableitems for all chests in 'world'
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.

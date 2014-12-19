@@ -974,7 +974,7 @@ public final class InventoryUtil {
             } else if (slot == 1) {
                 maxAmount = 0;
             }
-        } else if (inventoryType == InventoryType.FURNACE && !Config.isFurnaceUsingStacks()) {
+        } else if (inventoryType == InventoryType.FURNACE && !SIItems.isInventoryEnabled(worldName, inventory)) {
             if (slot >= 0 && slot < 3) {
                 maxAmount = Config.getMaxFurnaceAmount(mat);
             }
@@ -984,27 +984,27 @@ public final class InventoryUtil {
             }
         } else if ((inventoryType == InventoryType.PLAYER && slot >= 36 && slot < 40 && gamemode != GameMode.CREATIVE) || (inventoryType == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
             maxAmount = 1;
-        } else if (inventoryType == InventoryType.MERCHANT && !Config.isMerchantUsingStacks()) {
+        } else if (inventoryType == InventoryType.MERCHANT && !SIItems.isInventoryEnabled(worldName, inventory)) {
             if (slot >= 0 && slot < 2) {
                 maxAmount = mat.getMaxStackSize();
             }
-        } else if (inventoryType == InventoryType.BREWING && !Config.isBrewingUsingStacks()) {
+        } else if (inventoryType == InventoryType.BREWING && !SIItems.isInventoryEnabled(worldName, inventory)) {
             if (slot >= 0 && slot < 3) {
                 maxAmount = 1;
             }
-        } else if (((inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) && !Config.isCraftingUsingStacks()) {
+        } else if (((inventoryType == InventoryType.WORKBENCH && slot >= 1 && slot < 10) || (inventoryType == InventoryType.CRAFTING && slot >= 1 && slot < 5)) && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
-        } else if (inventoryType == InventoryType.ANVIL && slot < 2 && !Config.isAnvilUsingStacks()) {
+        } else if (inventoryType == InventoryType.ANVIL && slot < 2 && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
-        } else if (inventoryType == InventoryType.BEACON && slot == 0 && !Config.isBeaconUsingStacks()) {
+        } else if (inventoryType == InventoryType.BEACON && slot == 0 && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = 1;
-        } else if (inventoryType == InventoryType.ENDER_CHEST && !Config.isEnderChestUsingStacks()) {
+        } else if (inventoryType == InventoryType.ENDER_CHEST && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
-        } else if (inventoryType == InventoryType.HOPPER && !Config.isHopperUsingStacks()) {
+        } else if (inventoryType == InventoryType.HOPPER && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
-        } else if (inventoryType == InventoryType.DROPPER && !Config.isDropperUsingStacks()) {
+        } else if (inventoryType == InventoryType.DROPPER && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
-        } else if (inventoryType == InventoryType.DISPENSER && !Config.isDispenserUsingStacks()) {
+        } else if (inventoryType == InventoryType.DISPENSER && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
         }
 
