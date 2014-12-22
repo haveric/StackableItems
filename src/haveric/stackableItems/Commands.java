@@ -61,21 +61,30 @@ public class Commands implements CommandExecutor {
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase(cmdHelp))) {
                 sender.sendMessage(title + "github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
                 sender.sendMessage("Commands: " + highlightColor + "/" + cmdMain + defaultColor + " or " + highlightColor + "/" + cmdMainAlt);
+
+                String item = highlightColor + " <item:data>";
+
                 if (op || hasAdminPerm) {
+                    item += " " + highlightColor + "[amount]";
                     sender.sendMessage("/" + cmdMainAlt + " " + cmdReload + " - " + msgColor + "Reloads the config files");
                     sender.sendMessage("/" + cmdMainAlt + " " + cmdUpdate + " - " + msgColor + "Checks if there's a new version available.");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:data [amt]");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:data [amt]");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:data [amt]");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:data [amt]");
+                    sender.sendMessage("Get or set stack amounts: " + highlightColor + "< >" + defaultColor + " = required, " + highlightColor + "[ ]" + defaultColor + " = optional");
                 } else {
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeDefault + " item:data");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypePlayer + highlightColor + " playerName " + defaultColor + " item:data");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeGroup + highlightColor + " groupName " + defaultColor + " item:data");
-                    sender.sendMessage("/" + cmdMainAlt + highlightColor + " world " + defaultColor + cmdTypeInventory + highlightColor + " inventoryName " + defaultColor + " item:data");
+                    sender.sendMessage("Get stack amounts: " + highlightColor + "< >" + defaultColor + " = required");
                 }
-                sender.sendMessage("Types: " + highlightColor + "playerName" + defaultColor + ", " + highlightColor + "inventoryName" + defaultColor + ", " + highlightColor + "permissionGroup" + defaultColor + ", " + highlightColor + "default");
+                sender.sendMessage(" /" + cmdMainAlt + highlightColor + " <world> " + defaultColor + cmdTypeDefault + item);
+                sender.sendMessage(" /" + cmdMainAlt + highlightColor + " <world> " + defaultColor + cmdTypePlayer + highlightColor + " <playerName>" + item);
+                sender.sendMessage(" /" + cmdMainAlt + highlightColor + " <world> " + defaultColor + cmdTypeGroup + highlightColor + " <groupName>" + item);
+                sender.sendMessage(" /" + cmdMainAlt + highlightColor + " <world> " + defaultColor + cmdTypeInventory + highlightColor + " <inventoryName>" + item);
+                sender.sendMessage("Replace" + highlightColor + " <world> " + defaultColor + "with a world name or" + highlightColor + " all " + defaultColor + "for all worlds.");
+                sender.sendMessage("Replace" + highlightColor + " <playerName> " + defaultColor + "with a player's name.");
+                sender.sendMessage("Replace" + highlightColor + " <groupName> " + defaultColor + "with a permission group's name.");
+                sender.sendMessage("Replace" + highlightColor + " <inventoryName> " + defaultColor + "with an inventory's name.");
+                sender.sendMessage("Replace" + highlightColor + " <item:data> " + defaultColor + "with a Material name or id and an optional data value. Examples: apple, iron_pickaxe, 351, wool:0, 351:15");
 
+                if (op || hasAdminPerm) {
+                    sender.sendMessage("(Optional) Replace" + highlightColor + " [amount] " + defaultColor + "with an integer to set the config.");
+                }
             } else if (args.length == 1 && args[0].equalsIgnoreCase(cmdReload)) {
                 if (op || hasAdminPerm) {
                     Config.reload();
