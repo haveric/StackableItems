@@ -37,6 +37,7 @@
 **   inventory:
 **     chest,ender_chest:
 **       snow_ball: 32
+* Deploy defaultGroups.yml with the plugin to show examples of how groups.yml should look
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.

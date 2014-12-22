@@ -5,8 +5,12 @@ import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.uuidFetcher.UUIDFetcher;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +52,9 @@ public final class SIItems {
     public static final int ITEM_DEFAULT_MAX = 64;
     public static final int ITEM_NEW_MAX = 127;
 
+    private static final String FILE_VERSION = "version";
+    private static final String FILE_DEFAULT_GROUPS = "defaultGroups.yml";
+
     private SIItems() { } // Private constructor for utility class
 
     public static void init(StackableItems si) {
@@ -62,6 +69,9 @@ public final class SIItems {
         itemsFile = new File(plugin.getDataFolder() + File.separator + "items.yml");
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
         setupItemsFile();
+
+        boolean overwrite = isNewVersion();
+        createFile(FILE_DEFAULT_GROUPS, overwrite);
 
         reload();
     }
@@ -558,6 +568,47 @@ public final class SIItems {
         }
 
         return enabled;
+    }
 
+    private static boolean isNewVersion() {
+        boolean newVersion = true;
+
+        try {
+            File file = new File(plugin.getDataFolder() + File.separator + FILE_VERSION);
+            String currentVersion = plugin.getDescription().getVersion();
+
+            if (file.exists()) {
+                BufferedReader b = new BufferedReader(new FileReader(file));
+                String version = b.readLine();
+                b.close();
+                newVersion = (version == null || !version.equals(currentVersion));
+            }
+
+            if (newVersion || file.exists()) {
+                BufferedWriter b = new BufferedWriter(new FileWriter(file, false));
+                b.write(currentVersion);
+                b.close();
+            }
+        } catch (Throwable e) {
+            plugin.log.warning("" + e.getStackTrace());
+        }
+
+        return newVersion;
+    }
+
+    private static boolean fileExists(String file, boolean overwrite) {
+        if (overwrite) {
+            return false;
+        }
+
+        return new File(plugin.getDataFolder() + File.separator + file).exists();
+    }
+
+    private static void createFile(String file, boolean overwrite) {
+        if (fileExists(file, overwrite)) {
+            return;
+        }
+
+        plugin.saveResource(file, true);
     }
 }
