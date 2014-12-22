@@ -33,8 +33,6 @@ public final class Config {
     private static FileConfiguration cfgFurnaces;
     private static File cfgFurnacesFile;
 
-    private static final boolean USE_STACKS_DEFAULT = true;
-
     private static final boolean DEBUG_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
 
