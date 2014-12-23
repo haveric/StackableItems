@@ -39,6 +39,7 @@
 **       snow_ball: 32
 * Deploy defaultGroups.yml with the plugin to show examples of how groups.yml should look
 * Improved in-game commands to hopefully make them more understandable
+* Let vanilla handle stacking lapis in Enchantment tables for now
 
 #### Version 0.9.5 (2/8/2014)
 * Made shift clicking replicate vanilla in (hopefully) all cases.

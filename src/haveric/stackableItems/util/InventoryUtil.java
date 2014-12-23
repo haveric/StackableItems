@@ -981,6 +981,10 @@ public final class InventoryUtil {
         } else if (inventoryType == InventoryType.ENCHANTING) {
             if (slot == 0) {
                 maxAmount = 1;
+            } else if (slot == 1) {
+                if (! (mat == Material.INK_SACK && dur == 4)) {
+                    maxAmount = 0;
+                }
             }
         } else if ((inventoryType == InventoryType.PLAYER && slot >= 36 && slot < 40 && gamemode != GameMode.CREATIVE) || (inventoryType == InventoryType.CRAFTING && slot >= 5 && slot < 9)) {
             maxAmount = 1;

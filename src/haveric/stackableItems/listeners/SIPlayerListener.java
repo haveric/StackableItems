@@ -949,11 +949,13 @@ public class SIPlayerListener implements Listener {
 
             // TODO: might be able to remove this (except maxstacksize?)
              if (topType == InventoryType.ENCHANTING) {
-                top.setMaxStackSize(1);
                 if (rawSlot == 0) {
+                    top.setMaxStackSize(1);
                     if (!event.isShiftClick()) {
                         return;
                     }
+                } else if (rawSlot == 1) {
+                    top.setMaxStackSize(64);
                 }
             } else if (topType == InventoryType.BREWING) {
                 if (rawSlot <= 2) {
@@ -1155,7 +1157,9 @@ public class SIPlayerListener implements Listener {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
                         }
                     } else if (topType == InventoryType.ENCHANTING) {
-                        if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
+                        if (clickedType == Material.INK_SACK && clickedDur == 4) {
+                            // Let vanilla handle stacking lapis for now.
+                        } else if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
                             // We only want to override if moving more than a vanilla stack will hold
                             int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null, "inventory");
                             if (defaultStack > -1 && clickedAmount > defaultStack) {
