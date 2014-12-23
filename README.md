@@ -6,8 +6,8 @@
 
 ### Changelog:
 
-#### Coming Soon:
-* Remove Hopper Item Pickup/Moving for now as it is extremely buggy
+#### Version 1.0 (12/23/2014):
+* Remove Hopper Item Moving for now as it is extremely buggy
 * Handle null checks for getting player's item in hand.
 * Fixed sanity checks which allowed duplication when dragging items in the inventory.
 * Reworking item config file to handle future changes.
