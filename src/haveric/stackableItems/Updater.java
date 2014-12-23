@@ -281,11 +281,11 @@ public class Updater {
                     plugin.log.info(ChatColor.GRAY + "You can disable this check from config.yml.");
                 }
             } catch (MalformedURLException e) {
-                plugin.log.warning("Error while checking for updates: " + e.getStackTrace());
+                plugin.log.warning("Error while checking for updates: " + e.getStackTrace().toString());
                 plugin.log.info("You can disable the update checker in config.yml, but please report the error.");
             } catch (IOException e) {
                 // There was an error reading the query
-                plugin.log.warning("Error while checking for updates" + e.getStackTrace());
+                plugin.log.warning("Error while checking for updates" + e.getStackTrace().toString());
                 plugin.log.info("You can disable the update checker in config.yml, but please report the error.");
             }
         }
