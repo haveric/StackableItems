@@ -278,24 +278,24 @@ public class Updater {
                 }
 
                 if (sender == null) {
-                    plugin.log.info(ChatColor.GRAY + "You can disable this check from config.yml.");
+                    plugin.log.info("You can disable this check from options.yml.");
                 }
             } catch (MalformedURLException e) {
                 plugin.log.warning("Error while checking for updates: " + e.getStackTrace().toString());
-                plugin.log.info("You can disable the update checker in config.yml, but please report the error.");
+                plugin.log.info("You can disable the update checker in options.yml, but please report the error.");
             } catch (IOException e) {
                 // There was an error reading the query
                 plugin.log.warning("Error while checking for updates" + e.getStackTrace().toString());
-                plugin.log.info("You can disable the update checker in config.yml, but please report the error.");
+                plugin.log.info("You can disable the update checker in options.yml, but please report the error.");
             }
         }
     }
 
     private static void send(CommandSender sender, String message) {
         if (sender == null) {
-            plugin.log.info(message);
+            plugin.log.info(ChatColor.stripColor(message));
         } else {
-            sender.sendMessage(ChatColor.stripColor(message));
+            sender.sendMessage(message);
         }
     }
 }
