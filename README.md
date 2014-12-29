@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon:
+* Fixed double click stacking
+
 #### Version 1.0 (12/23/2014):
 * Remove Hopper Item Moving for now as it is extremely buggy
 * Handle null checks for getting player's item in hand.

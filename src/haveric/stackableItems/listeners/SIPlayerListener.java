@@ -975,7 +975,7 @@ public class SIPlayerListener implements Listener {
             }
 
             if (clickType == ClickType.DOUBLE_CLICK) {
-                if (maxItems != cursor.getMaxStackSize()) {
+                if (!cursorEmpty && slotEmpty && maxItems != cursor.getMaxStackSize()) {
                     if (!InventoryUtil.canVanillaGatherItemsToCursor(player, top, cursor, maxItems)) {
                         event.setCancelled(true);
                         InventoryUtil.gatherItemsToCursor(player, top, cursor, maxItems);
