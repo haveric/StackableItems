@@ -212,33 +212,37 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 } else if (event.isLeftClick() || event.isRightClick()) {
-                    int total = cursorAmount + recipeAmount;
-                    if (total > maxItems) {
-                        event.setCancelled(true);
-                    } else {
-                        // Only handle stacks that are above normal stack amounts.
-                        if (total > result.getMaxStackSize()) {
-                            int numCanHold = maxItems - cursorAmount;
-                            int craftTimes = numCanHold / recipeAmount;
-                            int canCraft = InventoryUtil.getCraftingAmount(event.getInventory(), event.getRecipe());
+                    if (ItemUtil.isSameItem(result, cursor)) {
+                        int total = cursorAmount + recipeAmount;
 
-                            int actualCraft = 0;
-                            if (craftTimes <= canCraft) {
-                                actualCraft = craftTimes;
-                            } else {
-                                actualCraft = canCraft;
-                            }
+                        if (total > maxItems) {
+                            event.setCancelled(true);
+                        } else {
+                            // Only handle stacks that are above normal stack amounts.
+                            if (total > result.getMaxStackSize()) {
+                                int numCanHold = maxItems - cursorAmount;
 
-                            if (actualCraft > 0) {
-                                ItemStack cursorClone = cursor.clone();
+                                int craftTimes = numCanHold / recipeAmount;
+                                int canCraft = InventoryUtil.getCraftingAmount(event.getInventory(), event.getRecipe());
 
-                                // Remove one stack from the crafting grid
-                                InventoryUtil.removeFromCrafting(player, event.getInventory(), 1);
+                                int actualCraft = 0;
+                                if (craftTimes <= canCraft) {
+                                    actualCraft = craftTimes;
+                                } else {
+                                    actualCraft = canCraft;
+                                }
 
-                                // Add one set of items to the cursor
-                                cursorClone.setAmount(total);
-                                event.setCursor(cursorClone);
-                                event.setResult(Result.DENY);
+                                if (actualCraft > 0) {
+                                    ItemStack cursorClone = cursor.clone();
+
+                                    // Remove one stack from the crafting grid
+                                    InventoryUtil.removeFromCrafting(player, event.getInventory(), 1);
+
+                                    // Add one set of items to the cursor
+                                    cursorClone.setAmount(total);
+                                    event.setCursor(cursorClone);
+                                    event.setResult(Result.DENY);
+                                }
                             }
                         }
                     }

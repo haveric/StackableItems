@@ -8,6 +8,7 @@
 
 #### Coming Soon:
 * Fixed double click stacking
+* Fixed a duplication issue with crafting
 
 #### Version 1.0 (12/23/2014):
 * Remove Hopper Item Moving for now as it is extremely buggy
