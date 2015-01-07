@@ -1,7 +1,7 @@
 name: StackableItems
 author: haveric
 main: haveric.stackableItems.StackableItems
-version: 1.0
+version: 1.0.1
 website: http://dev.bukkit.org/server-mods/stackableitems/
 dev-url: http://dev.bukkit.org/server-mods/stackableitems/
 softdepend: [Vault]
