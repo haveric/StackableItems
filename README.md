@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon
+* Updated Material api link to spigot's version of bukkit
+
 #### Version 1.0.1 (1/6/2015)
 * Fixed double click stacking
 * Fixed a duplication issue with crafting
