@@ -227,7 +227,7 @@ public final class InventoryUtil {
         while (i <= 8 && free == 0) {
             ItemStack slot = inventory.getItem(i);
             free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-            i ++;
+            i++;
         }
 
         return free;
@@ -240,7 +240,7 @@ public final class InventoryUtil {
         while (i >= 0 && free == 0) {
             ItemStack slot = inventory.getItem(i);
             free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
-            i --;
+            i--;
         }
 
         return free;
@@ -294,7 +294,7 @@ public final class InventoryUtil {
                 int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
                 free = slotMax;
             }
-            i ++;
+            i++;
         }
 
         return free;
@@ -310,7 +310,7 @@ public final class InventoryUtil {
                 int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
                 free = slotMax;
             }
-            i --;
+            i--;
         }
 
         return free;
@@ -546,7 +546,7 @@ public final class InventoryUtil {
                 if (start < 0) {
                     start = 0;
                 }
-                end --;
+                end--;
                 validAdd = true;
             }
         }
@@ -585,7 +585,7 @@ public final class InventoryUtil {
                 if (start < 0) {
                     start = 0;
                 }
-                end --;
+                end--;
                 validAdd = true;
             }
         }
@@ -982,7 +982,7 @@ public final class InventoryUtil {
             if (slot == 0) {
                 maxAmount = 1;
             } else if (slot == 1) {
-                if (! (mat == Material.INK_SACK && dur == 4)) {
+                if (!(mat == Material.INK_SACK && dur == 4)) {
                     maxAmount = 0;
                 }
             }

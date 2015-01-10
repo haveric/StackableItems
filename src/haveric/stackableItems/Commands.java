@@ -129,7 +129,7 @@ public class Commands implements CommandExecutor {
                             if (uuid != null) {
                                 permItem = "" + uuid;
                             }
-                        } catch (Exception e) {}
+                        } catch (Exception e) { }
                     } else {
                         permItem = args[2];
                     }
@@ -161,7 +161,7 @@ public class Commands implements CommandExecutor {
                     // set value
                     if (args.length == argsForSet) {
                         if (op || hasAdminPerm) {
-                            int numToSet = Integer.parseInt(args[argsForSet-1]);
+                            int numToSet = Integer.parseInt(args[argsForSet - 1]);
                             String displayName;
                             if (dur == SIItems.ITEM_DEFAULT) {
                                 displayName = mat.name();

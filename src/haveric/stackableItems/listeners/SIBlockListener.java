@@ -17,7 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class SIBlockListener implements Listener {
 
-    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
 

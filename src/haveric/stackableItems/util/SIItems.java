@@ -117,7 +117,7 @@ public final class SIItems {
 
     private static void loadItemsFile() {
         for (String worldToSplit : itemsConfig.getKeys(false)) {
-            String worlds[] = worldToSplit.split(",");
+            String[] worlds = worldToSplit.split(",");
 
             for (String world : worlds) {
                 Set<String> categories = itemsConfig.getConfigurationSection(worldToSplit).getKeys(false);
@@ -168,7 +168,7 @@ public final class SIItems {
                                         }
                                         itemsConfig.set(world + ".player." + player, null);
                                     }
-                                } catch (Exception e) {}
+                                } catch (Exception e) { }
                             }
                         }
                     } else if (category.equals("group")) {
@@ -176,7 +176,7 @@ public final class SIItems {
                         Set<String> groupsList = groupSection.getKeys(false);
 
                         for (String groupToSplit : groupsList) {
-                            String groups[] = groupToSplit.split(",");
+                            String[] groups = groupToSplit.split(",");
 
                             for (String group : groups) {
                                 ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".group." + groupToSplit);
@@ -192,7 +192,7 @@ public final class SIItems {
                         Set<String> inventoryList = inventorySection.getKeys(false);
 
                         for (String inventoryToSplit : inventoryList) {
-                            String inventories[] = inventoryToSplit.split(",");
+                            String[] inventories = inventoryToSplit.split(",");
 
                             for (String inventory : inventories) {
                                 ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".inventory." + inventoryToSplit);
@@ -324,7 +324,7 @@ public final class SIItems {
 
                 // Check groups
                 if (max == ITEM_DEFAULT) {
-                    String groups[] = null;
+                    String[] groups = null;
                     try {
                         groups = Perms.getPlayerGroups(player);
                     } catch (Exception e) {
@@ -378,7 +378,7 @@ public final class SIItems {
         String itemString = world + "." + type + "." + item;
 
         if (itemString.endsWith(".")) {
-            itemString = itemString.substring(0, itemString.length()-1);
+            itemString = itemString.substring(0, itemString.length() - 1);
         }
         if (dur == ITEM_DEFAULT) {
             return getMaxFromMap(itemString, mat);
@@ -400,7 +400,7 @@ public final class SIItems {
             String itemString = world + "." + type + "." + item;
 
             if (itemString.endsWith(".")) {
-                itemString = itemString.substring(0, itemString.length()-1);
+                itemString = itemString.substring(0, itemString.length() - 1);
             }
 
             itemsConfig.set(itemString + "." + name, newAmount);

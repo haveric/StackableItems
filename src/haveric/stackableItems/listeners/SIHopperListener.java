@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class SIHopperListener implements Listener{
+public class SIHopperListener implements Listener {
     /*
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void hopperMove(InventoryMoveItemEvent event) {
@@ -75,7 +75,7 @@ public class SIHopperListener implements Listener{
         }
     }
      */
-    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void hopperPickup(InventoryPickupItemEvent event) {
         Inventory inventory = event.getInventory();
         Hopper hopper = (Hopper) inventory.getHolder();
