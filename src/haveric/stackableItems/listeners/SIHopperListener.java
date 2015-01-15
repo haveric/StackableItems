@@ -5,11 +5,13 @@ import haveric.stackableItems.util.SIItems;
 
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -78,10 +80,18 @@ public class SIHopperListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void hopperPickup(InventoryPickupItemEvent event) {
         Inventory inventory = event.getInventory();
-        Hopper hopper = (Hopper) inventory.getHolder();
-        String worldName = hopper.getWorld().getName();
+        InventoryHolder holder = inventory.getHolder();
+        String worldName = null;
 
-        if (SIItems.isInventoryEnabled(worldName, inventory)) {
+        if (holder instanceof Hopper) {
+            Hopper hopper = (Hopper) holder;
+            worldName = hopper.getWorld().getName();
+        } else if (holder instanceof HopperMinecart) {
+            HopperMinecart hopper = (HopperMinecart) holder;
+            worldName = hopper.getWorld().getName();
+        }
+
+        if (worldName != null && SIItems.isInventoryEnabled(worldName, inventory)) {
             Item item = event.getItem();
             ItemStack stack = item.getItemStack();
 

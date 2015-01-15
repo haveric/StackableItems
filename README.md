@@ -8,6 +8,7 @@
 
 #### Coming Soon
 * Updated Material api link to spigot's version of bukkit
+* Fixed an issue with HopperMinecarts
 
 #### Version 1.0.1 (1/6/2015)
 * Fixed double click stacking
