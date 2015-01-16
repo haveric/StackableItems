@@ -107,7 +107,7 @@ public final class InventoryUtil {
                 boolean leftToRight = false;
                 boolean topToBottom = false;
 
-                if (extraType.equals("pickup")) {
+                if (extraType.equals("pickup") || extraType.equals("swap")) {
                     leftToRight = true;
                     topToBottom = true;
                 } else {
@@ -406,7 +406,7 @@ public final class InventoryUtil {
                         boolean leftToRight = false;
                         boolean topToBottom = false;
 
-                        if (extraType.equals("pickup")) {
+                        if (extraType.equals("pickup") || extraType.equals("swap")) {
                             leftToRight = true;
                             topToBottom = true;
                         } else {
@@ -751,7 +751,13 @@ public final class InventoryUtil {
     }
 
     public static int moveItemsToPlayer(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft, Inventory fromInventory) {
-        return moveItems(player, clicked, event, player.getInventory(), start, end, setLeft, fromInventory, "");
+        String extraType = "";
+
+        if (fromInventory == null) {
+            extraType = "swap";
+        }
+
+        return moveItems(player, clicked, event, player.getInventory(), start, end, setLeft, fromInventory, extraType);
     }
 
     public static int moveItemsToFullInventory(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, boolean setLeft, String extraType) {
