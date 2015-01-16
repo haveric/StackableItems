@@ -9,7 +9,8 @@
 #### Coming Soon
 * Updated Material api link to spigot's version of bukkit
 * Fixed an issue with HopperMinecarts
-* Fix inventory swapping directions to match vanilla shift clicking
+* Fixed inventory swapping directions to match vanilla shift clicking
+* Fixed crafting with number keys putting items in the wrong slots
 
 #### Version 1.0.1 (1/6/2015)
 * Fixed double click stacking

@@ -391,7 +391,6 @@ public final class InventoryUtil {
     public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end, final Inventory fromInventory, final String extraType) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override public void run() {
-
                 if (start < end && end <= inventory.getSize()) {
                     int addAmount = itemToAdd.getAmount();
 
@@ -510,8 +509,9 @@ public final class InventoryUtil {
     public static int addHotbarRTL(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
         if (start <= 8) {
             if (end > 8) {
-                end = 8;
+                end = 9;
             }
+            end--;
 
             Material type = itemToAdd.getType();
             short durability = itemToAdd.getDurability();
