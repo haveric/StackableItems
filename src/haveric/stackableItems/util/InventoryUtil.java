@@ -556,7 +556,7 @@ public final class InventoryUtil {
             short durability = itemToAdd.getDurability();
 
             int i = start;
-            while (i < end && addAmount > 0) {
+            while (i <= end && addAmount > 0) {
                 if (partial) {
                     addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, i);
                 } else {
@@ -765,7 +765,7 @@ public final class InventoryUtil {
     }
 
     public static int moveItemsToInventory(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft) {
-        return moveItems(player, clicked, event, inventory, start, end, setLeft, null, "");
+        return moveItems(player, clicked, event, inventory, start, end, setLeft, null, "inventory");
     }
 
     public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft, Inventory fromInventory, String extraType) {

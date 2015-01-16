@@ -11,6 +11,7 @@
 * Fixed an issue with HopperMinecarts
 * Fixed inventory swapping directions to match vanilla shift clicking
 * Fixed crafting with number keys putting items in the wrong slots
+* Fixed shift clicking items to inventories
 
 #### Version 1.0.1 (1/6/2015)
 * Fixed double click stacking
