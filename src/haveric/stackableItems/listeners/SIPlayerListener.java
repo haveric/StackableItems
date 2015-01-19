@@ -1174,7 +1174,7 @@ public class SIPlayerListener implements Listener {
                                 }
                             }
                         } else {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 1);
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, top.getSize());
                         }
                     } else if (topType == InventoryType.FURNACE) {
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);

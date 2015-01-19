@@ -14,6 +14,7 @@
 * Fixed shift clicking items to inventories
 * Fixed shift clicking nether wart into brewing stands
 * Fixed shift click stacking in the first slot of horse inventories
+* Fixed 1.8 shift click inventory swapping in enchantment tables
 
 #### Version 1.0.1 (1/6/2015)
 * Fixed double click stacking
