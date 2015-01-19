@@ -236,7 +236,7 @@ public final class ItemUtil {
 
         switch(mat) {
             case REDSTONE:
-            case NETHER_WARTS:
+            case NETHER_STALK: // Bukkit name for nether warts item
             case GLOWSTONE_DUST:
             case FERMENTED_SPIDER_EYE:
             case MAGMA_CREAM:
