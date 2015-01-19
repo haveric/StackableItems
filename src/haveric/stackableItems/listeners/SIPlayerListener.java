@@ -779,7 +779,6 @@ public class SIPlayerListener implements Listener {
                     } // Else let vanilla move items between player slots
                 }
             }
-
         } else if (cursor != null && clicked != null && slotType == SlotType.RESULT && topType == InventoryType.FURNACE) {
             Player player = (Player) event.getWhoClicked();
 
@@ -1213,8 +1212,8 @@ public class SIPlayerListener implements Listener {
                                     }
                                 }
                             }
-
                         }
+
                         // normal item;
                         if ((!fuelMoved && !burnableMoved) || (!isFuel && !isBurnable)) {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
