@@ -971,7 +971,7 @@ public final class InventoryUtil {
         String invName = inventory.getName();
 
         if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {
-            if (slot <= 2) {
+            if (slot < 2) {
                 maxAmount = 1;
             }
         } else if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Donkey") || invName.equalsIgnoreCase("Mule"))) {
