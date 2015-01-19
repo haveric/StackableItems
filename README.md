@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon
+#### Version 1.0.2 (1/19/2015)
 * Updated Material api link to spigot's version of bukkit
 * Fixed an issue with HopperMinecarts
 * Fixed inventory swapping directions to match vanilla shift clicking
