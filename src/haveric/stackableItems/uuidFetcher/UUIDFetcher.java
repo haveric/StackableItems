@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,17 +26,52 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
     private final List<String> names;
     private final boolean rateLimiting;
 
-    public UUIDFetcher(List<String> names, boolean rateLimiting) {
-        this.names = ImmutableList.copyOf(names);
-        this.rateLimiting = rateLimiting;
+    private static HashMap<String, UUID> lookupCache;
+
+    public static void addPlayerToCache(String name, UUID uuid) {
+        if (Bukkit.getServer().getOnlineMode()) {
+            if (lookupCache == null) {
+                lookupCache = new HashMap<String, UUID>();
+            }
+
+            lookupCache.put(name, uuid);
+        }
     }
 
-    public UUIDFetcher(List<String> names) {
-        this(names, true);
+    public static void removePlayerFromCache(String name) {
+        if (lookupCache != null) {
+            if (lookupCache.containsKey(name)) {
+                lookupCache.remove(name);
+            }
+        }
+    }
+
+    public UUIDFetcher(List<String> newNames, boolean newRateLimiting) {
+        names = ImmutableList.copyOf(newNames);
+        rateLimiting = newRateLimiting;
+    }
+
+    public UUIDFetcher(List<String> newNames) {
+        this(newNames, true);
     }
 
     public Map<String, UUID> call() throws Exception {
+        if (lookupCache == null) {
+            lookupCache = new HashMap<String, UUID>();
+        }
+
         Map<String, UUID> uuidMap = new HashMap<String, UUID>();
+
+        for (int i = 0; i < names.size(); i++) {
+            String name = names.get(i);
+
+            if (lookupCache.containsKey(name)) {
+                uuidMap.put(name, lookupCache.get(name));
+                names.remove(i);
+                i--;
+            }
+        }
+
         int requests = (int) Math.ceil(names.size() / PROFILES_PER_REQUEST);
         for (int i = 0; i < requests; i++) {
             HttpURLConnection connection = createConnection();
@@ -48,11 +84,13 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
                 String name = (String) jsonProfile.get("name");
                 UUID uuid = UUIDFetcher.getUUID(id);
                 uuidMap.put(name, uuid);
+                lookupCache.put(name, uuid);
             }
             if (rateLimiting && i != requests - 1) {
                 Thread.sleep(100L);
             }
         }
+
         return uuidMap;
     }
 
