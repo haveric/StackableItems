@@ -8,6 +8,7 @@
 
 #### Coming Soon:
 * Only perform UUID lookups when actually needed
+* Removed a disabled message when clicking on an empty furnace result slot
 
 #### Version 1.0.2 (1/19/2015)
 * Updated Material api link to spigot's version of bukkit

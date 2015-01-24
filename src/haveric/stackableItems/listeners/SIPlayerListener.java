@@ -780,150 +780,155 @@ public class SIPlayerListener implements Listener {
                 }
             }
         } else if (cursor != null && clicked != null && slotType == SlotType.RESULT && topType == InventoryType.FURNACE) {
-            Player player = (Player) event.getWhoClicked();
-
-            int cursorAmount = cursor.getAmount();
-            Material cursorType = cursor.getType();
-
             Material clickedType = clicked.getType();
-            short clickedDur = clicked.getDurability();
-            int clickedAmount = clicked.getAmount();
+            boolean clickedEmpty = clickedType == Material.AIR;
 
-            boolean cursorEmpty = cursorType == Material.AIR;
+            // Only deal with items in the result slot.
+            if (!clickedEmpty) {
+                Player player = (Player) event.getWhoClicked();
 
-            int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
+                int cursorAmount = cursor.getAmount();
+                Material cursorType = cursor.getType();
 
-            if (maxItems == 0) {
-                player.sendMessage(itemDisabledMessage);
-                event.setCancelled(true);
-            } else {
-                int freeSpaces = InventoryUtil.getPlayerFreeSpaces(player, clicked);
+                short clickedDur = clicked.getDurability();
+                int clickedAmount = clicked.getAmount();
 
-                ItemStack clone = clicked.clone();
-                ItemStack clone2 = clicked.clone();
-                int xpItems = 0;
+                boolean cursorEmpty = cursorType == Material.AIR;
 
-                int maxFurnaceSize = Config.getMaxFurnaceAmount(clickedType);
-                if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
-                    InventoryHolder inventoryHolder = event.getInventory().getHolder();
+                int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
 
-                    if (inventoryHolder instanceof Furnace) {
-                        Furnace furnace = (Furnace) inventoryHolder;
+                if (maxItems == 0) {
+                    player.sendMessage(itemDisabledMessage);
+                    event.setCancelled(true);
+                } else {
+                    int freeSpaces = InventoryUtil.getPlayerFreeSpaces(player, clicked);
 
-                        Location blockLocation = furnace.getBlock().getLocation();
-                        int amt = Config.getFurnaceAmount(blockLocation);
-                        if (amt > -1) {
-                            int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, topType);
-                            // Don't touch default items
-                            if (maxPlayerInventory == SIItems.ITEM_DEFAULT) {
-                                return;
-                            }
-                            if (maxPlayerInventory == SIItems.ITEM_INFINITE) {
-                                maxPlayerInventory = clickedType.getMaxStackSize();
-                            }
-                            if (event.isShiftClick()) {
-                                clone.setAmount(amt);
-                                InventoryUtil.addItemsToPlayer(player, clone, "");
-                                event.setCurrentItem(null);
-                                event.setResult(Result.DENY);
-                                Config.clearFurnace(blockLocation);
-                                xpItems = amt;
-                            } else if (cursorEmpty && event.isRightClick()) {
-                                // Give half of furnace amount to cursor
-                                int cursorHalf = (int) Math.round((amt + 0.5) / 2);
-                                if (cursorHalf > maxPlayerInventory) {
-                                    cursorHalf = maxPlayerInventory;
+                    ItemStack clone = clicked.clone();
+                    ItemStack clone2 = clicked.clone();
+                    int xpItems = 0;
+
+                    int maxFurnaceSize = Config.getMaxFurnaceAmount(clickedType);
+                    if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
+                        InventoryHolder inventoryHolder = event.getInventory().getHolder();
+
+                        if (inventoryHolder instanceof Furnace) {
+                            Furnace furnace = (Furnace) inventoryHolder;
+
+                            Location blockLocation = furnace.getBlock().getLocation();
+                            int amt = Config.getFurnaceAmount(blockLocation);
+                            if (amt > -1) {
+                                int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, topType);
+                                // Don't touch default items
+                                if (maxPlayerInventory == SIItems.ITEM_DEFAULT) {
+                                    return;
                                 }
-                                int furnaceHalf = amt - cursorHalf;
-                                clone.setAmount(cursorHalf);
-                                event.setCursor(clone);
+                                if (maxPlayerInventory == SIItems.ITEM_INFINITE) {
+                                    maxPlayerInventory = clickedType.getMaxStackSize();
+                                }
+                                if (event.isShiftClick()) {
+                                    clone.setAmount(amt);
+                                    InventoryUtil.addItemsToPlayer(player, clone, "");
+                                    event.setCurrentItem(null);
+                                    event.setResult(Result.DENY);
+                                    Config.clearFurnace(blockLocation);
+                                    xpItems = amt;
+                                } else if (cursorEmpty && event.isRightClick()) {
+                                    // Give half of furnace amount to cursor
+                                    int cursorHalf = (int) Math.round((amt + 0.5) / 2);
+                                    if (cursorHalf > maxPlayerInventory) {
+                                        cursorHalf = maxPlayerInventory;
+                                    }
+                                    int furnaceHalf = amt - cursorHalf;
+                                    clone.setAmount(cursorHalf);
+                                    event.setCursor(clone);
 
-                                clone2.setAmount(furnaceHalf);
-                                event.setCurrentItem(clone2);
-                                Config.clearFurnace(blockLocation);
-                                xpItems = cursorHalf;
-                            } else if (event.isLeftClick() || event.isRightClick()) {
-                                // Any other click will stack on the cursor
-                                if (cursorEmpty || ItemUtil.isSameItem(clicked, cursor)) {
-                                    int total = amt + cursorAmount;
-                                    if (total <= maxPlayerInventory) {
-                                        clone.setAmount(total);
-                                        event.setCurrentItem(null);
-                                        event.setCursor(clone);
-                                        event.setResult(Result.DENY);
-                                        Config.clearFurnace(blockLocation);
-                                        xpItems = amt;
-                                    } else {
-                                        int left = total - maxPlayerInventory;
-
-                                        clone.setAmount(maxPlayerInventory);
-                                        event.setCursor(clone);
-
-                                        if (left < 64) {
+                                    clone2.setAmount(furnaceHalf);
+                                    event.setCurrentItem(clone2);
+                                    Config.clearFurnace(blockLocation);
+                                    xpItems = cursorHalf;
+                                } else if (event.isLeftClick() || event.isRightClick()) {
+                                    // Any other click will stack on the cursor
+                                    if (cursorEmpty || ItemUtil.isSameItem(clicked, cursor)) {
+                                        int total = amt + cursorAmount;
+                                        if (total <= maxPlayerInventory) {
+                                            clone.setAmount(total);
+                                            event.setCurrentItem(null);
+                                            event.setCursor(clone);
+                                            event.setResult(Result.DENY);
                                             Config.clearFurnace(blockLocation);
-                                            clone2.setAmount(left);
+                                            xpItems = amt;
                                         } else {
-                                            Config.setFurnaceAmount(blockLocation, left);
-                                            clone2.setAmount(63);
-                                        }
-                                        event.setCurrentItem(clone2);
+                                            int left = total - maxPlayerInventory;
 
-                                        event.setResult(Result.DENY);
-                                        xpItems = maxPlayerInventory - cursorAmount;
+                                            clone.setAmount(maxPlayerInventory);
+                                            event.setCursor(clone);
+
+                                            if (left < 64) {
+                                                Config.clearFurnace(blockLocation);
+                                                clone2.setAmount(left);
+                                            } else {
+                                                Config.setFurnaceAmount(blockLocation, left);
+                                                clone2.setAmount(63);
+                                            }
+                                            event.setCurrentItem(clone2);
+
+                                            event.setResult(Result.DENY);
+                                            xpItems = maxPlayerInventory - cursorAmount;
+                                        }
                                     }
                                 }
-                            }
-                            ItemStack xpClone = clicked.clone();
-                            xpClone.setAmount(xpItems);
-                            FurnaceXPConfig.giveFurnaceXP(player, xpClone);
-                        }
-                    }
-                    InventoryUtil.updateInventory(player);
-                // normal amounts in the furnace
-                } else {
-                    if (event.isShiftClick()) {
-                        if (freeSpaces > clickedAmount) {
-                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
-                            if (defaultStack > -1 && defaultStack < clone.getAmount()) {
-                                event.setCancelled(true);
-
-                                event.setCurrentItem(null);
-
-                                FurnaceXPConfig.giveFurnaceXP(player, clone);
-
-                                InventoryUtil.addItemsToPlayer(player, clone, "");
-                            }
-                        } else {
-                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
-                            if (defaultStack > -1 && defaultStack < clone2.getAmount()) {
-                                event.setCancelled(true);
-
-                                int newAmount = clickedAmount - freeSpaces;
-                                clone.setAmount(newAmount);
-                                event.setCurrentItem(clone);
-
-                                clone2.setAmount(freeSpaces);
-                                FurnaceXPConfig.giveFurnaceXP(player, clone2);
-
-                                InventoryUtil.addItemsToPlayer(player, clone2, "");
+                                ItemStack xpClone = clicked.clone();
+                                xpClone.setAmount(xpItems);
+                                FurnaceXPConfig.giveFurnaceXP(player, xpClone);
                             }
                         }
-                    } else if (event.isLeftClick() || event.isRightClick()) {
-                        if (cursorAmount + clickedAmount > maxItems) {
-                            if (maxItems > 0 && cursorAmount == 0) {
-                                if (clickedAmount > maxItems) {
+                        InventoryUtil.updateInventory(player);
+                    // normal amounts in the furnace
+                    } else {
+                        if (event.isShiftClick()) {
+                            if (freeSpaces > clickedAmount) {
+                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
+                                if (defaultStack > -1 && defaultStack < clone.getAmount()) {
                                     event.setCancelled(true);
 
-                                    clone.setAmount(clickedAmount - maxItems);
-                                    event.setCurrentItem(clone);
+                                    event.setCurrentItem(null);
 
-                                    clone2.setAmount(maxItems);
-                                    FurnaceXPConfig.giveFurnaceXP(player, clone2);
+                                    FurnaceXPConfig.giveFurnaceXP(player, clone);
 
-                                    event.setCursor(clone2);
+                                    InventoryUtil.addItemsToPlayer(player, clone, "");
                                 }
                             } else {
-                                event.setCancelled(true);
+                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
+                                if (defaultStack > -1 && defaultStack < clone2.getAmount()) {
+                                    event.setCancelled(true);
+
+                                    int newAmount = clickedAmount - freeSpaces;
+                                    clone.setAmount(newAmount);
+                                    event.setCurrentItem(clone);
+
+                                    clone2.setAmount(freeSpaces);
+                                    FurnaceXPConfig.giveFurnaceXP(player, clone2);
+
+                                    InventoryUtil.addItemsToPlayer(player, clone2, "");
+                                }
+                            }
+                        } else if (event.isLeftClick() || event.isRightClick()) {
+                            if (cursorAmount + clickedAmount > maxItems) {
+                                if (maxItems > 0 && cursorAmount == 0) {
+                                    if (clickedAmount > maxItems) {
+                                        event.setCancelled(true);
+
+                                        clone.setAmount(clickedAmount - maxItems);
+                                        event.setCurrentItem(clone);
+
+                                        clone2.setAmount(maxItems);
+                                        FurnaceXPConfig.giveFurnaceXP(player, clone2);
+
+                                        event.setCursor(clone2);
+                                    }
+                                } else {
+                                    event.setCancelled(true);
+                                }
                             }
                         }
                     }
