@@ -1,6 +1,8 @@
 package haveric.stackableItems.util;
 
 import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.api.SIAddItemEvent;
+import haveric.stackableItems.api.SIDropExcessEvent;
 import haveric.stackableItems.config.Config;
 
 import java.util.Iterator;
@@ -393,6 +395,7 @@ public final class InventoryUtil {
             @Override public void run() {
                 if (start < end && end <= inventory.getSize()) {
                     int addAmount = itemToAdd.getAmount();
+                    int initialAdd = addAmount;
 
                     if (extraType.equals("inventory")) {
                         addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, true);
@@ -470,12 +473,20 @@ public final class InventoryUtil {
                         }
                     }
 
+                    ItemStack itemClone = itemToAdd.clone();
+                    itemClone.setAmount(initialAdd - addAmount);
+                    SIAddItemEvent addEvent = new SIAddItemEvent(player, itemClone, inventory);
+                    Bukkit.getServer().getPluginManager().callEvent(addEvent);
+
                     if (addAmount > 0) {
                         // For some reason it is becoming air at this point in certain situations.
                         if (itemToAdd.getType() != Material.AIR) {
                             ItemStack clone = itemToAdd.clone();
                             clone.setAmount(addAmount);
-                            player.getWorld().dropItemNaturally(player.getLocation(), clone);
+                            player.getWorld().dropItemNaturally(player.getLocation(), clone.clone());
+
+                            SIDropExcessEvent dropEvent = new SIDropExcessEvent(player, clone.clone(), inventory);
+                            Bukkit.getServer().getPluginManager().callEvent(dropEvent);
                         }
                     }
                 }
