@@ -33,7 +33,7 @@ public final class InventoryUtil {
         plugin = si;
     }
 
-    public static int getInventoryFreeSpaces(String worldName, ItemStack itemToCheck, Inventory inventory) {
+    private static int getInventoryFreeSpaces(String worldName, ItemStack itemToCheck, Inventory inventory) {
         int free = 0;
 
         Material type = itemToCheck.getType();
@@ -59,11 +59,12 @@ public final class InventoryUtil {
 
         return free;
     }
+
     public static int getPlayerFreeSpaces(Player player, ItemStack itemToCheck) {
         return getFreeSpaces(player, itemToCheck, player.getInventory(), 0, 36);
     }
 
-    public static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory, int start, int end) {
+    private static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory, int start, int end) {
         int free = 0;
 
         if (start < end && end <= inventory.getSize()) {
@@ -221,7 +222,6 @@ public final class InventoryUtil {
         return free;
     }
 
-
     private static int checkAddHotbarLTR(Player player, Inventory inventory, ItemStack itemToCheck) {
         int free = 0;
 
@@ -362,8 +362,7 @@ public final class InventoryUtil {
         return free;
     }
 
-
-    public static boolean canVanillaStackCorrectly(ItemStack item, Inventory inventory) {
+    private static boolean canVanillaStackCorrectly(ItemStack item, Inventory inventory) {
         boolean canStack = true;
         Material type = item.getType();
         short dur = item.getDurability();
@@ -494,7 +493,7 @@ public final class InventoryUtil {
         });
     }
 
-    public static int addHotbarLTR(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
+    private static int addHotbarLTR(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
         if (start <= 8) {
             if (end > 8) {
                 end = 8;
@@ -517,7 +516,7 @@ public final class InventoryUtil {
         return addAmount;
     }
 
-    public static int addHotbarRTL(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
+    private static int addHotbarRTL(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
         if (start <= 8) {
             if (end > 8) {
                 end = 9;
@@ -541,7 +540,7 @@ public final class InventoryUtil {
         return addAmount;
     }
 
-    public static int addInventoryTTB(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
+    private static int addInventoryTTB(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
         boolean validAdd = false;
 
         if (inventory.getType() == InventoryType.PLAYER) {
@@ -580,7 +579,7 @@ public final class InventoryUtil {
         return addAmount;
     }
 
-    public static int addInventoryBTT(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
+    private static int addInventoryBTT(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
         boolean validAdd = false;
 
         if (inventory.getType() == InventoryType.PLAYER) {
@@ -619,7 +618,7 @@ public final class InventoryUtil {
         return addAmount;
     }
 
-    public static int addPartialLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
+    private static int addPartialLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
         ItemStack slot = inventory.getItem(i);
 
         if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
@@ -650,7 +649,7 @@ public final class InventoryUtil {
         return addAmount;
     }
 
-    public static int addEmptyLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
+    private static int addEmptyLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
         ItemStack slot = inventory.getItem(i);
 
         if (slot == null) {
@@ -687,7 +686,7 @@ public final class InventoryUtil {
         }
     }
 
-    public static void addItemsHelper(final Location location, final ItemStack itemToAdd, final Inventory inventory, final int maxAmount) {
+    private static void addItemsHelper(final Location location, final ItemStack itemToAdd, final Inventory inventory, final int maxAmount) {
         int addAmount = itemToAdd.getAmount();
 
         // Add to existing stacks
@@ -746,6 +745,7 @@ public final class InventoryUtil {
         }
     }
 
+    /*
     public static void moveItemsFromHopper(final Location location, final ItemStack stack, final Inventory fromInventory, final Inventory toInventory, final int max) {
         int freeSpaces = getInventoryFreeSpaces(location.getWorld().getName(), stack, toInventory);
         if (freeSpaces > 0) {
@@ -760,6 +760,7 @@ public final class InventoryUtil {
             });
         }
     }
+    */
 
     public static int moveItemsToPlayer(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft, Inventory fromInventory) {
         String extraType = "";
@@ -779,7 +780,7 @@ public final class InventoryUtil {
         return moveItems(player, clicked, event, inventory, start, end, setLeft, null, "inventory");
     }
 
-    public static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft, Inventory fromInventory, String extraType) {
+    private static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft, Inventory fromInventory, String extraType) {
         event.setCancelled(true);
         ItemStack clone = clicked.clone();
         int free = getFreeSpaces(player, clone, inventory, start, end);
@@ -942,6 +943,7 @@ public final class InventoryUtil {
             }
         });
     }
+
     public static void updateInventory(final Player player) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @SuppressWarnings("deprecation")
