@@ -184,11 +184,10 @@ public final class InventoryUtil {
     }
 
     private static int getAmountDefaultHelper(Player player, Inventory inventory, ItemStack itemToCheck, ItemStack slot, int i) {
-        Material type = itemToCheck.getType();
-
         int free = 0;
 
         if (ItemUtil.isSameItem(slot, itemToCheck)) {
+            Material type = itemToCheck.getType();
             short durability = itemToCheck.getDurability();
             int defaultMax = type.getMaxStackSize();
             int amt = slot.getAmount();
@@ -804,7 +803,9 @@ public final class InventoryUtil {
                 }
             }
         }
+
         updateInventory(player);
+
         return left;
     }
 
@@ -864,6 +865,7 @@ public final class InventoryUtil {
         if (amt == -1) {
             amt = 0;
         }
+
         return amt;
     }
 
@@ -894,6 +896,7 @@ public final class InventoryUtil {
                 amt = craftAmount;
             }
         }
+
         return amt;
     }
 
@@ -1051,6 +1054,7 @@ public final class InventoryUtil {
 
     public static void splitStack(Player player, boolean toolCheck) {
         ItemStack holding = player.getItemInHand();
+
         if (holding != null) {
             int amount = holding.getAmount();
 
