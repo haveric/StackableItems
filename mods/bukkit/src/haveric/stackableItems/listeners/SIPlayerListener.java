@@ -106,12 +106,11 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void craftItem(CraftItemEvent event) {
-        Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getCurrentItem();
 
         if (craftedItem != null) {
+            Player player = (Player) event.getWhoClicked();
             Material type = craftedItem.getType();
-
             CraftingInventory inventory = event.getInventory();
 
             int maxItems = SIItems.getItemMax(player, type, craftedItem.getDurability(), inventory.getType());
@@ -147,12 +146,11 @@ public class SIPlayerListener implements Listener {
                 int recipeAmount = result.getAmount();
 
                 if (event.getClick() == ClickType.NUMBER_KEY) {
-                    int hotbarButton = event.getHotbarButton();
-
                     int amtCanCraft = InventoryUtil.getCraftingAmount(inventory, event.getRecipe());
                     int actualCraft = amtCanCraft * recipeAmount;
 
                     if (actualCraft > 0) {
+                        int hotbarButton = event.getHotbarButton();
                         ItemStack hotbarItem = player.getInventory().getItem(hotbarButton);
                         int hotbarAmount = 0;
                         if (hotbarItem != null) {
@@ -254,7 +252,6 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
-
         ItemStack holding = player.getItemInHand();
 
         if (holding != null) {
@@ -280,8 +277,8 @@ public class SIPlayerListener implements Listener {
     public void shootBow(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-
             ItemStack clone = event.getBow().clone();
+
             int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
 
             // Don't touch default items.
@@ -314,8 +311,8 @@ public class SIPlayerListener implements Listener {
     public void entityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
-
             ItemStack holding = player.getItemInHand();
+
             if (holding != null) {
                 int maxItems = SIItems.getItemMax(player, holding.getType(), holding.getDurability(), player.getInventory().getType());
 
@@ -339,7 +336,6 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void fillBucket(PlayerBucketFillEvent event) {
         Player player = event.getPlayer();
-
         ItemStack holding = player.getInventory().getItemInHand();
 
         if (holding != null) {
@@ -375,11 +371,11 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void emptyBucket(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
-
         ItemStack holding = player.getInventory().getItemInHand();
 
         if (holding != null) {
             int amount = holding.getAmount();
+
             if (amount > 1) {
                 ItemStack clone = holding.clone();
                 clone.setAmount(amount - 1);
@@ -395,7 +391,6 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST)
     public void consumeItem(PlayerItemConsumeEvent event) {
         ItemStack consumedItem = event.getItem();
-
         int amt = consumedItem.getAmount();
 
         if (amt > 1) {
@@ -1451,6 +1446,7 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerPlaceBlock(BlockPlaceEvent event) {
         ItemStack holding = event.getItemInHand();
+
         if (holding != null) {
             ItemStack clone = holding.clone();
 
@@ -1471,8 +1467,8 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerShearEntity(PlayerShearEntityEvent event) {
         Player player = event.getPlayer();
-
         ItemStack holding = player.getItemInHand();
+
         if (holding != null) {
             ItemStack clone = holding.clone();
             int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
