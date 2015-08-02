@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon:
+#### Version 1.0.3 (8/2/2015)
 * Only perform UUID lookups when actually needed
 * Removed a disabled message when clicking on an empty furnace result slot
 * Let vanilla handle dropping items.
