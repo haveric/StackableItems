@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon:
+* Fixed picking up stacks with higher than normal amounts
+
 #### Version 1.0.3 (8/2/2015)
 * Only perform UUID lookups when actually needed
 * Removed a disabled message when clicking on an empty furnace result slot

@@ -1,13 +1,5 @@
 package haveric.stackableItems.listeners;
 
-import haveric.stackableItems.StackableItems;
-import haveric.stackableItems.config.Config;
-import haveric.stackableItems.config.FurnaceXPConfig;
-import haveric.stackableItems.util.FurnaceUtil;
-import haveric.stackableItems.util.InventoryUtil;
-import haveric.stackableItems.util.ItemUtil;
-import haveric.stackableItems.util.SIItems;
-
 import java.util.Map;
 import java.util.Random;
 
@@ -49,6 +41,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.config.Config;
+import haveric.stackableItems.config.FurnaceXPConfig;
+import haveric.stackableItems.util.FurnaceUtil;
+import haveric.stackableItems.util.InventoryUtil;
+import haveric.stackableItems.util.ItemUtil;
+import haveric.stackableItems.util.SIItems;
 
 public class SIPlayerListener implements Listener {
 
@@ -1438,7 +1438,7 @@ public class SIPlayerListener implements Listener {
             // We only want to override if moving more than a vanilla stack will hold
             int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory(), null, "pickup");
 
-            if (defaultStack > -1 && stack.getAmount() > defaultStack) {
+            if (defaultStack > -1 && (stack.getAmount() > defaultStack || stack.getAmount() > stack.getMaxStackSize())) {
                 InventoryUtil.addItemsToPlayer(player, stack.clone(), "pickup");
                 Random random = new Random();
                 player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
