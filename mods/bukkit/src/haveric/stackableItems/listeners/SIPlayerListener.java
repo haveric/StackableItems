@@ -1421,30 +1421,52 @@ public class SIPlayerListener implements Listener {
     public void playerPicksUpItem(PlayerPickupItemEvent event) {
         Player player = event.getPlayer();
         Item item = event.getItem();
-        ItemStack stack = item.getItemStack();
 
-        int maxItems = SIItems.getItemMax(player, stack.getType(), stack.getDurability(), player.getInventory().getType());
+        if (SIItems.isInventoryEnabled(item.getWorld().getName(),player.getInventory())) {
+            ItemStack inventoryItem;
+            int stackSize = SIItems.getInventoryMax(item.getWorld().getName(), item.getItemStack().getType(), item.getItemStack().getDurability(), player.getInventory().getType());
 
-        // Don't touch default items
-        if (maxItems == SIItems.ITEM_DEFAULT) {
-            return;
-        }
+            if (stackSize != SIItems.ITEM_DEFAULT) {
+                plugin.getLogger().info("Starting Item Pickup, stacksize:"+stackSize);
 
-        int freeSpaces = InventoryUtil.getPlayerFreeSpaces(player, stack);
+                //int slotsNeeded,remainder;
+                int totalItems = item.getItemStack().getAmount();
+                int remainingItems = totalItems;
 
-        if (freeSpaces == 0 || maxItems == 0) {
-            event.setCancelled(true);
-        } else {
-            // We only want to override if moving more than a vanilla stack will hold
-            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, stack, player.getInventory(), null, "pickup");
+                ItemStack[] playerInventory = player.getInventory().getContents();
 
-            if (defaultStack > -1 && (stack.getAmount() > defaultStack || stack.getAmount() > stack.getMaxStackSize())) {
-                InventoryUtil.addItemsToPlayer(player, stack.clone(), "pickup");
-                Random random = new Random();
-                player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                for (int i = 0; i < playerInventory.length; i++) {
+                    inventoryItem = playerInventory[i];
+                    if ((inventoryItem != null) && (inventoryItem.getType().equals(item.getItemStack().getType()))) {
+                        if (item.getItemStack().getDurability() == inventoryItem.getDurability()) {
+                            if (inventoryItem.getAmount() < stackSize) {
+                                while ((inventoryItem.getAmount() < stackSize) && (remainingItems > 0)) {
+                                    inventoryItem.setAmount(inventoryItem.getAmount() + 1);
+                                    remainingItems--;
+                                }
+                                playerInventory[i] = inventoryItem;
+                            }
+                        }
+                    }
+                }
 
-                item.remove();
+                while ((remainingItems > 0) && (player.getInventory().firstEmpty() != -1)) {
+                    if (remainingItems >= stackSize) {
+                        item.getItemStack().setAmount(stackSize);
+                        remainingItems = remainingItems - stackSize;
+                    } else {
+                        item.getItemStack().setAmount(remainingItems);
+                        remainingItems = 0;
+                    }
+                    player.getInventory().setItem(player.getInventory().firstEmpty(), item.getItemStack());
+                }
 
+                if (remainingItems > 0) {
+                    event.getItem().getItemStack().setAmount(event.getItem().getItemStack().getAmount() - remainingItems);
+                } else {
+                    event.getItem().remove();
+                }
+                player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((new Random().nextFloat() - new Random().nextFloat()) * 0.5F + 1.2F) * 2.0F);
                 event.setCancelled(true);
             }
         }
