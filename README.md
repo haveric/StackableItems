@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon:
+#### Version 1.0.4 (10/22/2015)
 * Fixed picking up stacks with higher than normal amounts
 
 #### Version 1.0.3 (8/2/2015)
