@@ -1,10 +1,5 @@
 package haveric.stackableItems.util;
 
-import haveric.stackableItems.StackableItems;
-import haveric.stackableItems.api.SIAddItemEvent;
-import haveric.stackableItems.api.SIDropExcessEvent;
-import haveric.stackableItems.config.Config;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +18,11 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.api.SIAddItemEvent;
+import haveric.stackableItems.api.SIDropExcessEvent;
+import haveric.stackableItems.config.Config;
+
 public final class InventoryUtil {
 
     private static StackableItems plugin;
@@ -32,7 +32,7 @@ public final class InventoryUtil {
     public static void init(StackableItems si) {
         plugin = si;
     }
-
+/*
     private static int getInventoryFreeSpaces(String worldName, ItemStack itemToCheck, Inventory inventory) {
         int free = 0;
 
@@ -59,7 +59,7 @@ public final class InventoryUtil {
 
         return free;
     }
-
+*/
     public static int getPlayerFreeSpaces(Player player, ItemStack itemToCheck) {
         return getFreeSpaces(player, itemToCheck, player.getInventory(), 0, 36);
     }
@@ -889,8 +889,7 @@ public final class InventoryUtil {
                 }
             }
 
-            // TODO: re-evaluate if the double is necessary
-            int craftAmount = (int) Math.floor(holdingAmount / (double) ingAmount);
+            int craftAmount = holdingAmount / ingAmount;
 
             if (amt == -1 || amt > craftAmount) {
                 amt = craftAmount;

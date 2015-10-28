@@ -510,7 +510,7 @@ public class SIPlayerListener implements Listener {
 
             int toAdd = 0;
             if (numStacksToSplit > 0) {
-                toAdd = (int) Math.floor(numToSplit / numStacksToSplit);
+                toAdd = numToSplit / numStacksToSplit;
             }
             int left = numToSplit - (toAdd * numStacksToSplit);
 
