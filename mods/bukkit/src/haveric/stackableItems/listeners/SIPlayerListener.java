@@ -597,7 +597,14 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled=true)
     public void creativeClick(InventoryCreativeEvent event) {
         Inventory inventory = event.getInventory();
-        inventory.setMaxStackSize(SIItems.ITEM_NEW_MAX);
+
+        if (plugin.supportsInventoryStackSize) {
+            try {
+                inventory.setMaxStackSize(SIItems.ITEM_NEW_MAX);
+            } catch (AbstractMethodError e) {
+                plugin.supportsInventoryStackSize = false;
+            }
+        }
 
         ItemStack clicked = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
@@ -635,7 +642,13 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void inventoryClick(InventoryClickEvent event) {
-        event.getInventory().setMaxStackSize(SIItems.ITEM_NEW_MAX);
+        if (plugin.supportsInventoryStackSize) {
+            try {
+                event.getInventory().setMaxStackSize(SIItems.ITEM_NEW_MAX);
+            } catch (AbstractMethodError e) {
+                plugin.supportsInventoryStackSize = false;
+            }
+        }
 
         ItemStack cursor = event.getCursor();
         ItemStack clicked = event.getCurrentItem();
@@ -960,12 +973,24 @@ public class SIPlayerListener implements Listener {
             // TODO: might be able to remove this (except maxstacksize?)
              if (topType == InventoryType.ENCHANTING) {
                 if (rawSlot == 0) {
-                    top.setMaxStackSize(1);
+                    if (plugin.supportsInventoryStackSize) {
+                        try {
+                            top.setMaxStackSize(1);
+                        } catch (AbstractMethodError e) {
+                            plugin.supportsInventoryStackSize = false;
+                        }
+                    }
                     if (!event.isShiftClick()) {
                         return;
                     }
                 } else if (rawSlot == 1) {
-                    top.setMaxStackSize(64);
+                    if (plugin.supportsInventoryStackSize) {
+                        try {
+                            top.setMaxStackSize(64);
+                        } catch (AbstractMethodError e) {
+                            plugin.supportsInventoryStackSize = false;
+                        }
+                    }
                 }
             } else if (topType == InventoryType.BREWING) {
                 if (rawSlot <= 2) {

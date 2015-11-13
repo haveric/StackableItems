@@ -1,5 +1,12 @@
 package haveric.stackableItems;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.config.FurnaceXPConfig;
 import haveric.stackableItems.listeners.SIBlockListener;
@@ -10,19 +17,12 @@ import haveric.stackableItems.mcstats.Metrics;
 import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
-
-import java.io.IOException;
-import java.util.logging.Logger;
-
 import net.milkbowl.vault.permission.Permission;
-
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class StackableItems extends JavaPlugin {
 
     public Logger log;
+    public boolean supportsInventoryStackSize = true;
 
     private Commands commands = new Commands(this);
 
