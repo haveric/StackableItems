@@ -1,8 +1,5 @@
 package haveric.stackableItems.util;
 
-import haveric.stackableItems.StackableItems;
-import haveric.stackableItems.fileWriter.CustomFileWriter;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.fileWriter.CustomFileWriter;
 
 public final class FurnaceUtil {
 
@@ -109,16 +109,20 @@ public final class FurnaceUtil {
         Iterator<Recipe> iter = plugin.getServer().recipeIterator();
 
         while (iter.hasNext()) {
-            Recipe recipe = iter.next();
-            if (recipe instanceof FurnaceRecipe) {
-                FurnaceRecipe furnaceRecipe = (FurnaceRecipe) recipe;
+            try {
+                Recipe recipe = iter.next();
+                if (recipe instanceof FurnaceRecipe) {
+                    FurnaceRecipe furnaceRecipe = (FurnaceRecipe) recipe;
 
-                ItemStack item = furnaceRecipe.getInput();
-                Material mat = item.getType();
+                    ItemStack item = furnaceRecipe.getInput();
+                    Material mat = item.getType();
 
-                if (!furnaceBurnables.contains(mat)) {
-                    furnaceBurnables.add(mat);
+                    if (!furnaceBurnables.contains(mat)) {
+                        furnaceBurnables.add(mat);
+                    }
                 }
+            } catch (NullPointerException e) {
+                // Catch any invalid Bukkit recipes
             }
         }
     }

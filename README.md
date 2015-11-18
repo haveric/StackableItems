@@ -8,6 +8,7 @@
 
 #### Version 1.0.5 Coming Soon
 * Fixed setMaxStackSize errors on 1.7.10
+* Better handling of invalid Bukkit recipes
 
 #### Version 1.0.4 (10/22/2015)
 * Fixed picking up stacks with higher than normal amounts
