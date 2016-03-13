@@ -50,6 +50,7 @@ import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.ItemUtil;
 import haveric.stackableItems.util.SIItems;
 import haveric.stackableItems.util.SoundUtil;
+import haveric.stackableItems.util.Version;
 
 public class SIPlayerListener implements Listener {
 
@@ -406,6 +407,20 @@ public class SIPlayerListener implements Listener {
 
                 InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.MUSHROOM_SOUP, amt - 1));
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
+            } else if (type == Material.RABBIT_STEW) {
+                int heldSlot = player.getInventory().getHeldItemSlot();
+
+                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.RABBIT_STEW, amt - 1));
+                InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
+            }
+
+            if (Version.has19Support()) {
+                if (type == Material.BEETROOT_SOUP) {
+                    int heldSlot = player.getInventory().getHeldItemSlot();
+
+                    InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.BEETROOT_SOUP, amt - 1));
+                    InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
+                }
             }
         }
     }
