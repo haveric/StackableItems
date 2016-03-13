@@ -1,0 +1,25 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+version = '1.0.5'
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'Spigot/Bukkit maven repo'
+        url 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name 'Vault'
+        url 'http://nexus.theyeticave.net/content/repositories/pub_releases/'
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.4'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
+
+    compile "org.bukkit:bukkit:1.9-R0.1-SNAPSHOT"
+    compile "net.milkbowl.vault:VaultAPI:1.5"
+}

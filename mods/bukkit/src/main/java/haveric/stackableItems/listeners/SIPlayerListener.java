@@ -49,6 +49,7 @@ import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.ItemUtil;
 import haveric.stackableItems.util.SIItems;
+import haveric.stackableItems.util.SoundUtil;
 
 public class SIPlayerListener implements Listener {
 
@@ -1466,7 +1467,8 @@ public class SIPlayerListener implements Listener {
             if (defaultStack > -1 && (stack.getAmount() > defaultStack || stack.getAmount() > stack.getMaxStackSize())) {
                 InventoryUtil.addItemsToPlayer(player, stack.clone(), "pickup");
                 Random random = new Random();
-                player.playSound(item.getLocation(), Sound.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                Sound pickupSound = SoundUtil.getSound("ENTITY_ITEM_PICKUP", "ITEM_PICKUP");
+                player.playSound(item.getLocation(), pickupSound, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
                 item.remove();
 
