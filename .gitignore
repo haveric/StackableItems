@@ -7,3 +7,9 @@ reports
 build.xml
 bin
 downloads/*/dev
+
+
+# Gradle
+.gradle
+build/
+/build/
