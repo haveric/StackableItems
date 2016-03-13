@@ -9,6 +9,7 @@
 #### Version 1.0.5 Coming Soon
 * Support for 1.9
 * Fix rabbit stew and beetroot soup stacking
+* Added "edit-stacked-books" option
 * Fixed setMaxStackSize errors on 1.7.10
 * Better handling of invalid Bukkit recipes
 
