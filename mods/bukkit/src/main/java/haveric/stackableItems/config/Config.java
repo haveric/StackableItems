@@ -1,5 +1,8 @@
 package haveric.stackableItems.config;
 
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.util.SIItems;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,9 +13,6 @@ import org.bukkit.block.Furnace;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import haveric.stackableItems.StackableItems;
-import haveric.stackableItems.util.SIItems;
 
 public final class Config {
 
@@ -26,7 +26,6 @@ public final class Config {
 
     private static String cfgUpdateCheck = "update-check.enabled";
     private static String cfgUpdateFrequency = "update-check.frequency";
-    private static String cfgEditStackedBooks = "edit-stacked-books";
 
     private static FileConfiguration cfgOptions;
     private static File cfgOptionsFile;
@@ -41,7 +40,6 @@ public final class Config {
 
     private static final boolean UPDATE_CHECK_ENABLED_DEFAULT = true;
     private static final int UPDATE_CHECK_FREQUENCY_DEFAULT = 6;
-    private static final boolean EDIT_STACKED_BOOKS = true;
 
     private Config() { } // Private constructor for utility class
 
@@ -102,14 +100,12 @@ public final class Config {
         cfgOptions.addDefault(cfgPreventWastedFlintSteel, PREVENT_WASTED_FAS_DEFAULT);
         cfgOptions.addDefault(cfgUpdateCheck, UPDATE_CHECK_ENABLED_DEFAULT);
         cfgOptions.addDefault(cfgUpdateFrequency, UPDATE_CHECK_FREQUENCY_DEFAULT);
-        cfgOptions.addDefault(cfgEditStackedBooks, EDIT_STACKED_BOOKS);
 
         if (!cfgOptions.isSet(cfgDebug)
          || !cfgOptions.isSet(cfgFurnaceAmount)
          || !cfgOptions.isSet(cfgPreventWastedFlintSteel)
          || !cfgOptions.isSet(cfgUpdateCheck)
-         || !cfgOptions.isSet(cfgUpdateFrequency)
-         || !cfgOptions.isSet(cfgEditStackedBooks)) {
+         || !cfgOptions.isSet(cfgUpdateFrequency)) {
             cfgOptions.options().copyDefaults(true);
             saveConfig(cfgOptions, cfgOptionsFile);
         }
@@ -188,9 +184,5 @@ public final class Config {
 
     public static int getUpdateCheckFrequency() {
         return Math.max(cfgOptions.getInt(cfgUpdateFrequency, UPDATE_CHECK_FREQUENCY_DEFAULT), 0);
-    }
-
-    public static boolean isEditStackedBooksEnabled() {
-        return cfgOptions.getBoolean(cfgEditStackedBooks);
     }
 }

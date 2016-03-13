@@ -31,7 +31,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -42,7 +41,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.BookMeta;
 
 import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
@@ -389,32 +387,6 @@ public class SIPlayerListener implements Listener {
 
                 InventoryUtil.replaceItem(player.getInventory(), slot, clone);
                 InventoryUtil.addItemsToPlayer(player, event.getItemStack(), "");
-            }
-        }
-    }
-
-    @EventHandler (priority = EventPriority.HIGHEST)
-    public void editBook(PlayerEditBookEvent event) {
-        if (!Config.isEditStackedBooksEnabled()) {
-            Player player = event.getPlayer();
-            int slot = event.getSlot();
-            ItemStack editedBook = player.getInventory().getItem(slot);
-            int amt = editedBook.getAmount();
-
-            if (amt > 1) {
-                BookMeta oldMeta = event.getPreviousBookMeta();
-                BookMeta newMeta = event.getNewBookMeta();
-
-                ItemStack singleNew = editedBook.clone();
-                singleNew.setItemMeta(newMeta);
-                singleNew.setAmount(1);
-
-                ItemStack rest = editedBook.clone();
-                rest.setItemMeta(oldMeta);
-                rest.setAmount(amt - 1);
-
-                InventoryUtil.replaceItem(player.getInventory(), slot, singleNew);
-                InventoryUtil.addItemsToPlayer(player, rest, "");
             }
         }
     }
