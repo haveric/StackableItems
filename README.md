@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Version 1.0.5 Coming Soon
+#### Version 1.0.5 (3/16/2016)
 * Support for 1.9
 * Fix rabbit stew and beetroot soup stacking
 * Fixed setMaxStackSize errors on 1.7.10
