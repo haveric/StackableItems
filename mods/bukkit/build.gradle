@@ -20,6 +20,6 @@ dependencies {
     testCompile 'org.powermock:powermock-module-junit4:1.6.4'
     testCompile 'org.powermock:powermock-api-mockito:1.6.4'
 
-    compile "org.bukkit:bukkit:1.9-R0.1-SNAPSHOT"
-    compile "net.milkbowl.vault:VaultAPI:1.5"
+    compile "org.bukkit:bukkit:1.9.2-R0.1-SNAPSHOT"
+    compile "net.milkbowl.vault:VaultAPI:1.6"
 }

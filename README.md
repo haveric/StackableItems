@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming soon
+* Fixed shift clicking for elytra into armor slot
+
 #### Version 1.0.5 (3/16/2016)
 * Support for 1.9
 * Fix rabbit stew and beetroot soup stacking
