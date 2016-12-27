@@ -1,16 +1,15 @@
 package haveric.stackableItems.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.fileWriter.CustomFileWriter;
 import org.bukkit.Material;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-import haveric.stackableItems.StackableItems;
-import haveric.stackableItems.fileWriter.CustomFileWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public final class FurnaceUtil {
 
@@ -89,6 +88,31 @@ public final class FurnaceUtil {
             listOfFuels.add(Material.ACACIA_FENCE_GATE);
         } catch (NoSuchFieldError e) {
             plugin.log.warning("1.8 fuel items not found.");
+        }
+        
+        try {
+            listOfFuels.add(Material.WOOL);
+            listOfFuels.add(Material.CARPET);
+            listOfFuels.add(Material.LADDER);
+            listOfFuels.add(Material.WOOD_BUTTON);
+            listOfFuels.add(Material.BOW);
+            listOfFuels.add(Material.FISHING_ROD);
+            listOfFuels.add(Material.SIGN);
+            listOfFuels.add(Material.BOWL);
+            listOfFuels.add(Material.WOODEN_DOOR);
+            listOfFuels.add(Material.DARK_OAK_DOOR_ITEM);
+            listOfFuels.add(Material.ACACIA_DOOR_ITEM);
+            listOfFuels.add(Material.BIRCH_DOOR_ITEM);
+            listOfFuels.add(Material.JUNGLE_DOOR_ITEM);
+            listOfFuels.add(Material.SPRUCE_DOOR_ITEM);
+            listOfFuels.add(Material.BOAT);
+            listOfFuels.add(Material.BOAT_ACACIA);
+            listOfFuels.add(Material.BOAT_BIRCH);
+            listOfFuels.add(Material.BOAT_DARK_OAK);
+            listOfFuels.add(Material.BOAT_JUNGLE);
+            listOfFuels.add(Material.BOAT_SPRUCE);
+        } catch (NoSuchFieldError e) {
+            plugin.log.warning("1.11 fuel items not found.");
         }
     }
 
