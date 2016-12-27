@@ -9,6 +9,7 @@
 #### Coming soon
 * Fixed shift clicking for elytra into armor slot
 * Added 1.11 fuels
+* Added chorus fruit and nugget furnace xp
 
 #### Version 1.0.5 (3/16/2016)
 * Support for 1.9

@@ -1,10 +1,7 @@
 package haveric.stackableItems.config;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Random;
-
+import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.util.SoundUtil;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -13,8 +10,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import haveric.stackableItems.StackableItems;
-import haveric.stackableItems.util.SoundUtil;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Random;
 
 public class FurnaceXPConfig {
 
@@ -80,6 +79,9 @@ public class FurnaceXPConfig {
         cfgFurnaceXP.addDefault("SMOOTH_BRICK 2", 0.1);
         cfgFurnaceXP.addDefault("NETHER_BRICK", 0.1);
         cfgFurnaceXP.addDefault("GLASS", 0.1);
+        cfgFurnaceXP.addDefault("CHORUS_FRUIT_POPPED", 0.1);
+        cfgFurnaceXP.addDefault("IRON_NUGGET", 0.1);
+        cfgFurnaceXP.addDefault("GOLD_NUGGET", 0.1);
 
         if (!cfgFurnaceXP.isSet("DIAMOND")
          || !cfgFurnaceXP.isSet("EMERALD")
@@ -104,7 +106,10 @@ public class FurnaceXPConfig {
          || !cfgFurnaceXP.isSet("STONE")
          || !cfgFurnaceXP.isSet("SMOOTH_BRICK 2")
          || !cfgFurnaceXP.isSet("NETHER_BRICK")
-         || !cfgFurnaceXP.isSet("GLASS")) {
+         || !cfgFurnaceXP.isSet("GLASS")
+         || !cfgFurnaceXP.isSet("CHORUS_FRUIT_POPPED")
+         || !cfgFurnaceXP.isSet("IRON_NUGGET")
+         || !cfgFurnaceXP.isSet("GOLD_NUGGET")) {
 
             cfgFurnaceXP.options().copyDefaults(true);
             Config.saveConfig(cfgFurnaceXP, cfgFurnaceXPFile);
