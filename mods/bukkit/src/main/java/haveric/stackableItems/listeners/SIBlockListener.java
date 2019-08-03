@@ -24,7 +24,7 @@ public class SIBlockListener implements Listener {
         Player player = event.getPlayer();
 
         // Handle breaking furnaces with larger stacks in them than normally allowed
-        if (block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE) {
+        if (block.getType() == Material.FURNACE) {
             int maxAmount = Config.getFurnaceAmount(block.getLocation());
             if (maxAmount > SIItems.ITEM_DEFAULT) {
                 Furnace furnace = (Furnace) block.getState();

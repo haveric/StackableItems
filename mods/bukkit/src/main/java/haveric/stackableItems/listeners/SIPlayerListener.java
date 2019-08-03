@@ -36,11 +36,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 
 import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
@@ -49,8 +45,6 @@ import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.ItemUtil;
 import haveric.stackableItems.util.SIItems;
-import haveric.stackableItems.util.SoundUtil;
-import haveric.stackableItems.util.Version;
 
 public class SIPlayerListener implements Listener {
 
@@ -402,25 +396,21 @@ public class SIPlayerListener implements Listener {
 
             if (type == Material.MILK_BUCKET) {
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BUCKET), "");
-            } else if (type == Material.MUSHROOM_SOUP) {
+            } else if (type == Material.MUSHROOM_STEW) {
                 int heldSlot = player.getInventory().getHeldItemSlot();
 
-                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.MUSHROOM_SOUP, amt - 1));
+                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.MUSHROOM_STEW, amt - 1));
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
             } else if (type == Material.RABBIT_STEW) {
                 int heldSlot = player.getInventory().getHeldItemSlot();
 
                 InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.RABBIT_STEW, amt - 1));
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
-            }
+            } else if (type == Material.BEETROOT_SOUP) {
+                int heldSlot = player.getInventory().getHeldItemSlot();
 
-            if (Version.has19Support()) {
-                if (type == Material.BEETROOT_SOUP) {
-                    int heldSlot = player.getInventory().getHeldItemSlot();
-
-                    InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.BEETROOT_SOUP, amt - 1));
-                    InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
-                }
+                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.BEETROOT_SOUP, amt - 1));
+                InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
             }
         }
     }
@@ -436,9 +426,7 @@ public class SIPlayerListener implements Listener {
                 Material placedType = block.getRelative(event.getBlockFace()).getType();
 
                 switch(placedType) {
-                    case STATIONARY_WATER:
                     case WATER:
-                    case STATIONARY_LAVA:
                     case LAVA:
                     case FIRE:
                         event.setUseItemInHand(Result.DENY);
@@ -471,6 +459,7 @@ public class SIPlayerListener implements Listener {
         int defaultStackAmount = cursorType.getMaxStackSize();
         short cursorDur = cursor.getDurability();
 
+        InventoryView view = event.getView();
         Inventory inventory = event.getInventory();
 
         Map<Integer, ItemStack> items = event.getNewItems();
@@ -486,7 +475,7 @@ public class SIPlayerListener implements Listener {
             ItemStack added = entry.getValue();
             int newAmount = added.getAmount();
 
-            int maxSlot = InventoryUtil.getInventoryMax(player, null, inventory, cursorType, cursorDur, slot);
+            int maxSlot = InventoryUtil.getInventoryMax(player, null, view, inventory, cursorType, cursorDur, slot);
 
             if (newAmount > maxSlot && maxSlot > SIItems.ITEM_DEFAULT) {
                 int extra = newAmount - maxSlot;
@@ -535,7 +524,7 @@ public class SIPlayerListener implements Listener {
                 ItemStack added = entry.getValue();
                 int newAmount = added.getAmount();
 
-                int maxSlot = InventoryUtil.getInventoryMax(player, null, inventory, cursorType, cursorDur, slot);
+                int maxSlot = InventoryUtil.getInventoryMax(player, null, view, inventory, cursorType, cursorDur, slot);
                 if (maxSlot <= SIItems.ITEM_DEFAULT) {
                     maxSlot = added.getMaxStackSize();
                 }
@@ -672,13 +661,15 @@ public class SIPlayerListener implements Listener {
 
         SlotType slotType = event.getSlotType();
 
-        Inventory top = event.getView().getTopInventory();
+        InventoryView view = event.getView();
+        Inventory top = view.getTopInventory();
         InventoryType topType = top.getType();
 
-        String topName = top.getName();
+        String topName = event.getView().getTitle();
         // Let Vanilla handle the saddle and armor slots for horses
-        if (event.getRawSlot() < 2 && topType == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
-                                                  || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse"))) {
+        boolean isHorseInventory = topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
+                || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse");
+        if (event.getRawSlot() < 2 && topType == InventoryType.CHEST && isHorseInventory) {
             return;
         }
 
@@ -710,7 +701,7 @@ public class SIPlayerListener implements Listener {
 
                 // Moving clicked to an empty hotbar slot
                 if (!clickedEmpty && hotbarItem == null) {
-                    int maxItems = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, hotbarButton);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, hotbarButton);
 
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                         event.setCurrentItem(null);
@@ -733,7 +724,7 @@ public class SIPlayerListener implements Listener {
                 // Moving hotbar to an empty clicked slot
                 } else if (clickedEmpty && hotbarItem != null) {
                     int rawSlot = event.getRawSlot();
-                    int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, rawSlot);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, rawSlot);
                     int inventorySize = top.getSize();
 
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
@@ -763,7 +754,7 @@ public class SIPlayerListener implements Listener {
                 // Move clicked to hotbar. Move hotbar elsewhere
                 } else if (!clickedEmpty && hotbarItem != null) {
                     int rawSlot = event.getRawSlot();
-                    int maxItems = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, hotbarButton);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, hotbarButton);
                     int inventorySize = top.getSize();
                     int totalItems = clickedAmount + hotbarAmount;
 
@@ -826,7 +817,7 @@ public class SIPlayerListener implements Listener {
 
                 boolean cursorEmpty = cursorType == Material.AIR;
 
-                int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
+                int maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, event.getRawSlot());
 
                 if (maxItems == 0) {
                     player.sendMessage(itemDisabledMessage);
@@ -979,9 +970,9 @@ public class SIPlayerListener implements Listener {
 
             int maxItems = 0;
             if (clickedType == Material.AIR) {
-                maxItems = InventoryUtil.getInventoryMax(player, null, top, cursorType, cursorDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, null, view, top, cursorType, cursorDur, event.getRawSlot());
             } else {
-                maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, event.getRawSlot());
             }
 
             int rawSlot = event.getRawSlot();
@@ -1140,8 +1131,7 @@ public class SIPlayerListener implements Listener {
                         if (!moved) {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
                         }
-                    } else if (topType == InventoryType.CHEST && (topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
-                            || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse"))) {
+                    } else if (topType == InventoryType.CHEST && isHorseInventory) {
                         // No chest
                         if (top.getSize() < 2) {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
@@ -1208,7 +1198,7 @@ public class SIPlayerListener implements Listener {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
                         }
                     } else if (topType == InventoryType.ENCHANTING) {
-                        if (clickedType == Material.INK_SACK && clickedDur == 4) {
+                        if (clickedType == Material.LAPIS_LAZULI) {
                             // Let vanilla handle stacking lapis for now.
                         } else if (ItemUtil.isEnchantable(clickedType) && top.getItem(0) == null) {
                             // We only want to override if moving more than a vanilla stack will hold
@@ -1482,7 +1472,7 @@ public class SIPlayerListener implements Listener {
             if (defaultStack > -1 && (stack.getAmount() > defaultStack || stack.getAmount() > stack.getMaxStackSize())) {
                 InventoryUtil.addItemsToPlayer(player, stack.clone(), "pickup");
                 Random random = new Random();
-                Sound pickupSound = SoundUtil.getSound("ENTITY_ITEM_PICKUP", "ITEM_PICKUP");
+                Sound pickupSound = Sound.ENTITY_ITEM_PICKUP;
                 player.playSound(item.getLocation(), pickupSound, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
                 item.remove();

@@ -11,10 +11,10 @@ public final class ItemUtil {
         boolean isAxe = false;
 
         switch(mat) {
-            case WOOD_AXE:
+            case WOODEN_AXE:
             case STONE_AXE:
             case IRON_AXE:
-            case GOLD_AXE:
+            case GOLDEN_AXE:
             case DIAMOND_AXE:
                 isAxe = true;
                 break;
@@ -28,10 +28,10 @@ public final class ItemUtil {
         boolean isHoe = false;
 
         switch(mat) {
-            case WOOD_HOE:
+            case WOODEN_HOE:
             case STONE_HOE:
             case IRON_HOE:
-            case GOLD_HOE:
+            case GOLDEN_HOE:
             case DIAMOND_HOE:
                 isHoe = true;
                 break;
@@ -45,10 +45,10 @@ public final class ItemUtil {
         boolean isPickaxe = false;
 
         switch(mat) {
-            case WOOD_PICKAXE:
+            case WOODEN_PICKAXE:
             case STONE_PICKAXE:
             case IRON_PICKAXE:
-            case GOLD_PICKAXE:
+            case GOLDEN_PICKAXE:
             case DIAMOND_PICKAXE:
                 isPickaxe = true;
                 break;
@@ -62,11 +62,11 @@ public final class ItemUtil {
         boolean isShovel = false;
 
         switch(mat) {
-            case WOOD_SPADE:
-            case STONE_SPADE:
-            case IRON_SPADE:
-            case GOLD_SPADE:
-            case DIAMOND_SPADE:
+            case WOODEN_SHOVEL:
+            case STONE_SHOVEL:
+            case IRON_SHOVEL:
+            case GOLDEN_SHOVEL:
+            case DIAMOND_SHOVEL:
                 isShovel = true;
                 break;
             default:
@@ -79,10 +79,10 @@ public final class ItemUtil {
         boolean isSword = false;
 
         switch(mat) {
-            case WOOD_SWORD:
+            case WOODEN_SWORD:
             case STONE_SWORD:
             case IRON_SWORD:
-            case GOLD_SWORD:
+            case GOLDEN_SWORD:
             case DIAMOND_SWORD:
                 isSword = true;
                 break;
@@ -99,7 +99,7 @@ public final class ItemUtil {
             case CHAINMAIL_BOOTS:
             case LEATHER_BOOTS:
             case IRON_BOOTS:
-            case GOLD_BOOTS:
+            case GOLDEN_BOOTS:
             case DIAMOND_BOOTS:
                 isBoots = true;
                 break;
@@ -116,7 +116,7 @@ public final class ItemUtil {
             case CHAINMAIL_CHESTPLATE:
             case LEATHER_CHESTPLATE:
             case IRON_CHESTPLATE:
-            case GOLD_CHESTPLATE:
+            case GOLDEN_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
                 isChestplate = true;
                 break;
@@ -133,8 +133,9 @@ public final class ItemUtil {
             case CHAINMAIL_HELMET:
             case LEATHER_HELMET:
             case IRON_HELMET:
-            case GOLD_HELMET:
+            case GOLDEN_HELMET:
             case DIAMOND_HELMET:
+            case TURTLE_HELMET:
                 isHelmet = true;
                 break;
             default: break;
@@ -149,7 +150,7 @@ public final class ItemUtil {
             case CHAINMAIL_LEGGINGS:
             case LEATHER_LEGGINGS:
             case IRON_LEGGINGS:
-            case GOLD_LEGGINGS:
+            case GOLDEN_LEGGINGS:
             case DIAMOND_LEGGINGS:
                 isLeggings = true;
                 break;
@@ -199,7 +200,7 @@ public final class ItemUtil {
                 case FISHING_ROD:
                 case FLINT_AND_STEEL:
                 case SHEARS:
-                case CARROT_STICK:
+                case CARROT_ON_A_STICK:
                     repairable = true;
                     break;
                 default:
@@ -219,7 +220,7 @@ public final class ItemUtil {
                 case BOOK:
                 case FISHING_ROD:
                 case SHEARS:
-                case CARROT_STICK:
+                case CARROT_ON_A_STICK:
                     enchantable = true;
                     break;
                 default:
@@ -235,34 +236,26 @@ public final class ItemUtil {
         boolean brewingIngredient = false;
 
         switch(mat) {
-            case REDSTONE:
-            case NETHER_STALK: // Bukkit name for nether warts item
-            case GLOWSTONE_DUST:
-            case FERMENTED_SPIDER_EYE:
-            case MAGMA_CREAM:
-            case SUGAR:
-            case SPECKLED_MELON:
-            case SPIDER_EYE:
-            case GHAST_TEAR:
             case BLAZE_POWDER:
-            case SULPHUR:
+            case FERMENTED_SPIDER_EYE:
+            case GHAST_TEAR:
+            case GLISTERING_MELON_SLICE:
+            case GLOWSTONE_DUST:
             case GOLDEN_CARROT:
+            case GUNPOWDER:
+            case MAGMA_CREAM:
+            case NETHER_WART:
+            case PHANTOM_MEMBRANE:
+            case PUFFERFISH:
+            case RABBIT_FOOT:
+            case REDSTONE:
+            case SPIDER_EYE:
+            case SUGAR:
+            case TURTLE_HELMET:
                 brewingIngredient = true;
                 break;
             default:
                 break;
-        }
-
-        if (mat == Material.RAW_FISH && data == 3) {
-            brewingIngredient = true;
-        }
-
-        try {
-            if (mat == Material.RABBIT_FOOT) {
-                brewingIngredient = true;
-            }
-        } catch (NoSuchFieldError e) {
-            // Doesn't have 1.8 items
         }
 
         return brewingIngredient;

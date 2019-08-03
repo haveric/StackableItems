@@ -11,12 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
 
 import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.api.SIAddItemEvent;
@@ -61,10 +56,10 @@ public final class InventoryUtil {
     }
 */
     public static int getPlayerFreeSpaces(Player player, ItemStack itemToCheck) {
-        return getFreeSpaces(player, itemToCheck, player.getInventory(), 0, 36);
+        return getFreeSpaces(player, itemToCheck, player.getOpenInventory(), player.getInventory(), 0, 36);
     }
 
-    private static int getFreeSpaces(Player player, ItemStack itemToCheck, Inventory inventory, int start, int end) {
+    private static int getFreeSpaces(Player player, ItemStack itemToCheck, InventoryView view, Inventory inventory, int start, int end) {
         int free = 0;
 
         if (start < end && end <= inventory.getSize()) {
@@ -76,7 +71,7 @@ public final class InventoryUtil {
             while (iter.hasNext() && i < end) {
                 ItemStack slot = iter.next();
 
-                int maxAmount = getInventoryMax(player, null, inventory, type, durability, i);
+                int maxAmount = getInventoryMax(player, null, view, inventory, type, durability, i);
 
                 if (slot == null) {
                     free += maxAmount;
@@ -191,7 +186,7 @@ public final class InventoryUtil {
             short durability = itemToCheck.getDurability();
             int defaultMax = type.getMaxStackSize();
             int amt = slot.getAmount();
-            int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+            int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
 
             if (slotMax == defaultMax) {
                 // Let vanilla always handle this
@@ -292,7 +287,7 @@ public final class InventoryUtil {
         while (i <= 8 && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
                 free = slotMax;
             }
             i++;
@@ -308,7 +303,7 @@ public final class InventoryUtil {
         while (i >= 0 && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
                 free = slotMax;
             }
             i--;
@@ -330,7 +325,7 @@ public final class InventoryUtil {
         while (i <= imax && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
                 free = slotMax;
             }
             i++;
@@ -352,7 +347,7 @@ public final class InventoryUtil {
         while (i <= imin && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
+                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
                 free = slotMax;
             }
             i--;
@@ -623,7 +618,7 @@ public final class InventoryUtil {
         if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
             int slotAmount = slot.getAmount();
 
-            int maxAmount = getInventoryMax(player, null, inventory, type, durability, i);
+            int maxAmount = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
             // Handle infinite items
             if (maxAmount == SIItems.ITEM_INFINITE) {
                 maxAmount = type.getMaxStackSize();
@@ -652,7 +647,7 @@ public final class InventoryUtil {
         ItemStack slot = inventory.getItem(i);
 
         if (slot == null) {
-            int maxAmount = getInventoryMax(player, null, inventory, type, durability, i);
+            int maxAmount = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
 
             // Handle infinite items
             if (maxAmount == SIItems.ITEM_INFINITE) {
@@ -782,7 +777,7 @@ public final class InventoryUtil {
     private static int moveItems(Player player, ItemStack clicked, InventoryClickEvent event, Inventory inventory, int start, int end, boolean setLeft, Inventory fromInventory, String extraType) {
         event.setCancelled(true);
         ItemStack clone = clicked.clone();
-        int free = getFreeSpaces(player, clone, inventory, start, end);
+        int free = getFreeSpaces(player, clone, event.getView(), inventory, start, end);
 
         int clickedAmount = clicked.getAmount();
 
@@ -923,7 +918,7 @@ public final class InventoryUtil {
                         if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET) {
                             addItemsToPlayer(player, new ItemStack(Material.BUCKET, removeAmount), "");
                         // Give back bowls if mushroom soup is ever used in a recipe
-                        } else if (itemType == Material.MUSHROOM_SOUP) {
+                        } else if (itemType == Material.MUSHROOM_STEW) {
                             addItemsToPlayer(player, new ItemStack(Material.BOWL, removeAmount), "");
                         }
                     }
@@ -964,7 +959,7 @@ public final class InventoryUtil {
         }, ticks);
     }
 
-    public static int getInventoryMax(Player player, String worldName, Inventory inventory, Material mat, short dur, int slot) {
+    public static int getInventoryMax(Player player, String worldName, InventoryView view, Inventory inventory, Material mat, short dur, int slot) {
         InventoryType inventoryType = inventory.getType();
 
         GameMode gamemode = null;
@@ -983,7 +978,7 @@ public final class InventoryUtil {
             gamemode = player.getGameMode();
         }
 
-        String invName = inventory.getName();
+        String invName = view.getTitle();
 
         if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {
             if (slot < 2) {
@@ -1003,7 +998,7 @@ public final class InventoryUtil {
             if (slot == 0) {
                 maxAmount = 1;
             } else if (slot == 1) {
-                if (!(mat == Material.INK_SACK && dur == 4)) {
+                if (!(mat == Material.LAPIS_LAZULI)) {
                     maxAmount = 0;
                 }
             }

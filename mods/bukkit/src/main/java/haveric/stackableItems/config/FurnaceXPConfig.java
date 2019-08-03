@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import haveric.stackableItems.StackableItems;
-import haveric.stackableItems.util.SoundUtil;
 
 public class FurnaceXPConfig {
 
@@ -134,7 +133,7 @@ public class FurnaceXPConfig {
         if (xp > 0) {
             player.giveExp(xp);
 
-            Sound expSound = SoundUtil.getSound("ENTITY_EXPERIENCE_ORB_PICKUP", "ORB_PICKUP");
+            Sound expSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
             player.playSound(player.getLocation(), expSound, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
         }
     }
