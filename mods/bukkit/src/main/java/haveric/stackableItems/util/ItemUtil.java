@@ -118,7 +118,6 @@ public final class ItemUtil {
             case IRON_CHESTPLATE:
             case GOLDEN_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
-            case ELYTRA:
                 isChestplate = true;
                 break;
             default:
@@ -136,6 +135,7 @@ public final class ItemUtil {
             case IRON_CHESTPLATE:
             case GOLDEN_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
+            case ELYTRA:
                 isChestplate = true;
                 break;
             default:
