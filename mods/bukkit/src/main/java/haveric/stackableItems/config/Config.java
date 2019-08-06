@@ -45,7 +45,7 @@ public final class Config {
 
     /**
      * Initializes the config file
-     * @param ss The main class used to
+     * @param si The main class used to
      */
     public static void init(StackableItems si) {
         plugin = si;

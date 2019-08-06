@@ -118,6 +118,24 @@ public final class ItemUtil {
             case IRON_CHESTPLATE:
             case GOLDEN_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
+            case ELYTRA:
+                isChestplate = true;
+                break;
+            default:
+                break;
+        }
+        return isChestplate;
+    }
+
+    public static boolean isChestplateEnchantable(Material mat) {
+        boolean isChestplate = false;
+
+        switch(mat) {
+            case CHAINMAIL_CHESTPLATE:
+            case LEATHER_CHESTPLATE:
+            case IRON_CHESTPLATE:
+            case GOLDEN_CHESTPLATE:
+            case DIAMOND_CHESTPLATE:
                 isChestplate = true;
                 break;
             default:
@@ -173,7 +191,7 @@ public final class ItemUtil {
     public static boolean isWeapon(Material mat) {
         boolean isWeapon = false;
 
-        if (isSword(mat) || mat == Material.BOW) {
+        if (isSword(mat) || mat == Material.BOW || mat == Material.CROSSBOW || mat == Material.TRIDENT) {
             isWeapon = true;
         }
 
@@ -183,7 +201,17 @@ public final class ItemUtil {
     public static boolean isArmor(Material mat) {
         boolean isArmor = false;
 
-        if (isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat)) {
+        if (isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat) || mat == Material.SHIELD) {
+            isArmor = true;
+        }
+
+        return isArmor;
+    }
+
+    public static boolean isArmorEnchantable(Material mat) {
+        boolean isArmor = false;
+
+        if (isBoots(mat) || isChestplateEnchantable(mat) || isHelmet(mat) || isLeggings(mat)) {
             isArmor = true;
         }
 
@@ -213,7 +241,7 @@ public final class ItemUtil {
 
     public static boolean isEnchantable(Material mat) {
         boolean enchantable = false;
-        if (isWeapon(mat) || isArmor(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
+        if (isWeapon(mat) || isArmorEnchantable(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
             enchantable = true;
         } else {
             switch(mat) {
@@ -290,7 +318,7 @@ public final class ItemUtil {
             boolean negativeDur = (one.getDurability() == Short.MAX_VALUE) || (two.getDurability() == Short.MAX_VALUE);
 
             boolean sameEnchant = false;
-            boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
+            boolean noEnchant = one.getEnchantments().isEmpty() && two.getEnchantments().isEmpty();
             if (!noEnchant) {
                 sameEnchant = one.getEnchantments().equals(two.getEnchantments());
             }
