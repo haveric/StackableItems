@@ -419,15 +419,10 @@ public final class SIItems {
 
         List<String> groups = null;
         String matName = mat.name().toUpperCase();
-        int matId = mat.getId();
         if (itemGroups.containsKey(matName + " " + dur)) {
             groups = itemGroups.get(matName + " " + dur);
-        } else if (itemGroups.containsKey(matId + " " + dur)) {
-            groups = itemGroups.get(matId + " " + dur);
         } else if (itemGroups.containsKey(matName)) {
             groups = itemGroups.get(matName);
-        } else if (itemGroups.containsKey("" + matId)) {
-            groups = itemGroups.get("" + matId);
         }
 
         if (itemsMap.containsKey(itemString)) {
@@ -446,15 +441,9 @@ public final class SIItems {
                 // check for material and durability
                 if (subMap.containsKey(matName + " " + dur)) {
                     max = subMap.get(matName + " " + dur);
-                // check for item id and durability
-                } else if (subMap.containsKey(matId + " " + dur)) {
-                    max = subMap.get(matId + " " + dur);
                 // material name with no durability
                 } else if (subMap.containsKey(matName)) {
                     max = subMap.get(matName);
-                // item id with no durability
-                } else if (subMap.containsKey("" + matId)) {
-                    max = subMap.get("" + matId);
                 // no individual item set, use the max and min values
                 } else {
                     int defaultMax = mat.getMaxStackSize();
@@ -489,11 +478,8 @@ public final class SIItems {
         List<String> groups = null;
 
         String matName = mat.name().toUpperCase();
-        int matId = mat.getId();
         if (itemGroups.containsKey(matName)) {
             groups = itemGroups.get(matName);
-        } else if (itemGroups.containsKey("" + matId)) {
-            groups = itemGroups.get("" + matId);
         }
 
         if (itemsMap.containsKey(itemString)) {
@@ -512,9 +498,6 @@ public final class SIItems {
                 // material name with no durability
                 if (subMap.containsKey(matName)) {
                     max = subMap.get(matName);
-                // item id with no durability
-                } else if (subMap.containsKey("" + matId)) {
-                    max = subMap.get("" + matId);
                  // no individual item set, use the max and min values
                 } else {
                     int defaultMax = mat.getMaxStackSize();
