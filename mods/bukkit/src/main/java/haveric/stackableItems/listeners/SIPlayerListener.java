@@ -385,7 +385,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void consumeItem(PlayerItemConsumeEvent event) {
         ItemStack consumedItem = event.getItem();
         int amt = consumedItem.getAmount();
@@ -443,7 +443,7 @@ public class SIPlayerListener implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void inventoryDrag(InventoryDragEvent event) {
         ItemStack cursor = event.getOldCursor();
         ItemStack newCursor = event.getCursor();
