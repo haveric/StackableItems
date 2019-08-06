@@ -36,9 +36,7 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
 
     public static void removePlayerFromCache(String name) {
         if (lookupCache != null) {
-            if (lookupCache.containsKey(name)) {
-                lookupCache.remove(name);
-            }
+            lookupCache.remove(name);
         }
     }
 
