@@ -783,42 +783,40 @@ public class SIPlayerListener implements Listener {
                     } // Else let vanilla move items between player slots
                 }
             }
-        } else if (cursor != null && clicked != null && slotType == SlotType.RESULT && topType == InventoryType.FURNACE) {
+        } else if (cursor != null && clicked != null && slotType == SlotType.RESULT && top instanceof FurnaceInventory) {
             Material clickedType = clicked.getType();
             boolean clickedEmpty = clickedType == Material.AIR;
 
             // Only deal with items in the result slot.
             if (!clickedEmpty) {
                 Player player = (Player) event.getWhoClicked();
+                InventoryHolder inventoryHolder = event.getInventory().getHolder();
 
-                int cursorAmount = cursor.getAmount();
-                Material cursorType = cursor.getType();
 
-                short clickedDur = clicked.getDurability();
-                int clickedAmount = clicked.getAmount();
+                if (inventoryHolder instanceof Furnace) {
+                    Furnace furnace = (Furnace) inventoryHolder;
+                    int cursorAmount = cursor.getAmount();
+                    Material cursorType = cursor.getType();
 
-                boolean cursorEmpty = cursorType == Material.AIR;
+                    short clickedDur = clicked.getDurability();
+                    int clickedAmount = clicked.getAmount();
 
-                int maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, event.getRawSlot());
+                    boolean cursorEmpty = cursorType == Material.AIR;
 
-                if (maxItems == 0) {
-                    player.sendMessage(itemDisabledMessage);
-                    event.setCancelled(true);
-                } else {
-                    int freeSpaces = InventoryUtil.getPlayerFreeSpaces(player, clicked);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, event.getRawSlot());
 
-                    ItemStack clone = clicked.clone();
-                    ItemStack clone2 = clicked.clone();
-                    int xpItems = 0;
+                    if (maxItems == 0) {
+                        player.sendMessage(itemDisabledMessage);
+                        event.setCancelled(true);
+                    } else {
+                        int freeSpaces = InventoryUtil.getPlayerFreeSpaces(player, clicked);
 
-                    int maxFurnaceSize = Config.getMaxFurnaceAmount(clickedType);
-                    if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
-                        InventoryHolder inventoryHolder = event.getInventory().getHolder();
+                        ItemStack clone = clicked.clone();
+                        ItemStack clone2 = clicked.clone();
+                        int xpItems = 0;
 
-                        if (inventoryHolder instanceof Furnace) {
-                            Furnace furnace = (Furnace) inventoryHolder;
-
-                            Location blockLocation = furnace.getBlock().getLocation();
+                        int maxFurnaceSize = Config.getMaxBlockAmount(furnace, clickedType);
+                        if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
                             int amt = Config.getFurnaceAmount(furnace);
                             if (amt > -1) {
                                 int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, topType);
@@ -885,53 +883,53 @@ public class SIPlayerListener implements Listener {
                                 xpClone.setAmount(xpItems);
                                 FurnaceXPConfig.giveFurnaceXP(player, xpClone);
                             }
-                        }
-                        InventoryUtil.updateInventory(player);
-                    // normal amounts in the furnace
-                    } else {
-                        if (event.isShiftClick()) {
-                            if (freeSpaces > clickedAmount) {
-                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
-                                if (defaultStack > -1 && defaultStack < clone.getAmount()) {
-                                    event.setCancelled(true);
-
-                                    event.setCurrentItem(null);
-
-                                    FurnaceXPConfig.giveFurnaceXP(player, clone);
-
-                                    InventoryUtil.addItemsToPlayer(player, clone, "");
-                                }
-                            } else {
-                                int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
-                                if (defaultStack > -1 && defaultStack < clone2.getAmount()) {
-                                    event.setCancelled(true);
-
-                                    int newAmount = clickedAmount - freeSpaces;
-                                    clone.setAmount(newAmount);
-                                    event.setCurrentItem(clone);
-
-                                    clone2.setAmount(freeSpaces);
-                                    FurnaceXPConfig.giveFurnaceXP(player, clone2);
-
-                                    InventoryUtil.addItemsToPlayer(player, clone2, "");
-                                }
-                            }
-                        } else if (event.isLeftClick() || event.isRightClick()) {
-                            if (cursorAmount + clickedAmount > maxItems) {
-                                if (maxItems > 0 && cursorAmount == 0) {
-                                    if (clickedAmount > maxItems) {
+                            InventoryUtil.updateInventory(player);
+                            // normal amounts in the furnace
+                        } else {
+                            if (event.isShiftClick()) {
+                                if (freeSpaces > clickedAmount) {
+                                    int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
+                                    if (defaultStack > -1 && defaultStack < clone.getAmount()) {
                                         event.setCancelled(true);
 
-                                        clone.setAmount(clickedAmount - maxItems);
-                                        event.setCurrentItem(clone);
+                                        event.setCurrentItem(null);
 
-                                        clone2.setAmount(maxItems);
-                                        FurnaceXPConfig.giveFurnaceXP(player, clone2);
+                                        FurnaceXPConfig.giveFurnaceXP(player, clone);
 
-                                        event.setCursor(clone2);
+                                        InventoryUtil.addItemsToPlayer(player, clone, "");
                                     }
                                 } else {
-                                    event.setCancelled(true);
+                                    int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), top, "");
+                                    if (defaultStack > -1 && defaultStack < clone2.getAmount()) {
+                                        event.setCancelled(true);
+
+                                        int newAmount = clickedAmount - freeSpaces;
+                                        clone.setAmount(newAmount);
+                                        event.setCurrentItem(clone);
+
+                                        clone2.setAmount(freeSpaces);
+                                        FurnaceXPConfig.giveFurnaceXP(player, clone2);
+
+                                        InventoryUtil.addItemsToPlayer(player, clone2, "");
+                                    }
+                                }
+                            } else if (event.isLeftClick() || event.isRightClick()) {
+                                if (cursorAmount + clickedAmount > maxItems) {
+                                    if (maxItems > 0 && cursorAmount == 0) {
+                                        if (clickedAmount > maxItems) {
+                                            event.setCancelled(true);
+
+                                            clone.setAmount(clickedAmount - maxItems);
+                                            event.setCurrentItem(clone);
+
+                                            clone2.setAmount(maxItems);
+                                            FurnaceXPConfig.giveFurnaceXP(player, clone2);
+
+                                            event.setCursor(clone2);
+                                        }
+                                    } else {
+                                        event.setCancelled(true);
+                                    }
                                 }
                             }
                         }
