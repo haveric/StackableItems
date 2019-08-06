@@ -396,20 +396,10 @@ public class SIPlayerListener implements Listener {
 
             if (type == Material.MILK_BUCKET) {
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BUCKET), "");
-            } else if (type == Material.MUSHROOM_STEW) {
+            } else if (type == Material.MUSHROOM_STEW || type == Material.RABBIT_STEW || type == Material.BEETROOT_SOUP || type == Material.SUSPICIOUS_STEW) {
                 int heldSlot = player.getInventory().getHeldItemSlot();
 
-                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.MUSHROOM_STEW, amt - 1));
-                InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
-            } else if (type == Material.RABBIT_STEW) {
-                int heldSlot = player.getInventory().getHeldItemSlot();
-
-                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.RABBIT_STEW, amt - 1));
-                InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
-            } else if (type == Material.BEETROOT_SOUP) {
-                int heldSlot = player.getInventory().getHeldItemSlot();
-
-                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(Material.BEETROOT_SOUP, amt - 1));
+                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(type, amt - 1));
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
             }
         }
