@@ -670,7 +670,6 @@ public class SIPlayerListener implements Listener {
         }
 
         ClickType clickType = event.getClick();
-        //plugin.log.info("Click: " + clickType);
 
         if (clickType == ClickType.NUMBER_KEY && slotType != SlotType.RESULT) {
             Player player = (Player) event.getWhoClicked();

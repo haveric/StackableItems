@@ -13,7 +13,6 @@ import haveric.stackableItems.listeners.SIBlockListener;
 import haveric.stackableItems.listeners.SIHopperListener;
 import haveric.stackableItems.listeners.SIPlayerJoinQuitListener;
 import haveric.stackableItems.listeners.SIPlayerListener;
-import haveric.stackableItems.mcstats.Metrics;
 import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
@@ -25,8 +24,6 @@ public class StackableItems extends JavaPlugin {
     public boolean supportsInventoryStackSize = true;
 
     private Commands commands = new Commands(this);
-
-    private Metrics metrics;
 
     public void onEnable() {
         log = getLogger();
@@ -54,7 +51,6 @@ public class StackableItems extends JavaPlugin {
 
         getCommand(Commands.getMain()).setExecutor(commands);
 
-        setupMetrics();
         Updater.init(this, 37175, null);
     }
 
@@ -68,15 +64,6 @@ public class StackableItems extends JavaPlugin {
             if (permProvider != null) {
                 Perms.init(this, permProvider.getProvider());
             }
-        }
-    }
-
-    private void setupMetrics() {
-        try {
-            metrics = new Metrics(this);
-            metrics.start();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
