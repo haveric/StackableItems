@@ -9,7 +9,10 @@ import java.io.IOException;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlastFurnace;
+import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.Smoker;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,6 +22,8 @@ public final class Config {
     private static StackableItems plugin;
 
     private static String cfgFurnaceAmount = "Furnace_Amount";
+    private static String cfgBlastFurnaceAmount = "Blast_Furnace_Amount";
+    private static String cfgSmokerAmount = "Smoker_Amount";
 
     private static String cfgPreventWastedFlintSteel = "Prevent_Wasted_Flint_and_Steel";
 
@@ -32,9 +37,16 @@ public final class Config {
 
     private static FileConfiguration cfgFurnaces;
     private static File cfgFurnacesFile;
+    private static FileConfiguration cfgBlastFurnaces;
+    private static File cfgBlastFurnacesFile;
+    private static FileConfiguration cfgSmokers;
+    private static File cfgSmokersFile;
+
 
     private static final boolean DEBUG_DEFAULT = false;
     private static final int FURNACE_AMOUNT_DEFAULT = -1;
+    private static final int BLAST_FURNACE_AMOUNT_DEFAULT = -1;
+    private static final int SMOKER_AMOUNT_DEFAULT = -1;
 
     private static final boolean PREVENT_WASTED_FAS_DEFAULT = true;
 
@@ -61,6 +73,14 @@ public final class Config {
         cfgFurnacesFile = new File(plugin.getDataFolder() + File.separator + "data" + File.separator + "furnaces.yml");
         cfgFurnaces = YamlConfiguration.loadConfiguration(cfgFurnacesFile);
         saveConfig(cfgFurnaces, cfgFurnacesFile);
+
+        cfgBlastFurnacesFile = new File(plugin.getDataFolder() + File.separator + "data" + File.separator + "blastfurnaces.yml");
+        cfgBlastFurnaces = YamlConfiguration.loadConfiguration(cfgBlastFurnacesFile);
+        saveConfig(cfgBlastFurnaces, cfgBlastFurnacesFile);
+
+        cfgSmokersFile = new File(plugin.getDataFolder() + File.separator + "data" + File.separator + "smokers.yml");
+        cfgSmokers = YamlConfiguration.loadConfiguration(cfgSmokersFile);
+        saveConfig(cfgSmokers, cfgSmokersFile);
     }
 
     public static void reload() {
@@ -70,10 +90,8 @@ public final class Config {
             plugin.log.warning("options.yml not found. Creating a new one");
             saveConfig(cfgOptions, cfgOptionsFile);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InvalidConfigurationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -83,10 +101,30 @@ public final class Config {
             plugin.log.warning("data/furnaces.yml not found. Creating a new one");
             saveConfig(cfgFurnaces, cfgFurnacesFile);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InvalidConfigurationException e) {
-            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            cfgBlastFurnaces.load(cfgBlastFurnacesFile);
+        } catch (FileNotFoundException e) {
+            plugin.log.warning("data/blastfurnaces.yml not found. Creating a new one");
+            saveConfig(cfgBlastFurnaces, cfgBlastFurnacesFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            cfgSmokers.load(cfgSmokersFile);
+        } catch (FileNotFoundException e) {
+            plugin.log.warning("data/smokers.yml not found. Creating a new one");
+            saveConfig(cfgSmokers, cfgSmokersFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
     }
@@ -97,12 +135,16 @@ public final class Config {
     public static void setup() {
         cfgOptions.addDefault(cfgDebug, DEBUG_DEFAULT);
         cfgOptions.addDefault(cfgFurnaceAmount, FURNACE_AMOUNT_DEFAULT);
+        cfgOptions.addDefault(cfgBlastFurnaceAmount, BLAST_FURNACE_AMOUNT_DEFAULT);
+        cfgOptions.addDefault(cfgSmokerAmount, SMOKER_AMOUNT_DEFAULT);
         cfgOptions.addDefault(cfgPreventWastedFlintSteel, PREVENT_WASTED_FAS_DEFAULT);
         cfgOptions.addDefault(cfgUpdateCheck, UPDATE_CHECK_ENABLED_DEFAULT);
         cfgOptions.addDefault(cfgUpdateFrequency, UPDATE_CHECK_FREQUENCY_DEFAULT);
 
         if (!cfgOptions.isSet(cfgDebug)
          || !cfgOptions.isSet(cfgFurnaceAmount)
+         || !cfgOptions.isSet(cfgBlastFurnaceAmount)
+         || !cfgOptions.isSet(cfgSmokerAmount)
          || !cfgOptions.isSet(cfgPreventWastedFlintSteel)
          || !cfgOptions.isSet(cfgUpdateCheck)
          || !cfgOptions.isSet(cfgUpdateFrequency)) {
@@ -120,38 +162,62 @@ public final class Config {
     }
 
     public static int getFurnaceAmount(Furnace furnace) {
-        return getFurnaceAmount(furnace.getLocation());
-    }
+        String world = furnace.getWorld().getName();
+        Location loc = furnace.getLocation();
+        String path = world + "." +  loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
 
-    public static int getFurnaceAmount(Location loc) {
-        String world = loc.getWorld().getName();
-
-        return cfgFurnaces.getInt(world + "." +  loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), SIItems.ITEM_DEFAULT);
+        if (furnace instanceof BlastFurnace) {
+            return cfgBlastFurnaces.getInt(path, SIItems.ITEM_DEFAULT);
+        } else if (furnace instanceof Smoker) {
+            return cfgSmokers.getInt(path, SIItems.ITEM_DEFAULT);
+        } else {
+            return cfgFurnaces.getInt(path, SIItems.ITEM_DEFAULT);
+        }
     }
 
     public static void setFurnaceAmount(Furnace furnace, int newAmt) {
+        String world = furnace.getWorld().getName();
         Location loc = furnace.getLocation();
-        setFurnaceAmount(loc, newAmt);
-    }
+        String path = world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
 
-    public static void setFurnaceAmount(Location loc, int newAmt) {
-        String world = loc.getWorld().getName();
+        if (furnace instanceof BlastFurnace) {
+            cfgBlastFurnaces.set(path, newAmt);
+            saveConfig(cfgBlastFurnaces, cfgBlastFurnacesFile);
+        } else if (furnace instanceof Smoker) {
+            cfgSmokers.set(path, newAmt);
 
-        cfgFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), newAmt);
-
-        saveConfig(cfgFurnaces, cfgFurnacesFile);
+            saveConfig(cfgSmokers, cfgSmokersFile);
+        } else {
+            cfgFurnaces.set(path, newAmt);
+            saveConfig(cfgFurnaces, cfgFurnacesFile);
+        }
     }
 
     public static void clearFurnace(Furnace furnace) {
-        clearFurnace(furnace.getLocation());
+        String world = furnace.getWorld().getName();
+        Location loc = furnace.getLocation();
+        String path = world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
+
+        if (furnace instanceof BlastFurnace) {
+            cfgBlastFurnaces.set(path, null);
+            saveConfig(cfgBlastFurnaces, cfgBlastFurnacesFile);
+        } else if (furnace instanceof Smoker) {
+            cfgSmokers.set(path, null);
+            saveConfig(cfgSmokers, cfgSmokersFile);
+        } else {
+            cfgFurnaces.set(path, null);
+            saveConfig(cfgFurnaces, cfgFurnacesFile);
+        }
     }
 
-    public static void clearFurnace(Location loc) {
-        String world = loc.getWorld().getName();
-
-        cfgFurnaces.set(world + "." + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), null);
-
-        saveConfig(cfgFurnaces, cfgFurnacesFile);
+    public static int getMaxBlockAmount(Furnace furnace, Material mat) {
+        if (furnace instanceof BlastFurnace) {
+            return getMaxBlastFurnaceAmount(mat);
+        } else if (furnace instanceof Smoker) {
+            return getMaxSmokerAmount(mat);
+        } else {
+            return getMaxFurnaceAmount(mat);
+        }
     }
 
     public static int getMaxFurnaceAmount(Material mat) {
@@ -159,11 +225,43 @@ public final class Config {
 
         // Force air to keep default value
         if (mat != Material.AIR) {
-            int maxFurnaceSize = cfgOptions.getInt(cfgFurnaceAmount, SIItems.ITEM_DEFAULT);
+            int maxSize = cfgOptions.getInt(cfgFurnaceAmount, SIItems.ITEM_DEFAULT);
             maxAmount = mat.getMaxStackSize();
 
-            if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
-                maxAmount = maxFurnaceSize;
+            if (maxSize > SIItems.ITEM_DEFAULT_MAX && maxSize <= SIItems.ITEM_NEW_MAX) {
+                maxAmount = maxSize;
+            }
+        }
+
+        return maxAmount;
+    }
+
+    public static int getMaxBlastFurnaceAmount(Material mat) {
+        int maxAmount = SIItems.ITEM_DEFAULT;
+
+        // Force air to keep default value
+        if (mat != Material.AIR) {
+            int maxSize = cfgOptions.getInt(cfgBlastFurnaceAmount, SIItems.ITEM_DEFAULT);
+            maxAmount = mat.getMaxStackSize();
+
+            if (maxSize > SIItems.ITEM_DEFAULT_MAX && maxSize <= SIItems.ITEM_NEW_MAX) {
+                maxAmount = maxSize;
+            }
+        }
+
+        return maxAmount;
+    }
+
+    public static int getMaxSmokerAmount(Material mat) {
+        int maxAmount = SIItems.ITEM_DEFAULT;
+
+        // Force air to keep default value
+        if (mat != Material.AIR) {
+            int maxSize = cfgOptions.getInt(cfgSmokerAmount, SIItems.ITEM_DEFAULT);
+            maxAmount = mat.getMaxStackSize();
+
+            if (maxSize > SIItems.ITEM_DEFAULT_MAX && maxSize <= SIItems.ITEM_NEW_MAX) {
+                maxAmount = maxSize;
             }
         }
 

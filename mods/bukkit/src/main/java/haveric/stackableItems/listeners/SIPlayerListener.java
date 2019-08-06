@@ -60,14 +60,14 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void furnaceSmelt(FurnaceSmeltEvent event) {
-        int amt = 0;
+        int amt;
 
-        Furnace furnace = (Furnace) event.getBlock().getState();
+        Furnace furnace = (Furnace) event.getBlock();
         ItemStack result = furnace.getInventory().getResult();
         if (result != null) {
             amt = result.getAmount() + 1;
 
-            int maxFurnaceSize = Config.getMaxFurnaceAmount(result.getType());
+            int maxFurnaceSize = Config.getMaxBlockAmount(furnace, result.getType());
             if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
 
                 // going to be a full furnace
@@ -819,7 +819,7 @@ public class SIPlayerListener implements Listener {
                             Furnace furnace = (Furnace) inventoryHolder;
 
                             Location blockLocation = furnace.getBlock().getLocation();
-                            int amt = Config.getFurnaceAmount(blockLocation);
+                            int amt = Config.getFurnaceAmount(furnace);
                             if (amt > -1) {
                                 int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, topType);
                                 // Don't touch default items
@@ -834,7 +834,7 @@ public class SIPlayerListener implements Listener {
                                     InventoryUtil.addItemsToPlayer(player, clone, "");
                                     event.setCurrentItem(null);
                                     event.setResult(Result.DENY);
-                                    Config.clearFurnace(blockLocation);
+                                    Config.clearFurnace(furnace);
                                     xpItems = amt;
                                 } else if (cursorEmpty && event.isRightClick()) {
                                     // Give half of furnace amount to cursor
@@ -848,7 +848,7 @@ public class SIPlayerListener implements Listener {
 
                                     clone2.setAmount(furnaceHalf);
                                     event.setCurrentItem(clone2);
-                                    Config.clearFurnace(blockLocation);
+                                    Config.clearFurnace(furnace);
                                     xpItems = cursorHalf;
                                 } else if (event.isLeftClick() || event.isRightClick()) {
                                     // Any other click will stack on the cursor
@@ -859,7 +859,7 @@ public class SIPlayerListener implements Listener {
                                             event.setCurrentItem(null);
                                             event.setCursor(clone);
                                             event.setResult(Result.DENY);
-                                            Config.clearFurnace(blockLocation);
+                                            Config.clearFurnace(furnace);
                                             xpItems = amt;
                                         } else {
                                             int left = total - maxPlayerInventory;
@@ -868,10 +868,10 @@ public class SIPlayerListener implements Listener {
                                             event.setCursor(clone);
 
                                             if (left < 64) {
-                                                Config.clearFurnace(blockLocation);
+                                                Config.clearFurnace(furnace);
                                                 clone2.setAmount(left);
                                             } else {
-                                                Config.setFurnaceAmount(blockLocation, left);
+                                                Config.setFurnaceAmount(furnace, left);
                                                 clone2.setAmount(63);
                                             }
                                             event.setCurrentItem(clone2);

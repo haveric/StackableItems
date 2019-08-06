@@ -990,6 +990,14 @@ public final class InventoryUtil {
             } else if (slot == 1) {
                 maxAmount = 0;
             }
+        } else if (inventoryType == InventoryType.BLAST_FURNACE && !SIItems.isInventoryEnabled(worldName, inventory)) {
+            if (slot >= 0 && slot < 3) {
+                maxAmount = Config.getMaxBlastFurnaceAmount(mat);
+            }
+        } else if (inventoryType == InventoryType.SMOKER && !SIItems.isInventoryEnabled(worldName, inventory)) {
+            if (slot >= 0 && slot < 3) {
+                maxAmount = Config.getMaxSmokerAmount(mat);
+            }
         } else if (inventoryType == InventoryType.FURNACE && !SIItems.isInventoryEnabled(worldName, inventory)) {
             if (slot >= 0 && slot < 3) {
                 maxAmount = Config.getMaxFurnaceAmount(mat);
