@@ -52,8 +52,8 @@ public class Updater {
     /**
      * Check for updates using your Curse account (with key)
      *
-     * @param projectID The BukkitDev Project ID, found in the "Facts" panel on the right-side of your project page.
-     * @param apiKey Your ServerMods API key, found at https://dev.bukkit.org/home/servermods-apikey/
+     * @param newProjectID The BukkitDev Project ID, found in the "Facts" panel on the right-side of your project page.
+     * @param newApiKey Your ServerMods API key, found at https://dev.bukkit.org/home/servermods-apikey/
      */
     public static void init(StackableItems newPlugin, int newProjectID, String newApiKey) {
         plugin = newPlugin;

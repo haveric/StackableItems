@@ -1,6 +1,5 @@
 package haveric.stackableItems;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginManager;

@@ -239,7 +239,7 @@ public final class SIItems {
                 if (!(name.equals(originalName))) {
                     String updatedName = (String) itemsConfig.get(search + ".updated-name");
 
-                    if (updatedName == null || !name.equals(updatedName)) {
+                    if (!name.equals(updatedName)) {
                         itemsConfig.set(search + ".updated-name", name);
                         Config.saveConfig(itemsConfig, itemsFile);
                     }
@@ -259,8 +259,8 @@ public final class SIItems {
             } else {
                 saveList.add(key);
 
-                for (int i = 0; i < size; i++) {
-                    String item = items.get(i).toUpperCase();
+                for (String s : items) {
+                    String item = s.toUpperCase();
                     if (!itemGroups.containsKey(item)) {
                         itemGroups.put(item, new ArrayList<String>());
                     }
@@ -278,9 +278,8 @@ public final class SIItems {
         if (mat != Material.AIR) {
             if (isInventoryEnabled(world, inventoryType)) {
                 // Check inventory types
-                if (max == ITEM_DEFAULT) {
-                    max = getMax(world, "inventory", inventoryType.name(), mat, dur);
-                }
+                max = getMax(world, "inventory", inventoryType.name(), mat, dur);
+
                 if (max == ITEM_DEFAULT) {
                     max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
                 }
@@ -435,9 +434,8 @@ public final class SIItems {
             Map<String, Integer> subMap = itemsMap.get(itemString);
 
             if (groups != null) {
-                int groupSize = groups.size();
-                for (int i = 0; i < groupSize; i++) {
-                    String key = groups.get(i).toUpperCase();
+                for (String group : groups) {
+                    String key = group.toUpperCase();
                     if (subMap.containsKey(key)) {
                         max = subMap.get(key);
                     }
@@ -502,9 +500,8 @@ public final class SIItems {
             Map<String, Integer> subMap = itemsMap.get(itemString);
 
             if (groups != null) {
-                int groupSize = groups.size();
-                for (int i = 0; i < groupSize; i++) {
-                    String key = groups.get(i).toUpperCase();
+                for (String group : groups) {
+                    String key = group.toUpperCase();
                     if (subMap.containsKey(key)) {
                         max = subMap.get(key);
                     }

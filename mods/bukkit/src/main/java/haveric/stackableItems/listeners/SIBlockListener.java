@@ -39,29 +39,27 @@ public class SIBlockListener implements Listener {
             }
         }
 
-        ItemStack holding = player.getItemInHand();
+        ItemStack holding = player.getInventory().getItemInMainHand();
 
         // Handle splitting tool stacks when used to break blocks
-        if (holding != null) {
-            Material type = holding.getType();
-            int maxItems = SIItems.getItemMax(player, type, holding.getDurability(), player.getInventory().getType());
+        Material type = holding.getType();
+        int maxItems = SIItems.getItemMax(player, type, holding.getDurability(), player.getInventory().getType());
 
-            // Don't touch default items.
-            if (maxItems == SIItems.ITEM_DEFAULT) {
-                return;
-            }
+        // Don't touch default items.
+        if (maxItems == SIItems.ITEM_DEFAULT) {
+            return;
+        }
 
-            if (maxItems == SIItems.ITEM_INFINITE) {
-                ItemStack clone = holding.clone();
-                PlayerInventory inventory = player.getInventory();
-                InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
-                InventoryUtil.updateInventory(player);
+        if (maxItems == SIItems.ITEM_INFINITE) {
+            ItemStack clone = holding.clone();
+            PlayerInventory inventory = player.getInventory();
+            InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), clone);
+            InventoryUtil.updateInventory(player);
+        } else {
+            if (type == Material.SHEARS || type == Material.FLINT_AND_STEEL) {
+                InventoryUtil.splitStack(player, false);
             } else {
-                if (type == Material.SHEARS || type == Material.FLINT_AND_STEEL) {
-                    InventoryUtil.splitStack(player, false);
-                } else {
-                    InventoryUtil.splitStack(player, true);
-                }
+                InventoryUtil.splitStack(player, true);
             }
         }
     }

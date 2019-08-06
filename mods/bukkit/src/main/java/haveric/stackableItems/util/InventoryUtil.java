@@ -287,8 +287,8 @@ public final class InventoryUtil {
         while (i <= 8 && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
-                free = slotMax;
+                // slotMax
+                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
             }
             i++;
         }
@@ -303,8 +303,8 @@ public final class InventoryUtil {
         while (i >= 0 && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
-                free = slotMax;
+                // slotMax
+                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
             }
             i--;
         }
@@ -325,8 +325,8 @@ public final class InventoryUtil {
         while (i <= imax && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
-                free = slotMax;
+                // slotMax
+                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
             }
             i++;
         }
@@ -347,8 +347,8 @@ public final class InventoryUtil {
         while (i <= imin && free == 0) {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
-                int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
-                free = slotMax;
+                // slotMax
+                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
             }
             i--;
         }
@@ -1047,17 +1047,15 @@ public final class InventoryUtil {
     }
 
     public static void splitStack(Player player, boolean toolCheck) {
-        ItemStack holding = player.getItemInHand();
+        ItemStack holding = player.getInventory().getItemInMainHand();
 
-        if (holding != null) {
-            int amount = holding.getAmount();
+        int amount = holding.getAmount();
 
-            if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
-                ItemStack move = holding.clone();
-                move.setAmount(amount - 1);
-                addItemsToPlayer(player, move, "");
-                holding.setAmount(1);
-            }
+        if (amount > 1 && (!toolCheck || ItemUtil.isTool(holding.getType()))) {
+            ItemStack move = holding.clone();
+            move.setAmount(amount - 1);
+            addItemsToPlayer(player, move, "");
+            holding.setAmount(1);
         }
     }
 
