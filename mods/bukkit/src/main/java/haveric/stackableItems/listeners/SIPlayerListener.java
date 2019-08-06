@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -34,7 +36,6 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.*;
 
@@ -1430,8 +1431,14 @@ public class SIPlayerListener implements Listener {
     }
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void playerPicksUpItem(PlayerPickupItemEvent event) {
-        Player player = event.getPlayer();
+    public void playerPicksUpItem(EntityPickupItemEvent event) {
+        LivingEntity entity = event.getEntity();
+
+        if (!(entity instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) entity;
         Item item = event.getItem();
         ItemStack stack = item.getItemStack();
 
