@@ -6,8 +6,9 @@
 
 ### Changelog:
 
-#### Coming soon
+#### Version 1.0.6 (8/14/2019)
 * Update to 1.14
+* Removed Metrics
 
 #### Version 1.0.5 (3/16/2016)
 * Support for 1.9
