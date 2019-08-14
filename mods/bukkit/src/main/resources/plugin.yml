@@ -3,15 +3,15 @@ author: haveric
 main: haveric.stackableItems.StackableItems
 version: 1.0.5
 api-version: 1.13
-website: http://dev.bukkit.org/server-mods/stackableitems/
-dev-url: http://dev.bukkit.org/server-mods/stackableitems/
+website: https://dev.bukkit.org/projects/stackableitems
+dev-url: https://dev.bukkit.org/projects/stackableitems
 softdepend: [Vault]
 commands:
     stackableitems:
         aliases: [si]
         description: Allows you to change any item's max stack amount.
         usage:
-        
+
 permissions:
     stackableitems.*:
         description: Gives access to all StackableItems Commands
