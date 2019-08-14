@@ -915,10 +915,10 @@ public final class InventoryUtil {
 
                         Material itemType = item.getType();
                         // Give back buckets when used in a recipe
-                        if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET) {
+                        if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET || itemType == Material.COD_BUCKET || itemType == Material.PUFFERFISH_BUCKET || itemType == Material.SALMON_BUCKET || itemType == Material.TROPICAL_FISH_BUCKET) {
                             addItemsToPlayer(player, new ItemStack(Material.BUCKET, removeAmount), "");
                         // Give back bowls if mushroom soup is ever used in a recipe
-                        } else if (itemType == Material.MUSHROOM_STEW) {
+                        } else if (itemType == Material.MUSHROOM_STEW || itemType == Material.BEETROOT_SOUP || itemType == Material.SUSPICIOUS_STEW || itemType == Material.RABBIT_STEW) {
                             addItemsToPlayer(player, new ItemStack(Material.BOWL, removeAmount), "");
                         }
                     }
