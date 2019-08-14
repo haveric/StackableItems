@@ -207,11 +207,9 @@ public class Updater {
      */
     public static void query(CommandSender sender) {
         if (Config.getUpdateCheckEnabled()) {
-            URL url = null;
-
             try {
                 // Create the URL to query using the project's ID
-                url = new URL(API_HOST + API_QUERY + projectID);
+                URL url = new URL(API_HOST + API_QUERY + projectID);
 
                 // Open a connection and query the project
                 URLConnection conn = url.openConnection();

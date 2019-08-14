@@ -156,7 +156,7 @@ public class Commands implements CommandExecutor {
                 if (mat == null) {
                     sender.sendMessage(shortTitle + "No material found matching " + highlightColor + matName);
                 } else {
-                    int max = SIItems.ITEM_DEFAULT;
+                    int max;
                     String msg = shortTitle + highlightColor;
                     // set value
                     if (args.length == argsForSet) {

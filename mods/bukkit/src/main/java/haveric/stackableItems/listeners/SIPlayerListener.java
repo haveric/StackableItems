@@ -220,7 +220,7 @@ public class SIPlayerListener implements Listener {
                                 int craftTimes = numCanHold / recipeAmount;
                                 int canCraft = InventoryUtil.getCraftingAmount(event.getInventory(), event.getRecipe());
 
-                                int actualCraft = 0;
+                                int actualCraft;
                                 if (craftTimes <= canCraft) {
                                     actualCraft = craftTimes;
                                 } else {
@@ -468,7 +468,7 @@ public class SIPlayerListener implements Listener {
                 deny = true;
 
                 int oldAmount = 0;
-                ItemStack oldStack = null;
+                ItemStack oldStack;
                 if (slot >= inventorySize) {
                     int rawPlayerSlot = slot - inventorySize;
                     if (inventory.getType() == InventoryType.CRAFTING) {
@@ -528,7 +528,7 @@ public class SIPlayerListener implements Listener {
                     }
                 } else {
                     int oldAmount = 0;
-                    ItemStack oldStack = null;
+                    ItemStack oldStack;
                     if (slot >= inventorySize) {
                         int rawPlayerSlot = slot - inventorySize;
                         if (inventory.getType() == InventoryType.CRAFTING) {
@@ -947,7 +947,7 @@ public class SIPlayerListener implements Listener {
             short clickedDur = clicked.getDurability();
             int clickedAmount = clicked.getAmount();
 
-            int maxItems = 0;
+            int maxItems;
             if (clickedType == Material.AIR) {
                 maxItems = InventoryUtil.getInventoryMax(player, null, view, top, cursorType, cursorDur, event.getRawSlot());
             } else {

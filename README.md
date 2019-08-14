@@ -2,14 +2,12 @@
 #### Items can be disabled which disallows pickup and crafting.  Some items can also be set to be infinite which allows you to keep a certain item around no matter how much you use it.
 
 
-#### For more info, visit [http://dev.bukkit.org/server-mods/stackableitems](http://dev.bukkit.org/server-mods/stackableitems) 
+#### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
 ### Changelog:
 
 #### Coming soon
-* Fixed shift clicking for elytra into armor slot
-* Added 1.11 fuels
-* Added chorus fruit and nugget furnace xp
+* Update to 1.14
 
 #### Version 1.0.5 (3/16/2016)
 * Support for 1.9

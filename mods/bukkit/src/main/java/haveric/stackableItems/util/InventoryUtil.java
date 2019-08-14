@@ -963,7 +963,7 @@ public final class InventoryUtil {
         InventoryType inventoryType = inventory.getType();
 
         GameMode gamemode = null;
-        int maxAmount = 0;
+        int maxAmount;
         if (player == null) {
             maxAmount = SIItems.getInventoryMax(worldName, mat, dur, inventory.getType());
         } else {
@@ -1103,7 +1103,7 @@ public final class InventoryUtil {
         int cursorAmount = cursorStack.getAmount();
         int maxVanillaStack = cursorStack.getMaxStackSize();
         if (cursorAmount < maxVanillaStack && cursorAmount < max) {
-            int canStack = 0;
+            int canStack;
 
             if (max < maxVanillaStack) {
                 canStack = max - cursorAmount;
