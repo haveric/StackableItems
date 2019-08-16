@@ -59,12 +59,11 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void furnaceSmelt(FurnaceSmeltEvent event) {
-        int amt;
-
-        Furnace furnace = (Furnace) event.getBlock();
+        Block block = event.getBlock();
+        Furnace furnace = (Furnace) block.getState();
         ItemStack result = furnace.getInventory().getResult();
         if (result != null) {
-            amt = result.getAmount() + 1;
+            int amt = result.getAmount() + 1;
 
             int maxFurnaceSize = Config.getMaxBlockAmount(furnace, result.getType());
             if (maxFurnaceSize > SIItems.ITEM_DEFAULT_MAX && maxFurnaceSize <= SIItems.ITEM_NEW_MAX) {
