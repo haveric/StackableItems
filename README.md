@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Version 1.0.7 (8/16/2019)
+* Fixed error with FurnaceSmeltEvent
+
 #### Version 1.0.6 (8/14/2019)
 * Update to 1.14
 * Removed Metrics
