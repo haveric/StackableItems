@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon
+* Fix water bottle filling with custom stack amounts
+
 #### Version 1.0.7 (8/16/2019)
 * Fixed error with FurnaceSmeltEvent
 
