@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon
+#### Version 1.0.8 (8/20/2019)
 * Fix water bottle filling with custom stack amounts
 
 #### Version 1.0.7 (8/16/2019)
