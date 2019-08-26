@@ -6,6 +6,9 @@
 
 ### Changelog:
 
+#### Coming Soon
+* Fixed shift click with stacks higher than default
+
 #### Version 1.0.8 (8/20/2019)
 * Fix water bottle filling with custom stack amounts
 

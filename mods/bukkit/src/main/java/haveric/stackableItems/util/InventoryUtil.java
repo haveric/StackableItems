@@ -188,7 +188,7 @@ public final class InventoryUtil {
             int amt = slot.getAmount();
             int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
 
-            if (slotMax == defaultMax) {
+            if (slotMax == defaultMax && itemToCheck.getAmount() <= defaultMax) {
                 // Let vanilla always handle this
                 free = -1;
             } else if (slotMax > defaultMax) {
