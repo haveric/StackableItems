@@ -980,6 +980,7 @@ public final class InventoryUtil {
 
         String invName = view.getTitle();
 
+
         if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {
             if (slot < 2) {
                 maxAmount = 1;
@@ -1034,6 +1035,8 @@ public final class InventoryUtil {
             maxAmount = mat.getMaxStackSize();
         } else if (inventoryType == InventoryType.DISPENSER && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
+        } else if (inventoryType == InventoryType.SHULKER_BOX && !SIItems.isInventoryEnabled(worldName, inventory)) {
+            maxAmount = mat.getMaxDurability();
         }
 
         // Handle infinite and default items

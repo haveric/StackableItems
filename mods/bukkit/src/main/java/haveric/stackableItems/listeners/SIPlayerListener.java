@@ -6,6 +6,7 @@ import java.util.Random;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -1154,7 +1155,7 @@ public class SIPlayerListener implements Listener {
                             }
                         }
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST
-                            || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER) {
+                            || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER || topType == InventoryType.BARREL || topType == InventoryType.SHULKER_BOX) {
 
                         // We only want to override if moving more than a vanilla stack will hold
                         int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null, "inventory");

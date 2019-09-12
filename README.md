@@ -6,6 +6,10 @@
 
 ### Changelog:
 
+#### Coming Soon
+* Fixed shulker boxes not keeping their inventory correctly when containing overstacked items
+* Add support for more inventories
+
 #### Version 1.0.9 (8/27/2019)
 * Fixed shift click with stacks higher than default
 
