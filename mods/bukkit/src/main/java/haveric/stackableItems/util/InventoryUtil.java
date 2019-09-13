@@ -1036,7 +1036,15 @@ public final class InventoryUtil {
         } else if (inventoryType == InventoryType.DISPENSER && !SIItems.isInventoryEnabled(worldName, inventory)) {
             maxAmount = mat.getMaxStackSize();
         } else if (inventoryType == InventoryType.SHULKER_BOX && !SIItems.isInventoryEnabled(worldName, inventory)) {
-            maxAmount = mat.getMaxDurability();
+            maxAmount = mat.getMaxStackSize();
+        } else if (inventoryType == InventoryType.LOOM && !SIItems.isInventoryEnabled(worldName, inventory)) {
+            maxAmount = mat.getMaxStackSize();
+        } else if (inventoryType == InventoryType.CARTOGRAPHY && !SIItems.isInventoryEnabled(worldName, inventory)) {
+            maxAmount = mat.getMaxStackSize();
+        } else if (inventoryType == InventoryType.GRINDSTONE && !SIItems.isInventoryEnabled(worldName, inventory)) {
+            maxAmount = mat.getMaxStackSize();
+        } else if (inventoryType == InventoryType.STONECUTTER && !SIItems.isInventoryEnabled(worldName, inventory)) {
+            maxAmount = mat.getMaxStackSize();
         }
 
         // Handle infinite and default items

@@ -1224,7 +1224,7 @@ public class SIPlayerListener implements Listener {
                         } else {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, top.getSize());
                         }
-                    } else if (topType == InventoryType.FURNACE) {
+                    } else if (topType == InventoryType.FURNACE || topType == InventoryType.BLAST_FURNACE || topType == InventoryType.SMOKER) {
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);
                         boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
 
@@ -1266,6 +1266,107 @@ public class SIPlayerListener implements Listener {
                         // normal item;
                         if ((!fuelMoved && !burnableMoved) || (!isFuel && !isBurnable)) {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                        }
+                    } else if (topType == InventoryType.LOOM) {
+                        ItemStack firstSlot = top.getItem(0);
+                        ItemStack secondSlot = top.getItem(1);
+                        ItemStack thirdSlot = top.getItem(2);
+
+                        boolean movedAll = false;
+                        if (firstSlot == null || ItemUtil.isSameItem(clicked, firstSlot)) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 0, 1, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+
+                        if (!movedAll && (secondSlot == null || ItemUtil.isSameItem(clicked, secondSlot))) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 1, 2, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+
+                        if (!movedAll && (thirdSlot == null || ItemUtil.isSameItem(clicked, thirdSlot))) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 1, 2, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+                        if (!movedAll) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
+                        }
+                    } else if (topType == InventoryType.CARTOGRAPHY) {
+                        ItemStack firstSlot = top.getItem(0);
+                        ItemStack secondSlot = top.getItem(1);
+
+                        boolean movedAll = false;
+                        if (firstSlot == null || ItemUtil.isSameItem(clicked, firstSlot)) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 0, 1, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+
+                        if (!movedAll && (secondSlot == null || ItemUtil.isSameItem(clicked, secondSlot))) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 1, 2, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+                        if (!movedAll) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                        }
+                    } else if (topType == InventoryType.GRINDSTONE) {
+                        ItemStack firstSlot = top.getItem(0);
+                        ItemStack secondSlot = top.getItem(1);
+
+                        boolean movedAll = false;
+                        if (firstSlot == null || ItemUtil.isSameItem(clicked, firstSlot)) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 0, 1, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+
+                        if (!movedAll && (secondSlot == null || ItemUtil.isSameItem(clicked, secondSlot))) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 1, 2, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+                        if (!movedAll) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                        }
+                    } else if (topType == InventoryType.STONECUTTER) {
+                        ItemStack firstSlot = top.getItem(0);
+
+                        boolean movedAll = false;
+                        if (firstSlot == null || ItemUtil.isSameItem(clicked, firstSlot)) {
+                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 0, 1, false);
+                            if (left > 0) {
+                                clicked.setAmount(left);
+                            } else {
+                                movedAll = true;
+                            }
+                        }
+
+                        if (!movedAll) {
+                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
                         }
                     }
                 }
