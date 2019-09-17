@@ -80,7 +80,7 @@ public class Commands implements CommandExecutor {
                 sender.sendMessage("Replace" + highlightColor + " <playerName> " + defaultColor + "with a player's name.");
                 sender.sendMessage("Replace" + highlightColor + " <groupName> " + defaultColor + "with a permission group's name.");
                 sender.sendMessage("Replace" + highlightColor + " <inventoryName> " + defaultColor + "with an inventory's name.");
-                sender.sendMessage("Replace" + highlightColor + " <item:data> " + defaultColor + "with a Material name or id and an optional data value. Examples: apple, iron_pickaxe, 351, wool:0, 351:15");
+                sender.sendMessage("Replace" + highlightColor + " <item:data> " + defaultColor + "with a Material name or id and an optional data value. Examples: apple, iron_pickaxe, iron_sword:0");
 
                 if (op || hasAdminPerm) {
                     sender.sendMessage("(Optional) Replace" + highlightColor + " [amount] " + defaultColor + "with an integer to set the config.");
