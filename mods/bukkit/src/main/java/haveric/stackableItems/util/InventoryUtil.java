@@ -359,19 +359,23 @@ public final class InventoryUtil {
     private static boolean canVanillaStackCorrectly(ItemStack item, Inventory inventory) {
         boolean canStack = true;
         Material type = item.getType();
-        short dur = item.getDurability();
 
-        int typeMaxDur = type.getMaxDurability();
-        // if picking up an item above vanilla durability, we don't want vanilla to handle it
-        if (dur > typeMaxDur) {
+        if (item.getAmount() > type.getMaxStackSize()) {
             canStack = false;
         } else {
-            // If any items in the inventory have durability above vanilla durability, we don't want vanilla to handle them.
-            Iterator<ItemStack> iter = inventory.iterator();
-            while (iter.hasNext() && canStack) {
-                ItemStack slot = iter.next();
-                if (slot != null && type == slot.getType() && slot.getDurability() > typeMaxDur) {
-                    canStack = false;
+            short dur = item.getDurability();
+            int typeMaxDur = type.getMaxDurability();
+            // if picking up an item above vanilla durability, we don't want vanilla to handle it
+            if (dur > typeMaxDur) {
+                canStack = false;
+            } else {
+                // If any items in the inventory have durability above vanilla durability, we don't want vanilla to handle them.
+                Iterator<ItemStack> iter = inventory.iterator();
+                while (iter.hasNext() && canStack) {
+                    ItemStack slot = iter.next();
+                    if (slot != null && type == slot.getType() && slot.getDurability() > typeMaxDur) {
+                        canStack = false;
+                    }
                 }
             }
         }
