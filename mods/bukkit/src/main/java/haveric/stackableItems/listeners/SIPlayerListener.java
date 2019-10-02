@@ -6,7 +6,6 @@ import java.util.Random;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
-import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -1155,13 +1154,22 @@ public class SIPlayerListener implements Listener {
                             }
                         }
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST
-                            || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER || topType == InventoryType.BARREL || topType == InventoryType.SHULKER_BOX) {
-
+                            || topType == InventoryType.HOPPER || topType == InventoryType.DROPPER || topType == InventoryType.BARREL) {
                         // We only want to override if moving more than a vanilla stack will hold
                         int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null, "inventory");
 
                         if (defaultStack > -1 && clickedAmount > defaultStack) {
                             InventoryUtil.moveItemsToFullInventory(player, clicked.clone(), event, top, true, "inventory");
+                        }
+                    } else if (topType == InventoryType.SHULKER_BOX) {
+                        // Shulker boxes can't go inside other shulker boxes
+                        if (!ItemUtil.isShulkerBox(clicked.getType())) {
+                            // We only want to override if moving more than a vanilla stack will hold
+                            int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clicked, top, null, "inventory");
+
+                            if (defaultStack > -1 && clickedAmount > defaultStack) {
+                                InventoryUtil.moveItemsToFullInventory(player, clicked.clone(), event, top, true, "inventory");
+                            }
                         }
                     // This adds shift clicking from the player inventory to the workbench.
                     } else if (topType == InventoryType.WORKBENCH) {
@@ -1391,8 +1399,10 @@ public class SIPlayerListener implements Listener {
 
                 // Drop a stack into an empty slot
                 } else if (!cursorEmpty && slotEmpty) {
-                    // Ignore armor slots when dropping items, let default Minecraft handle them.
-                    if (event.getSlotType() != SlotType.ARMOR) {
+                    boolean isShulkerInShulker = topType == InventoryType.SHULKER_BOX && ItemUtil.isShulkerBox(cursor.getType());
+
+                    // Ignore armor slots and attempts to next shulker boxes when dropping items, let default Minecraft handle them.
+                    if (event.getSlotType() != SlotType.ARMOR && !isShulkerInShulker) {
                         if (cursorAmount <= maxItems) {
                             event.setCurrentItem(cursor.clone());
                             event.setCursor(null);

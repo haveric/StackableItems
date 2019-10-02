@@ -8,6 +8,7 @@
 
 #### Coming Soon
 * FIX: shulker boxes not keeping their inventory correctly when containing overstacked items
+* FIX: shulker boxes should not be allowed inside other shulker boxes
 * FIX/NEW: Add support for more inventories
 * FIX: shift click with oversized stacks from inventory to player were stacking incorrectly
 
