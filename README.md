@@ -6,7 +6,7 @@
 
 ### Changelog:
 
-#### Coming Soon
+#### Version 1.0.10 (10/10/2019)
 * FIX: shulker boxes not keeping their inventory correctly when containing overstacked items
 * FIX: shulker boxes should not be allowed inside other shulker boxes
 * FIX/NEW: Add support for more inventories
