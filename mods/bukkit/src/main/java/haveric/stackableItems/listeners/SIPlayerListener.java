@@ -1,11 +1,13 @@
 package haveric.stackableItems.listeners;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -36,7 +39,10 @@ import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.ItemUtil;
 import haveric.stackableItems.util.SIItems;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -1675,5 +1681,89 @@ public class SIPlayerListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void cauldronChangeLevel(CauldronLevelChangeEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof Player) {
+            CauldronLevelChangeEvent.ChangeReason reason = event.getReason();
+            Player player = (Player) entity;
+            ItemStack holding = player.getInventory().getItemInMainHand();
+            ItemStack holdingClone = holding.clone();
+
+            int holdingMax = SIItems.getItemMax(player, holdingClone.getType(), holdingClone.getDurability(), player.getInventory().getType());
+            boolean isHoldingCustomStackSize = holdingMax != SIItems.ITEM_DEFAULT;
+
+            if (reason == CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY) {
+                if (isHoldingCustomStackSize) {
+                    handleCauldronManually(event, player, holdingClone, new ItemStack(Material.GLASS_BOTTLE));
+                }
+            } else if (reason == CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL) {
+                ItemStack waterBottle = new ItemStack(Material.POTION);
+                PotionMeta potionMeta = (PotionMeta) waterBottle.getItemMeta();
+                if (potionMeta != null) {
+                    potionMeta.setBasePotionData(new PotionData(PotionType.WATER));
+                }
+                waterBottle.setItemMeta(potionMeta);
+
+                int potionMax = SIItems.getItemMax(player, waterBottle.getType(), waterBottle.getDurability(), player.getInventory().getType());
+                if (potionMax != SIItems.ITEM_DEFAULT) {
+                    handleCauldronManually(event, player, holdingClone, waterBottle.clone());
+                }
+            } else if (reason == CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY) {
+                if (isHoldingCustomStackSize) {
+                    handleCauldronManually(event, player, holdingClone, new ItemStack(Material.BUCKET));
+                }
+            } else if (reason == CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL) {
+                ItemStack waterBucket = new ItemStack(Material.WATER_BUCKET);
+                int waterBucketMax = SIItems.getItemMax(player, waterBucket.getType(), waterBucket.getDurability(), player.getInventory().getType());
+
+                if (waterBucketMax != SIItems.ITEM_DEFAULT) {
+                    handleCauldronManually(event, player, holdingClone, waterBucket.clone());
+                }
+            } else if (reason == CauldronLevelChangeEvent.ChangeReason.ARMOR_WASH) {
+                if (isHoldingCustomStackSize) {
+                    ItemStack washedClone = holdingClone.clone();
+                    LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) washedClone.getItemMeta();
+
+                    if (leatherArmorMeta != null) {
+                        leatherArmorMeta.setColor(Bukkit.getItemFactory().getDefaultLeatherColor());
+                        washedClone.setItemMeta(leatherArmorMeta);
+                        handleCauldronManually(event, player, holdingClone, washedClone);
+                    }
+                }
+            } else if (reason == CauldronLevelChangeEvent.ChangeReason.BANNER_WASH) {
+                if (isHoldingCustomStackSize) {
+                    ItemStack washedClone = holdingClone.clone();
+                    BannerMeta bannerMeta = (BannerMeta) washedClone.getItemMeta();
+
+                    if (bannerMeta != null) {
+                        bannerMeta.setPatterns(new ArrayList<>());
+                        washedClone.setItemMeta(bannerMeta);
+                        handleCauldronManually(event, player, holdingClone, washedClone);
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleCauldronManually(CauldronLevelChangeEvent event, Player player, ItemStack holdingClone, ItemStack returnClone) {
+        event.setCancelled(true);
+
+        holdingClone.setAmount(holdingClone.getAmount() - 1);
+        player.getInventory().setItemInMainHand(holdingClone);
+
+        returnClone.setAmount(1);
+        InventoryUtil.addItemsToPlayer(player, returnClone, "");
+
+        Block block = event.getBlock();
+        Levelled levelled = (Levelled) block.getBlockData();
+        levelled.setLevel(event.getNewLevel());
+        block.setBlockData(levelled);
+
+        // May not need this, but let's update just in case
+        InventoryUtil.updateInventoryLater(player, 2);
     }
 }

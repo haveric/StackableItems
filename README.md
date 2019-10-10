@@ -11,6 +11,7 @@
 * FIX: shulker boxes should not be allowed inside other shulker boxes
 * FIX/NEW: Add support for more inventories
 * FIX: shift click with oversized stacks from inventory to player were stacking incorrectly
+* FIX: Cauldron interact events, such as filling or emptying water bottles with custom sizes
 
 #### Version 1.0.9 (8/27/2019)
 * Fixed shift click with stacks higher than default
