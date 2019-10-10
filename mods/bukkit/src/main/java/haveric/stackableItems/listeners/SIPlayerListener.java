@@ -7,7 +7,9 @@ import java.util.Random;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -348,9 +350,20 @@ public class SIPlayerListener implements Listener {
 
                 event.setCancelled(true);
 
+                Block clickedBlock = event.getBlockClicked();
+
                 Material bucketType = toAdd.getType();
-                if (bucketType != Material.MILK_BUCKET) {
-                    event.getBlockClicked().setType(Material.AIR);
+                if (bucketType == Material.WATER_BUCKET) {
+                    BlockData data = clickedBlock.getBlockData();
+                    if (data instanceof Waterlogged) {
+                        Waterlogged waterloggedData = (Waterlogged) data;
+                        waterloggedData.setWaterlogged(false);
+                        clickedBlock.setBlockData(waterloggedData);
+                    } else {
+                        clickedBlock.setType(Material.AIR);
+                    }
+                } else {
+                    clickedBlock.setType(Material.AIR);
                 }
 
                 InventoryUtil.updateInventory(player);
