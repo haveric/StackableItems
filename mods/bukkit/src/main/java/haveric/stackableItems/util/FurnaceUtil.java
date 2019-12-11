@@ -33,7 +33,7 @@ public final class FurnaceUtil {
     }
 
     private static void loadDefaultList() {
-        listOfFuels = new ArrayList<Material>();
+        listOfFuels = new ArrayList<>();
 
         listOfFuels.add(Material.ACACIA_BOAT);
         listOfFuels.add(Material.ACACIA_BUTTON);
@@ -215,10 +215,6 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.YELLOW_BANNER);
         listOfFuels.add(Material.YELLOW_CARPET);
         listOfFuels.add(Material.YELLOW_WOOL);
-
-
-
-
     }
 
     public static void reload() {
@@ -233,7 +229,7 @@ public final class FurnaceUtil {
     }
 
     public static void loadRecipes() {
-        furnaceBurnables = new ArrayList<Material>();
+        furnaceBurnables = new ArrayList<>();
 
         Iterator<Recipe> iter = plugin.getServer().recipeIterator();
 

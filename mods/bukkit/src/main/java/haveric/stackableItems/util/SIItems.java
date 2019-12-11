@@ -93,18 +93,15 @@ public final class SIItems {
     }
 
     public static void reload() {
-        itemsMap = new HashMap<String, Map<String, Integer>>();
-        itemGroups = new HashMap<String, ArrayList<String>>();
+        itemsMap = new HashMap<>();
+        itemGroups = new HashMap<>();
 
         try {
             configGroups.load(configGroupsFile);
         } catch (FileNotFoundException e) {
             plugin.log.warning("groups.yml missing. Creating a new one");
             Config.saveConfig(configGroups, configGroupsFile);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -153,21 +150,20 @@ public final class SIItems {
                                 try {
                                     uuid = UUIDFetcher.getUUIDOf(player);
 
-                                    if (uuid == null) {
-                                        itemsConfig.set(world + ".player." + player, null);
-                                    } else {
+                                    if (uuid != null) {
                                         playerSection.createSection("" + uuid);
 
                                         ConfigurationSection uuidSection = itemsConfig.getConfigurationSection(worldToSplit + ".player." + uuid);
                                         uuidSection.set("original-name", player);
 
-                                        for (String item: items) {
+                                        for (String item : items) {
                                             Object value = itemSection.get(item);
                                             uuidSection.set(item, value);
                                             setItemValue(world + ".player." + uuid, item, value);
                                         }
-                                        itemsConfig.set(world + ".player." + player, null);
                                     }
+
+                                    itemsConfig.set(world + ".player." + player, null);
                                 } catch (Exception e) { }
                             }
                         }
@@ -213,7 +209,7 @@ public final class SIItems {
     private static void setItemValue(String node, String item, Object value) {
         node = node.toUpperCase();
         if (!itemsMap.containsKey(node)) {
-            itemsMap.put(node, new HashMap<String, Integer>());
+            itemsMap.put(node, new HashMap<>());
         }
         Map<String, Integer> itemsNode = itemsMap.get(node);
 
@@ -249,7 +245,7 @@ public final class SIItems {
     }
 
     private static void loadItemGroups() {
-        List<String> saveList = new ArrayList<String>();
+        List<String> saveList = new ArrayList<>();
         for (String key : configGroups.getKeys(false)) {
             List<String> items = configGroups.getStringList(key);
             int size = items.size();
@@ -262,7 +258,7 @@ public final class SIItems {
                 for (String s : items) {
                     String item = s.toUpperCase();
                     if (!itemGroups.containsKey(item)) {
-                        itemGroups.put(item, new ArrayList<String>());
+                        itemGroups.put(item, new ArrayList<>());
                     }
                     itemGroups.get(item).addAll(saveList);
                 }
@@ -406,7 +402,7 @@ public final class SIItems {
             Config.saveConfig(itemsConfig, itemsFile);
             itemString = itemString.toUpperCase();
             if (!itemsMap.containsKey(itemString)) {
-                itemsMap.put(itemString, new HashMap<String, Integer>());
+                itemsMap.put(itemString, new HashMap<>());
             }
             Map<String, Integer> itemsCat = itemsMap.get(itemString);
             itemsCat.put(name.toUpperCase(), newAmount);

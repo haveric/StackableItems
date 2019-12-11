@@ -88,9 +88,7 @@ public final class Config {
         } catch (FileNotFoundException e) {
             plugin.log.warning("options.yml not found. Creating a new one");
             saveConfig(cfgOptions, cfgOptionsFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
 
@@ -99,9 +97,7 @@ public final class Config {
         } catch (FileNotFoundException e) {
             plugin.log.warning("data/furnaces.yml not found. Creating a new one");
             saveConfig(cfgFurnaces, cfgFurnacesFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
 
@@ -110,9 +106,7 @@ public final class Config {
         } catch (FileNotFoundException e) {
             plugin.log.warning("data/blastfurnaces.yml not found. Creating a new one");
             saveConfig(cfgBlastFurnaces, cfgBlastFurnacesFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
 
@@ -121,9 +115,7 @@ public final class Config {
         } catch (FileNotFoundException e) {
             plugin.log.warning("data/smokers.yml not found. Creating a new one");
             saveConfig(cfgSmokers, cfgSmokersFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
     }

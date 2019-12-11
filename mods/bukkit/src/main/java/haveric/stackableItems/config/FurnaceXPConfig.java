@@ -39,10 +39,7 @@ public class FurnaceXPConfig {
         } catch (FileNotFoundException e) {
             plugin.log.warning("furnaceXP.yml not found. Creating a new one");
             Config.saveConfig(cfgFurnaceXP, cfgFurnaceXPFile);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

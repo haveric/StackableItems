@@ -44,7 +44,6 @@ import haveric.stackableItems.util.SIItems;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -221,12 +220,7 @@ public class SIPlayerListener implements Listener {
                                 int craftTimes = numCanHold / recipeAmount;
                                 int canCraft = InventoryUtil.getCraftingAmount(event.getInventory(), event.getRecipe());
 
-                                int actualCraft;
-                                if (craftTimes <= canCraft) {
-                                    actualCraft = craftTimes;
-                                } else {
-                                    actualCraft = canCraft;
-                                }
+                                int actualCraft = Math.min(craftTimes, canCraft);
 
                                 if (actualCraft > 0) {
                                     ItemStack cursorClone = cursor.clone();

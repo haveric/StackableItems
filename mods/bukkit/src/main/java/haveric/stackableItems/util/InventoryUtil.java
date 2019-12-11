@@ -388,103 +388,101 @@ public final class InventoryUtil {
     }
 
     public static void addItems(final Player player, final ItemStack itemToAdd, final Inventory inventory, final int start, final int end, final Inventory fromInventory, final String extraType) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override public void run() {
-                if (start < end && end <= inventory.getSize()) {
-                    int addAmount = itemToAdd.getAmount();
-                    int initialAdd = addAmount;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if (start < end && end <= inventory.getSize()) {
+                int addAmount = itemToAdd.getAmount();
+                int initialAdd = addAmount;
 
-                    if (extraType.equals("inventory")) {
-                        addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, true);
+                if (extraType.equals("inventory")) {
+                    addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, true);
 
-                        if (addAmount > 0) {
-                            addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, false);
-                        }
+                    if (addAmount > 0) {
+                        addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, false);
+                    }
+                } else {
+                    boolean hotbarFirst = true;
+                    boolean leftToRight = false;
+                    boolean topToBottom = false;
+
+                    if (extraType.equals("pickup") || extraType.equals("swap")) {
+                        leftToRight = true;
+                        topToBottom = true;
                     } else {
-                        boolean hotbarFirst = true;
-                        boolean leftToRight = false;
-                        boolean topToBottom = false;
-
-                        if (extraType.equals("pickup") || extraType.equals("swap")) {
-                            leftToRight = true;
-                            topToBottom = true;
-                        } else {
-                            if (fromInventory != null) {
-                                InventoryType fromType = fromInventory.getType();
-                                if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE || fromType == InventoryType.CRAFTING || fromType == InventoryType.MERCHANT) {
-                                    hotbarFirst = false;
-                                    leftToRight = true;
-                                    topToBottom = true;
-                                }
-                            }
-                        }
-
-                        //Add to existing stacks
-                        if (hotbarFirst) {
-                            if (leftToRight) {
-                                addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, true);
-                            } else {
-                                addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, true);
-                            }
-                        }
-
-                        if (addAmount > 0) {
-                            if (topToBottom) {
-                                addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, true);
-                            } else {
-                                addAmount = addInventoryBTT(player, inventory, itemToAdd, addAmount, start, end, true);
-                            }
-                        }
-
-                        if (!hotbarFirst && addAmount > 0) {
-                            if (leftToRight) {
-                                addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, true);
-                            } else {
-                                addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, true);
-                            }
-                        }
-
-                        // Add to empty slots
-                        if (hotbarFirst && addAmount > 0) {
-                            if (leftToRight) {
-                                addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, false);
-                            } else {
-                                addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, false);
-                            }
-                        }
-
-                        if (addAmount > 0) {
-                            if (topToBottom) {
-                                addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, false);
-                            } else {
-                                addAmount = addInventoryBTT(player, inventory, itemToAdd, addAmount, start, end, false);
-                            }
-                        }
-
-                        if (!hotbarFirst && addAmount > 0) {
-                            if (leftToRight) {
-                                addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, false);
-                            } else {
-                                addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, false);
+                        if (fromInventory != null) {
+                            InventoryType fromType = fromInventory.getType();
+                            if (fromType == InventoryType.WORKBENCH || fromType == InventoryType.ANVIL || fromType == InventoryType.FURNACE || fromType == InventoryType.CRAFTING || fromType == InventoryType.MERCHANT) {
+                                hotbarFirst = false;
+                                leftToRight = true;
+                                topToBottom = true;
                             }
                         }
                     }
 
-                    ItemStack itemClone = itemToAdd.clone();
-                    itemClone.setAmount(initialAdd - addAmount);
-                    SIAddItemEvent addEvent = new SIAddItemEvent(player, itemClone, inventory);
-                    Bukkit.getServer().getPluginManager().callEvent(addEvent);
+                    //Add to existing stacks
+                    if (hotbarFirst) {
+                        if (leftToRight) {
+                            addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, true);
+                        } else {
+                            addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, true);
+                        }
+                    }
 
                     if (addAmount > 0) {
-                        // For some reason it is becoming air at this point in certain situations.
-                        if (itemToAdd.getType() != Material.AIR) {
-                            ItemStack clone = itemToAdd.clone();
-                            clone.setAmount(addAmount);
-                            player.getWorld().dropItemNaturally(player.getLocation(), clone.clone());
-
-                            SIDropExcessEvent dropEvent = new SIDropExcessEvent(player, clone.clone(), inventory);
-                            Bukkit.getServer().getPluginManager().callEvent(dropEvent);
+                        if (topToBottom) {
+                            addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, true);
+                        } else {
+                            addAmount = addInventoryBTT(player, inventory, itemToAdd, addAmount, start, end, true);
                         }
+                    }
+
+                    if (!hotbarFirst && addAmount > 0) {
+                        if (leftToRight) {
+                            addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, true);
+                        } else {
+                            addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, true);
+                        }
+                    }
+
+                    // Add to empty slots
+                    if (hotbarFirst && addAmount > 0) {
+                        if (leftToRight) {
+                            addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, false);
+                        } else {
+                            addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, false);
+                        }
+                    }
+
+                    if (addAmount > 0) {
+                        if (topToBottom) {
+                            addAmount = addInventoryTTB(player, inventory, itemToAdd, addAmount, start, end, false);
+                        } else {
+                            addAmount = addInventoryBTT(player, inventory, itemToAdd, addAmount, start, end, false);
+                        }
+                    }
+
+                    if (!hotbarFirst && addAmount > 0) {
+                        if (leftToRight) {
+                            addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, false);
+                        } else {
+                            addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, false);
+                        }
+                    }
+                }
+
+                ItemStack itemClone = itemToAdd.clone();
+                itemClone.setAmount(initialAdd - addAmount);
+                SIAddItemEvent addEvent = new SIAddItemEvent(player, itemClone, inventory);
+                Bukkit.getServer().getPluginManager().callEvent(addEvent);
+
+                if (addAmount > 0) {
+                    // For some reason it is becoming air at this point in certain situations.
+                    if (itemToAdd.getType() != Material.AIR) {
+                        ItemStack clone = itemToAdd.clone();
+                        clone.setAmount(addAmount);
+                        player.getWorld().dropItemNaturally(player.getLocation(), clone.clone());
+
+                        SIDropExcessEvent dropEvent = new SIDropExcessEvent(player, clone.clone(), inventory);
+                        Bukkit.getServer().getPluginManager().callEvent(dropEvent);
                     }
                 }
             }
@@ -674,11 +672,7 @@ public final class InventoryUtil {
     // This should not be called on a player inventory
     public static void addItems(final Location location, final ItemStack itemToAdd, final Inventory inventory, final int maxAmount, boolean delay) {
         if (delay) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                @Override public void run() {
-                    addItemsHelper(location, itemToAdd, inventory, maxAmount);
-                }
-            });
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> addItemsHelper(location, itemToAdd, inventory, maxAmount));
         } else {
             addItemsHelper(location, itemToAdd, inventory, maxAmount);
         }
@@ -899,68 +893,53 @@ public final class InventoryUtil {
     }
 
     public static void removeFromCrafting(final Player player, final CraftingInventory inventory, final int removeAmount) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override public void run() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            Iterator<ItemStack> iter = inventory.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                ItemStack item = iter.next();
 
-                Iterator<ItemStack> iter = inventory.iterator();
-                int i = 0;
-                while (iter.hasNext()) {
-                    ItemStack item = iter.next();
-
-                    if (item != null) {
-                        int itemAmount = item.getAmount();
-                        if (itemAmount == removeAmount) {
-                            inventory.setItem(i, null);
-                        } else {
-                            int newAmount = itemAmount - removeAmount;
-                            item.setAmount(newAmount);
-                            inventory.setItem(i, item);
-                        }
-
-                        Material itemType = item.getType();
-                        // Give back buckets when used in a recipe
-                        if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET || itemType == Material.COD_BUCKET || itemType == Material.PUFFERFISH_BUCKET || itemType == Material.SALMON_BUCKET || itemType == Material.TROPICAL_FISH_BUCKET) {
-                            addItemsToPlayer(player, new ItemStack(Material.BUCKET, removeAmount), "");
-                        // Give back bowls if mushroom soup is ever used in a recipe
-                        } else if (itemType == Material.MUSHROOM_STEW || itemType == Material.BEETROOT_SOUP || itemType == Material.SUSPICIOUS_STEW || itemType == Material.RABBIT_STEW) {
-                            addItemsToPlayer(player, new ItemStack(Material.BOWL, removeAmount), "");
-                        }
+                if (item != null) {
+                    int itemAmount = item.getAmount();
+                    if (itemAmount == removeAmount) {
+                        inventory.setItem(i, null);
+                    } else {
+                        int newAmount = itemAmount - removeAmount;
+                        item.setAmount(newAmount);
+                        inventory.setItem(i, item);
                     }
-                    i++;
+
+                    Material itemType = item.getType();
+                    // Give back buckets when used in a recipe
+                    if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET || itemType == Material.COD_BUCKET || itemType == Material.PUFFERFISH_BUCKET || itemType == Material.SALMON_BUCKET || itemType == Material.TROPICAL_FISH_BUCKET) {
+                        addItemsToPlayer(player, new ItemStack(Material.BUCKET, removeAmount), "");
+                    // Give back bowls if mushroom soup is ever used in a recipe
+                    } else if (itemType == Material.MUSHROOM_STEW || itemType == Material.BEETROOT_SOUP || itemType == Material.SUSPICIOUS_STEW || itemType == Material.RABBIT_STEW) {
+                        addItemsToPlayer(player, new ItemStack(Material.BOWL, removeAmount), "");
+                    }
                 }
+                i++;
             }
         });
     }
 
     public static void updateCursor(final Player player, final ItemStack newCursor) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override public void run() {
-                // Sanity check to make sure the new item is different;
-                ItemStack oldCursor = player.getItemOnCursor();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            // Sanity check to make sure the new item is different;
+            ItemStack oldCursor = player.getItemOnCursor();
 
-                if ((newCursor != null && oldCursor != null && newCursor.getAmount() != oldCursor.getAmount()) || !ItemUtil.isSameItem(newCursor, oldCursor)) {
-                    player.setItemOnCursor(newCursor);
-                }
+            if ((newCursor != null && oldCursor != null && newCursor.getAmount() != oldCursor.getAmount()) || !ItemUtil.isSameItem(newCursor, oldCursor)) {
+                player.setItemOnCursor(newCursor);
             }
         });
     }
 
     public static void updateInventory(final Player player) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @SuppressWarnings("deprecation")
-            @Override public void run() {
-                player.updateInventory();
-            }
-        });
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, player::updateInventory);
     }
 
     public static void updateInventoryLater(final Player player, final int ticks) {
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @SuppressWarnings("deprecation")
-            @Override public void run() {
-                player.updateInventory();
-            }
-        }, ticks);
+        Bukkit.getScheduler().runTaskLater(plugin, player::updateInventory, ticks);
     }
 
     public static int getInventoryMax(Player player, String worldName, InventoryView view, Inventory inventory, Material mat, short dur, int slot) {
@@ -1083,14 +1062,12 @@ public final class InventoryUtil {
     }
 
     public static void replaceItem(final Inventory inventory, final int slot, final ItemStack stack) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override public void run() {
-                ItemStack slotItem = inventory.getItem(slot);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            ItemStack slotItem = inventory.getItem(slot);
 
-                // Sanity check to make sure the new item is different;
-                if ((stack != null && slotItem != null && stack.getAmount() != slotItem.getAmount()) || !ItemUtil.isSameItem(stack, slotItem)) {
-                    inventory.setItem(slot, stack);
-                }
+            // Sanity check to make sure the new item is different;
+            if ((stack != null && slotItem != null && stack.getAmount() != slotItem.getAmount()) || !ItemUtil.isSameItem(stack, slotItem)) {
+                inventory.setItem(slot, stack);
             }
         });
     }

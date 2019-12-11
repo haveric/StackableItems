@@ -27,7 +27,7 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
     public static void addPlayerToCache(String name, UUID uuid) {
         if (Bukkit.getServer().getOnlineMode()) {
             if (lookupCache == null) {
-                lookupCache = new HashMap<String, UUID>();
+                lookupCache = new HashMap<>();
             }
 
             lookupCache.put(name, uuid);
@@ -51,10 +51,10 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
 
     public Map<String, UUID> call() throws Exception {
         if (lookupCache == null) {
-            lookupCache = new HashMap<String, UUID>();
+            lookupCache = new HashMap<>();
         }
 
-        Map<String, UUID> uuidMap = new HashMap<String, UUID>();
+        Map<String, UUID> uuidMap = new HashMap<>();
 
         for (int i = 0; i < names.size(); i++) {
             String name = names.get(i);

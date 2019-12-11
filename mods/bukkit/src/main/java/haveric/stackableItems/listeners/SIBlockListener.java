@@ -4,7 +4,6 @@ import haveric.stackableItems.config.Config;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
