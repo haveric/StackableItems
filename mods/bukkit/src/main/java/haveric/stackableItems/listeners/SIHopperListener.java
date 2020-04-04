@@ -1,8 +1,13 @@
 package haveric.stackableItems.listeners;
 
+import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
 
+import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Comparator;
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.minecart.HopperMinecart;
@@ -83,12 +88,13 @@ public class SIHopperListener implements Listener {
         InventoryHolder holder = inventory.getHolder();
         String worldName = null;
 
+        Hopper hopper = null;
         if (holder instanceof Hopper) {
-            Hopper hopper = (Hopper) holder;
+            hopper = (Hopper) holder;
             worldName = hopper.getWorld().getName();
         } else if (holder instanceof HopperMinecart) {
-            HopperMinecart hopper = (HopperMinecart) holder;
-            worldName = hopper.getWorld().getName();
+            HopperMinecart hopperMinecart = (HopperMinecart) holder;
+            worldName = hopperMinecart.getWorld().getName();
         }
 
         if (worldName != null && SIItems.isInventoryEnabled(worldName, inventory)) {
@@ -110,6 +116,12 @@ public class SIHopperListener implements Listener {
                 item.remove();
                 InventoryUtil.addItems(item.getLocation(), stack, inventory, defaultMax, true);
                 event.setCancelled(true);
+
+                if (hopper != null) {
+                    Block block = hopper.getBlock();
+                    // Force update for comparators to also update
+                    Bukkit.getScheduler().runTaskLater(StackableItems.getPlugin(), () -> block.getState().update(true), 0);
+                }
             }
         }
     }

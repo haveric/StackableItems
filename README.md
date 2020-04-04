@@ -4,7 +4,8 @@
 
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
-### Changelog:
+### Coming Soon:
+* FIX: block/comparator updates for inventory dragging and hoppers picking up items
 
 #### Version 1.0.10 (10/10/2019)
 * FIX: shulker boxes not keeping their inventory correctly when containing overstacked items

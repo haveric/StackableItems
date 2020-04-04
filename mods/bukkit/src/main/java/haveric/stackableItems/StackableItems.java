@@ -20,12 +20,14 @@ import net.milkbowl.vault.permission.Permission;
 public class StackableItems extends JavaPlugin {
 
     public Logger log;
+    private static StackableItems plugin;
     public boolean supportsInventoryStackSize = true;
 
     private Commands commands = new Commands(this);
 
     public void onEnable() {
         log = getLogger();
+        plugin = this;
 
         PluginManager pm = getServer().getPluginManager();
 
@@ -64,5 +66,9 @@ public class StackableItems extends JavaPlugin {
                 Perms.init(this, permProvider.getProvider());
             }
         }
+    }
+
+    public static StackableItems getPlugin() {
+        return plugin;
     }
 }
