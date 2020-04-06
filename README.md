@@ -6,6 +6,8 @@
 
 ### Coming Soon:
 * FIX: block/comparator updates for inventory dragging and hoppers picking up items
+* FIX: shift clicking elytra into chest slot
+
 
 #### Version 1.0.10 (10/10/2019)
 * FIX: shulker boxes not keeping their inventory correctly when containing overstacked items
