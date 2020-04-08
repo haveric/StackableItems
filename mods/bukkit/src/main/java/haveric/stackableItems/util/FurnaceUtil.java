@@ -5,9 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 
 import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.fileWriter.CustomFileWriter;
@@ -20,6 +18,8 @@ public final class FurnaceUtil {
 
     private static List<Material> listOfFuels;
     private static List<Material> furnaceBurnables;
+    private static List<Material> blastFurnaceBurnables;
+    private static List<Material> smokerBurnables;
 
     private FurnaceUtil() { } // Private constructor for utility class
 
@@ -230,20 +230,48 @@ public final class FurnaceUtil {
 
     public static void loadRecipes() {
         furnaceBurnables = new ArrayList<>();
+        blastFurnaceBurnables = new ArrayList<>();
+        smokerBurnables = new ArrayList<>();
 
         Iterator<Recipe> iter = plugin.getServer().recipeIterator();
 
         while (iter.hasNext()) {
             try {
                 Recipe recipe = iter.next();
-                if (recipe instanceof FurnaceRecipe) {
-                    FurnaceRecipe furnaceRecipe = (FurnaceRecipe) recipe;
+                if (recipe instanceof CookingRecipe) {
+                    CookingRecipe cookingRecipe = (CookingRecipe) recipe;
 
-                    ItemStack item = furnaceRecipe.getInput();
-                    Material mat = item.getType();
+                    List<Material> materials = new ArrayList<>();
+                    RecipeChoice choice = cookingRecipe.getInputChoice();
+                    if (choice instanceof RecipeChoice.MaterialChoice) {
+                        RecipeChoice.MaterialChoice materialChoice = (RecipeChoice.MaterialChoice) choice;
+                        materials.addAll(materialChoice.getChoices());
 
-                    if (!furnaceBurnables.contains(mat)) {
-                        furnaceBurnables.add(mat);
+                    } else if (choice instanceof RecipeChoice.ExactChoice) {
+                        RecipeChoice.ExactChoice exactChoice = (RecipeChoice.ExactChoice) choice;
+                        List<ItemStack> items = exactChoice.getChoices();
+
+                        for (ItemStack item : items) {
+                            materials.add(item.getType());
+                        }
+                    }
+
+                    if (!materials.isEmpty()) {
+                        for (Material mat : materials) {
+                            if (recipe instanceof SmokingRecipe) {
+                                if (!smokerBurnables.contains(mat)) {
+                                    smokerBurnables.add(mat);
+                                }
+                            } else if (recipe instanceof BlastingRecipe) {
+                                if (!blastFurnaceBurnables.contains(mat)) {
+                                    blastFurnaceBurnables.add(mat);
+                                }
+                            } else if (recipe instanceof FurnaceRecipe) {
+                                if (!furnaceBurnables.contains(mat)) {
+                                    furnaceBurnables.add(mat);
+                                }
+                            }
+                        }
                     }
                 }
             } catch (NullPointerException e) {
@@ -252,7 +280,15 @@ public final class FurnaceUtil {
         }
     }
 
-    public static boolean isBurnable(Material mat) {
+    public static boolean isFurnaceBurnable(Material mat) {
         return furnaceBurnables.contains(mat);
+    }
+
+    public static boolean isBlastFurnaceBurnable(Material mat) {
+        return blastFurnaceBurnables.contains(mat);
+    }
+
+    public static boolean isSmokerBurnable(Material mat) {
+        return smokerBurnables.contains(mat);
     }
 }

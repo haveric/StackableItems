@@ -9,6 +9,7 @@
 * FIX: shift clicking elytra into chest slot
 * NEW: created an items.example.yml for config references
 * FIX: items.yml will no longer add test configuration 
+* FIX: shift clicking of ingredients into furnaces, blast furnaces, and smokers
 
 #### Version 1.0.10 (10/10/2019)
 * FIX: shulker boxes not keeping their inventory correctly when containing overstacked items

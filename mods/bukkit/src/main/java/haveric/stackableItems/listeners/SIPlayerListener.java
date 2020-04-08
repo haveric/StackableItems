@@ -1257,7 +1257,16 @@ public class SIPlayerListener implements Listener {
                         }
                     } else if (topType == InventoryType.FURNACE || topType == InventoryType.BLAST_FURNACE || topType == InventoryType.SMOKER) {
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);
-                        boolean isBurnable = FurnaceUtil.isBurnable(clickedType);
+                        boolean isBurnable;
+
+                        if (topType == InventoryType.SMOKER) {
+                            isBurnable = FurnaceUtil.isSmokerBurnable(clickedType);
+                        } else if (topType == InventoryType.BLAST_FURNACE) {
+                            isBurnable = FurnaceUtil.isBlastFurnaceBurnable(clickedType);
+                        } else {
+                            isBurnable = FurnaceUtil.isFurnaceBurnable(clickedType);
+                        }
+
 
                         // Furnace slots:
                         // 0 - Burnable
