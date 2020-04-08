@@ -14,7 +14,7 @@ public final class FurnaceUtil {
 
     private static StackableItems plugin;
 
-    private static final int FUEL_LIST_VERSION = 6;
+    private static final int FUEL_LIST_VERSION = 7;
 
     private static List<Material> listOfFuels;
     private static List<Material> furnaceBurnables;
