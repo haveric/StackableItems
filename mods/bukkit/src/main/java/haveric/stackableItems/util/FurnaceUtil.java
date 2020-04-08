@@ -41,6 +41,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.ACACIA_FENCE);
         listOfFuels.add(Material.ACACIA_FENCE_GATE);
         listOfFuels.add(Material.ACACIA_LOG);
+        listOfFuels.add(Material.ACACIA_PLANKS);
         listOfFuels.add(Material.ACACIA_PRESSURE_PLATE);
         listOfFuels.add(Material.ACACIA_SAPLING);
         listOfFuels.add(Material.ACACIA_SIGN);
@@ -58,6 +59,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.BIRCH_FENCE);
         listOfFuels.add(Material.BIRCH_FENCE_GATE);
         listOfFuels.add(Material.BIRCH_LOG);
+        listOfFuels.add(Material.BIRCH_PLANKS);
         listOfFuels.add(Material.BIRCH_PRESSURE_PLATE);
         listOfFuels.add(Material.BIRCH_SAPLING);
         listOfFuels.add(Material.BIRCH_SIGN);
@@ -81,8 +83,10 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.BOOKSHELF);
         listOfFuels.add(Material.BROWN_MUSHROOM_BLOCK);
         listOfFuels.add(Material.CARTOGRAPHY_TABLE);
+        listOfFuels.add(Material.CHARCOAL);
         listOfFuels.add(Material.CHEST);
         listOfFuels.add(Material.COAL);
+        listOfFuels.add(Material.COAL_BLOCK);
         listOfFuels.add(Material.COMPOSTER);
         listOfFuels.add(Material.CRAFTING_TABLE);
         listOfFuels.add(Material.CYAN_BANNER);
@@ -95,6 +99,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.DARK_OAK_FENCE);
         listOfFuels.add(Material.DARK_OAK_FENCE_GATE);
         listOfFuels.add(Material.DARK_OAK_LOG);
+        listOfFuels.add(Material.DARK_OAK_PLANKS);
         listOfFuels.add(Material.DARK_OAK_PRESSURE_PLATE);
         listOfFuels.add(Material.DARK_OAK_SAPLING);
         listOfFuels.add(Material.DARK_OAK_SIGN);
@@ -122,6 +127,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.JUNGLE_FENCE);
         listOfFuels.add(Material.JUNGLE_FENCE_GATE);
         listOfFuels.add(Material.JUNGLE_LOG);
+        listOfFuels.add(Material.JUNGLE_PLANKS);
         listOfFuels.add(Material.JUNGLE_PRESSURE_PLATE);
         listOfFuels.add(Material.JUNGLE_SAPLING);
         listOfFuels.add(Material.JUNGLE_SIGN);
@@ -142,6 +148,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.LIME_BANNER);
         listOfFuels.add(Material.LIME_CARPET);
         listOfFuels.add(Material.LIME_WOOL);
+        listOfFuels.add(Material.LOOM);
         listOfFuels.add(Material.MAGENTA_BANNER);
         listOfFuels.add(Material.MAGENTA_CARPET);
         listOfFuels.add(Material.MAGENTA_WOOL);
@@ -153,6 +160,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.OAK_FENCE);
         listOfFuels.add(Material.OAK_FENCE_GATE);
         listOfFuels.add(Material.OAK_LOG);
+        listOfFuels.add(Material.OAK_PLANKS);
         listOfFuels.add(Material.OAK_PRESSURE_PLATE);
         listOfFuels.add(Material.OAK_SAPLING);
         listOfFuels.add(Material.OAK_SIGN);
@@ -183,6 +191,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.SPRUCE_FENCE);
         listOfFuels.add(Material.SPRUCE_FENCE_GATE);
         listOfFuels.add(Material.SPRUCE_LOG);
+        listOfFuels.add(Material.SPRUCE_PLANKS);
         listOfFuels.add(Material.SPRUCE_PRESSURE_PLATE);
         listOfFuels.add(Material.SPRUCE_SAPLING);
         listOfFuels.add(Material.SPRUCE_SIGN);
