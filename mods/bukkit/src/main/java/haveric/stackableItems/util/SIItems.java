@@ -54,6 +54,7 @@ public final class SIItems {
 
     private static final String FILE_VERSION = "version";
     private static final String FILE_DEFAULT_GROUPS = "defaultGroups.yml";
+    private static final String FILE_ITEMS_EXAMPLE = "items.example.yml";
 
     private SIItems() { } // Private constructor for utility class
 
@@ -68,28 +69,12 @@ public final class SIItems {
 
         itemsFile = new File(plugin.getDataFolder() + File.separator + "items.yml");
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
-        setupItemsFile();
 
         boolean overwrite = isNewVersion();
         createFile(FILE_DEFAULT_GROUPS, overwrite);
+        createFile(FILE_ITEMS_EXAMPLE, true);
 
         reload();
-    }
-
-    private static void setupItemsFile() {
-        itemsConfig.addDefault("allWorlds.default." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.default." + cfgMax, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.player.testPlayer." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.player.testPlayer." + cfgMax, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.group.testGroup." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.group.testGroup." + cfgMax, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.inventory.chest." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("allWorlds.inventory.chest." + cfgMax, ITEM_DEFAULT);
-
-        itemsConfig.addDefault("testWorld.default." + cfgMin, ITEM_DEFAULT);
-        itemsConfig.addDefault("testWorld.default." + cfgMax, ITEM_DEFAULT);
-        itemsConfig.options().copyDefaults(true);
-        Config.saveConfig(itemsConfig, itemsFile);
     }
 
     public static void reload() {
@@ -113,6 +98,8 @@ public final class SIItems {
     }
 
     private static void loadItemsFile() {
+        boolean requiresSave = false;
+
         for (String worldToSplit : itemsConfig.getKeys(false)) {
             String[] worlds = worldToSplit.split(",");
 
@@ -163,6 +150,7 @@ public final class SIItems {
                                         }
                                     }
 
+                                    requiresSave = true;
                                     itemsConfig.set(world + ".player." + player, null);
                                 } catch (Exception e) { }
                             }
@@ -202,7 +190,10 @@ public final class SIItems {
                     }
                 }
             }
-            Config.saveConfig(itemsConfig, itemsFile);
+
+            if (requiresSave) {
+                Config.saveConfig(itemsConfig, itemsFile);
+            }
         }
     }
 
