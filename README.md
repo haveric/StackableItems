@@ -5,9 +5,9 @@
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
 ### Coming Soon:
-* FIX: shift clicking elytra into chest slot
-* NEW: created an items.example.yml for config references
+* NEW: created items.example.yml for config references
 * FIX: items.yml will no longer add test configuration 
+* FIX: shift clicking elytra into chest slot
 * FIX: shift clicking of ingredients into furnaces, blast furnaces, and smokers
 * FIX: Add wooden planks, charcoal, coal block, and loom to fuel list
 
