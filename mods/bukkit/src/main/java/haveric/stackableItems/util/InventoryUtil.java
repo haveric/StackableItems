@@ -27,34 +27,7 @@ public final class InventoryUtil {
     public static void init(StackableItems si) {
         plugin = si;
     }
-/*
-    private static int getInventoryFreeSpaces(String worldName, ItemStack itemToCheck, Inventory inventory) {
-        int free = 0;
 
-        Material type = itemToCheck.getType();
-        short durability = itemToCheck.getDurability();
-
-        Iterator<ItemStack> iter = inventory.iterator();
-        int i = 0;
-        while (iter.hasNext()) {
-            ItemStack slot = iter.next();
-
-            int maxAmount = getInventoryMax(null, worldName, inventory, type, durability, i);
-
-            if (slot == null) {
-                free += maxAmount;
-            } else if (ItemUtil.isSameItem(slot, itemToCheck)) {
-                int freeInSlot = maxAmount - slot.getAmount();
-                if (freeInSlot > 0) {
-                    free += freeInSlot;
-                }
-            }
-            i++;
-        }
-
-        return free;
-    }
-*/
     public static int getPlayerFreeSpaces(Player player, ItemStack itemToCheck) {
         return getFreeSpaces(player, itemToCheck, player.getOpenInventory(), player.getInventory(), 0, 36);
     }
@@ -689,7 +662,6 @@ public final class InventoryUtil {
 
             if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
                 int slotAmount = slot.getAmount();
-
                 int canAdd = maxAmount - slotAmount;
                 if (canAdd > 0) {
                     // Add less than a full slot
@@ -712,7 +684,7 @@ public final class InventoryUtil {
         iter = inventory.iterator();
         i = 0;
         // Add to empty slots
-        while (iter.hasNext()) {
+        while (iter.hasNext() && addAmount > 0) {
             ItemStack slot = iter.next();
 
             if (slot == null) {
@@ -720,7 +692,7 @@ public final class InventoryUtil {
                     itemToAdd.setAmount(maxAmount);
                     inventory.setItem(i, itemToAdd.clone());
                     addAmount -= maxAmount;
-                } else if (addAmount > 0) {
+                } else {
                     itemToAdd.setAmount(addAmount);
                     inventory.setItem(i, itemToAdd.clone());
                     addAmount = 0;
@@ -736,24 +708,44 @@ public final class InventoryUtil {
             location.getWorld().dropItemNaturally(location, clone);
         }
     }
-
-    /*
+/*
     public static void moveItemsFromHopper(final Location location, final ItemStack stack, final Inventory fromInventory, final Inventory toInventory, final int max) {
-        int freeSpaces = getInventoryFreeSpaces(location.getWorld().getName(), stack, toInventory);
-        if (freeSpaces > 0) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                @Override public void run() {
-                    int freeSpaces2 = getInventoryFreeSpaces(location.getWorld().getName(), stack, toInventory);
-                    if (freeSpaces2 > 0) {
-                        fromInventory.removeItem(stack);
-                        addItems(location, stack, toInventory, max, false);
-                    }
-                }
-            });
-        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            int freeSpaces = getInventoryFreeSpaces(location.getWorld().getName(), stack, toInventory);
+            if (freeSpaces > 0) {
+                addItems(location, stack, toInventory, max, false);
+                fromInventory.removeItem(stack);
+            }
+        });
     }
-    */
 
+    private static int getInventoryFreeSpaces(String worldName, ItemStack itemToCheck, Inventory inventory) {
+        int free = 0;
+
+        Material type = itemToCheck.getType();
+        short durability = itemToCheck.getDurability();
+
+        Iterator<ItemStack> iter = inventory.iterator();
+        int i = 0;
+        while (iter.hasNext()) {
+            ItemStack slot = iter.next();
+
+            int maxAmount = getInventoryMax(null, worldName, null, inventory, type, durability, i);
+
+            if (slot == null) {
+                free += maxAmount;
+            } else if (ItemUtil.isSameItem(slot, itemToCheck)) {
+                int freeInSlot = maxAmount - slot.getAmount();
+                if (freeInSlot > 0) {
+                    free += freeInSlot;
+                }
+            }
+            i++;
+        }
+
+        return free;
+    }
+*/
     public static int moveItemsToPlayer(Player player, ItemStack clicked, InventoryClickEvent event, int start, int end, boolean setLeft, Inventory fromInventory) {
         String extraType = "";
 
@@ -961,7 +953,10 @@ public final class InventoryUtil {
             gamemode = player.getGameMode();
         }
 
-        String invName = view.getTitle();
+        String invName = "";
+        if (view != null) {
+            invName = view.getTitle();
+        }
 
 
         if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {

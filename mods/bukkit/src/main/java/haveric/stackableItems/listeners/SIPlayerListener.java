@@ -621,15 +621,6 @@ public class SIPlayerListener implements Listener {
             cursorClone.setAmount(left);
             InventoryUtil.updateCursor(player, cursorClone);
             InventoryUtil.updateInventory(player);
-
-            InventoryHolder holder = inventory.getHolder();
-            if (holder instanceof Container) {
-                Container container = (Container) holder;
-                Block block = container.getBlock();
-
-                // Force update for comparators to also update
-                Bukkit.getScheduler().runTaskLater(StackableItems.getPlugin(), () -> block.getState().update(true), 0);
-            }
         }
     }
 

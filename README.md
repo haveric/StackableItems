@@ -5,7 +5,6 @@
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
 ### Coming Soon:
-* FIX: block/comparator updates for inventory dragging and hoppers picking up items
 * FIX: shift clicking elytra into chest slot
 * NEW: created an items.example.yml for config references
 * FIX: items.yml will no longer add test configuration 
