@@ -3,6 +3,7 @@ package haveric.stackableItems.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.*;
@@ -285,6 +286,8 @@ public final class FurnaceUtil {
                 }
             } catch (NullPointerException e) {
                 // Catch any invalid Bukkit recipes
+            } catch (NoSuchElementException e) {
+                // Vanilla datapack is disabled
             }
         }
     }
