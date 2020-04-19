@@ -1088,9 +1088,15 @@ public class SIPlayerListener implements Listener {
                                     inventory.setBoots(cloneArmor);
                                     moved = true;
                                 }
+                            } else if (ItemUtil.isOffhand(clickedType)) {
+                                armorSlot = inventory.getItemInOffHand();
+                                if (armorSlot.getType() == Material.AIR) {
+                                    inventory.setItemInOffHand(cloneArmor);
+                                    moved = true;
+                                }
                             }
 
-                            if (armorSlot == null && moved) {
+                            if ((armorSlot == null || armorSlot.getType() == Material.AIR) && moved) {
                                 event.setCurrentItem(InventoryUtil.decrementStack(clicked));
                                 event.setCancelled(true);
                             } else {

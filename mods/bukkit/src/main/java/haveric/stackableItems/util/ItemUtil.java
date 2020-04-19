@@ -178,6 +178,10 @@ public final class ItemUtil {
         return isLeggings;
     }
 
+    public static boolean isOffhand(Material mat) {
+        return mat == Material.SHIELD;
+    }
+
     public static boolean isTool(Material mat) {
         boolean isTool = false;
 
@@ -201,7 +205,7 @@ public final class ItemUtil {
     public static boolean isArmor(Material mat) {
         boolean isArmor = false;
 
-        if (isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat) || mat == Material.SHIELD) {
+        if (isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat) || isOffhand(mat)) {
             isArmor = true;
         }
 

@@ -8,6 +8,7 @@
 * NEW: created items.example.yml for config references
 * FIX: items.yml will no longer add test configuration 
 * FIX: shift clicking elytra into chest slot
+* FIX: shift clicking shield into offhand slot
 * FIX: shift clicking of ingredients into furnaces, blast furnaces, and smokers
 * FIX: Add wooden planks, charcoal, coal block, and loom to fuel list
 
