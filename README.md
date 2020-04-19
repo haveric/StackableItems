@@ -4,7 +4,7 @@
 
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
-### Coming Soon:
+### Version 1.0.11 (04/19/2020):
 * NEW: created items.example.yml for config references
 * FIX: items.yml will no longer add test configuration 
 * FIX: shift clicking elytra into chest slot
