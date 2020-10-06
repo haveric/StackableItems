@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,13 @@ public final class SIItems {
         }
 
         itemsFile = new File(plugin.getDataFolder() + File.separator + "items.yml");
+        if (!itemsFile.exists()) {
+            try {
+                itemsFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
 
         boolean overwrite = isNewVersion();

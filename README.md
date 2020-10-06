@@ -4,6 +4,9 @@
 
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
+### Coming Soon:
+* FIX: items.yml wasn't being created on new setup
+
 ### Version 1.0.11 (04/19/2020):
 * NEW: created items.example.yml for config references
 * FIX: items.yml will no longer add test configuration 
