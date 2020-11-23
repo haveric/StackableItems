@@ -20,6 +20,6 @@ dependencies {
     testCompile 'org.powermock:powermock-api-mockito:1.6.4'
 
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-    compile "org.bukkit:bukkit:1.15-R0.1-SNAPSHOT"
+    implementation 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
     compile "net.milkbowl.vault:VaultAPI:1.7"
 }
