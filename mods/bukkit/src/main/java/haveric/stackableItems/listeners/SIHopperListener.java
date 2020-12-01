@@ -1,10 +1,8 @@
 package haveric.stackableItems.listeners;
 
-import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
 
-import org.bukkit.Bukkit;
 import org.bukkit.block.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.minecart.HopperMinecart;

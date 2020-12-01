@@ -6,7 +6,6 @@ import java.util.Random;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.Container;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
