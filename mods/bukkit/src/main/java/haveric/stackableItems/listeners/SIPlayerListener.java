@@ -1106,7 +1106,7 @@ public class SIPlayerListener implements Listener {
                         }
                     } else if (topType == InventoryType.BREWING) {
                         // TODO Prevent stacks from going into potion slots when shift clicking
-                        boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType, clickedDur);
+                        boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
                         boolean isPotion = clickedType == Material.POTION;
 
                         boolean moved = false;

@@ -274,7 +274,7 @@ public final class ItemUtil {
     }
 
 
-    public static boolean isBrewingIngredient(Material mat, short data) {
+    public static boolean isBrewingIngredient(Material mat) {
         boolean brewingIngredient = false;
 
         switch(mat) {
