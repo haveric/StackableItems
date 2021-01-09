@@ -16,6 +16,7 @@ public final class ItemUtil {
             case IRON_AXE:
             case GOLDEN_AXE:
             case DIAMOND_AXE:
+            case NETHERITE_AXE:
                 isAxe = true;
                 break;
             default:
@@ -33,6 +34,7 @@ public final class ItemUtil {
             case IRON_HOE:
             case GOLDEN_HOE:
             case DIAMOND_HOE:
+            case NETHERITE_HOE:
                 isHoe = true;
                 break;
             default:
@@ -50,6 +52,7 @@ public final class ItemUtil {
             case IRON_PICKAXE:
             case GOLDEN_PICKAXE:
             case DIAMOND_PICKAXE:
+            case NETHERITE_PICKAXE:
                 isPickaxe = true;
                 break;
             default:
@@ -67,6 +70,7 @@ public final class ItemUtil {
             case IRON_SHOVEL:
             case GOLDEN_SHOVEL:
             case DIAMOND_SHOVEL:
+            case NETHERITE_SHOVEL:
                 isShovel = true;
                 break;
             default:
@@ -84,6 +88,7 @@ public final class ItemUtil {
             case IRON_SWORD:
             case GOLDEN_SWORD:
             case DIAMOND_SWORD:
+            case NETHERITE_SWORD:
                 isSword = true;
                 break;
             default:
@@ -101,6 +106,7 @@ public final class ItemUtil {
             case IRON_BOOTS:
             case GOLDEN_BOOTS:
             case DIAMOND_BOOTS:
+            case NETHERITE_BOOTS:
                 isBoots = true;
                 break;
             default:
@@ -118,6 +124,7 @@ public final class ItemUtil {
             case IRON_CHESTPLATE:
             case GOLDEN_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
+            case NETHERITE_CHESTPLATE:
             case ELYTRA:
                 isChestplate = true;
                 break;
@@ -136,6 +143,7 @@ public final class ItemUtil {
             case IRON_CHESTPLATE:
             case GOLDEN_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
+            case NETHERITE_CHESTPLATE:
                 isChestplate = true;
                 break;
             default:
@@ -153,6 +161,7 @@ public final class ItemUtil {
             case IRON_HELMET:
             case GOLDEN_HELMET:
             case DIAMOND_HELMET:
+            case NETHERITE_HELMET:
             case TURTLE_HELMET:
                 isHelmet = true;
                 break;
@@ -170,6 +179,7 @@ public final class ItemUtil {
             case IRON_LEGGINGS:
             case GOLDEN_LEGGINGS:
             case DIAMOND_LEGGINGS:
+            case NETHERITE_LEGGINGS:
                 isLeggings = true;
                 break;
             default:
