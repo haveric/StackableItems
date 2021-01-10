@@ -119,7 +119,6 @@ public class SIPlayerListener implements Listener {
 
             // Handle infinite items for the crafted item
             if (maxItems == SIItems.ITEM_INFINITE) {
-
                 // Handle infinite recipe items
                 int inventSize = inventory.getSize();
                 for (int i = 1; i < inventSize; i++) {
@@ -181,7 +180,6 @@ public class SIPlayerListener implements Listener {
                         if (clone.getType() != Material.AIR) {
                             // custom repairing
                             int defaultStack = InventoryUtil.getAmountDefaultCanMove(player, clone, player.getInventory(), null, "craft");
-
                             if (amtCanCraft == 0 && ItemUtil.isRepairable(type)) {
                                 // TODO: handle custom repairing to allow stacking
                                 // TODO: don't let people repair two fully repaired items.. that's just stupid

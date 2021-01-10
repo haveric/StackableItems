@@ -1,5 +1,6 @@
 package haveric.stackableItems.util;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -796,7 +797,6 @@ public final class InventoryUtil {
 
     public static int getCraftingAmount(Inventory inventory, Recipe recipe) {
         int amt = -1;
-
         List<Recipe> recipes = plugin.getServer().getRecipesFor(recipe.getResult());
 
         Iterator<Recipe> iter = recipes.iterator();
@@ -805,38 +805,48 @@ public final class InventoryUtil {
 
             if (rec instanceof ShapedRecipe) {
                 ShapedRecipe shaped = (ShapedRecipe) rec;
-                Map<Character, ItemStack> itemMap = shaped.getIngredientMap();
-
                 String[] shape = shaped.getShape();
-                int width = shape.length;
-                int height = shape[0].length();
+                Map<Character, RecipeChoice> choiceMap = shaped.getChoiceMap();
 
-                int max = width * height;
-
-                char c = 'a';
-                amt = checkItemInInventory(inventory, itemMap.get(c), amt);
-
-                /*
-                 * Check 'b' though 'i' for max >= 2 to 9
-                 */
-                int testMax = 2;
-                while (testMax < 10) {
-                    c++;
-
-                    if (max >= testMax) {
-                        amt = checkItemInInventory(inventory, itemMap.get(c), amt);
-                    } else {
-                        break;
+                List<Character> chars = new ArrayList<>();
+                for (String line : shape) {
+                    for (char c : line.toCharArray()) {
+                        if (!chars.contains(c)) {
+                            chars.add(c);
+                        }
                     }
+                }
 
-                    testMax++;
+                for (Character c : chars) {
+                    RecipeChoice choice = choiceMap.get(c);
+                    if (choice instanceof RecipeChoice.MaterialChoice) {
+                        RecipeChoice.MaterialChoice materialChoice = (RecipeChoice.MaterialChoice) choice;
+
+                        List<Material> materials = materialChoice.getChoices();
+                        amt = checkMaterialListInInventory(inventory, materials, amt);
+                    } else if (choice instanceof RecipeChoice.ExactChoice) {
+                        RecipeChoice.ExactChoice exactChoice = (RecipeChoice.ExactChoice) choice;
+
+                        List<ItemStack> exactItems = exactChoice.getChoices();
+                        amt = checkItemListInInventory(inventory, exactItems, amt);
+                    }
                 }
             } else if (rec instanceof ShapelessRecipe) {
                 ShapelessRecipe shapeless = (ShapelessRecipe) rec;
-                List<ItemStack> items = shapeless.getIngredientList();
+                List<RecipeChoice> choices = shapeless.getChoiceList();
 
-                for (ItemStack i : items) {
-                    amt = checkItemInInventory(inventory, i, amt);
+                for (RecipeChoice choice : choices) {
+                    if (choice instanceof RecipeChoice.MaterialChoice) {
+                        RecipeChoice.MaterialChoice materialChoice = (RecipeChoice.MaterialChoice) choice;
+
+                        List<Material> materials = materialChoice.getChoices();
+                        amt = checkMaterialListInInventory(inventory, materials, amt);
+                    } else if (choice instanceof RecipeChoice.ExactChoice) {
+                        RecipeChoice.ExactChoice exactChoice = (RecipeChoice.ExactChoice) choice;
+
+                        List<ItemStack> exactItems = exactChoice.getChoices();
+                        amt = checkItemListInInventory(inventory, exactItems, amt);
+                    }
                 }
             }
             // TODO: Figure out if we need to handle FurnaceRecipes or not
@@ -849,6 +859,28 @@ public final class InventoryUtil {
 
         if (amt == -1) {
             amt = 0;
+        }
+
+        return amt;
+    }
+
+    private static int checkMaterialListInInventory(Inventory inventory, List<Material> materials, int amt) {
+        List<ItemStack> items = new ArrayList<>();
+        for (Material material : materials) {
+            items.add(new ItemStack(material));
+        }
+
+        return checkItemListInInventory(inventory, items, amt);
+    }
+
+    private static int checkItemListInInventory(Inventory inventory, List<ItemStack> ingredients, int amt) {
+        int choiceAmount = -1;
+        for (ItemStack ingredient : ingredients) {
+            choiceAmount = checkItemInInventory(inventory, ingredient, choiceAmount);
+        }
+
+        if (amt == -1 || amt > choiceAmount) {
+            amt = choiceAmount;
         }
 
         return amt;
@@ -875,8 +907,7 @@ public final class InventoryUtil {
             }
 
             int craftAmount = holdingAmount / ingAmount;
-
-            if (amt == -1 || amt > craftAmount) {
+            if (amt == -1 || amt < craftAmount) {
                 amt = craftAmount;
             }
         }
