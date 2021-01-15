@@ -5,7 +5,11 @@
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
 ### Coming Soon:
+* NEW: Update to 1.16
 * FIX: items.yml wasn't being created on new setup
+* FIX: Shift click crafting recipe stacking for some items
+* FIX: Breaking shulker boxes with stacked items will keep custom names
+* FIX: Breaking empty shulker boxes will allow stacking with new shulker boxes
 
 ### Version 1.0.11 (04/19/2020):
 * NEW: created items.example.yml for config references
