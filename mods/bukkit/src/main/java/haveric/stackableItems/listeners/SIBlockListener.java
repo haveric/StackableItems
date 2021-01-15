@@ -56,47 +56,48 @@ public class SIBlockListener implements Listener {
                 Collection<ItemStack> drops = block.getDrops();
                 for (ItemStack drop : drops) {
                     ItemMeta meta = drop.getItemMeta();
-                    if (drop.getItemMeta() instanceof BlockStateMeta) {
+                    if (meta instanceof BlockStateMeta) {
                         BlockStateMeta blockMeta = (BlockStateMeta) meta;
-                        if (blockMeta != null) {
-                            BlockState itemBlockState = blockMeta.getBlockState();
-                            if (itemBlockState instanceof ShulkerBox) {
-                                boolean needsCustomDrop = false;
-                                for (int i = 0; i < inventory.getSize(); i++) {
-                                    ItemStack originalItem = inventory.getItem(i);
+                        BlockState itemBlockState = blockMeta.getBlockState();
+                        if (itemBlockState instanceof ShulkerBox) {
+                            boolean needsCustomDrop = false;
+                            for (int i = 0; i < inventory.getSize(); i++) {
+                                ItemStack originalItem = inventory.getItem(i);
 
-                                    if (originalItem != null) {
-                                        if (originalItem.getAmount() > originalItem.getType().getMaxStackSize()) {
-                                            needsCustomDrop = true;
-                                            break;
-                                        }
+                                if (originalItem != null) {
+                                    if (originalItem.getAmount() > originalItem.getType().getMaxStackSize()) {
+                                        needsCustomDrop = true;
+                                        break;
                                     }
                                 }
+                            }
 
-                                // Create a custom drop with the original stack values since vanilla doesn't like overstacked items
-                                if (needsCustomDrop) {
-                                    ItemStack newShulker = new ItemStack(block.getType());
-                                    BlockStateMeta newMeta = (BlockStateMeta) newShulker.getItemMeta();
+                            // Create a custom drop with the original stack values since vanilla doesn't like overstacked items
+                            if (needsCustomDrop) {
+                                ItemStack newShulker = new ItemStack(block.getType());
+                                BlockStateMeta newMeta = (BlockStateMeta) newShulker.getItemMeta();
 
-                                    if (newMeta != null) {
-                                        ShulkerBox newState = (ShulkerBox) newMeta.getBlockState();
-                                        Inventory newInventory = newState.getInventory();
-                                        for (int i = 0; i < inventory.getSize(); i++) {
-                                            ItemStack originalItem = inventory.getItem(i);
-                                            if (originalItem != null) {
-                                                newInventory.setItem(i, originalItem.clone());
-                                            }
+                                if (newMeta != null) {
+                                    ShulkerBox newState = (ShulkerBox) newMeta.getBlockState();
+                                    Inventory newInventory = newState.getInventory();
+                                    for (int i = 0; i < inventory.getSize(); i++) {
+                                        ItemStack originalItem = inventory.getItem(i);
+                                        if (originalItem != null) {
+                                            newInventory.setItem(i, originalItem.clone());
                                         }
-
-                                        event.setDropItems(false);
-                                        newState.update();
-                                        newMeta.setBlockState(newState);
-                                        newShulker.setItemMeta(newMeta);
-                                        Location blockLocation = block.getLocation();
-
-                                        Location dropLocation = new Location(blockLocation.getWorld(), blockLocation.getX() + .5, blockLocation.getY() + .5, blockLocation.getZ() + .5);
-                                        block.getWorld().dropItem(dropLocation, newShulker);
                                     }
+
+                                    event.setDropItems(false);
+                                    newState.update();
+                                    newMeta.setBlockState(newState);
+                                    if (meta.hasDisplayName()) {
+                                        newMeta.setDisplayName(meta.getDisplayName());
+                                    }
+                                    newShulker.setItemMeta(newMeta);
+                                    Location blockLocation = block.getLocation();
+
+                                    Location dropLocation = new Location(blockLocation.getWorld(), blockLocation.getX() + .5, blockLocation.getY() + .5, blockLocation.getZ() + .5);
+                                    block.getWorld().dropItem(dropLocation, newShulker);
                                 }
                             }
                         }
