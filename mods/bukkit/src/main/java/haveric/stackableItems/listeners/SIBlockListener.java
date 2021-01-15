@@ -73,23 +73,27 @@ public class SIBlockListener implements Listener {
                             }
 
                             // Create a custom drop with the original stack values since vanilla doesn't like overstacked items
-                            if (needsCustomDrop) {
+                            if (needsCustomDrop || inventory.isEmpty()) {
                                 ItemStack newShulker = new ItemStack(block.getType());
                                 BlockStateMeta newMeta = (BlockStateMeta) newShulker.getItemMeta();
 
                                 if (newMeta != null) {
-                                    ShulkerBox newState = (ShulkerBox) newMeta.getBlockState();
-                                    Inventory newInventory = newState.getInventory();
-                                    for (int i = 0; i < inventory.getSize(); i++) {
-                                        ItemStack originalItem = inventory.getItem(i);
-                                        if (originalItem != null) {
-                                            newInventory.setItem(i, originalItem.clone());
+                                    event.setDropItems(false);
+
+                                    if (!inventory.isEmpty()) {
+                                        ShulkerBox newState = (ShulkerBox) newMeta.getBlockState();
+                                        Inventory newInventory = newState.getInventory();
+                                        for (int i = 0; i < inventory.getSize(); i++) {
+                                            ItemStack originalItem = inventory.getItem(i);
+                                            if (originalItem != null) {
+                                                newInventory.setItem(i, originalItem.clone());
+                                            }
                                         }
+
+                                        newState.update();
+                                        newMeta.setBlockState(newState);
                                     }
 
-                                    event.setDropItems(false);
-                                    newState.update();
-                                    newMeta.setBlockState(newState);
                                     if (meta.hasDisplayName()) {
                                         newMeta.setDisplayName(meta.getDisplayName());
                                     }
