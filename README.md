@@ -10,6 +10,7 @@
 * FIX: Shift click crafting recipe stacking for some items
 * FIX: Breaking shulker boxes with stacked items will keep custom names
 * FIX: Breaking empty shulker boxes will allow stacking with new shulker boxes
+* FIX: Shulker boxes with stacks greater than 64 will no longer lose items when picked up
 
 ### Version 1.0.11 (04/19/2020):
 * NEW: created items.example.yml for config references

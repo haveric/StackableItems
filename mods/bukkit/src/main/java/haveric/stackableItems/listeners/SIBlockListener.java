@@ -1,12 +1,11 @@
 package haveric.stackableItems.listeners;
 
+import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
@@ -21,8 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Collection;
+import java.util.*;
 
 public class SIBlockListener implements Listener {
 
@@ -81,17 +81,39 @@ public class SIBlockListener implements Listener {
                                     event.setDropItems(false);
 
                                     if (!inventory.isEmpty()) {
+                                        int[] itemCounts = new int[inventory.getSize()];
+                                        List<ItemStack> nonEmptyStacks = new ArrayList<>();
+                                        List<ItemStack> overstackedItems = new ArrayList<>();
+
                                         ShulkerBox newState = (ShulkerBox) newMeta.getBlockState();
                                         Inventory newInventory = newState.getInventory();
                                         for (int i = 0; i < inventory.getSize(); i++) {
                                             ItemStack originalItem = inventory.getItem(i);
-                                            if (originalItem != null) {
+                                            if (originalItem == null) {
+                                                itemCounts[i] = 0;
+                                            } else {
+                                                itemCounts[i] = originalItem.getAmount();
                                                 newInventory.setItem(i, originalItem.clone());
+
+                                                if (originalItem.getAmount() > 64) {
+                                                    overstackedItems.add(originalItem.clone());
+                                                }
+
+                                                nonEmptyStacks.add(originalItem.clone());
                                             }
                                         }
 
                                         newState.update();
                                         newMeta.setBlockState(newState);
+
+                                        if (!overstackedItems.isEmpty()) {
+                                            List<String> newLore = new ArrayList<>();
+                                            newLore.add("(Contains SI overstacked items)");
+                                            newMeta.setLore(newLore);
+                                        }
+
+                                        NamespacedKey key = new NamespacedKey(StackableItems.getPlugin(), "shulkerstackcounts");
+                                        newMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER_ARRAY, itemCounts);
                                     }
 
                                     if (meta.hasDisplayName()) {
