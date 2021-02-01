@@ -4,7 +4,7 @@
 
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
-### Coming Soon:
+### Version 1.0.12 (01/31/2021):
 * NEW: Update to 1.16
 * FIX: items.yml wasn't being created on new setup
 * FIX: Shift click crafting recipe stacking for some items
