@@ -15,11 +15,11 @@ repositories {
 }
 
 dependencies {
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.powermock:powermock-module-junit4:1.6.4'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.4'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.4'
 
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     implementation 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
-    compile "net.milkbowl.vault:VaultAPI:1.7"
+    implementation "net.milkbowl.vault:VaultAPI:1.7"
 }
