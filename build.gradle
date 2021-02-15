@@ -4,6 +4,10 @@ subprojects {
 
     sourceCompatibility = 1.8
 
+    jar {
+        archivesBaseName = 'StackableItems'
+    }
+
     repositories {
         mavenCentral()
         maven {
