@@ -19,8 +19,4 @@ subprojects {
             url 'http://nexus.hc.to/content/repositories/pub_releases'
         }
     }
-
-    test {
-        useJUnitPlatform()
-    }
 }
