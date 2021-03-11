@@ -519,8 +519,10 @@ public class SIPlayerListener implements Listener {
                     }
                     int actualPlayerSlot = rawPlayerSlot + 9;
                     // Offset for hotbar
-                    if (actualPlayerSlot >= 36) {
+                    if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                         actualPlayerSlot -= 36;
+                    } else if (actualPlayerSlot == 45) { // Handle shield
+                        actualPlayerSlot = 40;
                     }
                     oldStack = player.getInventory().getItem(actualPlayerSlot);
                 } else {
@@ -579,8 +581,10 @@ public class SIPlayerListener implements Listener {
                         }
                         int actualPlayerSlot = rawPlayerSlot + 9;
                         // Offset for hotbar
-                        if (actualPlayerSlot >= 36) {
+                        if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                             actualPlayerSlot -= 36;
+                        } else if (actualPlayerSlot == 45) { // Handle shield
+                            actualPlayerSlot = 40;
                         }
                         oldStack = player.getInventory().getItem(actualPlayerSlot);
                     } else {
@@ -606,8 +610,10 @@ public class SIPlayerListener implements Listener {
                     }
                     int actualPlayerSlot = rawPlayerSlot + 9;
                     // Offset for hotbar
-                    if (actualPlayerSlot >= 36) {
+                    if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                         actualPlayerSlot -= 36;
+                    } else if (actualPlayerSlot == 45) { // Handle shield
+                        actualPlayerSlot = 40;
                     }
                     InventoryUtil.replaceItem(player.getInventory(), actualPlayerSlot, clone);
                 } else {
