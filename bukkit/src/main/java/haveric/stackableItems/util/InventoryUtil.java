@@ -1211,7 +1211,7 @@ public final class InventoryUtil {
                     if (left == 0) {
                         playerInventory.setItem(i, null);
                     } else {
-                       stack.setAmount(left);
+                        stack.setAmount(left);
                     }
                 } else {
                     canStack -= stackAmount;
