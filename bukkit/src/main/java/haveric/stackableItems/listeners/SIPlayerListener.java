@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.data.BlockData;
@@ -1814,9 +1815,8 @@ public class SIPlayerListener implements Listener {
         InventoryUtil.addItemsToPlayer(player, returnClone, "");
 
         Block block = event.getBlock();
-        Levelled levelled = (Levelled) block.getBlockData();
-        levelled.setLevel(event.getNewLevel());
-        block.setBlockData(levelled);
+        BlockState state = event.getNewState();
+        block.setBlockData(state.getBlockData());
 
         // May not need this, but let's update just in case
         InventoryUtil.updateInventoryLater(player, 2);
