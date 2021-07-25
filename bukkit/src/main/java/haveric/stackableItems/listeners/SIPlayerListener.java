@@ -1647,12 +1647,13 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerPlaceBlock(BlockPlaceEvent event) {
         Block block = event.getBlock();
+
+        EquipmentSlot hand = event.getHand();
         ItemStack holding = event.getItemInHand();
         ItemStack clone = holding.clone();
         Player player = event.getPlayer();
 
         int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
-
         if (ItemUtil.isShulkerBox(holding.getType())) {
             BlockStateMeta meta = (BlockStateMeta) holding.getItemMeta();
             if (meta != null) {
@@ -1685,7 +1686,11 @@ public class SIPlayerListener implements Listener {
             if (clone.getAmount() > clone.getMaxStackSize() && (maxItems > SIItems.ITEM_DEFAULT || maxBuckets > SIItems.ITEM_DEFAULT)) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     clone.setAmount(clone.getAmount() - 1);
-                    player.getInventory().setItemInMainHand(clone);
+                    if (hand == EquipmentSlot.HAND) {
+                        player.getInventory().setItemInMainHand(clone);
+                    } else {
+                        player.getInventory().setItemInOffHand(clone);
+                    }
                 }, 0);
 
                 InventoryUtil.addItemsToPlayer(player, bucket, "");
@@ -1698,7 +1703,11 @@ public class SIPlayerListener implements Listener {
         }
         // Restore unlimited items
         if (maxItems == SIItems.ITEM_INFINITE) {
-            player.getInventory().setItemInMainHand(clone);
+            if (hand == EquipmentSlot.HAND) {
+                player.getInventory().setItemInMainHand(clone);
+            } else {
+                player.getInventory().setItemInOffHand(clone);
+            }
         }
     }
 
@@ -1757,31 +1766,56 @@ public class SIPlayerListener implements Listener {
         if (entity instanceof Player) {
             CauldronLevelChangeEvent.ChangeReason reason = event.getReason();
             Player player = (Player) entity;
-            ItemStack holding = player.getInventory().getItemInMainHand();
-            ItemStack holdingClone = holding.clone();
+            ItemStack holdingMainHand = player.getInventory().getItemInMainHand();
+            ItemStack holdingMainHandClone = holdingMainHand.clone();
+            Material mainHandType = holdingMainHandClone.getType();
 
-            int holdingMax = SIItems.getItemMax(player, holdingClone.getType(), holdingClone.getDurability(), player.getInventory().getType());
-            boolean isHoldingCustomStackSize = holdingMax != SIItems.ITEM_DEFAULT;
+            ItemStack holdingOffHand = player.getInventory().getItemInOffHand();
+            ItemStack holdingOffHandClone = holdingOffHand.clone();
+            Material offHandType = holdingOffHandClone.getType();
 
-            if (reason == CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY) {
-                if (isHoldingCustomStackSize) {
-                    handleCauldronManually(event, player, holdingClone, new ItemStack(Material.GLASS_BOTTLE));
-                }
-            } else if (reason == CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL) {
+            int holdingMainHandMax = SIItems.getItemMax(player, mainHandType, holdingMainHandClone.getDurability(), player.getInventory().getType());
+            int holdingOffHandMax = SIItems.getItemMax(player, offHandType, holdingOffHandClone.getDurability(), player.getInventory().getType());
+            boolean isMainHandHoldingCustomStackSize = holdingMainHandMax != SIItems.ITEM_DEFAULT;
+            boolean isOffHandHoldingCustomStackSize = holdingOffHandMax != SIItems.ITEM_DEFAULT;
+
+            if (reason == CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY || reason == CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL) {
                 ItemStack waterBottle = new ItemStack(Material.POTION);
-                PotionMeta potionMeta = (PotionMeta) waterBottle.getItemMeta();
-                if (potionMeta != null) {
-                    potionMeta.setBasePotionData(new PotionData(PotionType.WATER));
+                PotionMeta waterBottleMeta = (PotionMeta) waterBottle.getItemMeta();
+                if (waterBottleMeta != null) {
+                    waterBottleMeta.setBasePotionData(new PotionData(PotionType.WATER));
                 }
-                waterBottle.setItemMeta(potionMeta);
+                waterBottle.setItemMeta(waterBottleMeta);
 
-                int potionMax = SIItems.getItemMax(player, waterBottle.getType(), waterBottle.getDurability(), player.getInventory().getType());
-                if (potionMax != SIItems.ITEM_DEFAULT) {
-                    handleCauldronManually(event, player, holdingClone, waterBottle.clone());
+                if (reason == CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY) {
+                    if (ItemUtil.isSameItem(holdingMainHandClone, waterBottle)) {
+                        if (isMainHandHoldingCustomStackSize) {
+                            handleCauldronManually(event, player, holdingMainHandClone, new ItemStack(Material.GLASS_BOTTLE), EquipmentSlot.HAND);
+                        }
+                    } else {
+                        if (isOffHandHoldingCustomStackSize) {
+                            handleCauldronManually(event, player, holdingOffHandClone, new ItemStack(Material.GLASS_BOTTLE), EquipmentSlot.OFF_HAND);
+                        }
+                    }
+                } else {
+                    int potionMax = SIItems.getItemMax(player, waterBottle.getType(), waterBottle.getDurability(), player.getInventory().getType());
+                    if (potionMax != SIItems.ITEM_DEFAULT) {
+                        if (mainHandType == Material.GLASS_BOTTLE) {
+                            handleCauldronManually(event, player, holdingMainHandClone, waterBottle.clone(), EquipmentSlot.HAND);
+                        } else {
+                            handleCauldronManually(event, player, holdingOffHandClone, waterBottle.clone(), EquipmentSlot.OFF_HAND);
+                        }
+                    }
                 }
             } else if (reason == CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY) {
-                if (isHoldingCustomStackSize) {
-                    handleCauldronManually(event, player, holdingClone, new ItemStack(Material.BUCKET));
+                if (mainHandType == Material.WATER_BUCKET || mainHandType == Material.LAVA_BUCKET) {
+                    if (isMainHandHoldingCustomStackSize) {
+                        handleCauldronManually(event, player, holdingMainHandClone, new ItemStack(Material.BUCKET), EquipmentSlot.HAND);
+                    }
+                } else {
+                    if (isOffHandHoldingCustomStackSize) {
+                        handleCauldronManually(event, player, holdingOffHandClone, new ItemStack(Material.BUCKET), EquipmentSlot.OFF_HAND);
+                    }
                 }
             } else if (reason == CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL) {
                 Block block = event.getBlock();
@@ -1800,40 +1834,67 @@ public class SIPlayerListener implements Listener {
                     int filledBucketMax = SIItems.getItemMax(player, filledBucket.getType(), filledBucket.getDurability(), player.getInventory().getType());
 
                     if (filledBucketMax != SIItems.ITEM_DEFAULT) {
-                        handleCauldronManually(event, player, holdingClone, filledBucket.clone());
+                        if (mainHandType == Material.BUCKET) {
+                            handleCauldronManually(event, player, holdingMainHandClone, filledBucket.clone(), EquipmentSlot.HAND);
+                        } else {
+                            handleCauldronManually(event, player, holdingOffHandClone, filledBucket.clone(), EquipmentSlot.OFF_HAND);
+
+                        }
                     }
                 }
             } else if (reason == CauldronLevelChangeEvent.ChangeReason.ARMOR_WASH) {
-                if (isHoldingCustomStackSize) {
-                    ItemStack washedClone = holdingClone.clone();
-                    LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) washedClone.getItemMeta();
-
-                    if (leatherArmorMeta != null) {
-                        leatherArmorMeta.setColor(Bukkit.getItemFactory().getDefaultLeatherColor());
-                        washedClone.setItemMeta(leatherArmorMeta);
-                        handleCauldronManually(event, player, holdingClone, washedClone);
+                ItemStack washedMainClone = holdingMainHandClone.clone();
+                LeatherArmorMeta leatherArmorMainMeta = (LeatherArmorMeta) washedMainClone.getItemMeta();
+                if (leatherArmorMainMeta != null) {
+                    if (isMainHandHoldingCustomStackSize) {
+                        leatherArmorMainMeta.setColor(Bukkit.getItemFactory().getDefaultLeatherColor());
+                        washedMainClone.setItemMeta(leatherArmorMainMeta);
+                        handleCauldronManually(event, player, holdingMainHandClone, washedMainClone, EquipmentSlot.HAND);
+                    }
+                } else {
+                    ItemStack washedOffhandClone = holdingOffHandClone.clone();
+                    LeatherArmorMeta leatherArmorOffhandMeta = (LeatherArmorMeta) washedOffhandClone.getItemMeta();
+                    if (leatherArmorOffhandMeta != null) {
+                        if (isOffHandHoldingCustomStackSize) {
+                            leatherArmorOffhandMeta.setColor(Bukkit.getItemFactory().getDefaultLeatherColor());
+                            washedOffhandClone.setItemMeta(leatherArmorOffhandMeta);
+                            handleCauldronManually(event, player, holdingOffHandClone, washedOffhandClone, EquipmentSlot.OFF_HAND);
+                        }
                     }
                 }
             } else if (reason == CauldronLevelChangeEvent.ChangeReason.BANNER_WASH) {
-                if (isHoldingCustomStackSize) {
-                    ItemStack washedClone = holdingClone.clone();
-                    BannerMeta bannerMeta = (BannerMeta) washedClone.getItemMeta();
-
-                    if (bannerMeta != null) {
-                        bannerMeta.setPatterns(new ArrayList<>());
-                        washedClone.setItemMeta(bannerMeta);
-                        handleCauldronManually(event, player, holdingClone, washedClone);
+                ItemStack washedMainClone = holdingMainHandClone.clone();
+                BannerMeta bannerMainMeta = (BannerMeta) washedMainClone.getItemMeta();
+                if (bannerMainMeta != null) {
+                    if (isMainHandHoldingCustomStackSize) {
+                        bannerMainMeta.setPatterns(new ArrayList<>());
+                        washedMainClone.setItemMeta(bannerMainMeta);
+                        handleCauldronManually(event, player, holdingMainHandClone, washedMainClone, EquipmentSlot.HAND);
+                    }
+                } else {
+                    ItemStack washedOffhandClone = holdingOffHandClone.clone();
+                    BannerMeta bannerOffhandMeta = (BannerMeta) washedOffhandClone.getItemMeta();
+                    if (bannerOffhandMeta != null) {
+                        if (isOffHandHoldingCustomStackSize) {
+                            bannerOffhandMeta.setPatterns(new ArrayList<>());
+                            washedOffhandClone.setItemMeta(bannerOffhandMeta);
+                            handleCauldronManually(event, player, holdingOffHandClone, washedOffhandClone, EquipmentSlot.OFF_HAND);
+                        }
                     }
                 }
             }
         }
     }
 
-    private void handleCauldronManually(CauldronLevelChangeEvent event, Player player, ItemStack holdingClone, ItemStack returnClone) {
+    private void handleCauldronManually(CauldronLevelChangeEvent event, Player player, ItemStack holdingClone, ItemStack returnClone, EquipmentSlot slot) {
         event.setCancelled(true);
 
         holdingClone.setAmount(holdingClone.getAmount() - 1);
-        player.getInventory().setItemInMainHand(holdingClone);
+        if (slot == EquipmentSlot.HAND) {
+            player.getInventory().setItemInMainHand(holdingClone);
+        } else {
+            player.getInventory().setItemInOffHand(holdingClone);
+        }
 
         returnClone.setAmount(1);
         InventoryUtil.addItemsToPlayer(player, returnClone, "");

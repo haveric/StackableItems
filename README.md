@@ -9,6 +9,7 @@
 * FIX: Offhand stacking issues
 * FIX: Return buckets from new bucketed items when crafting
 * FIX: Filling/emptying a cauldron
+* FIX: Offhand stacking for cauldrons
 
 ### Version 1.0.12 (01/31/2021):
 * NEW: Update to 1.16
