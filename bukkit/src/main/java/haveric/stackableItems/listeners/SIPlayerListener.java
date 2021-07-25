@@ -1784,11 +1784,24 @@ public class SIPlayerListener implements Listener {
                     handleCauldronManually(event, player, holdingClone, new ItemStack(Material.BUCKET));
                 }
             } else if (reason == CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL) {
-                ItemStack waterBucket = new ItemStack(Material.WATER_BUCKET);
-                int waterBucketMax = SIItems.getItemMax(player, waterBucket.getType(), waterBucket.getDurability(), player.getInventory().getType());
+                Block block = event.getBlock();
+                Material blockType = block.getType();
 
-                if (waterBucketMax != SIItems.ITEM_DEFAULT) {
-                    handleCauldronManually(event, player, holdingClone, waterBucket.clone());
+                ItemStack filledBucket = null;
+                if (blockType == Material.WATER_CAULDRON) {
+                    filledBucket = new ItemStack(Material.WATER_BUCKET);
+                } else if (blockType == Material.LAVA_CAULDRON) {
+                    filledBucket = new ItemStack(Material.LAVA_BUCKET);
+                } else if (blockType == Material.POWDER_SNOW_CAULDRON) {
+                    filledBucket = new ItemStack(Material.POWDER_SNOW_BUCKET);
+                }
+
+                if (filledBucket != null) {
+                    int filledBucketMax = SIItems.getItemMax(player, filledBucket.getType(), filledBucket.getDurability(), player.getInventory().getType());
+
+                    if (filledBucketMax != SIItems.ITEM_DEFAULT) {
+                        handleCauldronManually(event, player, holdingClone, filledBucket.clone());
+                    }
                 }
             } else if (reason == CauldronLevelChangeEvent.ChangeReason.ARMOR_WASH) {
                 if (isHoldingCustomStackSize) {
