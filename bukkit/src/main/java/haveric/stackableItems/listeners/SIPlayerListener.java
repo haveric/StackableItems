@@ -1651,6 +1651,8 @@ public class SIPlayerListener implements Listener {
         ItemStack clone = holding.clone();
         Player player = event.getPlayer();
 
+        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
+
         if (ItemUtil.isShulkerBox(holding.getType())) {
             BlockStateMeta meta = (BlockStateMeta) holding.getItemMeta();
             if (meta != null) {
@@ -1677,9 +1679,18 @@ public class SIPlayerListener implements Listener {
                     }
                 }
             }
-        }
+        } else if (holding.getType() == Material.POWDER_SNOW_BUCKET) {
+            ItemStack bucket = new ItemStack(Material.BUCKET);
+            int maxBuckets = SIItems.getItemMax(player, bucket.getType(), bucket.getDurability(), player.getInventory().getType());
+            if (clone.getAmount() > clone.getMaxStackSize() && (maxItems > SIItems.ITEM_DEFAULT || maxBuckets > SIItems.ITEM_DEFAULT)) {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    clone.setAmount(clone.getAmount() - 1);
+                    player.getInventory().setItemInMainHand(clone);
+                }, 0);
 
-        int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
+                InventoryUtil.addItemsToPlayer(player, bucket, "");
+            }
+        }
 
         // Don't touch default items.
         if (maxItems == SIItems.ITEM_DEFAULT) {
