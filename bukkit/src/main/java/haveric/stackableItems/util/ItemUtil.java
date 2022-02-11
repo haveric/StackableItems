@@ -8,8 +8,6 @@ public final class ItemUtil {
     private ItemUtil() { } // Private constructor for utility class
 
     private static boolean isAxe(Material mat) {
-        boolean isAxe = false;
-
         switch(mat) {
             case WOODEN_AXE:
             case STONE_AXE:
@@ -17,17 +15,13 @@ public final class ItemUtil {
             case GOLDEN_AXE:
             case DIAMOND_AXE:
             case NETHERITE_AXE:
-                isAxe = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isAxe;
     }
 
     private static boolean isHoe(Material mat) {
-        boolean isHoe = false;
-
         switch(mat) {
             case WOODEN_HOE:
             case STONE_HOE:
@@ -35,17 +29,13 @@ public final class ItemUtil {
             case GOLDEN_HOE:
             case DIAMOND_HOE:
             case NETHERITE_HOE:
-                isHoe = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isHoe;
     }
 
     private static boolean isPickaxe(Material mat) {
-        boolean isPickaxe = false;
-
         switch(mat) {
             case WOODEN_PICKAXE:
             case STONE_PICKAXE:
@@ -53,17 +43,13 @@ public final class ItemUtil {
             case GOLDEN_PICKAXE:
             case DIAMOND_PICKAXE:
             case NETHERITE_PICKAXE:
-                isPickaxe = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isPickaxe;
     }
 
     private static boolean isShovel(Material mat) {
-        boolean isShovel = false;
-
         switch(mat) {
             case WOODEN_SHOVEL:
             case STONE_SHOVEL:
@@ -71,17 +57,13 @@ public final class ItemUtil {
             case GOLDEN_SHOVEL:
             case DIAMOND_SHOVEL:
             case NETHERITE_SHOVEL:
-                isShovel = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isShovel;
     }
 
     private static boolean isSword(Material mat) {
-        boolean isSword = false;
-
         switch(mat) {
             case WOODEN_SWORD:
             case STONE_SWORD:
@@ -89,17 +71,13 @@ public final class ItemUtil {
             case GOLDEN_SWORD:
             case DIAMOND_SWORD:
             case NETHERITE_SWORD:
-                isSword = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isSword;
     }
 
     public static boolean isBoots(Material mat) {
-        boolean isBoots = false;
-
         switch(mat) {
             case CHAINMAIL_BOOTS:
             case LEATHER_BOOTS:
@@ -107,17 +85,13 @@ public final class ItemUtil {
             case GOLDEN_BOOTS:
             case DIAMOND_BOOTS:
             case NETHERITE_BOOTS:
-                isBoots = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isBoots;
     }
 
     public static boolean isChestplate(Material mat) {
-        boolean isChestplate = false;
-
         switch(mat) {
             case CHAINMAIL_CHESTPLATE:
             case LEATHER_CHESTPLATE:
@@ -126,17 +100,13 @@ public final class ItemUtil {
             case DIAMOND_CHESTPLATE:
             case NETHERITE_CHESTPLATE:
             case ELYTRA:
-                isChestplate = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isChestplate;
     }
 
     public static boolean isChestplateEnchantable(Material mat) {
-        boolean isChestplate = false;
-
         switch(mat) {
             case CHAINMAIL_CHESTPLATE:
             case LEATHER_CHESTPLATE:
@@ -144,17 +114,13 @@ public final class ItemUtil {
             case GOLDEN_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
             case NETHERITE_CHESTPLATE:
-                isChestplate = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isChestplate;
     }
 
     public static boolean isHelmet(Material mat) {
-        boolean isHelmet = false;
-
         switch(mat) {
             case CHAINMAIL_HELMET:
             case LEATHER_HELMET:
@@ -163,16 +129,13 @@ public final class ItemUtil {
             case DIAMOND_HELMET:
             case NETHERITE_HELMET:
             case TURTLE_HELMET:
-                isHelmet = true;
-                break;
-            default: break;
+                return true;
+            default:
+                return false;
         }
-        return isHelmet;
     }
 
     public static boolean isLeggings(Material mat) {
-        boolean isLeggings = false;
-
         switch(mat) {
             case CHAINMAIL_LEGGINGS:
             case LEATHER_LEGGINGS:
@@ -180,12 +143,10 @@ public final class ItemUtil {
             case GOLDEN_LEGGINGS:
             case DIAMOND_LEGGINGS:
             case NETHERITE_LEGGINGS:
-                isLeggings = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isLeggings;
     }
 
     public static boolean isOffhand(Material mat) {
@@ -193,90 +154,55 @@ public final class ItemUtil {
     }
 
     public static boolean isTool(Material mat) {
-        boolean isTool = false;
-
-        if (isAxe(mat) || isHoe(mat) || isPickaxe(mat) || isShovel(mat)) {
-            isTool = true;
-        }
-
-        return isTool;
+        return isAxe(mat) || isHoe(mat) || isPickaxe(mat) || isShovel(mat);
     }
 
     public static boolean isWeapon(Material mat) {
-        boolean isWeapon = false;
-
-        if (isSword(mat) || mat == Material.BOW || mat == Material.CROSSBOW || mat == Material.TRIDENT) {
-            isWeapon = true;
-        }
-
-        return isWeapon;
+        return isSword(mat) || mat == Material.BOW || mat == Material.CROSSBOW || mat == Material.TRIDENT;
     }
 
     public static boolean isArmor(Material mat) {
-        boolean isArmor = false;
-
-        if (isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat) || isOffhand(mat)) {
-            isArmor = true;
-        }
-
-        return isArmor;
+        return isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat) || isOffhand(mat);
     }
 
     public static boolean isArmorEnchantable(Material mat) {
-        boolean isArmor = false;
-
-        if (isBoots(mat) || isChestplateEnchantable(mat) || isHelmet(mat) || isLeggings(mat)) {
-            isArmor = true;
-        }
-
-        return isArmor;
+        return isBoots(mat) || isChestplateEnchantable(mat) || isHelmet(mat) || isLeggings(mat);
     }
 
     public static boolean isRepairable(Material mat) {
-        boolean repairable = false;
-
         if (isTool(mat) || isWeapon(mat) || isArmor(mat)) {
-            repairable = true;
+            return true;
         } else {
             switch(mat) {
                 case FISHING_ROD:
                 case FLINT_AND_STEEL:
                 case SHEARS:
                 case CARROT_ON_A_STICK:
-                    repairable = true;
-                    break;
+                    return true;
                 default:
-                    break;
+                    return false;
             }
         }
-
-        return repairable;
     }
 
     public static boolean isEnchantable(Material mat) {
-        boolean enchantable = false;
         if (isWeapon(mat) || isArmorEnchantable(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
-            enchantable = true;
+            return true;
         } else {
             switch(mat) {
                 case BOOK:
                 case FISHING_ROD:
                 case SHEARS:
                 case CARROT_ON_A_STICK:
-                    enchantable = true;
-                    break;
+                    return true;
                 default:
-                    break;
+                    return false;
             }
         }
-
-        return enchantable;
     }
 
 
     public static boolean isBrewingIngredient(Material mat) {
-        boolean brewingIngredient = false;
-
         switch(mat) {
             case BLAZE_POWDER:
             case FERMENTED_SPIDER_EYE:
@@ -294,34 +220,25 @@ public final class ItemUtil {
             case SPIDER_EYE:
             case SUGAR:
             case TURTLE_HELMET:
-                brewingIngredient = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-
-        return brewingIngredient;
     }
 
     public static boolean isBeaconFuel(Material mat) {
-        boolean beaconFuel = false;
-
         switch(mat) {
             case DIAMOND:
             case EMERALD:
             case IRON_INGOT:
             case GOLD_INGOT:
-                beaconFuel = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return beaconFuel;
     }
 
     public static boolean isShulkerBox(Material mat) {
-        boolean isShulkerBox = false;
-
         switch(mat) {
             case SHULKER_BOX:
             case BLACK_SHULKER_BOX:
@@ -340,13 +257,10 @@ public final class ItemUtil {
             case RED_SHULKER_BOX:
             case WHITE_SHULKER_BOX:
             case YELLOW_SHULKER_BOX:
-                isShulkerBox = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-
-        return isShulkerBox;
     }
 
     public static boolean isSameItem(ItemStack one, ItemStack two) {
@@ -354,8 +268,6 @@ public final class ItemUtil {
     }
 
     public static boolean isSameItem(ItemStack one, ItemStack two, boolean negativeDurAllowed) {
-        boolean same = false;
-
         if (one != null && two != null) {
             boolean sameType = one.getType() == two.getType();
             boolean sameDur = one.getDurability() == two.getDurability();
@@ -379,10 +291,11 @@ public final class ItemUtil {
                 }
             }
 
-            if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant) && (sameMeta || noMeta)) {
-                same = true;
-            }
+            return sameType 
+                && (sameDur || (negativeDurAllowed && negativeDur)) 
+                && (sameEnchant || noEnchant) 
+                && (sameMeta || noMeta);
         }
-        return same;
+        return false;
     }
 }

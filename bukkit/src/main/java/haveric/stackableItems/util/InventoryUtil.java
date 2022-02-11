@@ -985,17 +985,11 @@ public final class InventoryUtil {
             gamemode = player.getGameMode();
         }
 
-        String invName = "";
-        if (view != null) {
-            invName = view.getTitle();
-        }
-
-
-        if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {
+        if (inventory.getType() == InventoryType.CHEST && StringUtil.equalsAnyIgnoreCase(view.getTitle(), "Horse", "Undead horse", "Skeleton horse")) {
             if (slot < 2) {
                 maxAmount = 1;
             }
-        } else if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Donkey") || invName.equalsIgnoreCase("Mule"))) {
+        } else if (inventoryType == InventoryType.CHEST && StringUtil.equalsAnyIgnoreCase(view.getTitle(), "Donkey", "Mule")) {
             if (slot == 0) {
                 maxAmount = 1;
             } else if (slot == 1) {
