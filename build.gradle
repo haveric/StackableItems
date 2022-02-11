@@ -16,7 +16,7 @@ subprojects {
         }
         maven {
             name 'Vault'
-            url 'http://nexus.hc.to/content/repositories/pub_releases'
+            url 'https://nexus.hc.to/content/repositories/pub_releases'
         }
     }
 }
