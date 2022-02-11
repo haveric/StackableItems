@@ -2,6 +2,8 @@ package haveric.stackableItems.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public final class ItemUtil {
 
@@ -273,7 +275,6 @@ public final class ItemUtil {
         return enchantable;
     }
 
-
     public static boolean isBrewingIngredient(Material mat) {
         boolean brewingIngredient = false;
 
@@ -358,8 +359,8 @@ public final class ItemUtil {
 
         if (one != null && two != null) {
             boolean sameType = one.getType() == two.getType();
-            boolean sameDur = one.getDurability() == two.getDurability();
-            boolean negativeDur = (one.getDurability() == Short.MAX_VALUE) || (two.getDurability() == Short.MAX_VALUE);
+            boolean sameDur = ItemUtil.getDurability(one) == ItemUtil.getDurability(two);
+            boolean negativeDur = (ItemUtil.getDurability(one) == Short.MAX_VALUE) || (ItemUtil.getDurability(two) == Short.MAX_VALUE);
 
             boolean sameEnchant = false;
             boolean noEnchant = one.getEnchantments().isEmpty() && two.getEnchantments().isEmpty();
@@ -384,5 +385,31 @@ public final class ItemUtil {
             }
         }
         return same;
+    }
+
+    public static int getDurability(ItemMeta itemMetadata) {
+        // Max damage/durability can be obtained via Material#getMaxDurability()
+        if (itemMetadata instanceof Damageable) {
+            Damageable damageableItem = (Damageable)itemMetadata;
+            if (!damageableItem.hasDamage()) {
+                return -1;
+            }
+            return damageableItem.getDamage();
+        }
+        return -1;
+    }
+
+    public static int getDurability(ItemStack itemStack) {
+        return getDurability(itemStack.getItemMeta());
+    }
+
+    public static void setDurability(ItemStack itemStack, int durability) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof Damageable)) {
+            throw new IllegalArgumentException("Item type " + itemStack.getType().name() + " cannot have damage set");
+        }
+        Damageable damageableItem = (Damageable)itemMeta;
+        damageableItem.setDamage(durability);
+        itemStack.setItemMeta(itemMeta);
     }
 }

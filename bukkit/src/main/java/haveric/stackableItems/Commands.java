@@ -140,7 +140,7 @@ public class Commands implements CommandExecutor {
                 }
 
                 Material mat;
-                short dur = -1;
+                int dur = -1;
                 String matName;
 
                 if (item.contains(":")) {

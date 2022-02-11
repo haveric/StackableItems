@@ -38,7 +38,7 @@ public final class InventoryUtil {
 
         if (start < end && end <= inventory.getSize()) {
             Material type = itemToCheck.getType();
-            short durability = itemToCheck.getDurability();
+            int durability = ItemUtil.getDurability(itemToCheck);
 
             Iterator<ItemStack> iter = inventory.iterator(start);
             int i = start;
@@ -66,7 +66,7 @@ public final class InventoryUtil {
 
         if (canVanillaStackCorrectly(itemToCheck, inventory)) {
             Material type = itemToCheck.getType();
-            short durability = itemToCheck.getDurability();
+            int durability = ItemUtil.getDurability(itemToCheck);
 
             if (extraType.equals("inventory")) {
                 free = checkAddInventoryTTB(player, inventory, itemToCheck);
@@ -157,7 +157,7 @@ public final class InventoryUtil {
 
         if (ItemUtil.isSameItem(slot, itemToCheck)) {
             Material type = itemToCheck.getType();
-            short durability = itemToCheck.getDurability();
+            int durability = ItemUtil.getDurability(itemToCheck);
             int defaultMax = type.getMaxStackSize();
             int amt = slot.getAmount();
             int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
@@ -254,7 +254,7 @@ public final class InventoryUtil {
         return free;
     }
 
-    private static int checkEmptyHotbarLTR(Player player, Inventory inventory, Material type, short durability) {
+    private static int checkEmptyHotbarLTR(Player player, Inventory inventory, Material type, int durability) {
         int free = 0;
         int i = 0;
 
@@ -270,7 +270,7 @@ public final class InventoryUtil {
         return free;
     }
 
-    private static int checkEmptyHotbarRTL(Player player, Inventory inventory, Material type, short durability) {
+    private static int checkEmptyHotbarRTL(Player player, Inventory inventory, Material type, int durability) {
         int free = 0;
         int i = 8;
 
@@ -286,7 +286,7 @@ public final class InventoryUtil {
         return free;
     }
 
-    private static int checkEmptyInventoryTTB(Player player, Inventory inventory, Material type, short durability) {
+    private static int checkEmptyInventoryTTB(Player player, Inventory inventory, Material type, int durability) {
         int free = 0;
         int i = 9;
         int imax = 35;
@@ -308,7 +308,7 @@ public final class InventoryUtil {
         return free;
     }
 
-    private static int checkEmptyInventoryBTT(Player player, Inventory inventory, Material type, short durability) {
+    private static int checkEmptyInventoryBTT(Player player, Inventory inventory, Material type, int durability) {
         int free = 0;
         int i = 35;
         int imin = 9;
@@ -337,7 +337,7 @@ public final class InventoryUtil {
         if (item.getAmount() > type.getMaxStackSize()) {
             canStack = false;
         } else {
-            short dur = item.getDurability();
+            int dur = ItemUtil.getDurability(item);
             int typeMaxDur = type.getMaxDurability();
             // if picking up an item above vanilla durability, we don't want vanilla to handle it
             if (dur > typeMaxDur) {
@@ -347,7 +347,7 @@ public final class InventoryUtil {
                 Iterator<ItemStack> iter = inventory.iterator();
                 while (iter.hasNext() && canStack) {
                     ItemStack slot = iter.next();
-                    if (slot != null && type == slot.getType() && slot.getDurability() > typeMaxDur) {
+                    if (slot != null && type == slot.getType() && ItemUtil.getDurability(slot) > typeMaxDur) {
                         canStack = false;
                     }
                 }
@@ -470,7 +470,7 @@ public final class InventoryUtil {
             }
 
             Material type = itemToAdd.getType();
-            short durability = itemToAdd.getDurability();
+            int durability = ItemUtil.getDurability(itemToAdd);
 
             int i = start;
             while (i <= end && addAmount > 0) {
@@ -494,7 +494,7 @@ public final class InventoryUtil {
             end--;
 
             Material type = itemToAdd.getType();
-            short durability = itemToAdd.getDurability();
+            int durability = ItemUtil.getDurability(itemToAdd);
 
             int i = end;
             while (i >= start && addAmount > 0) {
@@ -533,7 +533,7 @@ public final class InventoryUtil {
 
         if (validAdd) {
             Material type = itemToAdd.getType();
-            short durability = itemToAdd.getDurability();
+            int durability = ItemUtil.getDurability(itemToAdd);
 
             int i = start;
             while (i <= end && addAmount > 0) {
@@ -572,7 +572,7 @@ public final class InventoryUtil {
 
         if (validAdd) {
             Material type = itemToAdd.getType();
-            short durability = itemToAdd.getDurability();
+            int durability = ItemUtil.getDurability(itemToAdd);
 
             int i = end;
             while (i >= start && addAmount > 0) {
@@ -588,7 +588,7 @@ public final class InventoryUtil {
         return addAmount;
     }
 
-    private static int addPartialLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
+    private static int addPartialLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, int durability, int addAmount, int i) {
         ItemStack slot = inventory.getItem(i);
 
         if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
@@ -619,7 +619,7 @@ public final class InventoryUtil {
         return addAmount;
     }
 
-    private static int addEmptyLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
+    private static int addEmptyLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, int durability, int addAmount, int i) {
         ItemStack slot = inventory.getItem(i);
 
         if (slot == null) {
@@ -724,7 +724,7 @@ public final class InventoryUtil {
         int free = 0;
 
         Material type = itemToCheck.getType();
-        short durability = itemToCheck.getDurability();
+        int durability = itemToCheck.getDurability();
 
         Iterator<ItemStack> iter = inventory.iterator();
         int i = 0;
@@ -966,7 +966,7 @@ public final class InventoryUtil {
         Bukkit.getScheduler().runTaskLater(plugin, player::updateInventory, ticks);
     }
 
-    public static int getInventoryMax(Player player, String worldName, InventoryView view, Inventory inventory, Material mat, short dur, int slot) {
+    public static int getInventoryMax(Player player, String worldName, InventoryView view, Inventory inventory, Material mat, int dur, int slot) {
         InventoryType inventoryType = inventory.getType();
 
         GameMode gamemode = null;

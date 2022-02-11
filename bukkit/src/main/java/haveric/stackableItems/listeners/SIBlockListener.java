@@ -3,6 +3,7 @@ package haveric.stackableItems.listeners;
 import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.util.InventoryUtil;
+import haveric.stackableItems.util.ItemUtil;
 import haveric.stackableItems.util.SIItems;
 
 import org.bukkit.*;
@@ -136,7 +137,7 @@ public class SIBlockListener implements Listener {
 
         // Handle splitting tool stacks when used to break blocks
         Material type = holding.getType();
-        int maxItems = SIItems.getItemMax(player, type, holding.getDurability(), player.getInventory().getType());
+        int maxItems = SIItems.getItemMax(player, type, ItemUtil.getDurability(holding), player.getInventory().getType());
 
         // Don't touch default items.
         if (maxItems == SIItems.ITEM_DEFAULT) {

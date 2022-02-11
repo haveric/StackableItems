@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import haveric.stackableItems.StackableItems;
+import haveric.stackableItems.util.ItemUtil;
 
 public class FurnaceXPConfig {
 
@@ -162,7 +163,7 @@ public class FurnaceXPConfig {
     private static int getXP(ItemStack item) {
         double xp;
         Material mat = item.getType();
-        xp = cfgFurnaceXP.getDouble(mat + " " + item.getDurability(), 0.0);
+        xp = cfgFurnaceXP.getDouble(mat + " " + ItemUtil.getDurability(item), 0.0);
 
         if (xp == 0.0) {
             xp = cfgFurnaceXP.getDouble("" + mat, 0.0);

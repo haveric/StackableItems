@@ -265,7 +265,7 @@ public final class SIItems {
         }
     }
 
-    public static int getInventoryMax(String world, Material mat, short dur, InventoryType inventoryType) {
+    public static int getInventoryMax(String world, Material mat, int dur, InventoryType inventoryType) {
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
@@ -297,8 +297,7 @@ public final class SIItems {
         return max;
     }
 
-
-    public static int getItemMax(Player player, Material mat, short dur, InventoryType inventoryType) {
+    public static int getItemMax(Player player, Material mat, int durability, InventoryType inventoryType) {
         String world = player.getWorld().getName();
 
         int max = ITEM_DEFAULT;
@@ -309,10 +308,10 @@ public final class SIItems {
                 // Check player
                 String uuid = player.getUniqueId().toString();
 
-                max = getMax(world, "player", uuid, mat, dur);
+                max = getMax(world, "player", uuid, mat, durability);
 
                 if (max == ITEM_DEFAULT) {
-                    max = getMax(allWorlds, "player", uuid, mat, dur);
+                    max = getMax(allWorlds, "player", uuid, mat, durability);
                 }
 
                 // Check groups
@@ -330,10 +329,10 @@ public final class SIItems {
                     if (groups != null) {
                         for (String group: groups) {
                             if (max == ITEM_DEFAULT) {
-                                max = getMax(world, "group", group, mat, dur);
+                                max = getMax(world, "group", group, mat, durability);
 
                                 if (max == ITEM_DEFAULT) {
-                                    max = getMax(allWorlds, "group", group, mat, dur);
+                                    max = getMax(allWorlds, "group", group, mat, durability);
                                 }
                             }
                         }
@@ -342,18 +341,18 @@ public final class SIItems {
 
                 // Check inventory types
                 if (max == ITEM_DEFAULT) {
-                    max = getMax(world, "inventory", inventoryType.name(), mat, dur);
+                    max = getMax(world, "inventory", inventoryType.name(), mat, durability);
                 }
                 if (max == ITEM_DEFAULT) {
-                    max = getMax(allWorlds, "inventory", inventoryType.name(), mat, dur);
+                    max = getMax(allWorlds, "inventory", inventoryType.name(), mat, durability);
                 }
 
                 // Check default
                 if (max == ITEM_DEFAULT) {
-                    max = getMax(world, "default", "", mat, dur);
+                    max = getMax(world, "default", "", mat, durability);
                 }
                 if (max == ITEM_DEFAULT) {
-                    max = getMax(allWorlds, "default", "", mat, dur);
+                    max = getMax(allWorlds, "default", "", mat, durability);
                 }
 
                 // Handle invalid max
@@ -367,20 +366,20 @@ public final class SIItems {
         return max;
     }
 
-    public static int getMax(String world, String type, String item, Material mat, short dur) {
+    public static int getMax(String world, String type, String item, Material mat, int durability) {
         String itemString = world + "." + type + "." + item;
 
         if (itemString.endsWith(".")) {
             itemString = itemString.substring(0, itemString.length() - 1);
         }
-        if (dur == ITEM_DEFAULT) {
+        if (durability == ITEM_DEFAULT) {
             return getMaxFromMap(itemString, mat);
         }
 
-        return getMaxFromMap(itemString, mat, dur);
+        return getMaxFromMap(itemString, mat, durability);
     }
 
-    public static void setMax(String world, String type, String item, Material mat, short dur, int newAmount) {
+    public static void setMax(String world, String type, String item, Material mat, int dur, int newAmount) {
         if (item != null) {
             String name;
             String matName = mat.name().toUpperCase();
@@ -407,14 +406,14 @@ public final class SIItems {
         }
     }
 
-    private static int getMaxFromMap(String itemString, Material mat, short dur) {
+    private static int getMaxFromMap(String itemString, Material mat, int durability) {
         itemString = itemString.toUpperCase();
         int max = ITEM_DEFAULT;
 
         List<String> groups = null;
         String matName = mat.name().toUpperCase();
-        if (itemGroups.containsKey(matName + " " + dur)) {
-            groups = itemGroups.get(matName + " " + dur);
+        if (itemGroups.containsKey(matName + " " + durability)) {
+            groups = itemGroups.get(matName + " " + durability);
         } else if (itemGroups.containsKey(matName)) {
             groups = itemGroups.get(matName);
         }
@@ -433,8 +432,8 @@ public final class SIItems {
 
             if (max == ITEM_DEFAULT) {
                 // check for material and durability
-                if (subMap.containsKey(matName + " " + dur)) {
-                    max = subMap.get(matName + " " + dur);
+                if (subMap.containsKey(matName + " " + durability)) {
+                    max = subMap.get(matName + " " + durability);
                 // material name with no durability
                 } else if (subMap.containsKey(matName)) {
                     max = subMap.get(matName);

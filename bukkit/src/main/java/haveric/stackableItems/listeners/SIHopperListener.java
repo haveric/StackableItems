@@ -1,6 +1,7 @@
 package haveric.stackableItems.listeners;
 
 import haveric.stackableItems.util.InventoryUtil;
+import haveric.stackableItems.util.ItemUtil;
 import haveric.stackableItems.util.SIItems;
 
 import org.bukkit.block.*;
@@ -65,8 +66,7 @@ public class SIHopperListener implements Listener {
             Item item = event.getItem();
             ItemStack stack = item.getItemStack().clone();
 
-
-            int defaultMax = SIItems.getInventoryMax(item.getWorld().getName(), stack.getType(), stack.getDurability(), inventory.getType());
+            int defaultMax = SIItems.getInventoryMax(item.getWorld().getName(), stack.getType(), ItemUtil.getDurability(stack), inventory.getType());
 
             // Don't touch default or infinite items.
             if (defaultMax == SIItems.ITEM_DEFAULT || defaultMax == SIItems.ITEM_INFINITE) {
