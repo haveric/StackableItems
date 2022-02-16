@@ -1,34 +1,35 @@
-package haveric.stackableItems;
+package haveric.stackableItems.util;
 
+import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.entity.Player;
 
-public final class Perms {
+public final class PermissionsUtil {
 
-    private static Permission perm = null;
+    private static Permission provider = null;
     private static StackableItems plugin = null;
 
     private static String admin = "stackableitems.admin";
 
-    private Perms() { } // Private constructor for utility class
+    private PermissionsUtil() { } // Private constructor for utility class
 
-    public static void init(StackableItems si, Permission p) {
-        plugin = si;
-        perm = p;
+    public static void init(StackableItems plugin, Permission provider) {
+        PermissionsUtil.plugin = plugin;
+        PermissionsUtil.provider = provider;
     }
 
-    private static boolean permEnabled() {
-        return (perm != null);
+    private static boolean isEnabled() {
+        return (provider != null);
     }
 
     public static boolean groupExists(String group) {
         boolean groupExists = false;
 
-        if (permEnabled()) {
+        if (isEnabled()) {
             try {
-                for (String g : perm.getGroups()) {
+                for (String g : provider.getGroups()) {
                     if (g.equals(group)) {
                         groupExists = true;
                         break;
@@ -51,9 +52,9 @@ public final class Perms {
     public static String[] getPlayerGroups(Player player) {
         String[] groups = null;
 
-        if (permEnabled()) {
+        if (isEnabled()) {
             try {
-                groups = perm.getPlayerGroups(player);
+                groups = provider.getPlayerGroups(player);
             } catch (Exception e) {
                 // No groups
                 if (Config.isDebugging()) {
@@ -68,9 +69,9 @@ public final class Perms {
     public static String[] getGroups() {
         String[] groups = null;
 
-        if (permEnabled()) {
+        if (isEnabled()) {
             try {
-                groups = perm.getGroups();
+                groups = provider.getGroups();
             } catch (Exception e) {
                 // No groups
                 if (Config.isDebugging()) {
@@ -81,7 +82,7 @@ public final class Perms {
         return groups;
     }
 
-    public static String getPermAdmin() {
+    public static String getAdminPermission() {
         return admin;
     }
 }

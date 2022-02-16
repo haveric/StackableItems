@@ -14,6 +14,7 @@ import haveric.stackableItems.listeners.SIPlayerJoinQuitListener;
 import haveric.stackableItems.listeners.SIPlayerListener;
 import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.InventoryUtil;
+import haveric.stackableItems.util.PermissionsUtil;
 import haveric.stackableItems.util.SIItems;
 import net.milkbowl.vault.permission.Permission;
 
@@ -63,7 +64,7 @@ public class StackableItems extends JavaPlugin {
         if (pm.getPlugin("Vault") != null) {
             RegisteredServiceProvider<Permission> permProvider = getServer().getServicesManager().getRegistration(Permission.class);
             if (permProvider != null) {
-                Perms.init(this, permProvider.getProvider());
+                PermissionsUtil.init(this, permProvider.getProvider());
             }
         }
     }

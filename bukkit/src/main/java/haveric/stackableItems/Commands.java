@@ -3,6 +3,7 @@ package haveric.stackableItems;
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.config.FurnaceXPConfig;
 import haveric.stackableItems.util.FurnaceUtil;
+import haveric.stackableItems.util.PermissionsUtil;
 import haveric.stackableItems.util.SIItems;
 import haveric.stackableItems.uuidFetcher.UUIDFetcher;
 
@@ -54,7 +55,7 @@ public class Commands implements CommandExecutor {
         boolean hasAdminPerm = false;
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            hasAdminPerm = Perms.hasAdmin(player);
+            hasAdminPerm = PermissionsUtil.hasAdmin(player);
         }
 
         if (commandLabel.equalsIgnoreCase(cmdMain) || commandLabel.equalsIgnoreCase(cmdMainAlt)) {
@@ -98,7 +99,7 @@ public class Commands implements CommandExecutor {
             } else if (args.length == 1 && (args[0].equalsIgnoreCase(cmdPerms) || args[0].equalsIgnoreCase(cmdPermsAlt))) {
                 if (op || hasAdminPerm) {
                     sender.sendMessage(title + "Permission nodes:");
-                    sender.sendMessage(Perms.getPermAdmin() + " - " + msgColor + "Allows use of admin commands.");
+                    sender.sendMessage(PermissionsUtil.getAdminPermission() + " - " + msgColor + "Allows use of admin commands.");
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to see permission nodes.");
                 }

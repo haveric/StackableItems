@@ -1,6 +1,5 @@
 package haveric.stackableItems.util;
 
-import haveric.stackableItems.Perms;
 import haveric.stackableItems.StackableItems;
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.uuidFetcher.UUIDFetcher;
@@ -319,7 +318,7 @@ public final class SIItems {
                 if (max == ITEM_DEFAULT) {
                     String[] groups = null;
                     try {
-                        groups = Perms.getPlayerGroups(player);
+                        groups = PermissionsUtil.getPlayerGroups(player);
                     } catch (Exception e) {
                         // No Groups
                         if (Config.isDebugging()) {
