@@ -10,7 +10,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event.Result;
@@ -1808,7 +1807,7 @@ public class SIPlayerListener implements Listener {
                     }
                 }
             } else if (reason == CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY) {
-                if (mainHandType == Material.WATER_BUCKET || mainHandType == Material.LAVA_BUCKET) {
+                if (mainHandType == Material.WATER_BUCKET || mainHandType == Material.LAVA_BUCKET || mainHandType == Material.POWDER_SNOW_BUCKET) {
                     if (isMainHandHoldingCustomStackSize) {
                         handleCauldronManually(event, player, holdingMainHandClone, new ItemStack(Material.BUCKET), EquipmentSlot.HAND);
                     }

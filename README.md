@@ -5,7 +5,7 @@
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
 ### Coming Soon
-* NEW: Update to 1.17
+* NEW: Update to 1.18
 * FIX: Offhand stacking issues
 * FIX: Return buckets from new bucketed items when crafting
 * FIX: Filling/emptying a cauldron
