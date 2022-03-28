@@ -4,7 +4,7 @@
 
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
-### Coming Soon
+### Version 1.1.0 (03/27/2022)
 * NEW: Update to 1.18
 * FIX: Offhand stacking issues
 * FIX: Return buckets from new bucketed items when crafting
