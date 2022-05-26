@@ -4,6 +4,9 @@
 
 #### For more info, visit [https://dev.bukkit.org/projects/stackableitems](https://dev.bukkit.org/projects/stackableitems) 
 
+### Coming Soon
+* FIX: NullPointerExceptions for empty items.yml config sections
+
 ### Version 1.1.0 (03/27/2022):
 * NEW: Update to 1.18
 * FIX: Offhand stacking issues
