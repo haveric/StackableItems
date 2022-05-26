@@ -6,6 +6,7 @@
 
 ### Coming Soon
 * FIX: NullPointerExceptions for empty items.yml config sections
+* FIX: Suspicious stew stacks losing potion effect after consuming one
 
 ### Version 1.1.0 (03/27/2022):
 * NEW: Update to 1.18

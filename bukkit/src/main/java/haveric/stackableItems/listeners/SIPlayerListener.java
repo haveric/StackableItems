@@ -395,8 +395,10 @@ public class SIPlayerListener implements Listener {
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BUCKET), "");
             } else if (type == Material.MUSHROOM_STEW || type == Material.RABBIT_STEW || type == Material.BEETROOT_SOUP || type == Material.SUSPICIOUS_STEW) {
                 int heldSlot = player.getInventory().getHeldItemSlot();
+                ItemStack clone = consumedItem.clone();
+                clone.setAmount(amt - 1);
 
-                InventoryUtil.replaceItem(player.getInventory(), heldSlot, new ItemStack(type, amt - 1));
+                InventoryUtil.replaceItem(player.getInventory(), heldSlot, clone);
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
             }
         }
