@@ -38,6 +38,7 @@ public final class FurnaceUtil {
 
         listOfFuels.add(Material.ACACIA_BOAT);
         listOfFuels.add(Material.ACACIA_BUTTON);
+        listOfFuels.add(Material.ACACIA_CHEST_BOAT);
         listOfFuels.add(Material.ACACIA_DOOR);
         listOfFuels.add(Material.ACACIA_FENCE);
         listOfFuels.add(Material.ACACIA_FENCE_GATE);
@@ -56,6 +57,7 @@ public final class FurnaceUtil {
 
         listOfFuels.add(Material.BIRCH_BOAT);
         listOfFuels.add(Material.BIRCH_BUTTON);
+        listOfFuels.add(Material.BIRCH_CHEST_BOAT);
         listOfFuels.add(Material.BIRCH_DOOR);
         listOfFuels.add(Material.BIRCH_FENCE);
         listOfFuels.add(Material.BIRCH_FENCE_GATE);
@@ -96,6 +98,7 @@ public final class FurnaceUtil {
 
         listOfFuels.add(Material.DARK_OAK_BOAT);
         listOfFuels.add(Material.DARK_OAK_BUTTON);
+        listOfFuels.add(Material.DARK_OAK_CHEST_BOAT);
         listOfFuels.add(Material.DARK_OAK_DOOR);
         listOfFuels.add(Material.DARK_OAK_FENCE);
         listOfFuels.add(Material.DARK_OAK_FENCE_GATE);
@@ -124,6 +127,7 @@ public final class FurnaceUtil {
 
         listOfFuels.add(Material.JUNGLE_BOAT);
         listOfFuels.add(Material.JUNGLE_BUTTON);
+        listOfFuels.add(Material.JUNGLE_CHEST_BOAT);
         listOfFuels.add(Material.JUNGLE_DOOR);
         listOfFuels.add(Material.JUNGLE_FENCE);
         listOfFuels.add(Material.JUNGLE_FENCE_GATE);
@@ -153,10 +157,29 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.MAGENTA_BANNER);
         listOfFuels.add(Material.MAGENTA_CARPET);
         listOfFuels.add(Material.MAGENTA_WOOL);
+
+        listOfFuels.add(Material.MANGROVE_BOAT);
+        listOfFuels.add(Material.MANGROVE_BUTTON);
+        listOfFuels.add(Material.MANGROVE_CHEST_BOAT);
+        listOfFuels.add(Material.MANGROVE_DOOR);
+        listOfFuels.add(Material.MANGROVE_FENCE);
+        listOfFuels.add(Material.MANGROVE_FENCE_GATE);
+        listOfFuels.add(Material.MANGROVE_LOG);
+        listOfFuels.add(Material.MANGROVE_PLANKS);
+        listOfFuels.add(Material.MANGROVE_PRESSURE_PLATE);
+        listOfFuels.add(Material.MANGROVE_PROPAGULE);
+        listOfFuels.add(Material.MANGROVE_ROOTS);
+        listOfFuels.add(Material.MANGROVE_SIGN);
+        listOfFuels.add(Material.MANGROVE_SLAB);
+        listOfFuels.add(Material.MANGROVE_STAIRS);
+        listOfFuels.add(Material.MANGROVE_TRAPDOOR);
+        listOfFuels.add(Material.MANGROVE_WOOD);
+
         listOfFuels.add(Material.NOTE_BLOCK);
 
         listOfFuels.add(Material.OAK_BOAT);
         listOfFuels.add(Material.OAK_BUTTON);
+        listOfFuels.add(Material.OAK_CHEST_BOAT);
         listOfFuels.add(Material.OAK_DOOR);
         listOfFuels.add(Material.OAK_FENCE);
         listOfFuels.add(Material.OAK_FENCE_GATE);
@@ -188,6 +211,7 @@ public final class FurnaceUtil {
 
         listOfFuels.add(Material.SPRUCE_BOAT);
         listOfFuels.add(Material.SPRUCE_BUTTON);
+        listOfFuels.add(Material.SPRUCE_CHEST_BOAT);
         listOfFuels.add(Material.SPRUCE_DOOR);
         listOfFuels.add(Material.SPRUCE_FENCE);
         listOfFuels.add(Material.SPRUCE_FENCE_GATE);
@@ -209,6 +233,8 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.STRIPPED_DARK_OAK_WOOD);
         listOfFuels.add(Material.STRIPPED_JUNGLE_LOG);
         listOfFuels.add(Material.STRIPPED_JUNGLE_WOOD);
+        listOfFuels.add(Material.STRIPPED_MANGROVE_LOG);
+        listOfFuels.add(Material.STRIPPED_MANGROVE_WOOD);
         listOfFuels.add(Material.STRIPPED_OAK_LOG);
         listOfFuels.add(Material.STRIPPED_OAK_WOOD);
         listOfFuels.add(Material.STRIPPED_SPRUCE_LOG);
