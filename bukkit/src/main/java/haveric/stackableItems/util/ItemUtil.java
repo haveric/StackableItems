@@ -134,24 +134,6 @@ public final class ItemUtil {
         return isChestplate;
     }
 
-    public static boolean isChestplateEnchantable(Material mat) {
-        boolean isChestplate = false;
-
-        switch(mat) {
-            case CHAINMAIL_CHESTPLATE:
-            case LEATHER_CHESTPLATE:
-            case IRON_CHESTPLATE:
-            case GOLDEN_CHESTPLATE:
-            case DIAMOND_CHESTPLATE:
-            case NETHERITE_CHESTPLATE:
-                isChestplate = true;
-                break;
-            default:
-                break;
-        }
-        return isChestplate;
-    }
-
     public static boolean isHelmet(Material mat) {
         boolean isHelmet = false;
 
@@ -222,16 +204,6 @@ public final class ItemUtil {
         return isArmor;
     }
 
-    public static boolean isArmorEnchantable(Material mat) {
-        boolean isArmor = false;
-
-        if (isBoots(mat) || isChestplateEnchantable(mat) || isHelmet(mat) || isLeggings(mat)) {
-            isArmor = true;
-        }
-
-        return isArmor;
-    }
-
     public static boolean isRepairable(Material mat) {
         boolean repairable = false;
 
@@ -255,14 +227,15 @@ public final class ItemUtil {
 
     public static boolean isEnchantable(Material mat) {
         boolean enchantable = false;
-        if (isWeapon(mat) || isArmorEnchantable(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
+        if (isWeapon(mat) || isArmor(mat) || isPickaxe(mat) || isShovel(mat) || isAxe(mat)) {
             enchantable = true;
         } else {
             switch(mat) {
                 case BOOK:
-                case FISHING_ROD:
-                case SHEARS:
                 case CARROT_ON_A_STICK:
+                case FISHING_ROD:
+                case FLINT_AND_STEEL:
+                case SHEARS:
                     enchantable = true;
                     break;
                 default:
@@ -279,6 +252,7 @@ public final class ItemUtil {
 
         switch(mat) {
             case BLAZE_POWDER:
+            case DRAGON_BREATH:
             case FERMENTED_SPIDER_EYE:
             case GHAST_TEAR:
             case GLISTERING_MELON_SLICE:
@@ -311,6 +285,7 @@ public final class ItemUtil {
             case EMERALD:
             case IRON_INGOT:
             case GOLD_INGOT:
+            case NETHERITE_INGOT:
                 beaconFuel = true;
                 break;
             default:
