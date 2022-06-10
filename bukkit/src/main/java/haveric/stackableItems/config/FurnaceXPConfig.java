@@ -46,11 +46,14 @@ public class FurnaceXPConfig {
     }
 
     public static void setup() {
+        cfgFurnaceXP.addDefault(Material.NETHERITE_SCRAP.name(), 2.0);
+
         cfgFurnaceXP.addDefault(Material.DIAMOND.name(), 1.0);
         cfgFurnaceXP.addDefault(Material.EMERALD.name(), 1.0);
         cfgFurnaceXP.addDefault(Material.GOLD_INGOT.name(), 1.0);
         cfgFurnaceXP.addDefault(Material.GREEN_DYE.name(), 1.0);
 
+        cfgFurnaceXP.addDefault(Material.COPPER_INGOT.name(), 0.7);
         cfgFurnaceXP.addDefault(Material.IRON_INGOT.name(), 0.7);
         cfgFurnaceXP.addDefault(Material.REDSTONE.name(), 0.7);
 
@@ -58,52 +61,61 @@ public class FurnaceXPConfig {
         cfgFurnaceXP.addDefault(Material.COOKED_BEEF.name(), 0.35);
         cfgFurnaceXP.addDefault(Material.COOKED_CHICKEN.name(), 0.35);
         cfgFurnaceXP.addDefault(Material.COOKED_COD.name(), 0.35);
-        cfgFurnaceXP.addDefault(Material.COOKED_SALMON.name(), 0.35);
         cfgFurnaceXP.addDefault(Material.COOKED_MUTTON.name(), 0.35);
-        cfgFurnaceXP.addDefault(Material.COOKED_RABBIT.name(), 0.35);
         cfgFurnaceXP.addDefault(Material.COOKED_PORKCHOP.name(), 0.35);
+        cfgFurnaceXP.addDefault(Material.COOKED_RABBIT.name(), 0.35);
+        cfgFurnaceXP.addDefault(Material.COOKED_SALMON.name(), 0.35);
+
         cfgFurnaceXP.addDefault(Material.TERRACOTTA.name(), 0.35);
 
         cfgFurnaceXP.addDefault(Material.BRICK.name(), 0.3);
 
         cfgFurnaceXP.addDefault(Material.LAPIS_LAZULI.name(), 0.2);
-        cfgFurnaceXP.addDefault(Material.QUARTZ.name(), 0.2);
         cfgFurnaceXP.addDefault(Material.LIME_DYE.name(), 0.2);
+        cfgFurnaceXP.addDefault(Material.QUARTZ.name(), 0.2);
 
         cfgFurnaceXP.addDefault(Material.CHARCOAL.name(), 0.15);
         cfgFurnaceXP.addDefault(Material.SPONGE.name(), 0.15);
 
-        cfgFurnaceXP.addDefault(Material.COAL.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.STONE.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.NETHER_BRICK.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.GLASS.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.SMOOTH_SANDSTONE.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.SMOOTH_RED_SANDSTONE.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.SMOOTH_STONE.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.SMOOTH_QUARTZ.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.CRACKED_STONE_BRICKS.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.DRIED_KELP.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.BLACK_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.BLUE_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.BROWN_GLAZED_TERRACOTTA.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.COAL.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.CRACKED_DEEPSLATE_BRICKS.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.CRACKED_DEEPSLATE_TILES.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.CRACKED_NETHER_BRICKS.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.CRACKED_POLISHED_BLACKSTONE_BRICKS.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.CYAN_GLAZED_TERRACOTTA.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.CRACKED_STONE_BRICKS.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.DEEPSLATE.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.DRIED_KELP.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.GLASS.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.GOLD_NUGGET.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.GRAY_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.GREEN_GLAZED_TERRACOTTA.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.IRON_NUGGET.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.LIGHT_BLUE_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.LIGHT_GRAY_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.LIME_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.MAGENTA_GLAZED_TERRACOTTA.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.NETHER_BRICK.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.ORANGE_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.PINK_GLAZED_TERRACOTTA.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.POPPED_CHORUS_FRUIT.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.PURPLE_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.RED_GLAZED_TERRACOTTA.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.SMOOTH_BASALT.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.SMOOTH_RED_SANDSTONE.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.SMOOTH_SANDSTONE.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.SMOOTH_STONE.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.SMOOTH_QUARTZ.name(), 0.1);
+        cfgFurnaceXP.addDefault(Material.STONE.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.WHITE_GLAZED_TERRACOTTA.name(), 0.1);
         cfgFurnaceXP.addDefault(Material.YELLOW_GLAZED_TERRACOTTA.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.IRON_NUGGET.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.GOLD_NUGGET.name(), 0.1);
-        cfgFurnaceXP.addDefault(Material.POPPED_CHORUS_FRUIT.name(), 0.1);
 
-        if (!cfgFurnaceXP.isSet(Material.DIAMOND.name())
+        if (!cfgFurnaceXP.isSet(Material.NETHERITE_SCRAP.name())
+         || !cfgFurnaceXP.isSet(Material.COPPER_INGOT.name())
+         || !cfgFurnaceXP.isSet(Material.DIAMOND.name())
          || !cfgFurnaceXP.isSet(Material.EMERALD.name())
          || !cfgFurnaceXP.isSet(Material.GOLD_INGOT.name())
          || !cfgFurnaceXP.isSet(Material.GREEN_DYE.name())
@@ -152,8 +164,13 @@ public class FurnaceXPConfig {
          || !cfgFurnaceXP.isSet(Material.YELLOW_GLAZED_TERRACOTTA.name())
          || !cfgFurnaceXP.isSet(Material.IRON_NUGGET.name())
          || !cfgFurnaceXP.isSet(Material.GOLD_NUGGET.name())
-         || !cfgFurnaceXP.isSet(Material.POPPED_CHORUS_FRUIT.name()) ) {
-
+         || !cfgFurnaceXP.isSet(Material.POPPED_CHORUS_FRUIT.name())
+         || !cfgFurnaceXP.isSet(Material.CRACKED_DEEPSLATE_BRICKS.name())
+         || !cfgFurnaceXP.isSet(Material.CRACKED_DEEPSLATE_TILES.name())
+         || !cfgFurnaceXP.isSet(Material.CRACKED_NETHER_BRICKS.name())
+         || !cfgFurnaceXP.isSet(Material.CRACKED_POLISHED_BLACKSTONE_BRICKS.name())
+         || !cfgFurnaceXP.isSet(Material.DEEPSLATE.name())
+         || !cfgFurnaceXP.isSet(Material.SMOOTH_BASALT.name())) {
             cfgFurnaceXP.options().copyDefaults(true);
             Config.saveConfig(cfgFurnaceXP, cfgFurnaceXPFile);
         }
