@@ -1,3 +1,6 @@
+### Coming Soon
+* FIX: Fix washing stacked shulker boxes in cauldrons
+
 ### Version 1.2.0
 * NEW: Update to 1.19
 * FIX: NullPointerExceptions for empty items.yml config sections

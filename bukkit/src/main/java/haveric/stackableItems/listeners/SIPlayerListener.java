@@ -1883,6 +1883,26 @@ public class SIPlayerListener implements Listener {
                         }
                     }
                 }
+            } else if (reason == CauldronLevelChangeEvent.ChangeReason.SHULKER_WASH) {
+                ItemStack washedMainClone = holdingMainHandClone.clone();
+                BlockStateMeta blockStateMainMeta = (BlockStateMeta) washedMainClone.getItemMeta();
+                if (blockStateMainMeta != null && ItemUtil.isShulkerBox(mainHandType)) {
+                    if (isMainHandHoldingCustomStackSize) {
+                        washedMainClone.setType(Material.SHULKER_BOX);
+                        washedMainClone.setItemMeta(blockStateMainMeta);
+                        handleCauldronManually(event, player, holdingMainHandClone, washedMainClone, EquipmentSlot.HAND);
+                    }
+                } else {
+                    ItemStack washedOffhandClone = holdingOffHandClone.clone();
+                    BlockStateMeta blockStateOffhandMeta = (BlockStateMeta) washedOffhandClone.getItemMeta();
+                    if (blockStateOffhandMeta != null && ItemUtil.isShulkerBox(offHandType)) {
+                        if (isOffHandHoldingCustomStackSize) {
+                            washedOffhandClone.setType(Material.SHULKER_BOX);
+                            washedOffhandClone.setItemMeta(blockStateOffhandMeta);
+                            handleCauldronManually(event, player, holdingOffHandClone, washedOffhandClone, EquipmentSlot.OFF_HAND);
+                        }
+                    }
+                }
             }
         }
     }
