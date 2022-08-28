@@ -93,52 +93,56 @@ public final class InventoryUtil {
                     }
                 }
 
-                if (hotbarFirst) {
+                if (extraType.equals("pickup")) {
+                    free = checkAddHands(player, inventory, itemToCheck);
+                }
+
+                if (hotbarFirst && free == 0) {
                     if (leftToRight) {
-                        free = checkAddHotbarLTR(player, inventory, itemToCheck);
+                        free += checkAddHotbarLTR(player, inventory, itemToCheck, extraType.equals("pickup"));
                     } else {
-                        free = checkAddHotbarRTL(player, inventory, itemToCheck);
+                        free += checkAddHotbarRTL(player, inventory, itemToCheck);
                     }
                 }
 
                 if (free == 0) {
                     if (topToBottom) {
-                        free = checkAddInventoryTTB(player, inventory, itemToCheck);
+                        free += checkAddInventoryTTB(player, inventory, itemToCheck);
                     } else {
-                        free = checkAddInventoryBTT(player, inventory, itemToCheck);
+                        free += checkAddInventoryBTT(player, inventory, itemToCheck);
                     }
                 }
 
                 if (!hotbarFirst && free == 0) {
                     if (leftToRight) {
-                        free = checkAddHotbarLTR(player, inventory, itemToCheck);
+                        free += checkAddHotbarLTR(player, inventory, itemToCheck);
                     } else {
-                        free = checkAddHotbarRTL(player, inventory, itemToCheck);
+                        free += checkAddHotbarRTL(player, inventory, itemToCheck);
                     }
                 }
 
                 // Check for an empty slot
                 if (hotbarFirst && free == 0) {
                     if (leftToRight) {
-                        free = checkEmptyHotbarLTR(player, inventory, type, durability);
+                        free += checkEmptyHotbarLTR(player, inventory, type, durability);
                     } else {
-                        free = checkEmptyHotbarRTL(player, inventory, type, durability);
+                        free += checkEmptyHotbarRTL(player, inventory, type, durability);
                     }
                 }
 
                 if (free == 0) {
                     if (topToBottom) {
-                        free = checkEmptyInventoryTTB(player, inventory, type, durability);
+                        free += checkEmptyInventoryTTB(player, inventory, type, durability);
                     } else {
-                        free = checkEmptyInventoryBTT(player, inventory, type, durability);
+                        free += checkEmptyInventoryBTT(player, inventory, type, durability);
                     }
                 }
 
                 if (!hotbarFirst && free == 0) {
                     if (leftToRight) {
-                        free = checkEmptyHotbarLTR(player, inventory, type, durability);
+                        free += checkEmptyHotbarLTR(player, inventory, type, durability);
                     } else {
-                        free = checkEmptyHotbarRTL(player, inventory, type, durability);
+                        free += checkEmptyHotbarRTL(player, inventory, type, durability);
                     }
                 }
             }
@@ -190,11 +194,30 @@ public final class InventoryUtil {
         return free;
     }
 
+    private static int checkAddHands(Player player, Inventory inventory, ItemStack itemToCheck) {
+        PlayerInventory playerInventory = player.getInventory();
+
+        int free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInMainHand(), playerInventory.getHeldItemSlot());
+        if (free == 0) {
+            free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInOffHand(), 45);
+        }
+
+        return free;
+    }
+
     private static int checkAddHotbarLTR(Player player, Inventory inventory, ItemStack itemToCheck) {
+        return checkAddHotbarLTR(player, inventory, itemToCheck, false);
+    }
+
+    private static int checkAddHotbarLTR(Player player, Inventory inventory, ItemStack itemToCheck, boolean skipHands) {
         int free = 0;
 
         int i = 0;
         while (i <= 8 && free == 0) {
+            if (skipHands && i == player.getInventory().getHeldItemSlot()) {
+                i++;
+                continue;
+            }
             ItemStack slot = inventory.getItem(i);
             free = getAmountDefaultHelper(player, inventory, itemToCheck, slot, i);
             i++;
@@ -392,10 +415,14 @@ public final class InventoryUtil {
                         }
                     }
 
+                    if (extraType.equals("pickup")) {
+                        addAmount = addToHands(player, inventory, itemToAdd, addAmount);
+                    }
+
                     //Add to existing stacks
-                    if (hotbarFirst) {
+                    if (hotbarFirst && addAmount > 0) {
                         if (leftToRight) {
-                            addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, true);
+                            addAmount = addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, true, extraType.equals("pickup"));
                         } else {
                             addAmount = addHotbarRTL(player, inventory, itemToAdd, addAmount, start, end, true);
                         }
@@ -463,7 +490,26 @@ public final class InventoryUtil {
         });
     }
 
+    private static int addToHands(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount) {
+        Material type = itemToAdd.getType();
+        short durability = itemToAdd.getDurability();
+
+        if (addAmount > 0) {
+            addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, player.getInventory().getHeldItemSlot());
+        }
+
+        if (addAmount > 0) {
+            addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, 45);
+        }
+
+        return addAmount;
+    }
+
     private static int addHotbarLTR(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial) {
+        return addHotbarLTR(player, inventory, itemToAdd, addAmount, start, end, partial, false);
+    }
+
+    private static int addHotbarLTR(Player player, Inventory inventory, ItemStack itemToAdd, int addAmount, int start, int end, boolean partial, boolean skipHands) {
         if (start <= 8) {
             if (end > 8) {
                 end = 8;
@@ -474,6 +520,11 @@ public final class InventoryUtil {
 
             int i = start;
             while (i <= end && addAmount > 0) {
+                if (skipHands && i == player.getInventory().getHeldItemSlot()) {
+                    i++;
+                    continue;
+                }
+
                 if (partial) {
                     addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, i);
                 } else {
@@ -590,6 +641,9 @@ public final class InventoryUtil {
 
     private static int addPartialLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
         ItemStack slot = inventory.getItem(i);
+        if (inventory.getType() == InventoryType.PLAYER && i == 45) {
+            slot = player.getInventory().getItemInOffHand();
+        }
 
         if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
             int slotAmount = slot.getAmount();
@@ -978,7 +1032,7 @@ public final class InventoryUtil {
             int maxPlayerAmount = SIItems.getItemMax(player, mat, dur, player.getInventory().getType());
 
             // Handle player section of inventory separately from the container above it.
-            if (slot >= inventory.getSize()) {
+            if (slot >= inventory.getSize() && !(inventoryType == InventoryType.PLAYER && slot == 45)) { // Skip shield
                 maxAmount = maxPlayerAmount;
             }
 

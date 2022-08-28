@@ -1,5 +1,6 @@
 ### Coming Soon
 * FIX: Fix washing stacked shulker boxes in cauldrons
+* FIX: Picking up items will now correctly fill partially filled hand slots first
 
 ### Version 1.2.0
 * NEW: Update to 1.19
