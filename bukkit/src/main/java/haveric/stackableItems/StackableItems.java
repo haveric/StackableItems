@@ -2,16 +2,13 @@ package haveric.stackableItems;
 
 import java.util.logging.Logger;
 
+import haveric.stackableItems.listeners.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.config.FurnaceXPConfig;
-import haveric.stackableItems.listeners.SIBlockListener;
-import haveric.stackableItems.listeners.SIHopperListener;
-import haveric.stackableItems.listeners.SIPlayerJoinQuitListener;
-import haveric.stackableItems.listeners.SIPlayerListener;
 import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.SIItems;
@@ -32,10 +29,12 @@ public class StackableItems extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         // Register the plugin events
-        pm.registerEvents(new SIPlayerListener(this), this);
+        pm.registerEvents(new SIBlockListener(this), this);
+        pm.registerEvents(new SICauldronListener(), this);
         pm.registerEvents(new SIHopperListener(), this);
-        pm.registerEvents(new SIBlockListener(), this);
+        pm.registerEvents(new SIInventoryListener(this), this);
         pm.registerEvents(new SIPlayerJoinQuitListener(), this);
+        pm.registerEvents(new SIPlayerListener(this), this);
 
         Config.init(this);
         FurnaceXPConfig.init(this);
