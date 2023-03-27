@@ -398,9 +398,10 @@ public class SIPlayerListener implements Listener {
 
         ItemStack holding = event.getItem();
         Player player = event.getPlayer();
+        boolean anyRightClick = action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR;
 
         if (holding != null) {
-            if ((action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) && holding.getType() == Material.GLASS_BOTTLE) {
+            if (anyRightClick && holding.getType() == Material.GLASS_BOTTLE) {
                 Block targetBlock = player.getTargetBlockExact(5, FluidCollisionMode.SOURCE_ONLY);
 
                 if (targetBlock != null && targetBlock.getType() == Material.WATER) {
@@ -446,6 +447,13 @@ public class SIPlayerListener implements Listener {
                     }
 
                     InventoryUtil.updateInventory(player);
+                }
+            } else if (anyRightClick && ItemUtil.isEquippableViaSwap(holding.getType())) {
+                int maxItems = SIItems.getItemMax(player, holding.getType(), holding.getDurability(), player.getInventory().getType());
+
+                // Let Vanilla handle swapping armors
+                if (maxItems != SIItems.ITEM_DEFAULT && holding.getAmount() > 1) {
+                    event.setCancelled(true);
                 }
             }
 

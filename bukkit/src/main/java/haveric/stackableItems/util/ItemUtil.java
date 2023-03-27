@@ -194,6 +194,10 @@ public final class ItemUtil {
         return isWeapon;
     }
 
+    public static boolean isEquippableViaSwap(Material mat) {
+        return isBoots(mat) || isChestplate(mat) || isHelmet(mat) || isLeggings(mat);
+    }
+
     public static boolean isArmor(Material mat) {
         boolean isArmor = false;
 

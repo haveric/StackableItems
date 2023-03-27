@@ -1,6 +1,8 @@
 ### Coming Soon
+* NEW: Update to 1.19.4
 * FIX: Fix washing stacked shulker boxes in cauldrons
 * FIX: Picking up items will now correctly fill partially filled hand slots first
+* FIX: Prevent equipping stacks of armor with the new swap from hotbar mechanic
 
 ### Version 1.2.0
 * NEW: Update to 1.19
