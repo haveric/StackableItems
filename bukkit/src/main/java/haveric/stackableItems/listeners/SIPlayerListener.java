@@ -237,11 +237,17 @@ public class SIPlayerListener implements Listener {
             return;
         }
 
+        EquipmentSlot hand = event.getHand();
+
         // Handle infinite fishing rods
         if (maxItems == SIItems.ITEM_INFINITE) {
-            player.getInventory().setItemInMainHand(clone);
+            if (hand == EquipmentSlot.HAND) {
+                player.getInventory().setItemInMainHand(clone);
+            } else {
+                player.getInventory().setItemInOffHand(clone);
+            }
         } else {
-            InventoryUtil.splitStack(player, false);
+            InventoryUtil.splitStackInHand(player, false, hand);
         }
     }
 
@@ -263,7 +269,7 @@ public class SIPlayerListener implements Listener {
                 player.getInventory().setItemInMainHand(clone);
                 InventoryUtil.updateInventory(player);
             } else {
-                InventoryUtil.splitStack(player, false);
+                InventoryUtil.splitStackInMainHand(player, false);
             }
 
             // TODO: Handle Infinite arrows
@@ -298,7 +304,7 @@ public class SIPlayerListener implements Listener {
                 InventoryUtil.replaceItem(inventory, inventory.getHeldItemSlot(), holding.clone());
                 InventoryUtil.updateInventory(player);
             } else {
-                InventoryUtil.splitStack(player, true);
+                InventoryUtil.splitStackInMainHand(player, true);
             }
         }
     }
@@ -306,21 +312,30 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void fillBucket(PlayerBucketFillEvent event) {
         Player player = event.getPlayer();
-        ItemStack holding = player.getInventory().getItemInMainHand();
+        EquipmentSlot hand = event.getHand();
+        ItemStack holding;
+        if (hand == EquipmentSlot.HAND) {
+            holding = player.getInventory().getItemInMainHand();
+        } else {
+            holding = player.getInventory().getItemInOffHand();
+        }
 
         int amount = holding.getAmount();
-
         if (amount > 1) {
             ItemStack toAdd = event.getItemStack();
             int maxItems = SIItems.getItemMax(player, toAdd.getType(), toAdd.getDurability(), player.getInventory().getType());
 
             // Let Vanilla handle filling buckets for default value
             if (maxItems != SIItems.ITEM_DEFAULT) {
-                int slot = player.getInventory().getHeldItemSlot();
-
                 ItemStack clone = holding.clone();
                 clone.setAmount(amount - 1);
 
+                int slot;
+                if (hand == EquipmentSlot.HAND) {
+                    slot = player.getInventory().getHeldItemSlot();
+                } else {
+                    slot = 40;
+                }
                 InventoryUtil.replaceItem(player.getInventory(), slot, clone);
                 InventoryUtil.addItemsToPlayer(player, toAdd, "");
 
@@ -350,15 +365,25 @@ public class SIPlayerListener implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void emptyBucket(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
-        ItemStack holding = player.getInventory().getItemInMainHand();
+        EquipmentSlot hand = event.getHand();
+        ItemStack holding;
+        if (hand == EquipmentSlot.HAND) {
+            holding = player.getInventory().getItemInMainHand();
+        } else {
+            holding = player.getInventory().getItemInOffHand();
+        }
 
         int amount = holding.getAmount();
-
         if (amount > 1) {
             ItemStack clone = holding.clone();
             clone.setAmount(amount - 1);
 
-            int slot = player.getInventory().getHeldItemSlot();
+            int slot;
+            if (hand == EquipmentSlot.HAND) {
+                slot = player.getInventory().getHeldItemSlot();
+            } else {
+                slot = 40;
+            }
 
             InventoryUtil.replaceItem(player.getInventory(), slot, clone);
             InventoryUtil.addItemsToPlayer(player, event.getItemStack(), "");
@@ -377,10 +402,15 @@ public class SIPlayerListener implements Listener {
             if (type == Material.MILK_BUCKET) {
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BUCKET), "");
             } else if (type == Material.MUSHROOM_STEW || type == Material.RABBIT_STEW || type == Material.BEETROOT_SOUP || type == Material.SUSPICIOUS_STEW) {
-                int heldSlot = player.getInventory().getHeldItemSlot();
                 ItemStack clone = consumedItem.clone();
                 clone.setAmount(amt - 1);
 
+                int heldSlot;
+                if (event.getHand() == EquipmentSlot.HAND) {
+                    heldSlot = player.getInventory().getHeldItemSlot();
+                } else {
+                    heldSlot = 40;
+                }
                 InventoryUtil.replaceItem(player.getInventory(), heldSlot, clone);
                 InventoryUtil.addItemsToPlayer(player, new ItemStack(Material.BOWL), "");
             }
@@ -457,7 +487,7 @@ public class SIPlayerListener implements Listener {
                 }
             }
 
-            InventoryUtil.splitStack(player, true);
+            InventoryUtil.splitStackInMainHand(player, true);
         }
     }
 
@@ -517,7 +547,7 @@ public class SIPlayerListener implements Listener {
         if (maxItems == SIItems.ITEM_INFINITE) {
             player.getInventory().setItemInMainHand(clone);
         } else {
-            InventoryUtil.splitStack(player, false);
+            InventoryUtil.splitStackInMainHand(player, false);
         }
     }
 }

@@ -159,9 +159,9 @@ public class SIBlockListener implements Listener {
             InventoryUtil.updateInventory(player);
         } else {
             if (type == Material.SHEARS || type == Material.FLINT_AND_STEEL) {
-                InventoryUtil.splitStack(player, false);
+                InventoryUtil.splitStackInMainHand(player, false);
             } else {
-                InventoryUtil.splitStack(player, true);
+                InventoryUtil.splitStackInMainHand(player, true);
             }
         }
     }
@@ -255,7 +255,7 @@ public class SIBlockListener implements Listener {
                     player.getInventory().setItemInMainHand(newStack);
                     InventoryUtil.updateInventory(player);
                 } else {
-                    InventoryUtil.splitStack(player, false);
+                    InventoryUtil.splitStackInMainHand(player, false);
                 }
             }
         }

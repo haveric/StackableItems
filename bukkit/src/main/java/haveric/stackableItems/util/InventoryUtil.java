@@ -1129,8 +1129,17 @@ public final class InventoryUtil {
         return maxAmount;
     }
 
-    public static void splitStack(Player player, boolean toolCheck) {
-        ItemStack holding = player.getInventory().getItemInMainHand();
+    public static void splitStackInMainHand(Player player, boolean toolCheck) {
+        splitStackInHand(player, toolCheck, EquipmentSlot.HAND);
+    }
+
+    public static void splitStackInHand(Player player, boolean toolCheck, EquipmentSlot hand) {
+        ItemStack holding;
+        if (hand == EquipmentSlot.HAND) {
+            holding = player.getInventory().getItemInMainHand();
+        } else {
+            holding = player.getInventory().getItemInOffHand();
+        }
 
         int amount = holding.getAmount();
 
