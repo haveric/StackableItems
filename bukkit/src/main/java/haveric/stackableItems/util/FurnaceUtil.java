@@ -15,7 +15,7 @@ public final class FurnaceUtil {
 
     private static StackableItems plugin;
 
-    private static final int FUEL_LIST_VERSION = 7;
+    private static final int FUEL_LIST_VERSION = 8;
 
     private static List<Material> listOfFuels;
     private static List<Material> furnaceBurnables;
@@ -42,6 +42,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.ACACIA_DOOR);
         listOfFuels.add(Material.ACACIA_FENCE);
         listOfFuels.add(Material.ACACIA_FENCE_GATE);
+        listOfFuels.add(Material.ACACIA_HANGING_SIGN);
         listOfFuels.add(Material.ACACIA_LOG);
         listOfFuels.add(Material.ACACIA_PLANKS);
         listOfFuels.add(Material.ACACIA_PRESSURE_PLATE);
@@ -55,12 +56,31 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.BARREL);
         listOfFuels.add(Material.BAMBOO);
 
+        listOfFuels.add(Material.BAMBOO_BLOCK);
+        listOfFuels.add(Material.BAMBOO_BUTTON);
+        listOfFuels.add(Material.BAMBOO_CHEST_RAFT);
+        listOfFuels.add(Material.BAMBOO_DOOR);
+        listOfFuels.add(Material.BAMBOO_FENCE);
+        listOfFuels.add(Material.BAMBOO_FENCE_GATE);
+        listOfFuels.add(Material.BAMBOO_HANGING_SIGN);
+        listOfFuels.add(Material.BAMBOO_MOSAIC);
+        listOfFuels.add(Material.BAMBOO_MOSAIC_SLAB);
+        listOfFuels.add(Material.BAMBOO_MOSAIC_STAIRS);
+        listOfFuels.add(Material.BAMBOO_PLANKS);
+        listOfFuels.add(Material.BAMBOO_PRESSURE_PLATE);
+        listOfFuels.add(Material.BAMBOO_RAFT);
+        listOfFuels.add(Material.BAMBOO_SIGN);
+        listOfFuels.add(Material.BAMBOO_SLAB);
+        listOfFuels.add(Material.BAMBOO_STAIRS);
+        listOfFuels.add(Material.BAMBOO_TRAPDOOR);
+
         listOfFuels.add(Material.BIRCH_BOAT);
         listOfFuels.add(Material.BIRCH_BUTTON);
         listOfFuels.add(Material.BIRCH_CHEST_BOAT);
         listOfFuels.add(Material.BIRCH_DOOR);
         listOfFuels.add(Material.BIRCH_FENCE);
         listOfFuels.add(Material.BIRCH_FENCE_GATE);
+        listOfFuels.add(Material.BIRCH_HANGING_SIGN);
         listOfFuels.add(Material.BIRCH_LOG);
         listOfFuels.add(Material.BIRCH_PLANKS);
         listOfFuels.add(Material.BIRCH_PRESSURE_PLATE);
@@ -87,7 +107,25 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.BROWN_MUSHROOM_BLOCK);
         listOfFuels.add(Material.CARTOGRAPHY_TABLE);
         listOfFuels.add(Material.CHARCOAL);
+
+        listOfFuels.add(Material.CHERRY_BOAT);
+        listOfFuels.add(Material.CHERRY_BUTTON);
+        listOfFuels.add(Material.CHERRY_DOOR);
+        listOfFuels.add(Material.CHERRY_FENCE);
+        listOfFuels.add(Material.CHERRY_FENCE_GATE);
+        listOfFuels.add(Material.CHERRY_HANGING_SIGN);
+        listOfFuels.add(Material.CHERRY_LOG);
+        listOfFuels.add(Material.CHERRY_PLANKS);
+        listOfFuels.add(Material.CHERRY_PRESSURE_PLATE);
+        listOfFuels.add(Material.CHERRY_SAPLING);
+        listOfFuels.add(Material.CHERRY_SIGN);
+        listOfFuels.add(Material.CHERRY_SLAB);
+        listOfFuels.add(Material.CHERRY_STAIRS);
+        listOfFuels.add(Material.CHERRY_TRAPDOOR);
+        listOfFuels.add(Material.CHERRY_WOOD);
+
         listOfFuels.add(Material.CHEST);
+        listOfFuels.add(Material.CHISELED_BOOKSHELF);
         listOfFuels.add(Material.COAL);
         listOfFuels.add(Material.COAL_BLOCK);
         listOfFuels.add(Material.COMPOSTER);
@@ -102,6 +140,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.DARK_OAK_DOOR);
         listOfFuels.add(Material.DARK_OAK_FENCE);
         listOfFuels.add(Material.DARK_OAK_FENCE_GATE);
+        listOfFuels.add(Material.DARK_OAK_HANGING_SIGN);
         listOfFuels.add(Material.DARK_OAK_LOG);
         listOfFuels.add(Material.DARK_OAK_PLANKS);
         listOfFuels.add(Material.DARK_OAK_PRESSURE_PLATE);
@@ -131,6 +170,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.JUNGLE_DOOR);
         listOfFuels.add(Material.JUNGLE_FENCE);
         listOfFuels.add(Material.JUNGLE_FENCE_GATE);
+        listOfFuels.add(Material.JUNGLE_HANGING_SIGN);
         listOfFuels.add(Material.JUNGLE_LOG);
         listOfFuels.add(Material.JUNGLE_PLANKS);
         listOfFuels.add(Material.JUNGLE_PRESSURE_PLATE);
@@ -164,6 +204,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.MANGROVE_DOOR);
         listOfFuels.add(Material.MANGROVE_FENCE);
         listOfFuels.add(Material.MANGROVE_FENCE_GATE);
+        listOfFuels.add(Material.MANGROVE_HANGING_SIGN);
         listOfFuels.add(Material.MANGROVE_LOG);
         listOfFuels.add(Material.MANGROVE_PLANKS);
         listOfFuels.add(Material.MANGROVE_PRESSURE_PLATE);
@@ -183,6 +224,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.OAK_DOOR);
         listOfFuels.add(Material.OAK_FENCE);
         listOfFuels.add(Material.OAK_FENCE_GATE);
+        listOfFuels.add(Material.OAK_HANGING_SIGN);
         listOfFuels.add(Material.OAK_LOG);
         listOfFuels.add(Material.OAK_PLANKS);
         listOfFuels.add(Material.OAK_PRESSURE_PLATE);
@@ -215,6 +257,7 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.SPRUCE_DOOR);
         listOfFuels.add(Material.SPRUCE_FENCE);
         listOfFuels.add(Material.SPRUCE_FENCE_GATE);
+        listOfFuels.add(Material.SPRUCE_HANGING_SIGN);
         listOfFuels.add(Material.SPRUCE_LOG);
         listOfFuels.add(Material.SPRUCE_PLANKS);
         listOfFuels.add(Material.SPRUCE_PRESSURE_PLATE);
@@ -227,8 +270,11 @@ public final class FurnaceUtil {
         listOfFuels.add(Material.STICK);
         listOfFuels.add(Material.STRIPPED_ACACIA_LOG);
         listOfFuels.add(Material.STRIPPED_ACACIA_WOOD);
+        listOfFuels.add(Material.STRIPPED_BAMBOO_BLOCK);
         listOfFuels.add(Material.STRIPPED_BIRCH_LOG);
         listOfFuels.add(Material.STRIPPED_BIRCH_WOOD);
+        listOfFuels.add(Material.STRIPPED_CHERRY_LOG);
+        listOfFuels.add(Material.STRIPPED_CHERRY_WOOD);
         listOfFuels.add(Material.STRIPPED_DARK_OAK_LOG);
         listOfFuels.add(Material.STRIPPED_DARK_OAK_WOOD);
         listOfFuels.add(Material.STRIPPED_JUNGLE_LOG);
