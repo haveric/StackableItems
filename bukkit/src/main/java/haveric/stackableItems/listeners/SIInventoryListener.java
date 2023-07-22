@@ -51,6 +51,12 @@ public class SIInventoryListener implements Listener {
         Inventory top = view.getTopInventory();
         InventoryType topType = top.getType();
 
+        // Let vanilla handle default stack sizes
+        Player player = (Player) event.getWhoClicked();
+        if (SIItems.isUnModifiedStackSize(player, clicked, player.getInventory().getType()) && SIItems.isUnModifiedStackSize(player, clicked, topType)) {
+            return;
+        }
+
         String topName = event.getView().getTitle();
         // Let Vanilla handle the saddle and armor slots for horses
         boolean isHorseInventory = topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
@@ -68,7 +74,6 @@ public class SIInventoryListener implements Listener {
         ClickType clickType = event.getClick();
 
         if (clickType == ClickType.NUMBER_KEY && slotType != InventoryType.SlotType.RESULT) {
-            Player player = (Player) event.getWhoClicked();
             int hotbarButton = event.getHotbarButton();
             ItemStack hotbarItem = player.getInventory().getItem(hotbarButton);
 
@@ -87,7 +92,6 @@ public class SIInventoryListener implements Listener {
                 // Moving clicked to an empty hotbar slot
                 if (!clickedEmpty && hotbarItem == null) {
                     int maxItems = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, hotbarButton);
-
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                         event.setCurrentItem(null);
 
@@ -192,9 +196,7 @@ public class SIInventoryListener implements Listener {
 
             // Only deal with items in the result slot.
             if (!clickedEmpty) {
-                Player player = (Player) event.getWhoClicked();
                 InventoryHolder inventoryHolder = event.getInventory().getHolder();
-
 
                 if (inventoryHolder instanceof Furnace) {
                     Furnace furnace = (Furnace) inventoryHolder;
@@ -341,8 +343,6 @@ public class SIInventoryListener implements Listener {
             }
             // prevent clicks outside the inventory area or within result slots
         } else if (cursor != null && clicked != null && slotType != InventoryType.SlotType.RESULT) {
-            Player player = (Player) event.getWhoClicked();
-
             Material cursorType = cursor.getType();
             short cursorDur = cursor.getDurability();
             int cursorAmount = cursor.getAmount();
@@ -416,7 +416,6 @@ public class SIInventoryListener implements Listener {
                 } else {
                     if (topType == InventoryType.CRAFTING) {
                         PlayerInventory inventory = player.getInventory();
-
                         if (ItemUtil.isArmor(clickedType)) {
                             ItemStack armorSlot = null;
                             boolean moved = false;
