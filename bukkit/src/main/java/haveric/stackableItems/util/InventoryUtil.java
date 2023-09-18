@@ -23,6 +23,8 @@ public final class InventoryUtil {
 
     private static StackableItems plugin;
 
+    public static int OFFHAND_SLOT_ID = 45;
+
     private InventoryUtil() { } // Private constructor for utility class
 
     public static void init(StackableItems si) {
@@ -199,7 +201,7 @@ public final class InventoryUtil {
 
         int free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInMainHand(), playerInventory.getHeldItemSlot());
         if (free == 0) {
-            free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInOffHand(), 45);
+            free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInOffHand(), OFFHAND_SLOT_ID);
         }
 
         return free;
@@ -499,7 +501,7 @@ public final class InventoryUtil {
         }
 
         if (addAmount > 0) {
-            addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, 45);
+            addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, OFFHAND_SLOT_ID);
         }
 
         return addAmount;
@@ -641,7 +643,7 @@ public final class InventoryUtil {
 
     private static int addPartialLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
         ItemStack slot = inventory.getItem(i);
-        if (inventory.getType() == InventoryType.PLAYER && i == 45) {
+        if (inventory.getType() == InventoryType.PLAYER && i == OFFHAND_SLOT_ID) {
             slot = player.getInventory().getItemInOffHand();
         }
 
@@ -1032,7 +1034,7 @@ public final class InventoryUtil {
             int maxPlayerAmount = SIItems.getItemMax(player, mat, dur, player.getInventory().getType());
 
             // Handle player section of inventory separately from the container above it.
-            if (slot >= inventory.getSize() && !(inventoryType == InventoryType.PLAYER && slot == 45)) { // Skip shield
+            if (slot >= inventory.getSize() && !(inventoryType == InventoryType.PLAYER && slot == OFFHAND_SLOT_ID)) { // Skip shield/offhand
                 maxAmount = maxPlayerAmount;
             }
 
