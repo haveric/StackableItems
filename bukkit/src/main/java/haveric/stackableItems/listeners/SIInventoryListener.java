@@ -20,6 +20,8 @@ import org.bukkit.inventory.*;
 
 import java.util.Map;
 
+import static haveric.stackableItems.util.InventoryUtil.OFFHAND_SLOT_ID;
+
 public class SIInventoryListener implements Listener {
 
     private StackableItems plugin;
@@ -89,8 +91,7 @@ public class SIInventoryListener implements Listener {
                     hotbarAmount = hotbarItem.getAmount();
                 }
 
-                // Moving clicked to an empty hotbar slot
-                if (!clickedEmpty && hotbarItem == null) {
+                if (!clickedEmpty && hotbarItem == null) { // Moving clicked to an empty hotbar slot
                     int maxItems = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, hotbarButton);
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                         event.setCurrentItem(null);
@@ -110,8 +111,7 @@ public class SIInventoryListener implements Listener {
 
                         event.setResult(Event.Result.ALLOW);
                     } // else let vanilla handle it
-                    // Moving hotbar to an empty clicked slot
-                } else if (clickedEmpty && hotbarItem != null) {
+                } else if (clickedEmpty && hotbarItem != null) { // Moving hotbar to an empty clicked slot
                     int rawSlot = event.getRawSlot();
                     int maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, rawSlot);
                     int inventorySize = top.getSize();
@@ -140,8 +140,7 @@ public class SIInventoryListener implements Listener {
                             InventoryUtil.addItems(player, clone2, top, rawSlot, rawSlot + 1, null, "");
                         }
                     } // else let vanilla handle it
-                    // Move clicked to hotbar. Move hotbar elsewhere
-                } else if (!clickedEmpty && hotbarItem != null) {
+                } else if (!clickedEmpty && hotbarItem != null) { // Move clicked to hotbar. Move hotbar elsewhere
                     int rawSlot = event.getRawSlot();
                     int maxItems = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, hotbarButton);
                     int inventorySize = top.getSize();
@@ -1010,7 +1009,7 @@ public class SIInventoryListener implements Listener {
                     // Offset for hotbar
                     if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                         actualPlayerSlot -= 36;
-                    } else if (actualPlayerSlot == 45) { // Handle shield
+                    } else if (actualPlayerSlot == OFFHAND_SLOT_ID) { // Handle shield/offhand
                         actualPlayerSlot = 40;
                     }
                     oldStack = player.getInventory().getItem(actualPlayerSlot);
@@ -1072,7 +1071,7 @@ public class SIInventoryListener implements Listener {
                         // Offset for hotbar
                         if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                             actualPlayerSlot -= 36;
-                        } else if (actualPlayerSlot == 45) { // Handle shield
+                        } else if (actualPlayerSlot == OFFHAND_SLOT_ID) { // Handle shield/offhand
                             actualPlayerSlot = 40;
                         }
                         oldStack = player.getInventory().getItem(actualPlayerSlot);
@@ -1101,7 +1100,7 @@ public class SIInventoryListener implements Listener {
                     // Offset for hotbar
                     if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                         actualPlayerSlot -= 36;
-                    } else if (actualPlayerSlot == 45) { // Handle shield
+                    } else if (actualPlayerSlot == OFFHAND_SLOT_ID) { // Handle shield/offhand
                         actualPlayerSlot = 40;
                     }
                     InventoryUtil.replaceItem(player.getInventory(), actualPlayerSlot, clone);
