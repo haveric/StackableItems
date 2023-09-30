@@ -1,5 +1,6 @@
 ### Coming Soon
 * NEW: Update to 1.20.2
+* FIX: Fix shift clicking from offhand slot causing overstack
 * FIX: Fix washing stacked shulker boxes in cauldrons
 * FIX: Picking up items will now correctly fill partially filled hand slots first
 * FIX: Prevent equipping stacks of armor with the new swap from hotbar mechanic

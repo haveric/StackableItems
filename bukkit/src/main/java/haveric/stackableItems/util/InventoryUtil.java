@@ -1165,12 +1165,12 @@ public final class InventoryUtil {
     }
 
     public static void swapInventory(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
-        // move from main inventory to hotbar
-        if (rawSlot >= startSlot && rawSlot <= startSlot + 26) {
+        if (rawSlot >= startSlot && rawSlot <= startSlot + 26) { // move from main inventory to hotbar
             InventoryUtil.moveItemsToPlayer(player, toMove, event, 0, 9, true, null);
-        // move from hotbar to main inventory
-        } else if (rawSlot >= startSlot + 27 && rawSlot <= startSlot + 35) {
+        } else if (rawSlot >= startSlot + 27 && rawSlot <= startSlot + 35) { // move from hotbar to main inventory
             InventoryUtil.moveItemsToPlayer(player, toMove, event, 9, 36, true, null);
+        } else if (rawSlot == OFFHAND_SLOT_ID) { // move from offhand to either inventory
+            InventoryUtil.moveItemsToPlayer(player, toMove, event, 0, 36, true, null);
         }
     }
 
