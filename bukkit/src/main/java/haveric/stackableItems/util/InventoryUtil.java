@@ -973,29 +973,37 @@ public final class InventoryUtil {
 
     public static void removeFromCrafting(final Player player, final CraftingInventory inventory, final int removeAmount) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            Iterator<ItemStack> iter = inventory.iterator();
-            int i = 0;
+            Iterator<ItemStack> iter = inventory.iterator(1); // Skip result (0th slot)
+            int i = 1;
             while (iter.hasNext()) {
                 ItemStack item = iter.next();
-
                 if (item != null) {
-                    int itemAmount = item.getAmount();
-                    if (itemAmount == removeAmount) {
-                        inventory.setItem(i, null);
-                    } else {
-                        int newAmount = itemAmount - removeAmount;
-                        item.setAmount(newAmount);
-                        inventory.setItem(i, item);
-                    }
-
                     Material itemType = item.getType();
+                    int newAmount = item.getAmount() - removeAmount;
+                    item.setAmount(newAmount);
+                    boolean replacedWithContainer = false;
+
                     // Give back buckets when used in a recipe
                     if (itemType == Material.MILK_BUCKET || itemType == Material.WATER_BUCKET || itemType == Material.LAVA_BUCKET || itemType == Material.COD_BUCKET || itemType == Material.PUFFERFISH_BUCKET
                             || itemType == Material.SALMON_BUCKET || itemType == Material.TROPICAL_FISH_BUCKET || itemType == Material.POWDER_SNOW_BUCKET || itemType == Material.AXOLOTL_BUCKET) {
-                        addItemsToPlayer(player, new ItemStack(Material.BUCKET, removeAmount), "");
+                        if (newAmount == 0) {
+                            inventory.setItem(i, new ItemStack(Material.BUCKET, removeAmount));
+                            replacedWithContainer = true;
+                        } else {
+                            addItemsToPlayer(player, new ItemStack(Material.BUCKET, removeAmount), "");
+                        }
                     // Give back bowls if mushroom soup is ever used in a recipe
                     } else if (itemType == Material.MUSHROOM_STEW || itemType == Material.BEETROOT_SOUP || itemType == Material.SUSPICIOUS_STEW || itemType == Material.RABBIT_STEW) {
-                        addItemsToPlayer(player, new ItemStack(Material.BOWL, removeAmount), "");
+                        if (newAmount == 0) {
+                            inventory.setItem(i, new ItemStack(Material.BOWL, removeAmount));
+                            replacedWithContainer = true;
+                        } else {
+                            addItemsToPlayer(player, new ItemStack(Material.BOWL, removeAmount), "");
+                        }
+                    }
+
+                    if (!replacedWithContainer) {
+                        inventory.setItem(i, item);
                     }
                 }
                 i++;
