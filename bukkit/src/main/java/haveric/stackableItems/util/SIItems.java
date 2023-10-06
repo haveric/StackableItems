@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,6 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import static org.bukkit.Bukkit.getLogger;
 
 public final class SIItems {
 
@@ -214,7 +217,7 @@ public final class SIItems {
                                                 }
                                             }
                                         } catch (IllegalArgumentException e) {
-                                            Bukkit.getConsoleSender().sendMessage("[StackableItems] " + ChatColor.YELLOW + "WARNING: Inventory '" + inventory + "' does not exist. Please check the inventory reference in items.example.yml for valid inventory names.");
+                                            getLogger().log(Level.WARNING, "[StackableItems] WARNING: Inventory '" + inventory + "' does not exist. Please check the inventory reference in items.example.yml for valid inventory names.");
                                         }
                                     }
                                 }
