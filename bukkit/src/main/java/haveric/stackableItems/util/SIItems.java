@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -200,13 +202,19 @@ public final class SIItems {
                                     String[] inventories = inventoryToSplit.split(",");
 
                                     for (String inventory : inventories) {
-                                        ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".inventory." + inventoryToSplit);
-                                        if (itemSection != null) {
-                                            Set<String> items = itemSection.getKeys(false);
-                                            for (String item : items) {
-                                                Object value = itemSection.get(item);
-                                                setItemValue(world + ".inventory." + inventory, item, value);
+                                        try {
+                                            InventoryType type = InventoryType.valueOf(inventory.toUpperCase());
+
+                                            ConfigurationSection itemSection = itemsConfig.getConfigurationSection(worldToSplit + ".inventory." + inventoryToSplit);
+                                            if (itemSection != null) {
+                                                Set<String> items = itemSection.getKeys(false);
+                                                for (String item : items) {
+                                                    Object value = itemSection.get(item);
+                                                    setItemValue(world + ".inventory." + type.toString().toLowerCase(), item, value);
+                                                }
                                             }
+                                        } catch (IllegalArgumentException e) {
+                                            Bukkit.getConsoleSender().sendMessage("[StackableItems] " + ChatColor.YELLOW + "WARNING: Inventory '" + inventory + "' does not exist. Please check the inventory reference in items.example.yml for valid inventory names.");
                                         }
                                     }
                                 }
