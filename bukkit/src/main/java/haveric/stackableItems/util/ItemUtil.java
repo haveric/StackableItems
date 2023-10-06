@@ -328,6 +328,23 @@ public final class ItemUtil {
         return isShulkerBox;
     }
 
+
+    public static boolean isPotion(Material mat) {
+        boolean isPotion = false;
+
+        switch(mat) {
+            case POTION:
+            case SPLASH_POTION:
+            case LINGERING_POTION:
+                isPotion = true;
+                break;
+            default:
+                break;
+        }
+
+        return isPotion;
+    }
+
     public static boolean isSameItem(ItemStack one, ItemStack two) {
         return isSameItem(one, two, false);
     }

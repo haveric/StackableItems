@@ -1,5 +1,6 @@
 ### Coming Soon
 * NEW: Update to 1.20.2
+* FIX: Allow shift clicking splash and lingering potions into brewing slots
 * FIX: Fixed returning of buckets and bowls from crafting
 * FIX: Fix shift clicking from offhand slot causing overstack
 * FIX: Fix washing stacked shulker boxes in cauldrons

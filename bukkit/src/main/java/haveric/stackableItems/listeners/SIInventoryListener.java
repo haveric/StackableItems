@@ -465,7 +465,7 @@ public class SIInventoryListener implements Listener {
                     } else if (topType == InventoryType.BREWING) {
                         // TODO Prevent stacks from going into potion slots when shift clicking
                         boolean isBrewingIngredient = ItemUtil.isBrewingIngredient(clickedType);
-                        boolean isPotion = clickedType == Material.POTION;
+                        boolean isPotion = ItemUtil.isPotion(clickedType);
 
                         boolean moved = false;
                         if (isBrewingIngredient) {
