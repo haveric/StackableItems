@@ -2,6 +2,8 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
 
+    sourceCompatibility = JavaVersion.VERSION_17
+
     jar {
         archivesBaseName = 'StackableItems'
     }
