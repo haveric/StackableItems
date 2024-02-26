@@ -825,7 +825,6 @@ public final class InventoryUtil {
         event.setCancelled(true);
         ItemStack clone = clicked.clone();
         int free = getFreeSpaces(player, clone, event.getView(), inventory, start, end);
-
         int clickedAmount = clicked.getAmount();
 
         int left = 0;
@@ -1049,18 +1048,19 @@ public final class InventoryUtil {
             gamemode = player.getGameMode();
         }
 
-        String invName = "";
-        if (view != null) {
-            invName = view.getTitle();
-        }
 
-
-        if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Horse") || invName.equalsIgnoreCase("Undead horse") || invName.equalsIgnoreCase("Skeleton horse"))) {
+        if (inventory instanceof HorseInventory) {
             if (slot < 2) {
                 maxAmount = 1;
             }
-        } else if (inventoryType == InventoryType.CHEST && (invName.equalsIgnoreCase("Donkey") || invName.equalsIgnoreCase("Mule"))) {
-            if (slot == 0) {
+        } else if (inventory instanceof LlamaInventory) {
+            if (slot < 1) {
+                maxAmount = 0;
+            } else if (slot == 1) {
+                maxAmount = 1;
+            }
+        } else if (inventory instanceof AbstractHorseInventory) {
+            if (slot < 1) {
                 maxAmount = 1;
             } else if (slot == 1) {
                 maxAmount = 0;

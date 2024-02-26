@@ -328,7 +328,6 @@ public final class ItemUtil {
         return isShulkerBox;
     }
 
-
     public static boolean isPotion(Material mat) {
         boolean isPotion = false;
 
@@ -343,6 +342,52 @@ public final class ItemUtil {
         }
 
         return isPotion;
+    }
+
+    public static boolean isHorseArmor(Material mat) {
+        boolean isHorseArmor = false;
+
+        switch(mat) {
+            case LEATHER_HORSE_ARMOR:
+            case IRON_HORSE_ARMOR:
+            case GOLDEN_HORSE_ARMOR:
+            case DIAMOND_HORSE_ARMOR:
+                isHorseArmor = true;
+                break;
+            default:
+                break;
+        }
+
+        return isHorseArmor;
+    }
+
+    public static boolean isLlamaCarpet(Material mat) {
+        boolean isCarpet = false;
+
+        switch(mat) {
+            case BLACK_CARPET:
+            case BLUE_CARPET:
+            case BROWN_CARPET:
+            case CYAN_CARPET:
+            case GRAY_CARPET:
+            case GREEN_CARPET:
+            case LIGHT_BLUE_CARPET:
+            case LIGHT_GRAY_CARPET:
+            case LIME_CARPET:
+            case MAGENTA_CARPET:
+            case ORANGE_CARPET:
+            case PINK_CARPET:
+            case PURPLE_CARPET:
+            case RED_CARPET:
+            case WHITE_CARPET:
+            case YELLOW_CARPET:
+                isCarpet = true;
+                break;
+            default:
+                break;
+        }
+
+        return isCarpet;
     }
 
     public static boolean isSameItem(ItemStack one, ItemStack two) {

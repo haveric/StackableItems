@@ -52,14 +52,6 @@ public class SIInventoryListener implements Listener {
         Inventory top = view.getTopInventory();
         InventoryType topType = top.getType();
 
-        String topName = event.getView().getTitle();
-        // Let Vanilla handle the saddle and armor slots for horses
-        boolean isHorseInventory = topName.equalsIgnoreCase("Horse") || topName.equalsIgnoreCase("Donkey") || topName.equalsIgnoreCase("Mule")
-                || topName.equalsIgnoreCase("Undead horse") || topName.equalsIgnoreCase("Skeleton horse");
-        if (event.getRawSlot() < 2 && topType == InventoryType.CHEST && isHorseInventory) {
-            return;
-        }
-
         InventoryAction action = event.getAction();
         // Ignore drop events
         if (action == InventoryAction.DROP_ALL_SLOT || action == InventoryAction.DROP_ALL_CURSOR || action == InventoryAction.DROP_ONE_SLOT || action == InventoryAction.DROP_ONE_CURSOR) {
@@ -511,16 +503,63 @@ public class SIInventoryListener implements Listener {
                         if (!moved) {
                             InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
                         }
-                    } else if (topType == InventoryType.CHEST && isHorseInventory) {
-                        // No chest
-                        if (top.getSize() < 2) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
-                            // Has chest
-                        } else {
-                            int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 2, top.getSize(), true);
+                    } else if (top instanceof AbstractHorseInventory abstractHorseInventory) {
+                        ItemStack clickedClone = clicked.clone();
+                        clickedClone.setAmount(1);
 
-                            if (left > 0) {
-                                clicked.setAmount(left);
+                        ItemStack specialSlot = null;
+                        boolean moved = false;
+                        if (abstractHorseInventory instanceof HorseInventory horseInventory) {
+                            // Slot 0: saddle
+                            // Slot 1: armor
+
+                            if (clickedType == Material.SADDLE) {
+                                specialSlot = horseInventory.getSaddle();
+                                if (specialSlot == null) {
+                                    horseInventory.setSaddle(clickedClone);
+                                    moved = true;
+                                }
+                            } else if (ItemUtil.isHorseArmor(clickedType)) {
+                                specialSlot = horseInventory.getArmor();
+                                if (specialSlot == null) {
+                                    horseInventory.setArmor(clickedClone);
+                                    moved = true;
+                                }
+                            }
+                        } else if (abstractHorseInventory instanceof LlamaInventory llamaInventory) {
+                            // Slot 1: Decor
+
+                            if (ItemUtil.isLlamaCarpet(clickedType)) {
+                                specialSlot = llamaInventory.getDecor();
+                                if (specialSlot == null) {
+                                    llamaInventory.setDecor(clickedClone);
+                                    moved = true;
+                                }
+                            }
+                        } else {
+                            // Slot 0: saddle
+
+                            if (clickedType == Material.SADDLE) {
+                                specialSlot = abstractHorseInventory.getSaddle();
+                                if (specialSlot == null) {
+                                    abstractHorseInventory.setSaddle(clickedClone);
+                                    moved = true;
+                                }
+                            }
+                        }
+
+                        if ((specialSlot == null || specialSlot.getType() == Material.AIR) && moved) {
+                            event.setCurrentItem(InventoryUtil.decrementStack(clicked));
+                            event.setCancelled(true);
+                        } else {
+                            if (top.getSize() <= 2) { // No chest
+                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
+                            } else { // Has chest
+                                int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 2, top.getSize(), true);
+                                if (left > 0) {
+                                    clicked.setAmount(left);
+                                    InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, top.getSize());
+                                }
                             }
                         }
                     } else if (topType == InventoryType.CHEST || topType == InventoryType.DISPENSER || topType == InventoryType.ENDER_CHEST
