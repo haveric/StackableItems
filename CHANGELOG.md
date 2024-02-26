@@ -8,7 +8,6 @@
 * FIX: Picking up items will now correctly fill partially filled hand slots first
 * FIX: Prevent equipping stacks of armor with the new swap from hotbar mechanic
 * FIX: Offhand stacking for fishing rods, bucket filling/emptying, and eating
-* FIX: Reduce some overrides when vanilla can handle it, which should reduce item flashing
 
 ### Version 1.2.0
 * NEW: Update to 1.19

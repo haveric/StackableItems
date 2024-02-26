@@ -326,15 +326,6 @@ public final class SIItems {
         return max;
     }
 
-    public static boolean isUnModifiedStackSize(Player player, ItemStack itemStack, InventoryType inventoryType) {
-        if (itemStack == null) {
-            return false;
-        }
-        int itemMax = getItemMax(player, itemStack.getType(), itemStack.getDurability(), inventoryType);
-
-        return (itemMax == SIItems.ITEM_DEFAULT || itemMax == itemStack.getMaxStackSize()) && itemStack.getAmount() <= itemStack.getMaxStackSize();
-    }
-
     public static int getItemMax(Player player, Material mat, short dur, InventoryType inventoryType) {
         String world = player.getWorld().getName();
 

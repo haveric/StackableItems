@@ -46,18 +46,11 @@ public class SIInventoryListener implements Listener {
         ItemStack cursor = event.getCursor();
         ItemStack clicked = event.getCurrentItem();
 
-
         InventoryType.SlotType slotType = event.getSlotType();
 
         InventoryView view = event.getView();
         Inventory top = view.getTopInventory();
         InventoryType topType = top.getType();
-
-        // Let vanilla handle default stack sizes
-        Player player = (Player) event.getWhoClicked();
-        if (SIItems.isUnModifiedStackSize(player, clicked, player.getInventory().getType()) && SIItems.isUnModifiedStackSize(player, clicked, topType)) {
-            return;
-        }
 
         String topName = event.getView().getTitle();
         // Let Vanilla handle the saddle and armor slots for horses
@@ -73,8 +66,8 @@ public class SIInventoryListener implements Listener {
             return;
         }
 
+        Player player = (Player) event.getWhoClicked();
         ClickType clickType = event.getClick();
-
         if (clickType == ClickType.NUMBER_KEY && slotType != InventoryType.SlotType.RESULT) {
             int hotbarButton = event.getHotbarButton();
             ItemStack hotbarItem = player.getInventory().getItem(hotbarButton);
@@ -787,7 +780,7 @@ public class SIInventoryListener implements Listener {
                 } else if (!cursorEmpty && slotEmpty) {
                     boolean isShulkerInShulker = topType == InventoryType.SHULKER_BOX && ItemUtil.isShulkerBox(cursor.getType());
 
-                    // Ignore armor slots and attempts to next shulker boxes when dropping items, let default Minecraft handle them.
+                    // Ignore armor slots and attempts to nest shulker boxes when dropping items, let default Minecraft handle them.
                     if (event.getSlotType() != InventoryType.SlotType.ARMOR && !isShulkerInShulker) {
                         if (cursorAmount <= maxItems) {
                             event.setCurrentItem(cursor.clone());
