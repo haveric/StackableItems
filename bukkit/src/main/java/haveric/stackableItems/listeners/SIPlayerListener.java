@@ -480,7 +480,7 @@ public class SIPlayerListener implements Listener {
                     ItemStack toAdd = new ItemStack(Material.POTION);
                     PotionMeta meta = (PotionMeta) toAdd.getItemMeta();
                     if (meta != null) {
-                        meta.setBasePotionData(new PotionData(PotionType.WATER));
+                        meta.setBasePotionType(PotionType.WATER);
                         toAdd.setItemMeta(meta);
                     }
 

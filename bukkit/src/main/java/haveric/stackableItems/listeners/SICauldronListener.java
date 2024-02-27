@@ -19,7 +19,6 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class SICauldronListener implements Listener {
                 ItemStack waterBottle = new ItemStack(Material.POTION);
                 PotionMeta waterBottleMeta = (PotionMeta) waterBottle.getItemMeta();
                 if (waterBottleMeta != null) {
-                    waterBottleMeta.setBasePotionData(new PotionData(PotionType.WATER));
+                    waterBottleMeta.setBasePotionType(PotionType.WATER);
                 }
                 waterBottle.setItemMeta(waterBottleMeta);
 
