@@ -858,8 +858,7 @@ public final class InventoryUtil {
         while (iter.hasNext() && amt <= 0) {
             Recipe rec = iter.next();
 
-            if (rec instanceof ShapedRecipe) {
-                ShapedRecipe shaped = (ShapedRecipe) rec;
+            if (rec instanceof ShapedRecipe shaped) {
                 String[] shape = shaped.getShape();
                 Map<Character, RecipeChoice> choiceMap = shaped.getChoiceMap();
 
@@ -874,31 +873,22 @@ public final class InventoryUtil {
 
                 for (Character c : chars) {
                     RecipeChoice choice = choiceMap.get(c);
-                    if (choice instanceof RecipeChoice.MaterialChoice) {
-                        RecipeChoice.MaterialChoice materialChoice = (RecipeChoice.MaterialChoice) choice;
-
+                    if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
                         List<Material> materials = materialChoice.getChoices();
                         amt = checkMaterialListInInventory(inventory, materials, amt);
-                    } else if (choice instanceof RecipeChoice.ExactChoice) {
-                        RecipeChoice.ExactChoice exactChoice = (RecipeChoice.ExactChoice) choice;
-
+                    } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
                         List<ItemStack> exactItems = exactChoice.getChoices();
                         amt = checkItemListInInventory(inventory, exactItems, amt);
                     }
                 }
-            } else if (rec instanceof ShapelessRecipe) {
-                ShapelessRecipe shapeless = (ShapelessRecipe) rec;
+            } else if (rec instanceof ShapelessRecipe shapeless) {
                 List<RecipeChoice> choices = shapeless.getChoiceList();
 
                 for (RecipeChoice choice : choices) {
-                    if (choice instanceof RecipeChoice.MaterialChoice) {
-                        RecipeChoice.MaterialChoice materialChoice = (RecipeChoice.MaterialChoice) choice;
-
+                    if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
                         List<Material> materials = materialChoice.getChoices();
                         amt = checkMaterialListInInventory(inventory, materials, amt);
-                    } else if (choice instanceof RecipeChoice.ExactChoice) {
-                        RecipeChoice.ExactChoice exactChoice = (RecipeChoice.ExactChoice) choice;
-
+                    } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
                         List<ItemStack> exactItems = exactChoice.getChoices();
                         amt = checkItemListInInventory(inventory, exactItems, amt);
                     }

@@ -295,8 +295,7 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void shootBow(EntityShootBowEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
             ItemStack clone = event.getBow().clone();
 
             int maxItems = SIItems.getItemMax(player, clone.getType(), clone.getDurability(), player.getInventory().getType());
@@ -329,8 +328,7 @@ public class SIPlayerListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void entityDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
+        if (event.getDamager() instanceof Player player) {
             ItemStack holding = player.getInventory().getItemInMainHand();
 
             int maxItems = SIItems.getItemMax(player, holding.getType(), holding.getDurability(), player.getInventory().getType());
@@ -388,8 +386,7 @@ public class SIPlayerListener implements Listener {
                 Material bucketType = toAdd.getType();
                 if (bucketType == Material.WATER_BUCKET) {
                     BlockData data = clickedBlock.getBlockData();
-                    if (data instanceof Waterlogged) {
-                        Waterlogged waterloggedData = (Waterlogged) data;
+                    if (data instanceof Waterlogged waterloggedData) {
                         waterloggedData.setWaterlogged(false);
                         clickedBlock.setBlockData(waterloggedData);
                     } else {
@@ -537,11 +534,10 @@ public class SIPlayerListener implements Listener {
     public void playerPicksUpItem(EntityPickupItemEvent event) {
         LivingEntity entity = event.getEntity();
 
-        if (!(entity instanceof Player)) {
+        if (!(entity instanceof Player player)) {
             return;
         }
 
-        Player player = (Player) entity;
         Item item = event.getItem();
         ItemStack stack = item.getItemStack();
 

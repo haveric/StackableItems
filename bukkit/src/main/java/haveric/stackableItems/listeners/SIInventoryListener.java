@@ -279,8 +279,7 @@ public class SIInventoryListener implements Listener {
             if (!clickedEmpty) {
                 InventoryHolder inventoryHolder = event.getInventory().getHolder();
 
-                if (inventoryHolder instanceof Furnace) {
-                    Furnace furnace = (Furnace) inventoryHolder;
+                if (inventoryHolder instanceof Furnace furnace) {
                     int cursorAmount = cursor.getAmount();
                     Material cursorType = cursor.getType();
 

@@ -29,9 +29,8 @@ public class SICauldronListener implements Listener {
     public void cauldronChangeLevel(CauldronLevelChangeEvent event) {
         Entity entity = event.getEntity();
 
-        if (entity instanceof Player) {
+        if (entity instanceof Player player) {
             CauldronLevelChangeEvent.ChangeReason reason = event.getReason();
-            Player player = (Player) entity;
             ItemStack holdingMainHand = player.getInventory().getItemInMainHand();
             ItemStack holdingMainHandClone = holdingMainHand.clone();
             Material mainHandType = holdingMainHandClone.getType();

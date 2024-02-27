@@ -52,12 +52,9 @@ public class SIHopperListener implements Listener {
         InventoryHolder holder = inventory.getHolder();
         String worldName = null;
 
-        Hopper hopper = null;
-        if (holder instanceof Hopper) {
-            hopper = (Hopper) holder;
+        if (holder instanceof Hopper hopper) {
             worldName = hopper.getWorld().getName();
-        } else if (holder instanceof HopperMinecart) {
-            HopperMinecart hopperMinecart = (HopperMinecart) holder;
+        } else if (holder instanceof HopperMinecart hopperMinecart) {
             worldName = hopperMinecart.getWorld().getName();
         }
 

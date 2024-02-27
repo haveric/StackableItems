@@ -44,8 +44,7 @@ public class SIBlockListener implements Listener {
 
         BlockState blockState = block.getState();
         // Handle breaking furnaces with larger stacks in them than normally allowed
-        if (block instanceof Furnace) {
-            Furnace furnace = (Furnace) block;
+        if (block instanceof Furnace furnace) {
             int maxAmount = Config.getFurnaceAmount(furnace);
             if (maxAmount > SIItems.ITEM_DEFAULT) {
                 ItemStack result = furnace.getInventory().getResult();
@@ -65,8 +64,7 @@ public class SIBlockListener implements Listener {
                 Collection<ItemStack> drops = block.getDrops();
                 for (ItemStack drop : drops) {
                     ItemMeta meta = drop.getItemMeta();
-                    if (meta instanceof BlockStateMeta) {
-                        BlockStateMeta blockMeta = (BlockStateMeta) meta;
+                    if (meta instanceof BlockStateMeta blockMeta) {
                         BlockState itemBlockState = blockMeta.getBlockState();
                         if (itemBlockState instanceof ShulkerBox) {
                             boolean needsCustomDrop = false;

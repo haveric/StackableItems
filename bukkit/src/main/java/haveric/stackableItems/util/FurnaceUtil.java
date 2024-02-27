@@ -320,17 +320,12 @@ public final class FurnaceUtil {
         while (iter.hasNext()) {
             try {
                 Recipe recipe = iter.next();
-                if (recipe instanceof CookingRecipe) {
-                    CookingRecipe cookingRecipe = (CookingRecipe) recipe;
-
+                if (recipe instanceof CookingRecipe cookingRecipe) {
                     List<Material> materials = new ArrayList<>();
                     RecipeChoice choice = cookingRecipe.getInputChoice();
-                    if (choice instanceof RecipeChoice.MaterialChoice) {
-                        RecipeChoice.MaterialChoice materialChoice = (RecipeChoice.MaterialChoice) choice;
+                    if (choice instanceof RecipeChoice.MaterialChoice materialChoice) {
                         materials.addAll(materialChoice.getChoices());
-
-                    } else if (choice instanceof RecipeChoice.ExactChoice) {
-                        RecipeChoice.ExactChoice exactChoice = (RecipeChoice.ExactChoice) choice;
+                    } else if (choice instanceof RecipeChoice.ExactChoice exactChoice) {
                         List<ItemStack> items = exactChoice.getChoices();
 
                         for (ItemStack item : items) {
