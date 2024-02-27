@@ -20,7 +20,7 @@ import org.bukkit.inventory.*;
 
 import java.util.Map;
 
-import static haveric.stackableItems.util.InventoryUtil.OFFHAND_SLOT_ID;
+import static haveric.stackableItems.util.InventoryUtil.OFFHAND_RAW_SLOT_ID;
 
 public class SIInventoryListener implements Listener {
 
@@ -172,6 +172,103 @@ public class SIInventoryListener implements Listener {
                             event.setResult(Event.Result.DENY);
                         }
                     } // Else let vanilla move items between player slots
+                }
+            }
+        } else if (clickType == ClickType.SWAP_OFFHAND && slotType != InventoryType.SlotType.RESULT) {
+            // Swap "clicked" item with offhand item when "F" is pressed
+            boolean isOffhandSlot = top instanceof CraftingInventory && event.getRawSlot() == OFFHAND_RAW_SLOT_ID;
+            if (isOffhandSlot) { // Click on the offhand slot, do nothing
+                if (clicked != null) {
+                    Material clickedType = clicked.getType();
+                    short clickedDur = clicked.getDurability();
+
+                    // Cancel custom stack sizes to prevent vanilla from unstacking them
+                    int maxPlayerInventory = SIItems.getItemMax(player, clickedType, clickedDur, topType);
+                    if (maxPlayerInventory != SIItems.ITEM_DEFAULT) {
+                        event.setCancelled(true);
+                    }
+                }
+            } else { // Swap items
+                PlayerInventory playerInventory = player.getInventory();
+                ItemStack offhandItem = playerInventory.getItemInOffHand();
+
+                boolean clickedEmpty = clicked == null || clicked.getType() == Material.AIR;
+                boolean offhandEmpty = offhandItem.getType() == Material.AIR;
+
+                int clickedSlot = event.getSlot();
+                Inventory clickedInventory = event.getClickedInventory();
+                if (clickedInventory == null) {
+                    return;
+                }
+
+                if (!clickedEmpty && !offhandEmpty) {
+                    Material clickedType = clicked.getType();
+                    short clickedDur = clicked.getDurability();
+                    int clickedAmount = clicked.getAmount();
+
+                    Material offhandType = offhandItem.getType();
+                    short offhandDur = offhandItem.getDurability();
+                    int offhandAmount = offhandItem.getAmount();
+
+                    int maxClickedInventory = InventoryUtil.getInventoryMax(player, null, view, clickedInventory, offhandType, offhandDur, clickedSlot);
+                    int maxOffhand = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, OFFHAND_RAW_SLOT_ID);
+
+                    if (offhandAmount <= maxClickedInventory && clickedAmount <= maxOffhand) {
+                        if (offhandAmount > offhandType.getMaxStackSize() || clickedAmount > clickedType.getMaxStackSize()) {
+                            ItemStack offhandClone = offhandItem.clone();
+                            ItemStack clickedClone = clicked.clone();
+
+                            clickedInventory.setItem(clickedSlot, offhandClone);
+                            playerInventory.setItemInOffHand(clickedClone);
+                            event.setCancelled(true);
+                        }
+                    } else {
+                        event.setCancelled(true);
+                    }
+                } else if (clickedEmpty && !offhandEmpty) {
+                    Material offhandType = offhandItem.getType();
+                    short offhandDur = offhandItem.getDurability();
+                    int offhandAmount = offhandItem.getAmount();
+                    int maxClickedInventory = InventoryUtil.getInventoryMax(player, null, view, clickedInventory, offhandType, offhandDur, clickedSlot);
+
+                    if (offhandAmount <= maxClickedInventory && offhandAmount > offhandType.getMaxStackSize()) {
+                        playerInventory.setItemInOffHand(null);
+                        clickedInventory.setItem(clickedSlot, offhandItem.clone());
+
+                        event.setCancelled(true);
+                    } else if (offhandAmount > maxClickedInventory) {
+                        ItemStack clone = offhandItem.clone();
+                        clone.setAmount(maxClickedInventory);
+                        clickedInventory.setItem(clickedSlot, clone);
+
+                        ItemStack clone2 = offhandItem.clone();
+                        clone2.setAmount(offhandAmount - maxClickedInventory);
+                        playerInventory.setItemInOffHand(clone2);
+
+                        event.setCancelled(true);
+                    }
+                } else if (!clickedEmpty) {
+                    Material clickedType = clicked.getType();
+                    short clickedDur = clicked.getDurability();
+                    int clickedAmount = clicked.getAmount();
+                    int maxOffhand = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, OFFHAND_RAW_SLOT_ID);
+
+                    if (clickedAmount <= maxOffhand && clickedAmount > clickedType.getMaxStackSize()) {
+                        playerInventory.setItemInOffHand(clicked.clone());
+                        clickedInventory.setItem(clickedSlot, null);
+
+                        event.setCancelled(true);
+                    } else if (clickedAmount > maxOffhand) {
+                        ItemStack clone = clicked.clone();
+                        clone.setAmount(maxOffhand);
+                        playerInventory.setItemInOffHand(clone);
+
+                        ItemStack clone2 = clicked.clone();
+                        clone2.setAmount(clickedAmount - maxOffhand);
+                        clickedInventory.setItem(clickedSlot, clone2);
+
+                        event.setCancelled(true);
+                    }
                 }
             }
         } else if (cursor != null && clicked != null && slotType == InventoryType.SlotType.RESULT && top instanceof FurnaceInventory) {
@@ -442,10 +539,10 @@ public class SIInventoryListener implements Listener {
                                 event.setCurrentItem(InventoryUtil.decrementStack(clicked));
                                 event.setCancelled(true);
                             } else {
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 9);
+                                InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 9);
                             }
                         } else {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 9);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 9);
                         }
                     } else if (topType == InventoryType.BREWING) {
                         // TODO Prevent stacks from going into potion slots when shift clicking
@@ -501,7 +598,7 @@ public class SIInventoryListener implements Listener {
 
                         }
                         if (!moved) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 4);
                         }
                     } else if (top instanceof AbstractHorseInventory abstractHorseInventory) {
                         ItemStack clickedClone = clicked.clone();
@@ -553,12 +650,12 @@ public class SIInventoryListener implements Listener {
                             event.setCancelled(true);
                         } else {
                             if (top.getSize() <= 2) { // No chest
-                                InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
+                                InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 2);
                             } else { // Has chest
                                 int left = InventoryUtil.moveItemsToInventory(player, clicked.clone(), event, top, 2, top.getSize(), true);
                                 if (left > 0) {
                                     clicked.setAmount(left);
-                                    InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, top.getSize());
+                                    InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, top.getSize());
                                 }
                             }
                         }
@@ -588,17 +685,17 @@ public class SIInventoryListener implements Listener {
                         }
 
                         if (left == clickedAmount) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 10);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 10);
                         }
                         // TODO Improve merchant shift click handling (Based on current recipe)
                     } else if (topType == InventoryType.MERCHANT) {
-                        InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                        InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 3);
                     } else if (topType == InventoryType.BEACON) {
                         ItemStack beaconSlot = top.getItem(0);
                         if (ItemUtil.isBeaconFuel(clickedType) && beaconSlot == null) {
                             InventoryUtil.moveItemsToFullInventory(player, clicked.clone(), event, top, true, "");
                         } else {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 1);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 1);
                         }
                     } else if (topType == InventoryType.ANVIL) {
                         ItemStack renameSlot = top.getItem(0);
@@ -623,7 +720,7 @@ public class SIInventoryListener implements Listener {
                             }
                         }
                         if (!movedAll) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 3);
                         }
                     } else if (topType == InventoryType.ENCHANTING) {
                         if (clickedType == Material.LAPIS_LAZULI) {
@@ -639,7 +736,7 @@ public class SIInventoryListener implements Listener {
                                 }
                             }
                         } else {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, top.getSize());
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, top.getSize());
                         }
                     } else if (topType == InventoryType.FURNACE || topType == InventoryType.BLAST_FURNACE || topType == InventoryType.SMOKER) {
                         boolean isFuel = FurnaceUtil.isFuel(clickedType);
@@ -691,7 +788,7 @@ public class SIInventoryListener implements Listener {
 
                         // normal item;
                         if ((!fuelMoved && !burnableMoved) || (!isFuel && !isBurnable)) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 3);
                         }
                     } else if (topType == InventoryType.LOOM) {
                         ItemStack firstSlot = top.getItem(0);
@@ -726,7 +823,7 @@ public class SIInventoryListener implements Listener {
                             }
                         }
                         if (!movedAll) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 4);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 4);
                         }
                     } else if (topType == InventoryType.CARTOGRAPHY) {
                         ItemStack firstSlot = top.getItem(0);
@@ -751,7 +848,7 @@ public class SIInventoryListener implements Listener {
                             }
                         }
                         if (!movedAll) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 3);
                         }
                     } else if (topType == InventoryType.GRINDSTONE) {
                         ItemStack firstSlot = top.getItem(0);
@@ -776,7 +873,7 @@ public class SIInventoryListener implements Listener {
                             }
                         }
                         if (!movedAll) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 3);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 3);
                         }
                     } else if (topType == InventoryType.STONECUTTER) {
                         ItemStack firstSlot = top.getItem(0);
@@ -792,7 +889,7 @@ public class SIInventoryListener implements Listener {
                         }
 
                         if (!movedAll) {
-                            InventoryUtil.swapInventory(player, clicked.clone(), event, rawSlot, 2);
+                            InventoryUtil.swapInventoryAndHotbar(player, clicked.clone(), event, rawSlot, 2);
                         }
                     }
                 }
@@ -1041,7 +1138,7 @@ public class SIInventoryListener implements Listener {
                     // Offset for hotbar
                     if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                         actualPlayerSlot -= 36;
-                    } else if (actualPlayerSlot == OFFHAND_SLOT_ID) { // Handle shield/offhand
+                    } else if (actualPlayerSlot == OFFHAND_RAW_SLOT_ID) { // Handle shield/offhand
                         actualPlayerSlot = 40;
                     }
                     oldStack = player.getInventory().getItem(actualPlayerSlot);
@@ -1103,7 +1200,7 @@ public class SIInventoryListener implements Listener {
                         // Offset for hotbar
                         if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                             actualPlayerSlot -= 36;
-                        } else if (actualPlayerSlot == OFFHAND_SLOT_ID) { // Handle shield/offhand
+                        } else if (actualPlayerSlot == OFFHAND_RAW_SLOT_ID) { // Handle shield/offhand
                             actualPlayerSlot = 40;
                         }
                         oldStack = player.getInventory().getItem(actualPlayerSlot);
@@ -1132,7 +1229,7 @@ public class SIInventoryListener implements Listener {
                     // Offset for hotbar
                     if (actualPlayerSlot >= 36 && actualPlayerSlot <= 44) {
                         actualPlayerSlot -= 36;
-                    } else if (actualPlayerSlot == OFFHAND_SLOT_ID) { // Handle shield/offhand
+                    } else if (actualPlayerSlot == OFFHAND_RAW_SLOT_ID) { // Handle shield/offhand
                         actualPlayerSlot = 40;
                     }
                     InventoryUtil.replaceItem(player.getInventory(), actualPlayerSlot, clone);

@@ -23,7 +23,7 @@ public final class InventoryUtil {
 
     private static StackableItems plugin;
 
-    public static int OFFHAND_SLOT_ID = 45;
+    public static int OFFHAND_RAW_SLOT_ID = 45;
 
     private InventoryUtil() { } // Private constructor for utility class
 
@@ -201,7 +201,7 @@ public final class InventoryUtil {
 
         int free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInMainHand(), playerInventory.getHeldItemSlot());
         if (free == 0) {
-            free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInOffHand(), OFFHAND_SLOT_ID);
+            free = getAmountDefaultHelper(player, inventory, itemToCheck, playerInventory.getItemInOffHand(), OFFHAND_RAW_SLOT_ID);
         }
 
         return free;
@@ -501,7 +501,7 @@ public final class InventoryUtil {
         }
 
         if (addAmount > 0) {
-            addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, OFFHAND_SLOT_ID);
+            addAmount = addPartialLoopHelper(player, inventory, itemToAdd, type, durability, addAmount, OFFHAND_RAW_SLOT_ID);
         }
 
         return addAmount;
@@ -643,7 +643,7 @@ public final class InventoryUtil {
 
     private static int addPartialLoopHelper(Player player, Inventory inventory, ItemStack itemToAdd, Material type, short durability, int addAmount, int i) {
         ItemStack slot = inventory.getItem(i);
-        if (inventory.getType() == InventoryType.PLAYER && i == OFFHAND_SLOT_ID) {
+        if (inventory.getType() == InventoryType.PLAYER && i == OFFHAND_RAW_SLOT_ID) {
             slot = player.getInventory().getItemInOffHand();
         }
 
@@ -1041,7 +1041,7 @@ public final class InventoryUtil {
             int maxPlayerAmount = SIItems.getItemMax(player, mat, dur, player.getInventory().getType());
 
             // Handle player section of inventory separately from the container above it.
-            if (slot >= inventory.getSize() && !(inventoryType == InventoryType.PLAYER && slot == OFFHAND_SLOT_ID)) { // Skip shield/offhand
+            if (slot >= inventory.getSize() && !(inventoryType == InventoryType.PLAYER && slot == OFFHAND_RAW_SLOT_ID)) { // Skip shield/offhand
                 maxAmount = maxPlayerAmount;
             }
 
@@ -1172,12 +1172,12 @@ public final class InventoryUtil {
         });
     }
 
-    public static void swapInventory(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
+    public static void swapInventoryAndHotbar(Player player, ItemStack toMove, InventoryClickEvent event, int rawSlot, int startSlot) {
         if (rawSlot >= startSlot && rawSlot <= startSlot + 26) { // move from main inventory to hotbar
             InventoryUtil.moveItemsToPlayer(player, toMove, event, 0, 9, true, null);
         } else if (rawSlot >= startSlot + 27 && rawSlot <= startSlot + 35) { // move from hotbar to main inventory
             InventoryUtil.moveItemsToPlayer(player, toMove, event, 9, 36, true, null);
-        } else if (rawSlot == OFFHAND_SLOT_ID) { // move from offhand to either inventory
+        } else if (rawSlot == OFFHAND_RAW_SLOT_ID) { // move from offhand to either inventory
             InventoryUtil.moveItemsToPlayer(player, toMove, event, 0, 36, true, null);
         }
     }

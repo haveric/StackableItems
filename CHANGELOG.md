@@ -1,5 +1,6 @@
 ### Coming Soon
 * NEW: Update to 1.20.4
+* FIX: Fixed stacking of items when offhand swapping by pressing "F"
 * FIX: Fixed shift clicking in horse inventories (includes donkeys, mules, and llamas)
 * FIX: Add warning message on invalid inventory names
 * FIX: Allow shift clicking splash and lingering potions into brewing slots
