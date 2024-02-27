@@ -2,6 +2,7 @@ dependencies {
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     implementation 'org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT'
     implementation "net.milkbowl.vault:VaultAPI:1.7"
+    implementation group: 'org.jetbrains', name: 'annotations', version: '24.1.0'
 }
 
 task copyJar(type: Copy) {

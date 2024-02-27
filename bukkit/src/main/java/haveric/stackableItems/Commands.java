@@ -6,35 +6,39 @@ import haveric.stackableItems.util.FurnaceUtil;
 import haveric.stackableItems.util.SIItems;
 import haveric.stackableItems.uuidFetcher.UUIDFetcher;
 
-import java.util.UUID;
+import java.util.*;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.jetbrains.annotations.NotNull;
 
-public class Commands implements CommandExecutor {
+public class Commands implements TabExecutor {
 
     private StackableItems plugin;
 
     private static String cmdMain = "stackableitems";
-    private String cmdMainAlt = "si";
-    private String cmdHelp = "help";
-    private String cmdReload = "reload";
-    private String cmdPerms = "perms";
-    private String cmdPermsAlt = "perm";
-    private String cmdUpdate = "update";
+    private final String cmdMainAlt = "si";
+    private final String cmdHelp = "help";
+    private final String cmdReload = "reload";
+    private final String cmdPerms = "perms";
+    private final String cmdPermsAlt = "perm";
+    private final String cmdUpdate = "update";
 
-    private String cmdTypeDefault = "default";
-    private String cmdTypePlayer = "player";
-    private String cmdTypeGroup = "group";
-    private String cmdTypeInventory = "inventory";
+    private final String cmdTypeDefault = "default";
+    private final String cmdTypePlayer = "player";
+    private final String cmdTypeGroup = "group";
+    private final String cmdTypeInventory = "inventory";
 
-    private ChatColor msgColor = ChatColor.DARK_AQUA;
-    private ChatColor highlightColor = ChatColor.YELLOW;
-    private ChatColor defaultColor = ChatColor.WHITE;
+    private final ChatColor msgColor = ChatColor.DARK_AQUA;
+    private final ChatColor highlightColor = ChatColor.YELLOW;
+    private final ChatColor defaultColor = ChatColor.WHITE;
 
     private String shortTitle = msgColor + "[" + ChatColor.GRAY + "SI" + msgColor + "] ";
 
@@ -43,7 +47,7 @@ public class Commands implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         String title = msgColor + "[" + ChatColor.GRAY + plugin.getDescription().getName() + msgColor + "] ";
 
         boolean op = false;
@@ -56,7 +60,7 @@ public class Commands implements CommandExecutor {
             hasAdminPerm = Perms.hasAdmin(player);
         }
 
-        if (commandLabel.equalsIgnoreCase(cmdMain) || commandLabel.equalsIgnoreCase(cmdMainAlt)) {
+        if (label.equalsIgnoreCase(cmdMain) || label.equalsIgnoreCase(cmdMainAlt)) {
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase(cmdHelp))) {
                 sender.sendMessage(title + "github.com/haveric/StackableItems - v" + plugin.getDescription().getVersion());
                 sender.sendMessage("Commands: " + highlightColor + "/" + cmdMain + defaultColor + " or " + highlightColor + "/" + cmdMainAlt);
@@ -199,6 +203,82 @@ public class Commands implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        List<String> list = new ArrayList<>();
+
+        int argsLength = args.length;
+
+        List<String> validWorlds = new ArrayList<>();
+        validWorlds.add("all");
+        List<World> worlds = Bukkit.getWorlds();
+        for (World world : worlds) {
+            validWorlds.add(world.getName());
+        }
+
+        List<String> validOptions = new ArrayList<>();
+        String searchString = "";
+        if (argsLength == 1) {
+            searchString = args[0].toLowerCase().trim();
+
+            validOptions.add(cmdReload);
+            validOptions.add(cmdUpdate);
+            validOptions.addAll(validWorlds);
+        } else if (argsLength > 1) {
+            searchString = args[1].toLowerCase().trim();
+
+            if (argsLength == 2 && validWorlds.contains(args[0].toLowerCase())) {
+                validOptions.add(cmdTypeDefault);
+                validOptions.add(cmdTypePlayer);
+                validOptions.add(cmdTypeGroup);
+                validOptions.add(cmdTypeInventory);
+            } else if (argsLength == 3) {
+                searchString = args[2].toLowerCase().trim();
+
+                String args1Lower = args[1].toLowerCase();
+                if (args1Lower.equals(cmdTypeInventory)) {
+                    InventoryType[] inventories = InventoryType.values();
+                    for (InventoryType inventoryType : inventories) {
+                        validOptions.add(inventoryType.toString().toLowerCase());
+                    }
+                } else if (args1Lower.equals(cmdTypeGroup)) {
+                    String[] groups = Perms.getGroups();
+                    validOptions.addAll(Arrays.asList(groups));
+                } else if (args1Lower.equals(cmdTypePlayer)) {
+                    Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+                    for (Player player : players) {
+                        validOptions.add(player.getName());
+                    }
+                } else if (args1Lower.equals(cmdTypeDefault)) {
+                    addItems(validOptions);
+                }
+            } else if (argsLength == 4) {
+                searchString = args[3].toLowerCase().trim();
+
+                String args1Lower = args[1].toLowerCase();
+                if (args1Lower.equals(cmdTypeInventory) || args1Lower.equals(cmdTypeGroup) || args1Lower.equals(cmdTypePlayer)) {
+                    addItems(validOptions);
+                }
+            }
+        }
+
+        for (String string : validOptions) {
+            String lower = string.toLowerCase();
+            if (lower.contains(searchString)) {
+                list.add(string);
+            }
+        }
+
+        return list;
+    }
+
+    private void addItems(List<String> validItems) {
+        Material[] materials = Material.values();
+        for (Material material : materials) {
+            validItems.add(material.toString().toLowerCase());
+        }
     }
 
     public static String getMain() {

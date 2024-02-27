@@ -1,5 +1,6 @@
 ### Coming Soon
 * NEW: Update to 1.20.4
+* NEW: Add tab completion support
 * FIX: Prevent bundles from ever stacking
 * FIX: Fixed buckets not returning when stacked lava buckets are consumed in furnaces
 * FIX: Fixed stacking of items when offhand swapping by pressing "F"

@@ -66,7 +66,7 @@ public final class Perms {
     }
 
     public static String[] getGroups() {
-        String[] groups = null;
+        String[] groups = new String[0];
 
         if (permEnabled()) {
             try {
