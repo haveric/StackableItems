@@ -4,7 +4,9 @@ import java.util.Random;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.*;
@@ -18,6 +20,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.*;
@@ -83,6 +86,45 @@ public class SIPlayerListener implements Listener {
             }
         }
         */
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void furnaceBurn(FurnaceBurnEvent event) {
+        ItemStack fuel = event.getFuel();
+        if (fuel.getType() == Material.LAVA_BUCKET && fuel.getAmount() > 1) {
+            Block block = event.getBlock();
+            if (block.getState() instanceof Furnace furnace) {
+                int maxBuckets = InventoryUtil.getInventoryMax(null, null, null, furnace.getInventory(), Material.BUCKET, (short) 0, 0);
+                ItemStack bucket = new ItemStack(Material.BUCKET);
+                Block down = block.getRelative(BlockFace.DOWN);
+
+                boolean bucketMoved = false;
+                if (down.getState() instanceof Hopper hopper) {
+                    Inventory hopperInventory = hopper.getInventory();
+                    for (int i = 0; i < hopperInventory.getSize(); i++) {
+                        ItemStack item = hopperInventory.getItem(i);
+                        if (item != null && item.getType() != Material.AIR) {
+                            if (ItemUtil.isSameItem(item, bucket)) {
+                                int itemAmount = item.getAmount();
+                                if (itemAmount < maxBuckets) {
+                                    item.setAmount(itemAmount + 1);
+                                    bucketMoved = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            hopperInventory.setItem(i, bucket.clone());
+                            bucketMoved = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!bucketMoved) {
+                    block.getWorld().dropItemNaturally(block.getLocation(), bucket.clone());
+                }
+            }
+        }
     }
 
     @EventHandler (priority = EventPriority.HIGHEST, ignoreCancelled = true)
