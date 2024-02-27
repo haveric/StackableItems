@@ -298,7 +298,7 @@ public final class SIItems {
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
-        if (mat != Material.AIR) {
+        if (mat != Material.AIR && mat != Material.BUNDLE) {
             if (isInventoryEnabled(world, inventoryType)) {
                 // Check inventory types
                 max = getMax(world, "inventory", inventoryType.name(), mat, dur);
@@ -332,7 +332,7 @@ public final class SIItems {
         int max = ITEM_DEFAULT;
 
         // Force air to keep default value
-        if (mat != Material.AIR) {
+        if (mat != Material.AIR && mat != Material.BUNDLE) {
             if (isInventoryEnabled(world, inventoryType)) {
                 // Check player
                 String uuid = player.getUniqueId().toString();

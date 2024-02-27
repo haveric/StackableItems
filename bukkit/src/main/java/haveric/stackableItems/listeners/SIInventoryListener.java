@@ -1013,6 +1013,11 @@ public class SIInventoryListener implements Listener {
                     // Add two normal items
                     if (sameType) {
                         if (ItemUtil.isSameItem(cursor, clicked)) {
+                            // Let vanilla handle bundles
+                            if (clickedType == Material.BUNDLE) {
+                                return;
+                            }
+
                             int total = clickedAmount + 1;
                             if (total <= maxItems) {
                                 if (total > clicked.getMaxStackSize()) {
