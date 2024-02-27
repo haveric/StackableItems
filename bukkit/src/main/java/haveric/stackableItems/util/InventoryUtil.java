@@ -47,7 +47,7 @@ public final class InventoryUtil {
             while (iter.hasNext() && i < end) {
                 ItemStack slot = iter.next();
 
-                int maxAmount = getInventoryMax(player, null, view, inventory, type, durability, i);
+                int maxAmount = getInventoryMax(player, null, inventory, type, durability, i);
 
                 if (slot == null) {
                     free += maxAmount;
@@ -166,7 +166,7 @@ public final class InventoryUtil {
             short durability = itemToCheck.getDurability();
             int defaultMax = type.getMaxStackSize();
             int amt = slot.getAmount();
-            int slotMax = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
+            int slotMax = getInventoryMax(player, null, inventory, type, durability, i);
 
             if (slotMax == defaultMax && itemToCheck.getAmount() <= defaultMax) {
                 // Let vanilla always handle this
@@ -287,7 +287,7 @@ public final class InventoryUtil {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
                 // slotMax
-                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
+                free = getInventoryMax(player, null, inventory, type, durability, i);
             }
             i++;
         }
@@ -303,7 +303,7 @@ public final class InventoryUtil {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
                 // slotMax
-                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
+                free = getInventoryMax(player, null, inventory, type, durability, i);
             }
             i--;
         }
@@ -325,7 +325,7 @@ public final class InventoryUtil {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
                 // slotMax
-                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
+                free = getInventoryMax(player, null, inventory, type, durability, i);
             }
             i++;
         }
@@ -347,7 +347,7 @@ public final class InventoryUtil {
             ItemStack slot = inventory.getItem(i);
             if (slot == null || slot.getType() == Material.AIR) {
                 // slotMax
-                free = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
+                free = getInventoryMax(player, null, inventory, type, durability, i);
             }
             i--;
         }
@@ -650,7 +650,7 @@ public final class InventoryUtil {
         if (slot != null && ItemUtil.isSameItem(slot, itemToAdd)) {
             int slotAmount = slot.getAmount();
 
-            int maxAmount = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
+            int maxAmount = getInventoryMax(player, null, inventory, type, durability, i);
             // Handle infinite items
             if (maxAmount == SIItems.ITEM_INFINITE) {
                 maxAmount = type.getMaxStackSize();
@@ -679,7 +679,7 @@ public final class InventoryUtil {
         ItemStack slot = inventory.getItem(i);
 
         if (slot == null) {
-            int maxAmount = getInventoryMax(player, null, player.getOpenInventory(), inventory, type, durability, i);
+            int maxAmount = getInventoryMax(player, null, inventory, type, durability, i);
 
             // Handle infinite items
             if (maxAmount == SIItems.ITEM_INFINITE) {
@@ -1019,7 +1019,7 @@ public final class InventoryUtil {
         Bukkit.getScheduler().runTaskLater(plugin, player::updateInventory, ticks);
     }
 
-    public static int getInventoryMax(Player player, String worldName, InventoryView view, Inventory inventory, Material mat, short dur, int slot) {
+    public static int getInventoryMax(Player player, String worldName, Inventory inventory, Material mat, short dur, int slot) {
         InventoryType inventoryType = inventory.getType();
 
         GameMode gamemode = null;

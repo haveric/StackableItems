@@ -94,7 +94,7 @@ public class CustomFileWriter {
             listScanner.nextInt();
             while (listScanner.hasNextLine()) {
                 String nextLine = listScanner.nextLine();
-                if (!nextLine.trim().equals("")) {
+                if (!nextLine.trim().isEmpty()) {
                     Material mat = Material.getMaterial(nextLine);
                     if (mat != null) {
                         matList.add(mat);
@@ -115,7 +115,7 @@ public class CustomFileWriter {
                 matList = new ArrayList<>();
                 while (customScanner.hasNextLine()) {
                     String nextLine = customScanner.nextLine();
-                    if (!nextLine.trim().equals("")) {
+                    if (!nextLine.trim().isEmpty()) {
                         matList.add(Material.getMaterial(nextLine));
                     }
                 }

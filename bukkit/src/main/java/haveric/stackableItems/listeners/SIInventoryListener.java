@@ -77,7 +77,7 @@ public class SIInventoryListener implements Listener {
                 }
 
                 if (!clickedEmpty && hotbarItem == null) { // Moving clicked to an empty hotbar slot
-                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, hotbarButton);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, hotbarButton);
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
                         event.setCurrentItem(null);
 
@@ -98,7 +98,7 @@ public class SIInventoryListener implements Listener {
                     } // else let vanilla handle it
                 } else if (clickedEmpty && hotbarItem != null) { // Moving hotbar to an empty clicked slot
                     int rawSlot = event.getRawSlot();
-                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, rawSlot);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, rawSlot);
                     int inventorySize = top.getSize();
 
                     if (clickedAmount <= maxItems && clickedAmount > clickedType.getMaxStackSize()) {
@@ -127,7 +127,7 @@ public class SIInventoryListener implements Listener {
                     } // else let vanilla handle it
                 } else if (!clickedEmpty && hotbarItem != null) { // Move clicked to hotbar. Move hotbar elsewhere
                     int rawSlot = event.getRawSlot();
-                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, hotbarButton);
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, hotbarButton);
                     int inventorySize = top.getSize();
                     int totalItems = clickedAmount + hotbarAmount;
 
@@ -210,8 +210,8 @@ public class SIInventoryListener implements Listener {
                     short offhandDur = offhandItem.getDurability();
                     int offhandAmount = offhandItem.getAmount();
 
-                    int maxClickedInventory = InventoryUtil.getInventoryMax(player, null, view, clickedInventory, offhandType, offhandDur, clickedSlot);
-                    int maxOffhand = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, OFFHAND_RAW_SLOT_ID);
+                    int maxClickedInventory = InventoryUtil.getInventoryMax(player, null, clickedInventory, offhandType, offhandDur, clickedSlot);
+                    int maxOffhand = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, OFFHAND_RAW_SLOT_ID);
 
                     if (offhandAmount <= maxClickedInventory && clickedAmount <= maxOffhand) {
                         if (offhandAmount > offhandType.getMaxStackSize() || clickedAmount > clickedType.getMaxStackSize()) {
@@ -229,7 +229,7 @@ public class SIInventoryListener implements Listener {
                     Material offhandType = offhandItem.getType();
                     short offhandDur = offhandItem.getDurability();
                     int offhandAmount = offhandItem.getAmount();
-                    int maxClickedInventory = InventoryUtil.getInventoryMax(player, null, view, clickedInventory, offhandType, offhandDur, clickedSlot);
+                    int maxClickedInventory = InventoryUtil.getInventoryMax(player, null, clickedInventory, offhandType, offhandDur, clickedSlot);
 
                     if (offhandAmount <= maxClickedInventory && offhandAmount > offhandType.getMaxStackSize()) {
                         playerInventory.setItemInOffHand(null);
@@ -251,7 +251,7 @@ public class SIInventoryListener implements Listener {
                     Material clickedType = clicked.getType();
                     short clickedDur = clicked.getDurability();
                     int clickedAmount = clicked.getAmount();
-                    int maxOffhand = InventoryUtil.getInventoryMax(player, null, view, player.getInventory(), clickedType, clickedDur, OFFHAND_RAW_SLOT_ID);
+                    int maxOffhand = InventoryUtil.getInventoryMax(player, null, player.getInventory(), clickedType, clickedDur, OFFHAND_RAW_SLOT_ID);
 
                     if (clickedAmount <= maxOffhand && clickedAmount > clickedType.getMaxStackSize()) {
                         playerInventory.setItemInOffHand(clicked.clone());
@@ -288,7 +288,7 @@ public class SIInventoryListener implements Listener {
 
                     boolean cursorEmpty = cursorType == Material.AIR;
 
-                    int maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, event.getRawSlot());
+                    int maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
 
                     if (maxItems == 0) {
                         player.sendMessage(itemDisabledMessage);
@@ -433,9 +433,9 @@ public class SIInventoryListener implements Listener {
 
             int maxItems;
             if (clickedType == Material.AIR) {
-                maxItems = InventoryUtil.getInventoryMax(player, null, view, top, cursorType, cursorDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, null, top, cursorType, cursorDur, event.getRawSlot());
             } else {
-                maxItems = InventoryUtil.getInventoryMax(player, null, view, top, clickedType, clickedDur, event.getRawSlot());
+                maxItems = InventoryUtil.getInventoryMax(player, null, top, clickedType, clickedDur, event.getRawSlot());
             }
 
             int rawSlot = event.getRawSlot();
@@ -1121,7 +1121,7 @@ public class SIInventoryListener implements Listener {
             ItemStack added = entry.getValue();
             int newAmount = added.getAmount();
 
-            int maxSlot = InventoryUtil.getInventoryMax(player, null, view, inventory, cursorType, cursorDur, slot);
+            int maxSlot = InventoryUtil.getInventoryMax(player, null, inventory, cursorType, cursorDur, slot);
 
             if (newAmount > maxSlot && maxSlot > SIItems.ITEM_DEFAULT) {
                 int extra = newAmount - maxSlot;
@@ -1172,7 +1172,7 @@ public class SIInventoryListener implements Listener {
                 ItemStack added = entry.getValue();
                 int newAmount = added.getAmount();
 
-                int maxSlot = InventoryUtil.getInventoryMax(player, null, view, inventory, cursorType, cursorDur, slot);
+                int maxSlot = InventoryUtil.getInventoryMax(player, null, inventory, cursorType, cursorDur, slot);
                 if (maxSlot <= SIItems.ITEM_DEFAULT) {
                     maxSlot = added.getMaxStackSize();
                 }

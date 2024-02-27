@@ -141,9 +141,9 @@ public class Updater {
             if (current.equals(latest)) {
                 if (currentBetaStatus.equals(latestBetaStatus)) {
                     compare = 0;
-                } else if (!currentBetaStatus.equals("") && latestBetaStatus.equals("")) {
+                } else if (!currentBetaStatus.isEmpty() && latestBetaStatus.isEmpty()) {
                     compare = -1;
-                } else if (currentBetaStatus.equals("") && !latestBetaStatus.equals("")) {
+                } else if (currentBetaStatus.isEmpty() && !latestBetaStatus.isEmpty()) {
                     compare = 2;
                 } else {
                     compare = 3;

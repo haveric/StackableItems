@@ -31,7 +31,6 @@ import haveric.stackableItems.util.InventoryUtil;
 import haveric.stackableItems.util.ItemUtil;
 import haveric.stackableItems.util.SIItems;
 import org.bukkit.inventory.meta.*;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 public class SIPlayerListener implements Listener {
@@ -94,7 +93,7 @@ public class SIPlayerListener implements Listener {
         if (fuel.getType() == Material.LAVA_BUCKET && fuel.getAmount() > 1) {
             Block block = event.getBlock();
             if (block.getState() instanceof Furnace furnace) {
-                int maxBuckets = InventoryUtil.getInventoryMax(null, null, null, furnace.getInventory(), Material.BUCKET, (short) 0, 0);
+                int maxBuckets = InventoryUtil.getInventoryMax(null, null, furnace.getInventory(), Material.BUCKET, (short) 0, 0);
                 ItemStack bucket = new ItemStack(Material.BUCKET);
                 Block down = block.getRelative(BlockFace.DOWN);
 
