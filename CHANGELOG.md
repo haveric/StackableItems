@@ -1,4 +1,4 @@
-### Coming Soon
+### Version 1.3.0
 * NEW: Update to 1.20.4
 * NEW: Add tab completion support
 * FIX: Prevent bundles from ever stacking
