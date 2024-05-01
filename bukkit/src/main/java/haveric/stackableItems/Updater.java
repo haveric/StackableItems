@@ -71,7 +71,7 @@ public class Updater {
 
         if (time > 0) {
             time *= 60 * 60 * 20;
-            taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> query(null), time, time);
+            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> query(null), time, time).getTaskId();
         }
     }
 

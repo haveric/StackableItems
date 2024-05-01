@@ -107,7 +107,7 @@ public class Commands implements TabExecutor {
                 }
             } else if (args.length == 1 && (args[0].equalsIgnoreCase(cmdUpdate))) {
                 if (op || hasAdminPerm) {
-                    Updater.query(sender);
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Updater.query(sender));
                 } else {
                     sender.sendMessage(title + ChatColor.RED + "You must be an op or have admin perms to check for updates.");
                 }
